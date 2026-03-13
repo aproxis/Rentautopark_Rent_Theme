@@ -22,6 +22,7 @@ $uid   = 'ar-faq-' . $module->id;
 #<?php echo $uid; ?> {
 	max-width: 860px;
 	margin: 0 auto;
+	padding: 32px 40px;
 }
 .<?php echo $uid; ?>-item {
 	margin-bottom: 12px;
