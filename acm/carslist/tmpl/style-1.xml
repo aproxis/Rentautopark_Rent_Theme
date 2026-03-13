@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <title>Cars List Style 1 - Featured Cars Grid</title>
+  <sampledata><![CDATA[
+  {":type":"ja_ngr:carslist","carslist":{"jatools-layout-carslist":"style-1","carslist[limit]":["9"],"carslist[view-all-url]":["/cars"],"carslist[view-all-label]":["Vezi toate mașinile"],"carslist[section-title]":["Flota Noastră"],"carslist[section-subtitle]":["Descoperă întreaga noastră colecție de automobile premium"]}}
+  ]]></sampledata>
+  <fields name="carslist">
+    <fieldset name="Basic Settings" description="Basic settings for the cars list component">
+      <field name="section-title" type="text" default="Flota Noastră" size="60" label="Section Title" description="Title displayed above the cars grid" />
+      <field name="section-subtitle" type="text" default="" size="80" label="Section Subtitle" description="Subtitle displayed below the section title" />
+      <field name="limit" type="list" default="9" label="Number of Cars" description="How many cars to display">
+        <option value="3">3</option>
+        <option value="6">6</option>
+        <option value="9">9</option>
+        <option value="12">12</option>
+      </field>
+      <field name="view-all-url" type="text" default="/cars" size="60" label="View All URL" description="URL for the 'View All Cars' button. Leave empty to hide the button." />
+      <field name="view-all-label" type="text" default="Vezi toate mașinile" size="60" label="View All Button Label" description="Label for the view all button" />
+    </fieldset>
+  </fields>
+</form>
