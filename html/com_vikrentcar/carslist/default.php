@@ -345,7 +345,11 @@ foreach ($cars as $c) {
 /* ================================================================
    MAIN LAYOUT
    ================================================================ */
-.ar-main { display: flex; gap: 24px; align-items: flex-start; }
+#t3-mainbody {
+	max-width: 100%; 
+}
+
+   .ar-main { display: flex; gap: 24px; align-items: flex-start; }
 .ar-cars-area { flex: 1; min-width: 0; }
 
 /* Grid — explicit breakpoints, no stepped jumps */
