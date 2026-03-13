@@ -46,7 +46,7 @@ if (class_exists('VikRentCar')) {
     $dbo    = JFactory::getDbo();
     $vrc_tn = VikRentCar::getTranslator();
 
-    $q = "SELECT `id`,`name`,`img`,`idcat`,`idcarat`,`startfrom`,`cost` FROM `#__vikrentcar_cars` WHERE `avail`='1' ORDER BY `ordering` ASC, `id` ASC LIMIT " . $limit . ";";
+    $q = "SELECT `id`,`name`,`img`,`idcat`,`idcarat`,`startfrom` FROM `#__vikrentcar_cars` WHERE `avail`='1' ORDER BY `ordering` ASC, `id` ASC LIMIT " . $limit . ";";
     $dbo->setQuery($q);
     $dbo->execute();
     if ($dbo->getNumRows() > 0) {
