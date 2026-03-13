@@ -91,7 +91,9 @@ foreach ($cars as $c) {
 
 /* ── Page wrapper ─────────────────────────────────────────────── */
 .ar-page-wrap {
+	width: 100%;
 	padding: 0 20px;
+	box-sizing: border-box;
 }
 @media (min-width: 640px)  { .ar-page-wrap { padding: 0 30px; } }
 @media (min-width: 768px)  { .ar-page-wrap { padding: 0 40px; } }
@@ -101,25 +103,20 @@ foreach ($cars as $c) {
 	margin: 0 auto;
 }
 
-/* Hero */
+/* Hero — always 100% viewport width */
 .ar-hero {
 	background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
 	color: #fff;
 	padding: 52px 20px 44px;
 	text-align: center;
 	margin-bottom: 32px;
-	/* full-width: break out of .ar-page-wrap */
-	margin-left: -20px;
-	margin-right: -20px;
-}
-@media (min-width: 640px)  {
-	.ar-hero { padding-left: 30px; padding-right: 30px; margin-left: -30px; margin-right: -30px; }
-}
-@media (min-width: 768px)  {
-	.ar-hero { padding-left: 40px; padding-right: 40px; margin-left: -40px; margin-right: -40px; }
-}
-@media (min-width: 1024px) {
-	.ar-hero { padding-left: 50px; padding-right: 50px; margin-left: -50px; margin-right: -50px; }
+	width: 100vw;
+	position: relative;
+	left: 50%;
+	right: 50%;
+	margin-left: -50vw;
+	margin-right: -50vw;
+	box-sizing: border-box;
 }
 .ar-hero h1 {
 	font-size: clamp(2rem, 4.5vw, 3.2rem);
@@ -351,11 +348,21 @@ foreach ($cars as $c) {
 .ar-main { display: flex; gap: 24px; align-items: flex-start; }
 .ar-cars-area { flex: 1; min-width: 0; }
 
-/* Grid */
+/* Grid — explicit breakpoints, no stepped jumps */
 .ar-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+	grid-template-columns: 1fr;
 	gap: 18px;
+}
+@media (min-width: 480px) {
+	.ar-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+	/* sidebar visible: 2 cols in cars area */
+	.ar-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) {
+	.ar-grid { grid-template-columns: repeat(3, 1fr); }
 }
 /* List */
 .ar-list { display: flex; flex-direction: column; gap: 14px; }
