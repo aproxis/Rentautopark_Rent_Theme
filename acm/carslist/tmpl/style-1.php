@@ -297,7 +297,7 @@ $svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" vi
 					$caratIds = array_filter(array_map('intval', explode(';', trim($c['idcarat'], ';'))));
 					if (!empty($caratIds)) {
 						$dbo->setQuery(
-							"SELECT `id`,`name`,`textimg` FROM `#__vikrentcar_carattr` WHERE `id` IN (" . implode(',', $caratIds) . ")"
+							"SELECT `id`,`name`,`textimg` FROM `#__vikrentcar_caratteristiche` WHERE `id` IN (" . implode(',', $caratIds) . ")"
 						);
 						$dbo->execute();
 						$caratRows = $dbo->getNumRows() > 0 ? $dbo->loadAssocList('id') : array();
