@@ -82,6 +82,19 @@ if (class_exists('VikRentCar')) {
     $currencysymb = '';
     $vrc_tn       = null;
 }
+
+/* ── SVG icon map keyed by carat name keywords ───────────────────────── */
+$svgIcons = array(
+    'automat' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>',
+    'manual'  => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg>',
+    'diesel'  => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg>',
+    'benzin'  => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="15" y1="22" y2="22"></line><line x1="4" x2="14" y1="9" y2="9"></line><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"></path><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"></path></svg>',
+    'petrol'  => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="15" y1="22" y2="22"></line><line x1="4" x2="14" y1="9" y2="9"></line><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"></path><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"></path></svg>',
+    'loc'     => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+    'seat'    => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+);
+/* Default icon (info circle) for unrecognised carats */
+$svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>';
 ?>
 
 <style>
@@ -198,34 +211,23 @@ if (class_exists('VikRentCar')) {
 
 /* Specs */
 .<?php echo $uid; ?>-specs {
-	display: grid !important;
-	grid-template-columns: repeat(3, 1fr) !important;
-	gap: 4px !important;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 4px;
 	padding-bottom: 12px;
 	border-bottom: 1px solid #f3f4f6;
 }
-.<?php echo $uid; ?>-specs > span,
-.<?php echo $uid; ?>-specs .vrc-car-carat-item,
-.<?php echo $uid; ?>-specs > div {
-	display: flex !important; flex-direction: column !important;
-	align-items: center !important; justify-content: flex-start !important;
-	text-align: center !important; gap: 3px !important;
-	padding: 6px 4px !important; font-size: 11px !important;
-	color: #6b7280 !important;
+.<?php echo $uid; ?>-spec-item {
+	display: flex; flex-direction: column;
+	align-items: center; justify-content: flex-start;
+	text-align: center; gap: 3px;
+	padding: 6px 4px; font-size: 11px;
+	color: #6b7280;
 }
-.<?php echo $uid; ?>-specs > span i,
-.<?php echo $uid; ?>-specs .vrc-car-carat-item i,
-.<?php echo $uid; ?>-specs > div i {
-	font-size: 18px !important; color: #9ca3af !important;
-	display: block !important; margin-bottom: 2px !important;
+.<?php echo $uid; ?>-spec-item svg {
+	width: 20px; height: 20px;
+	color: #9ca3af; flex-shrink: 0;
 }
-.<?php echo $uid; ?>-specs > span img,
-.<?php echo $uid; ?>-specs .vrc-car-carat-item img,
-.<?php echo $uid; ?>-specs > div img {
-	width: 22px !important; height: 22px !important;
-	object-fit: contain !important; margin-bottom: 2px !important;
-}
-.<?php echo $uid; ?>-specs br { display: none !important; }
 
 /* Footer */
 .<?php echo $uid; ?>-footer { display: flex; flex-direction: column; gap: 10px; }
@@ -288,7 +290,34 @@ if (class_exists('VikRentCar')) {
 				$detailUrl = JRoute::_('index.php?option=com_vikrentcar&view=cardetails&carid=' . (int)$c['id']);
 				$showPrice = $c['cost'] > 0;
 				$priceVal  = $showPrice ? VikRentCar::numberFormat($c['cost']) : '';
-				$carats    = VikRentCar::getCarCaratOriz($c['idcarat'], array(), $vrc_tn);
+
+				/* ── Build custom SVG specs from carat IDs ─────────────────── */
+				$specItems = array();
+				if (!empty($c['idcarat'])) {
+					$caratIds = array_filter(array_map('intval', explode(';', trim($c['idcarat'], ';'))));
+					if (!empty($caratIds)) {
+						$dbo->setQuery(
+							"SELECT `id`,`name`,`textimg` FROM `#__vikrentcar_carattr` WHERE `id` IN (" . implode(',', $caratIds) . ")"
+						);
+						$dbo->execute();
+						$caratRows = $dbo->getNumRows() > 0 ? $dbo->loadAssocList('id') : array();
+						// Preserve original order
+						foreach ($caratIds as $cid) {
+							if (!isset($caratRows[$cid])) continue;
+							$cr    = $caratRows[$cid];
+							$label = !empty($cr['textimg']) ? $cr['textimg'] : $cr['name'];
+							$key   = strtolower($label);
+							$svg   = $svgDefault;
+							foreach ($svgIcons as $keyword => $iconSvg) {
+								if (strpos($key, $keyword) !== false) {
+									$svg = $iconSvg;
+									break;
+								}
+							}
+							$specItems[] = array('svg' => $svg, 'label' => $label);
+						}
+					}
+				}
 
 				// Image src
 				$imgSrc = '';
@@ -322,8 +351,15 @@ if (class_exists('VikRentCar')) {
 				<div class="<?php echo $uid; ?>-body">
 					<a href="<?php echo $detailUrl; ?>" class="<?php echo $uid; ?>-name"><?php echo htmlspecialchars($c['name']); ?></a>
 
-					<?php if (!empty($carats)): ?>
-					<div class="<?php echo $uid; ?>-specs"><?php echo $carats; ?></div>
+					<?php if (!empty($specItems)): ?>
+					<div class="<?php echo $uid; ?>-specs">
+						<?php foreach ($specItems as $spec): ?>
+						<div class="<?php echo $uid; ?>-spec-item">
+							<?php echo $spec['svg']; ?>
+							<span><?php echo htmlspecialchars($spec['label']); ?></span>
+						</div>
+						<?php endforeach; ?>
+					</div>
 					<?php endif; ?>
 
 					<div class="<?php echo $uid; ?>-footer">
