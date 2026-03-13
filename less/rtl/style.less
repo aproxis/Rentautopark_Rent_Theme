@@ -1,0 +1,147 @@
+/*
+$JA#COPYRIGHT$
+*/
+
+// RTL STYLES
+// ------------------------------------------------------
+
+// Article Images
+// --------------
+article img[align=left],
+.img_caption.left,
+.pull-left.item-image {
+  @media (max-width: @screen-sm) {
+    margin: 0 0 @t3-global-margin 0;
+  }
+}
+
+article img[align=right],
+.img_caption.right,
+.pull-right.item-image {
+  @media (max-width: @screen-sm) {
+    margin: 0 0 @t3-global-margin 0;
+  }
+}
+
+.languageswitcherload {
+  ul {
+    float: left;
+  }
+}
+
+#ja-user-login ul li {
+	text-align: right!important;
+}
+
+// Component 
+div.t3-section .vrcdivsearchmodule .chzn-container-single .chzn-single div b,
+div.module-darker .vrcdivsearchmodule .chzn-container-single .chzn-single div b,
+div.t3-sidebar .vrccurconvcontainer .chzn-container-single .chzn-single div b,
+.chzn-rtl.chzn-container-single .chzn-single div b {
+	background-position: 0 12px;
+}
+
+html[dir="rtl"] {
+	.vrcconfnumbinp,
+	.vrcconfnumbsubm,
+	.vrcdivsearchmodule .vrcsfentrycont #vrcmodselph,
+	.vrcdivsearchmodule .vrcsfentrycont #vrcmodselpm,
+	.vrcdivsearchmodule .vrcsfentrycont #vrcmodseldh,
+	.vrcdivsearchmodule .vrcsfentrycont #vrcmodseldm,
+	.vrcdivsearchmodule .vrcsfentrycont .vrctimesep,
+	.vrcdivsearchmodule .vrcsfentrycont .vrcsfentrytime,
+	.vrcdivsearch .vrcsfentrycont .vrcsfentrylabsel,
+	.vrc-car-carats .vrccarcarat span,
+	.vrc-car-carats .vrccarcarat img,
+	.vrcsfentrycont #vrccomselph,
+	.vrcsfentrycont #vrccomselpm,
+	.vrcsfentrycont #vrccomseldh,
+	.vrcsfentrycont #vrccomseldm,
+	.vrcsfentrycont .vrctimesep {
+		float: right;
+	}
+
+	.vrclocationsmapdiv,
+	.vrccaratsdiv {
+		float: left;
+	}
+
+	.vrcconfnumbinp input {
+		margin: 0 0 0 10px;
+	}
+
+	.vrccaratsdiv .vrccarcarat span {
+		padding: 0 5px 0 0;
+	}
+
+	.vrcsfentrycont .vrcsfentrydate .hasDatepicker {
+		background-position: 10% center;
+	}
+
+	&.com_vikrentcar .vrclocationsbox .vrclocationsmapdiv a {
+		padding-left: @t3-global-padding;
+		padding-right: @t3-global-padding;
+	}
+
+	&.com_vikrentcar .fancybox-type-iframe {
+		direction: ltr;
+	}
+
+	&.com_vikrentcar .car_prices .vrc-label-promo-price:after {
+		right: auto;
+	}
+
+	.vrc-promotion-price:before {
+		border-color: transparent transparent transparent #b20000;
+		border-width: 0 40px 40px;
+		right: auto;
+		left: 0;
+	}
+
+	.vrc-promotion-price:after {
+		background-position: 4px 4px;
+		right: auto;
+		left: 0;
+	}
+
+	&.com_vikrentcar {
+		.vrcstepsbarcont .vrc-stepbar > li > ::before {
+			margin: 0 0 0 @t3-global-margin/2;
+		}
+
+		.vrc-car-carats .vrccarcarat, 
+		.vrc-showprc-car-carats .vrccarcarat {
+			float: right;
+			margin: 0 0 5px 8px;
+		}
+
+		.vrc-enterpin-block #vrc-pincode-inp,
+		.vrcentercoupon .vrcinputcoupon {
+			float: right;
+		}
+	}
+}
+
+.vrcmodcarscontainer .vrcmodcarshorizontal,
+.acm-features .owl-carousel,
+.uber-cliens .owl-carousel {
+	direction: ltr;
+}
+
+.owl-buttons {
+	.fa-caret-right:before {
+		content: "\f0d9";
+	}
+
+	.fa-caret-left:before {
+		content: "\f0da";
+	}
+
+	.fa-angle-left:before {
+		content:  "\f105";
+	}
+
+	.fa-angle-right:before {
+		content:   "\f104";
+	}
+}

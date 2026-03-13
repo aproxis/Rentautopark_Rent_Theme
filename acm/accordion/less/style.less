@@ -1,0 +1,84 @@
+/**
+ * $JA#COPYRIGHT$
+ */
+ 
+// VARIABLES & MIXINS
+// ------------------
+@import "../../../less/vars.less"; // Modify this for custom colors, font-sizes, etc
+
+.acm-accordion {
+  text-align: left;
+  
+  &.panel-group .panel {
+    border: 0;
+    background: @well-bg;
+    .box-shadow(none);
+    
+    + .panel {
+      margin-top: @t3-global-margin/2;
+    }
+  }
+
+  .panel-default > .panel-heading + .panel-collapse > .panel-body {
+    border: 0;
+  }
+
+  .panel-title {
+    position: relative;
+
+    a {
+      display: block;
+      height: 50px;
+      line-height: 50px; 
+      padding-left: 50px;
+      background: @brand-primary;
+      color: @white;
+      text-indent: @t3-global-padding;
+      .text-overflow();
+    }
+
+    .marker {
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      display: inline-block;
+      position: absolute;
+      background: @brand-dark-lv3;
+      color: @brand-light-lv3;
+      left: 0;
+      top: 0;
+      text-indent: 0;
+    }
+
+    .marker-close {
+      display: none;
+    }
+
+    .marker-open {
+      display: inline-block;
+    }
+
+    .collapsed {
+      background: @well-bg;
+      color: @brand-dark-lv3;
+
+      .marker {
+        background: @brand-primary;
+        color: @white;
+      }
+
+      .marker-close {
+        display: inline-block;
+      }
+
+      .marker-open {
+        display: none;
+      }
+    }
+  }
+
+  .panel-heading {
+    padding: 0;
+  }
+}

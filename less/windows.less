@@ -1,0 +1,45 @@
+/*
+$JA#COPYRIGHT$
+*/
+
+// ------------------------------------------------------
+// POPUP WINDOWS STYLES
+// ------------------------------------------------------
+
+// Main Body (component.php)
+// ----------------------------------------
+.window {
+  // Reset the body
+  body {
+    height: auto;
+    padding: 0;
+    margin: 0;
+  }
+  .window-mainbody {
+    padding: 20px;
+
+    // K2 Frontend Edit
+    #k2FrontendContainer {
+    	.adminK2RightCol {
+    		input {
+    			display: inline;
+    			height: auto;
+    			margin: 0 5px 0 0;
+    			position: relative;
+    			top: 2px;
+    		}
+    	}
+
+    	#editor-xtd-buttons .btn {
+    		background-color: @brand-primary;
+    		color: @white;
+    		text-shadow: none;
+
+    		&:hover,&:focus,&:active {
+    			background-color: darken(@brand-primary, 10%);
+    		}
+    	}
+    }
+  }
+}
+

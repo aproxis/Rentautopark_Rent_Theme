@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<title>Teams Style 1</title>
+	<sampledata><![CDATA[	
+		{":type":"ja_rent:teams","teams":{"jatools-layout-teams":"style-1","team_about[number_col]":["4"],"team_about[full-width]":["0"],"team_about[member_info]":{"team_about[member_info][member-image]":["images/joomlart/teams/mem-1.jpg"],"team_about[member_info][member-desc]":["Lorem ipsum dolor sit amet, consect adipisicing elit. Proin nibh augue, suscipit a, scelerisque sed"],"team_about[member_info][member-name]":["John Doe"],"team_about[member_info][member-position]":["CEO"],"rows":1,"cols":5,"type":"list"}}}
+    ]]></sampledata>
+	<fields name="team_about">
+		<fieldset name="col" label="TEAM_COL_LABEL" description="TEAM_COL_DESC" >
+			<field name="number_col" type="list" label="TEAM_NUMBER_COL_LABEL" description="TEAM_NUMBER_COL_DESC">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+			</field>
+		</fieldset>
+		
+		<fieldset name="member_info" label="TEAM_MEMBER_INFO_LABEL" description="TEAM_MEMBER_INFO_DESC" >
+			<field name="member_info" type="jalist">
+				<item name="member-image" type="media" default="" label="TEAM_MEMBER_LABEL" description="TEAM_MEMBER_DESC" />
+				<item name="member-desc" type="textarea" cols="40" rows="5" default="" label="TEAM_MEMBER_TEXT_LABEL" description="TEAM_MEMBER_TEXT_DESC" />
+				<item name="member-name" type="text" size="40" default="" label="TEAM_MEMBER_NAME_LABEL" description="TEAM_MEMBER_NAME_DESC" required="1" />
+				<item name="member-position" type="text" size="40" default="" label="TEAM_MEMBER_POSITION_LABEL" description="TEAM_MEMBER_POSITION_DESC" />
+			</field>
+		</fieldset>
+	</fields>
+</form>

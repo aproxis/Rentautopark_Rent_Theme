@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<title>Accordion Style 2 (AutoRent FAQ)</title>
+	<sampledata><![CDATA[
+		{":type":"ja_rent:accordion","accordion":{"jatools-layout-accordion":"style-2","accordion[block-intro]":[""],"accordion[acm-style]":["style-light"],"accordion[data]":{"accordion[data][accordion-name]":["Ce documente sunt necesare pentru închiriere?"],"accordion[data][accordion-desc]":["Este necesar un buletin de identitate sau pașaport valabil, permis de conducere categoria B cu cel puțin 2 ani vechime și vârsta minimă de 21 de ani."],"rows":1,"cols":2,"type":"list"}}}
+	]]></sampledata>
+	<fields name="accordion">
+		<fieldset name="accordion-header" label="ACCORDION_HEADER_SETTING_LABEL" description="ACCORDION_HEADER_SETTING_DESC">
+			<field name="block-intro" type="textarea" default="" rows="5" cols="40" label="BLOCK_INTRO_LABEL" description="BLOCK_INTRO_DESC" />
+			<field name="acm-style" type="list" default="style-light"
+			  global="1"
+			  label="ACM_STYLE_LABEL"
+			  description="ACM_STYLE_DESC">
+				<option value="style-light">LAYOUT_STYLE_LIGHT</option>
+				<option value="style-dark">LAYOUT_STYLE_DARK</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="accordion-box" label="ACCORDION_BOX_LABEL" description="ACCORDION_BOX_DESC">
+			<field name="data" type="jalist">
+				<item name="accordion-name" type="text" default="" label="ACCORDION_NAME_LABEL" description="ACCORDION_NAME_DESC" />
+				<item name="accordion-desc" type="textarea" default="" rows="5" cols="40" label="ACCORDION_DESCRIPTION_LABEL" description="ACCORDION_DESCRIPTION_DESC" />
+			</field>
+		</fieldset>
+	</fields>
+</form>

@@ -1,0 +1,2416 @@
+/*
+$JA#COPYRIGHT$
+*/
+
+// VARIABLES & MIXINS
+// ------------------
+@import "../vars.less"; // Modify this for custom colors, font-sizes, etc
+
+
+// OVERRIDE STYLE FOR VIKRENTCAR COMPONENT
+// --------------------------------------
+.com_vikrentcar {
+
+  // COMMON STYLE
+  // Message
+  // -------
+  .err {
+    border-radius: 0;
+  }
+
+  .successmade {
+    background-color: #dff0d8 !important;
+    border: 1px solid #d6e9c6 !important;
+    border-radius: 0;
+    color: #468847 !important;
+    height: auto;
+    padding: (@t3-global-padding / 2) @t3-global-padding (@t3-global-padding / 2) (@t3-global-padding * 2) !important;
+  }
+
+  .warn {
+    background-color: #fcf8e3 !important;
+    border: 1px solid #faebcc !important;
+    border-radius: 0;
+    color: #c09853 !important;
+    height: auto;
+    padding: (@t3-global-padding / 2) @t3-global-padding (@t3-global-padding / 2) (@t3-global-padding * 2) !important;
+  }
+
+  // Booknow button
+  .booknow {
+    font-weight: @font-weight-bold;
+    margin: 0;
+    .button-variant(@white; @brand-primary; @brand-primary);
+    .button-size((@padding-base-vertical - 2); @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+  }
+
+  .goback {
+    background-color: transparent;
+    border-radius: 0;
+    border: 0;
+    height: auto;
+    text-align: left;
+    width: auto;
+
+    a {
+      display: inline-block;
+      font-weight: @font-weight-bold;
+      margin: 0;
+      .button-variant(@white; @brand-light-lv3; @brand-light-lv3);
+      .button-size((@padding-base-vertical - 4); @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+      i {
+        margin-right: 10px;
+        margin-bottom: 5px;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  // Location map
+  .vrclocationsbox {
+    height: auto;
+    .vrclocationsmapdiv a {
+      background: url("../@{t3-image-path}/gmap.jpg") no-repeat center top @gray-lighter;
+      border: 5px solid @gray-lighter;
+      padding-top: @t3-global-padding * 3;
+    }
+  }
+
+  // CARS LIST
+  // ---------
+  .vrc-search-results-block {
+    padding: 0 @grid-gutter-width/2;
+
+    .gridlist {
+      margin: 0 -@grid-gutter-width/2 @t3-global-margin;
+      text-align: right;
+      line-height: 45px;
+      .clearfix();
+
+      .view {
+        float: right;
+        margin-left: @grid-gutter-width/2; 
+
+        a {
+          width: 45px;
+          height: 45px;
+          line-height: 45px;
+          text-align: center;
+          background: @white;
+          border: 1px solid @t3-border-color;
+          display: inline-block;
+
+          &.active {
+            background-color: @brand-primary;
+            color: @white;
+            border-color: @brand-primary;
+          }
+        }
+      }
+    }
+
+    // Grid view
+    // ---------
+    &.vrc-search-results-grid {
+      padding: 0;
+      margin: 0 -@grid-gutter-width/2;
+      .clearfix();
+
+      .gridlist {
+        margin-right: 0;
+        margin-left: 0;
+        padding: 0 @grid-gutter-width/2;
+      }
+    }
+  }
+
+  .car_result {
+    background-color: lighten(@gray-lighter, 3%);
+    border: 0;
+    margin-bottom: @t3-global-margin;
+    width: auto;
+
+    .vrc-car-thumb {
+      float: left;
+      padding-left: 0;
+      padding-right: @t3-global-padding;
+      position: relative;
+      overflow: hidden;
+
+      @media (max-width: @screen-xs-max) {
+        float: none;
+        padding-right: 0;
+      }
+
+      img {
+        max-width: 100%;
+        width: 100%;
+        float: none;
+        -webkit-transform: rotate(0) scale(1); /* Chrome 4+, Op 15+, Saf 3.1, iOS Saf 3.2+ */
+           -moz-transform: rotate(0) scale(1); /* Fx 3.5-15 */
+            -ms-transform: rotate(0) scale(1); /* IE 9 */
+             -o-transform: rotate(0) scale(1); /* Op 10.5-12 */
+                transform: rotate(0) scale(1); /* Fx 16+, IE 10+ */
+        .transition(all 0.3s);
+
+        @media (min-width: @screen-xs-max) {
+          width: auto;
+        }
+      }
+
+      .vrc-car-price {
+        background-color: @brand-primary;
+        color: @white;
+        position: absolute;
+        top: 0;
+        left: 0;
+        line-height: 1;
+        padding: 8px 10px;
+
+        .vrcstartfrom {
+          font-size: @font-size-small - 1;
+          margin: 0;
+          padding: 0;
+          text-transform: uppercase;
+          vertical-align: middle;
+        }
+
+        .car_cost {
+          color: @white;
+          display: inline-block;
+          font-size: @font-size-base;
+          font-weight: 600;
+          margin: 0;
+          vertical-align: middle;
+        }
+
+        .vrc-car-result-dailycost {
+          color: @white;
+
+          .vrc_currency,
+          .vrc_price {
+            font-weight: @font-weight-bold;
+            vertical-align: middle;
+          }
+
+          .vrc-perday-txt {
+            background: url("../@{t3-image-path}/slash-bg.png") no-repeat left center;
+            font-size: @font-size-small;
+            margin-left: 2px;
+            padding-left: 8px;
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+
+    .vrc-car-result-info {
+      padding-top: @t3-global-padding;
+      padding-bottom: @t3-global-padding;
+
+      .vrc-car-name {
+        line-height: 1.3;
+        margin: 0 0 @t3-global-margin / 2;
+        padding: 0;
+        text-transform: uppercase;
+
+        a {
+          color: @brand-dark-lv2;
+          .transition(all 0.3s);
+
+          &:hover, &:focus, &:active {
+            color: @link-hover-color;
+          }
+        }
+      }
+
+      .vrc-car-bookingbtn {
+        padding-top: @t3-global-padding / 2;
+        text-align: right;
+      }
+
+      .readmore {
+        display: block;
+        margin-top: (@t3-global-margin / 2);
+        text-align: right;
+
+        a {
+          color: @link-color;
+          display: inline-block;
+          line-height: 1;
+
+          .fa {
+            background-color: @gray-light;
+            border-radius: 2px;
+            color: @white;
+            display: inline-block;
+            font-size: 11px;
+            height: 14px;
+            line-height: 14px;
+            margin-right: 5px;
+            text-align: center;
+            width: 14px;
+          }
+
+          &:hover, &:focus, &:active {
+            color: @link-hover-color;
+            .fa {
+              background-color: @link-hover-color;
+            }
+          }
+        }
+      }
+    }
+
+    // Characteristics
+    // ---------------
+    > .vrc-car-characteristics {
+      background-color: @brand-dark-lv3;
+      border: 0;
+      color: @white;
+
+      .vrccarcarat {
+        border-left: 1px solid rgba(0,0,0,0.3);
+        border-right: 0;
+        font-weight: @font-weight-500;
+        padding: (@t3-global-padding / 3) (@t3-global-padding / 2);
+
+        span {
+          font-size: @font-size-small;
+        }
+      }
+    }
+  
+    // Car resulf grid
+    // ------------------
+    &.car_result_grid {
+      margin-right: 0;
+      margin-left: 0;
+      background: none;
+      .make-xs-column(6);
+      .make-sm-column(6);
+      .make-md-column(4);
+
+      @media (min-width: @screen-sm-min) {
+        &:nth-child(2n+2) {
+          clear: both;
+        }
+      }
+
+      @media (min-width: @screen-md-min) {
+        &:nth-child(2n+2) {
+          clear: none;
+        }
+
+        &:nth-child(3n+2) {
+          clear: both;
+        }
+      }
+
+      @media (max-width: 420px) {
+        width: 100%;
+      }
+
+      .imgresult {
+        max-width: 100%;
+      }
+
+      .vrc-car-thumb {
+        width: 100%;
+        padding: 0;
+      }
+
+      .vrc-car-result-info {
+        background-color: lighten(@gray-lighter, 3%);
+        width: 100%;
+        clear: both;
+      }
+    }
+
+    // Hover Effect
+    // --------------
+    &:hover {
+      .vrc-car-result-info .vrc-car-name a {
+        color: @brand-primary;
+      }
+
+      @media (min-width: @screen-sm-min) {
+        &.car_result_grid .vrc-car-thumb img {
+          -webkit-transform: rotate(-2deg) scale(1.1); /* Chrome 4+, Op 15+, Saf 3.1, iOS Saf 3.2+ */
+             -moz-transform: rotate(-2deg) scale(1.1); /* Fx 3.5-15 */
+              -ms-transform: rotate(-2deg) scale(1.1); /* IE 9 */
+               -o-transform: rotate(-2deg) scale(1.1); /* Op 10.5-12 */
+                  transform: rotate(-2deg) scale(1.1); /* Fx 16+, IE 10+ */
+        }
+      }
+    }
+  }
+
+  .vrc-promotion-price {
+    &:before {
+      z-index: 1;
+    }
+    &:after {
+      z-index: 2;
+    }
+  }
+
+  // CAR DETAIL
+  // ----------
+  .car-detail {
+    // Car title
+    .vrc-cdetails-cgroup {
+      h1 {
+        margin: 0 0 @t3-global-margin;
+      }
+    }
+
+    // Car image
+    // ---------
+    .vrc-cdetails-cmainimg {
+      background-color: @gray-lighter;
+      margin-bottom: @t3-global-margin / 4;
+      padding: 5px;
+
+      img {
+        max-width: 100%;
+      }
+    }
+
+    // Other images
+    .cardetails_moreimages {
+      .clearfix();
+      a {
+        background-color: @gray-lighter;
+        border: 0;
+        display: block;
+        float: left;
+        margin-right: 5px;
+        padding: 5px;
+
+        img {
+          border-radius: 0;
+          border: 0;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+
+    // Car description
+    .vrc-cdetails-cardesc {
+      margin: @t3-global-margin 0;
+    }
+
+    .vrclegendediv {
+      .vrclegenda div {
+        display: inline-block;
+      }
+    }
+
+    .vrccaldivcont {
+      margin-right: @t3-global-margin / 2;
+      vertical-align: top;
+
+      .vrccal {
+        tr:first-child {
+          td {
+            background-color: @brand-dark-lv2;
+            color: @white;
+            strong {
+              font-weight: @font-weight-500;
+              text-transform: uppercase;
+            }
+          }
+        }
+
+        td {
+          border: 1px solid darken(@t3-border-color, 5%);
+          min-width: 36px;
+          padding: 5px;
+          text-align: center;
+          vertical-align: middle;
+        }
+
+        .vrccaldays td {
+          background-color: @gray-lighter;
+          font-size: @font-size-small + 1;
+          padding: 5px;
+          text-transform: uppercase;
+        }
+
+        td.vrctdfree {
+          border-color: #c1e5bc;
+        }
+
+        td.vrctdwarning {
+          border-color: #fcd6aa;
+          color: @white;
+        }
+      }
+    }
+
+    .vrcdetsep {
+      margin-top: @t3-global-margin;
+    }
+
+    // Category
+    .vrclistcarcat {
+      span {
+        background-color: @brand-primary;
+        display: inline-block;
+        color: @white;
+        font-weight: @font-weight-500;
+        line-height: 1;
+        padding: 5px 10px;
+        text-transform: uppercase;
+      }
+    }
+
+    .vrc-cdetails-cost {
+      background: transparent;
+      border-top: 1px solid @t3-border-color;
+      border-bottom: 0;
+      font-size: @font-size-base;
+      margin: 0;
+      padding: (@t3-global-padding / 2) 0;
+      text-align: left;
+
+      .car_cost {
+        color: @brand-primary;
+        font-size: @font-size-large;
+        font-weight: @font-weight-500;
+        vertical-align: middle;
+      }
+    }
+
+    .vrc-car-carats {
+      border-top: 1px solid @t3-border-color;
+      border-bottom: 0;
+      padding: (@t3-global-padding / 2) 0 0;
+
+      .vrccaratsdiv {
+        background-color: lighten(@gray-lighter, 2%);
+        .clearfix();
+      }
+
+      .vrccarcarat {
+        display: block;
+        float: left;
+        margin: 0;
+        padding: (@t3-global-padding/2);
+        border-right: 1px solid @white;
+
+        img {
+          margin-top: 0;
+          vertical-align: middle;
+        }
+
+        span {
+          font-size: @font-size-base;
+          padding: 0;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    // Car search box
+    .vrcdivsearch {
+      background-color: @gray-lighter;
+      border: 0;
+      margin: 0;
+      padding: @t3-global-padding;
+      width: 100%;
+
+      .vrcdetbooksubmit {
+        background-color: @brand-primary;
+        border: 0;
+        border-radius: 0;
+        color: @white;
+        font-size: @font-size-base;
+        font-weight: @font-weight-500;
+        padding: (@t3-global-padding / 3) (@t3-global-padding / 2);
+        text-transform: uppercase;
+      }
+
+      .vrcsfentrycont .vrcsfentrylabsel {
+        margin-right: 0;
+        padding-right: 0;
+      }
+
+      .vrcsfentrycont .vrcsfentrylabsel,
+      .vrcsfentrycont .vrcsfentrytime {
+        @media screen and (max-width: @screen-md-max) {
+          width: 100%;
+        }
+        @media screen and (max-width: @screen-sm-max) {
+          width: auto;
+        }
+      }
+    }
+  }
+
+  
+  // CAR DETAIL
+  // ----------
+  .vrc-searchfilter-characteristics-container {
+    border-radius: 0;
+    .vrc-searchfilter-characteristics-list {
+      padding: @t3-global-padding / 2;
+    }
+
+    .vrc-searchfilter-characteristic > * {
+      vertical-align: middle;
+    }
+
+    .vrc-searchfilter-cinput {
+      input {
+        border-color: @t3-border-color;
+        vertical-align: middle;
+      }
+    }
+  }
+
+
+  // Location List
+  // -------------
+  #vrcmapcanvas {
+    border-radius: 0;
+  }
+
+  .vrclocationbox {
+    background-color: lighten(@gray-lighter, 3%);
+    border: 0;
+    margin: 0 0 @t3-global-margin;
+    border-radius: 0;
+    padding: @t3-global-padding;
+
+    .vrcloclistloctimebox {
+      color: @brand-light-lv3
+    }
+  }
+
+  // Promotion List
+  // ----------------
+  .vrc-promotion-details {
+    margin: 0;
+
+    .vrc-promotion-name {
+      background: @brand-primary;
+      color: @white;
+      margin: 0;
+      padding: 10px;
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .vrc-promotion-car-img {
+      img {
+        width: 100%;
+      }
+    }
+
+    .vrc-promotion-dates {
+      width: 100%;
+      border-color: @t3-border-color;
+      background-color: #ddd;
+      padding: 10px;
+
+      &-left {
+        margin: 0 auto 0 0;
+        background: transparent;
+
+        div {
+          padding: 0;
+        }
+      }
+
+      .vrc-promotion-date-validuntil {
+        color: #0085B2;
+      }
+
+      .vrc-promotion-date-weekdays {
+        display: inline-flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+    }
+
+    .vrc-promotion-bottom-block {
+      width: 100%;
+      padding: 0;
+      border: 0;
+
+      .vrc-promotion-cars-list {
+        margin: @t3-global-margin -@grid-gutter-width/2 0;
+        width: auto;
+      }
+
+      .vrc-promotion-car-block {
+        padding: 0;
+        margin: 0 0 @grid-gutter-width;
+        background: none;
+        border: 0;
+        flex-basis: auto;
+        .make-xs-column(6);
+        .make-sm-column(6);
+        .make-md-column(4);
+
+        @media (max-width: 460px) {
+          width: 100%;
+        }
+      }
+
+      .vrc-promotion-car-name {
+        margin: 0;
+        padding: @t3-global-padding/2 @t3-global-padding;
+        background: @well-bg;
+        font-size: 14px
+      }
+
+      .vrc-promotion-car-book-block {
+        margin: 0;
+      }
+
+      .vrc-promotion-car-book-link {
+        .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
+        .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-base; @border-radius-base);
+      }
+    }
+  }
+
+  // Message
+  // -------
+  .err {
+    .alert-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text) !important;
+    background-image: none !important;
+    margin-bottom: @t3-global-margin !important;
+		position: relative;
+		padding: @t3-global-padding !important;
+		padding-left: 10% !important;
+
+		&:before {
+			background: darken(@alert-danger-bg, 5%);
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 7%;
+			height: 100%;
+		}
+
+		&:after {
+			content: "x";
+			font-weight: bold;
+			color: @alert-danger-text;
+			font-size: 16px;
+			position: absolute;
+			left: 3%;
+			top: 50%;
+			margin-top: -16px;
+			text-shadow: 0 1px 0 #fff;
+		}
+  }
+
+  // USER ORDERS(PAGE)
+  // -----------------
+  .vrcsearchconfnumb {
+    border-color: @gray-lighter;
+    padding: @t3-global-padding;
+    width: 100%;
+    .vrcconfnumbinp {
+      input {
+        border-radius: 0;
+        height: 42px;
+        line-height: 42px;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    .vrcconfnumbsubm {
+      margin-top: 30px;
+      input[type="submit"] {
+        border: 0;
+        font-weight: @font-weight-bold;
+        text-transform: uppercase;
+        width: auto;
+        .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+        .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-base; @border-radius-base);
+      }
+    }
+  }
+
+  table.vrcuserorderstable {
+    td {
+      border-bottom: 1px solid @t3-border-color;
+      padding: (@t3-global-padding / 2) (@t3-global-padding / 2);
+    }
+
+    .vrcuserorderstablerow td {
+      background-color: @brand-dark-lv3;
+      color: @white;
+      text-transform: uppercase;
+    }
+  }
+
+
+  // LOGIN PAGE
+  // ----------
+  .loginregistercont {
+    .clearfix();
+
+    .registerblock,
+    .loginblock {
+      border-radius: 0;
+      float: left;
+      width: 48%;
+
+      h3 {
+        margin: 0;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+      }
+    }
+
+    .loginblock {
+      float: right;
+    }
+
+    table {
+      width: 100%;
+
+      td {
+        border: 0;
+        padding: (@t3-global-padding / 4) (@t3-global-padding);
+        vertical-align: middle;
+      }
+    }
+
+  }
+
+  // Book step 2
+  // -----------
+  .car_container {
+    margin: 0 0 @t3-global-margin;
+
+    .car_img_box {
+      border: 0;
+      border-radius: 0;
+      float: none;
+      margin: 0 0 @t3-global-margin;
+      padding: 0;
+      img {
+        background-color: @gray-lighter;
+        border-radius: 0;
+        padding: @t3-global-padding / 3;
+        width: 100%;
+      }
+
+      .car_moreimages {
+        .clearfix();
+        a {
+          display: block;
+          float: left;
+          margin-right: 5px;
+        }
+
+        img {
+          border: 0;
+          margin: 0;
+        }
+      }
+    }
+
+    .car_description_box {
+      display: block;
+      margin-bottom: @t3-global-margin;
+      .clearfix();
+    }
+
+    .car_carats {
+      display: block;
+      .clearfix();
+
+      .vrccarcarat {
+        background-color: @gray-lighter;
+        margin-right: @t3-global-margin / 3;
+        padding: (@t3-global-padding / 4) (@t3-global-padding / 2);
+
+        // Mobile view
+        @media (max-width: @screen-sm-max) {
+          margin-bottom: @t3-global-margin / 4;
+        }
+
+        span {
+          font-size: @font-size-base;
+        }
+      }
+    }
+  }
+
+  .table-responsive {
+    padding: @t3-global-padding;
+    border: 1px solid #ddd;
+    border-radius: 0;
+    margin: 0 0 @t3-global-margin;
+    width: auto;
+
+    .vrhword {
+      font-size: 15px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-weight: bold;
+      display: block;
+      text-transform: uppercase;
+    }
+  }
+
+  .car_prices {
+    .vrc-label-promo-price:after {
+      right: -50px;
+
+      // Mobile view
+      @media (max-width: @screen-xs-max) {
+        background: transparent;
+        color: #ff8000;
+        padding: 0;
+        right: -25px;
+        top: -8px;
+      }
+    }
+  }
+
+  .car_options {
+    td {
+      padding: (@t3-global-padding / 2) 0;
+      vertical-align: middle;
+
+      input {
+        border-radius: 0;
+        box-shadow: none;
+        height: 32px;
+        padding: 0 (@t3-global-padding / 2);
+      }
+    }
+  }
+  // End Book step 2
+
+
+
+  // Book step 2 V1.12
+  // -------------------
+  .vrc-showprc-container {
+    margin: 0 0 @t3-global-margin;
+
+    // Mobile view
+    @media (max-width: @screen-sm-max) {
+      display: block;
+    }
+
+    .car_img_box {
+      border: 0;
+      border-radius: 0;
+      float: none;
+      margin: 0 0 @t3-global-margin;
+      padding: 0;
+      img {
+        background-color: @gray-lighter;
+        border-radius: 0;
+        padding: @t3-global-padding / 3;
+        width: 100%;
+      }
+
+      .car_moreimages {
+        .clearfix();
+        a {
+          display: block;
+          float: left;
+          margin-right: 5px;
+        }
+
+        img {
+          border: 0;
+          margin: 0;
+        }
+      }
+    }
+
+    .car_description_box {
+      display: block;
+      margin-bottom: @t3-global-margin;
+      .clearfix();
+    }
+
+    .car_carats {
+      display: block;
+      .clearfix();
+
+      .vrccarcarat {
+        background-color: @gray-lighter;
+        margin-right: @t3-global-margin / 3;
+        padding: (@t3-global-padding / 4) (@t3-global-padding / 2);
+
+        // Mobile view
+        @media (max-width: @screen-sm-max) {
+          margin-bottom: @t3-global-margin / 4;
+        }
+
+        span {
+          font-size: @font-size-base;
+        }
+      }
+    }
+
+    .vrc-showprc-car-carats {
+      border-bottom: 1px dotted #ccc;
+      border-top: 1px dotted #ccc;
+      padding: 5px 0 0;
+    }
+  }
+
+  // Steps Bar
+  .vrcstepsbarcont {
+    .vrc-stepbar {
+      @media screen and (max-width: @screen-sm-max) {
+        border: none;
+        display: block;
+      }
+
+      > li {
+        @media screen and (max-width: @screen-sm-max) {
+          padding: @t3-global-padding/4 @t3-global-padding/2;
+          border: 1px solid @t3-border-color;
+          margin-bottom: -1px;
+          height: auto;
+          text-align: left;
+
+          &:before,
+          &:after {
+            display: none;
+          }
+        }
+
+        > ::before {
+          border: 1px solid #666;
+          width: 24px;
+          height: 24px;
+          line-height: 22px;
+        }
+
+        &.vrc-step-complete {
+          > ::before {
+            color: @brand-primary;
+            border: 1px solid @brand-primary;
+          }
+
+          > :hover::before {
+            background: @brand-primary;
+            color: #fff;
+          }
+        }
+
+        &.vrc-step-current > ::before {
+          background: @brand-primary;
+          border: 1px solid @brand-primary;
+        }
+      }
+    }
+  }
+  // End Book step 2 V1.12
+
+  // Order Summary
+  // -------------
+  .vrcinfocarcontainer {
+    margin: 0;
+
+    @media screen and (max-width: @screen-sm-max) {
+      display: block;
+    }
+
+    .vrcrentforlocs {
+      display: block;
+      float: none;
+      margin: 0;
+      
+      .vrcrentalfor {
+        margin-bottom: @t3-global-margin;
+        overflow: hidden;
+      }
+    }
+
+    .vrc-summary-car-img {
+      display: block;
+      float: none;
+      padding: @t3-global-padding;
+
+      img {
+        width: 100%;
+        float: none;
+      }
+    }
+
+    .vrcrentalfortwo {
+      .clearfix();
+      
+      p {
+        display: block;
+        float: left;
+        width: 50%;
+      }
+    }  
+  }
+
+  // Table order
+  table.vrctableorder {
+    td {
+      border: 0;
+      padding: (@t3-global-padding / 4) (@t3-global-padding / 2);
+      vertical-align: middle;
+      text-align: center;
+      &:first-child {
+        text-align: left;
+      }
+    }
+
+    .vrctableorder-car-row td {
+      border-bottom: 1px solid @gray-lighter;
+    }
+
+    .vrctableorderfrow {
+      td {
+        background-color: @brand-dark-lv2;
+        color: @white;
+        font-size: @font-size-base;
+        text-align: center;
+        text-transform: uppercase;
+      }
+    }
+
+    .vrcordrowtotal td {
+      font-size: @font-size-base;
+      font-weight: @font-weight-bold !important;
+      text-transform: uppercase;
+    }
+  }
+
+  .vrclocsboxsum {
+    background-color: @gray-lighter;
+    border: 0;
+
+    .vrcpickuploc,
+    .vrcdropoffloc {
+      font-size: @font-size-base;
+      font-weight: @font-weight-bold;
+      text-transform: uppercase;
+
+      span {
+        text-transform: none;
+      }
+    }
+  }
+
+  // Confirm
+  .vrc-oconfirm-middlep {
+    @media screen and (max-width: @screen-sm-max) {
+      display: block;
+    }
+  }
+
+  // Coupon box
+  .vrcentercoupon {
+    // background-color: @gray-lighter;
+    border: 0;
+    border-radius: 0;
+    margin: 0 0 @t3-global-margin 0;
+    // padding: @t3-global-padding;
+    width: 100%;
+
+    // @media screen and (min-width: @screen-sm-max) {
+    //   width: 50%;
+    // }
+
+    .vrcinputcoupon {
+      border-radius: 0;
+      height: 38px;
+      line-height: 38px;
+      margin: 0 @t3-global-margin/2 @t3-global-margin/2 0;
+    }
+
+    .vrcsubmitcoupon {
+      font-weight: @font-weight-bold;
+      margin: 0;
+      .button-variant(@white; @brand-primary; @brand-primary);
+      .button-size((@padding-base-vertical - 4); @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+    }
+  }
+
+  .vrc-enterpin-block {
+
+    #vrc-pincode-inp {
+      border-radius: 0;
+      height: 38px;
+      line-height: 38px;
+      margin: 0 @t3-global-margin/2 @t3-global-margin/2 0;
+      min-width: 140px;
+    }
+
+    .vrc-pincode-sbmt {
+      font-weight: @font-weight-bold;
+      margin: 0;
+      .button-variant(@white; @brand-primary; @brand-primary);
+      .button-size((@padding-base-vertical - 4); @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+    }
+  }
+
+  .vrc-oconfirm-paym-block {
+    text-align: left;
+
+    .vrc-noliststyletype {
+      padding: 0;
+      li {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  .vrccustomfields {
+    margin: 0 -(@t3-global-margin / 2);
+    .clearfix();
+
+    .vrcdivcustomfield {
+      box-sizing: border-box;
+      float: left;
+      margin-right: 0;
+      min-height: 75px;
+      padding: 0 (@t3-global-padding / 2);
+      width: 100%;
+
+      @media screen and (min-width: @screen-sm-max) {
+        width: 50%;
+      }
+
+      &:last-child {
+        width: 100%;
+      }
+
+      .vrcinput {
+        width: 100%;
+      }
+
+      .vrctextarea {
+        background-color: @white;
+        border-color: @input-border;
+        border-radius: 0;
+        min-height: 100px;
+        width: 100%;
+
+        @media screen and (min-width: @screen-sm-max) {
+          width: 720px;
+        }
+      }
+    }
+
+    .vrccustomfldinfo {
+      margin-right: 0;
+      width: 100%;
+    }
+  }
+
+  .vrc-save-order-block {
+    margin-bottom: @t3-global-margin;
+    margin-top: @t3-global-margin;
+  }
+
+  // CONFIRM ORDER PAGE
+  .vrcvordudata-cnt {
+
+    @media screen and (max-width: @screen-sm-max) {
+      display: block;
+
+      .vrcvordudata {
+        margin-bottom: 10px;
+      }
+
+      .vrcvordcarinfo {
+        .vrc-imgorder-block {
+          float: none;
+        }
+      }
+    }
+
+    .vrcvordudata {
+      margin-top: 0;
+    }
+  }
+
+  .vrcprintdiv {
+    float: none;
+    text-align: right;
+    .clearfix();
+  }
+
+  .vrcvordudata,
+  .vrcvordcarinfo,
+  .vrcvordcosts {
+    box-sizing: border-box;
+    border-radius: 0;
+    margin: 0 0 @t3-global-margin;
+    width: 100%;
+  }
+
+  .vrcvordudata {
+    margin-top: @t3-global-margin;
+  }
+
+  .vrcordcancbox,
+  .vrcvordpaybutton {
+    border-radius: 0;
+    width: 100%;
+    h3 {
+      font-size: @font-size-large;
+      margin: 0 0 @t3-global-margin / 2;
+    }
+
+    table {
+      width: 100%;
+
+      td {
+        border: 0;
+        padding: (@t3-global-padding / 4) (@t3-global-padding / 2);
+
+        .vrctextarea {
+          border-color: @input-border;
+          border-radius: 0;
+          box-sizing: border-box;
+          min-height: 100px;
+          padding: @t3-global-padding;
+          width: 100%;
+        }
+
+        .button {
+          border: 0;
+          font-weight: @font-weight-bold;
+          margin: 0;
+          text-transform: uppercase;
+          .button-variant(@white; @brand-primary; @brand-primary);
+          .button-size((@padding-base-vertical - 4); @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+        }
+      }
+    }
+  }
+
+  .vrcvordpaybutton {
+    background-color: @gray-lighter;
+    padding: @t3-global-padding;
+
+    table td {
+      &:first-child {
+        text-align: right;
+        width: 20%;
+      }
+
+      .chzn-container {
+        display: inline-block;
+      }
+    }
+  }
+
+}
+
+
+// Search Form
+// ----------------
+html .vrcdivsearch {
+  background: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  margin: 0 -@grid-gutter-width/2;
+  .clearfix();
+
+  .vrcsfentrysubmit {
+    margin-top: @t3-global-margin/2 + (@font-size-small * @line-height-base);
+
+    .vrcsearch,
+    .btn {
+      width: auto;
+      border: 1px solid;
+      .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+      .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-base; @border-radius-base);
+    }
+  }
+
+  .chzn-container {
+    width: 100% !important;
+
+    .chzn-single > div {
+      width: 18px !important;
+    }
+  }
+
+  .vrcsfentrylabsel,
+  .vrcsfentrycont {
+    label {
+      font-size: @font-size-small;
+      text-transform: uppercase;
+      font-weight: @font-weight-normal;
+      display: block;
+      margin: 0 0 @t3-global-margin/2;
+      float: none;
+    }
+  }
+
+  .vrcsfentrycont {
+    .make-sm-column(12);
+    .make-xs-column(12);
+    .make-md-column(6);
+    min-width: 0;
+    min-height: 80px;
+
+    &.vrcsfentrycontsubmit {
+      min-height: 0;
+      margin-bottom: 0;
+    }
+
+    .vrcsfentrylabsel,
+    .vrcsfentrytime {
+      margin: 0;
+      .make-md-column(6);
+      padding-left: 0;
+
+      @media (max-width: 460px) {
+        width: 100%;
+      }
+    }
+
+    .vrcsfentrytime {
+      padding-right: 0;
+    }
+  }
+
+  .vrcsfentryselect {
+    background: none;
+    border: 0;
+    min-width: 0;
+    overflow: visible;
+    width: 100%;
+    color: @brand-light-lv3;
+
+    select {
+      width: 100%;
+    }
+  }
+
+  .vrcsfentrycont .vrcsfentrydate {
+    display: block;
+    border-color: @input-border;
+    border-radius: 0;
+    .hasDatepicker {
+      background: url("../@{t3-image-path}/calendar-ext.png") 90% center no-repeat;;
+      color: @brand-light-lv3;
+      text-transform: uppercase;
+      height: @input-height-base - 2px;
+      border-color: @input-border;
+      display: inline-block;
+      width: 100%;
+      float: none;
+      .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+    }
+
+    > .fa {
+      display: none;
+    }
+  }
+
+  .vrcsfentrycont #vrcmodselph, 
+  .vrcsfentrycont #vrcmodselpm, 
+  .vrcsfentrycont #vrcmodseldh, 
+  .vrcsfentrycont #vrcmodseldm,
+  .vrcsfentrycont #vrccomselph, 
+  .vrcsfentrycont #vrccomselpm, 
+  .vrcsfentrycont #vrccomseldh, 
+  .vrcsfentrycont #vrccomseldm,
+  .vrcsfentryselect {
+    background: none;
+    border: 0;
+    min-width: 0;
+    overflow: visible;
+    color: @brand-light-lv3;
+
+    select {
+      width: 100%;
+      background: @white;
+      padding: @padding-base-vertical @padding-base-horizontal*3 @padding-base-vertical @padding-base-horizontal;
+      height: auto;
+      line-height: @input-height-base/2;
+    }
+  }
+
+  .vrclocationsmapdiv a.modal {
+    display: inline-block;
+    position: static;
+  }
+
+  .far.fa-calendar-alt {
+    display: none;
+  }
+}
+
+// OVERRIDE STYLE FOR VIKRENTCAR MODULES
+// --------------------------------------
+
+// J4 override Input Vikrentcar
+
+.chosen-container-single {
+  .chosen-single {
+    background: #ffffff;
+    border-radius: 0;
+    color: #829eaf;
+    height: 44px;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+  }
+  
+  .chosen-single > div {
+    width: 18px !important;
+  }
+
+  .chosen-single span {
+    overflow: visible !important;
+  }
+
+  .chosen-single div b {
+    background-position: 2px 12px;
+  }
+
+}
+
+.chosen-container-active.chosen-with-drop .chosen-single div b {
+  background-position: -16px 12px !important;
+}
+
+// VIK SEARCH
+// ---------------
+.vrcdivsearchmodule {
+
+  .t3-section & {
+    background: rgba(0,0,0,0.6);
+    padding: @t3-global-padding;
+    border-radius: 0;
+    color: @white;
+    margin: 0;
+    .make-md-column(8);
+
+    .chzn-container-single .chzn-single {
+      color: @brand-light-lv3;
+      text-transform: uppercase;
+      height: @input-height-base - 2px;
+      background: @white;
+      border: 0;
+      .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+    }
+
+    .chzn-container-single .chzn-single div b {
+      background-position: 0 @line-height-computed/2;
+    }
+
+    .chzn-container-single .chzn-single span {
+      margin-right: @t3-global-margin/2;
+    }
+
+    .chzn-container.chzn-with-drop .chzn-drop {
+      border: 0;
+    }
+
+    .vrc-searchmod-heading {
+    .make-md-column(12);
+    }
+
+    .vrcsfentrysubmit {
+      margin-top: @t3-global-margin/2 + (@font-size-small * @line-height-base);
+      .vrcsearch {
+        width: auto;
+        border: 1px solid;
+        .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+        .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-base; @border-radius-base);
+      }
+    }
+
+    .vrcsfentrylabsel,
+    .vrcsfentrycont {
+      label {
+        font-size: @font-size-small;
+        text-transform: uppercase;
+        font-weight: @font-weight-normal;
+        display: block;
+        margin: 0 0 @t3-global-margin/2;
+        float: none;
+      }
+    }
+
+    .vrcsfentrycont {
+      .make-md-column(6);
+      min-width: 0;
+      min-height: 80px;
+
+      @media  (min-width: @screen-md-min) and  (max-width: @screen-md-max){
+        width: 100%;
+      }
+
+      &.vrcsfentrycontsubmit {
+        min-height: 0;
+        margin-bottom: 0;
+      }
+
+      .vrcsfentrylabsel,
+      .vrcsfentrytime {
+        margin: 0;
+        .make-md-column(6);
+      }
+
+      .vrcsfentrytime {
+      }
+    }
+
+    .vrcsfentryselect {
+      background: none;
+      border: 0;
+      min-width: 0;
+      overflow: visible;
+      width: 100%;
+      color: @brand-light-lv3;
+
+      select {
+        width: 100%;
+      }
+    }
+
+    .vrcsfentrycont .vrcsfentrydate {
+      display: block;
+      .hasDatepicker {
+        color: @brand-light-lv3;
+        text-transform: uppercase;
+        height: @input-height-base - 2px;
+        float: none;
+        .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+      }
+    }
+
+    .vrcsfentrycont #vrcmodselph, 
+    .vrcsfentrycont #vrcmodselpm, 
+    .vrcsfentrycont #vrcmodseldh, 
+    .vrcsfentrycont #vrcmodseldm,
+    .vrcsfentrycont #vrccomselph, 
+    .vrcsfentrycont #vrccomselpm, 
+    .vrcsfentrycont #vrccomseldh, 
+    .vrcsfentrycont #vrccomseldm {
+      background: none;
+      border: 0;
+      min-width: 0;
+      overflow: visible;
+      color: @brand-light-lv3;
+
+      select {
+        width: 100%;
+        background: @white;
+        padding: @padding-base-vertical @padding-base-horizontal*3 @padding-base-vertical @padding-base-horizontal;
+        height: @input-height-base - 2px;
+        line-height: @input-height-base/2;
+      }
+    }
+
+    .vrc-searchmod-section-pickup {
+      width: 100%;
+      float: left;
+    }
+
+    .vrc-searchmod-section-datetimes {
+      .vrcsfentrycont {
+        padding-right: 0;
+        padding-left: 0;
+      }
+    }
+
+    .vrc-searchmod-section-sbmt {
+      margin-top: 0;
+    }
+  }
+
+}
+
+// Vik search in Sidebar
+.vrcdivsearchmodule {
+
+  .module-darker & {
+    background: none;
+    width: 100%;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    .clearfix();
+
+    .chzn-container-single .chzn-single {
+      color: @brand-light-lv3;
+      text-transform: uppercase;
+      height: @input-height-base - 2px;
+      background: @white;
+      border: 0;
+      .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+    }
+
+    .chzn-container-single .chzn-single div b {
+      background-position: 0 @line-height-computed/2;
+    }
+
+    .chzn-container-single .chzn-single span {
+      margin-right: @t3-global-margin/2;
+    }
+
+    .chzn-container.chzn-with-drop .chzn-drop {
+      border: 0;
+    }
+
+    .vrcsfentrysubmit {
+      margin-top: 0;
+
+      .vrcsearch {
+        width: auto;
+        border: 1px solid;
+        .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+        .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-base; @border-radius-base);
+      }
+    }
+
+    .vrcsfentrylabsel,
+    .vrcsfentrycont {
+      label {
+        font-size: @font-size-small;
+        text-transform: uppercase;
+        font-weight: @font-weight-normal;
+        display: block;
+        margin: 0 0 @t3-global-margin/2;
+        color: @white;
+        float: none;
+      }
+
+      .vrctimesep {
+        color: @white;
+      }
+    }
+
+    .vrcsfentrycont {
+      min-width: 0;
+      min-height: 80px;
+      .make-md-column(12);
+      padding: 0;
+
+      &.vrcsfentrycontsubmit {
+        min-height: 0;
+        margin-bottom: 0;
+      }
+
+      .vrcsfentrylabsel,
+      .vrcsfentrytime {
+        margin: 0 0 10px;
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+      }
+
+      .vrcsfentrytime {
+        padding-right: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    .vrcsfentryselect {
+      background: none;
+      border: 0;
+      min-width: 0;
+      overflow: visible;
+      width: 100%;
+      color: @brand-light-lv3;
+
+      select {
+        width: 100%;
+        background: @white;
+        padding: @padding-base-vertical @padding-base-horizontal;
+        height: auto;
+      }
+    }
+
+    .vrcsfentrycont {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .vrcsfentrycont .vrcsfentrydate {
+      display: block;
+      clear: both;
+
+      .hasDatepicker {
+        color: @brand-light-lv3;
+        text-transform: uppercase;
+        float: none;
+        height: @input-height-base - 2px;
+        .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+      }
+    }
+
+    .vrcsfentrycont #vrcmodselph, 
+    .vrcsfentrycont #vrcmodselpm, 
+    .vrcsfentrycont #vrcmodseldh, 
+    .vrcsfentrycont #vrcmodseldm {
+      background: none;
+      border: 0;
+      min-width: 0;
+      overflow: visible;
+      color: @brand-light-lv3;
+
+      select {
+        width: 100%;
+        background: @white;
+        padding: @padding-base-vertical @padding-base-horizontal*3 @padding-base-vertical @padding-base-horizontal;
+        height: auto;
+        line-height: @input-height-base/2;
+      }
+    }
+
+    .vrc-searchmod-section-categories,
+    .vrc-searchmod-section-sbmt {
+      width: 100%;
+      clear: both;
+      float: left;
+    }
+  }
+}
+
+.vrc-searchmod-wrap-vertical {
+  form,
+  .vrcsfentrycont div {
+    max-width: 100%;
+  }
+  .vrcsfentrycont {
+    .chzn-container-single {
+      .chzn-single {
+        div {
+          width: 18px;
+        }
+      }
+    }
+  }
+
+  .chosen-container-single {
+    width: 100% !important;
+  } 
+}
+
+// VIK CARS
+// -----------
+.vrcmodcarscontainer {
+  overflow: hidden;
+
+  .vrcmodcarshorizontal {
+    margin: 0 -@grid-gutter-width/2;
+    padding: 0;
+    width: auto;
+
+    li {
+      float: none;
+      padding: 0;
+      margin: 0 @grid-gutter-width/2 !important;
+    }
+
+    .vrcmodcarsboxdiv {
+      background: @white;
+      border-radius: 0;
+      border: 0;
+      text-align: left;
+      padding: 0;
+      width: 100%;
+
+      img {
+        float: none;
+        width: 100%; 
+        -webkit-transform: rotate(0) scale(1); /* Chrome 4+, Op 15+, Saf 3.1, iOS Saf 3.2+ */
+           -moz-transform: rotate(0) scale(1); /* Fx 3.5-15 */
+            -ms-transform: rotate(0) scale(1); /* IE 9 */
+             -o-transform: rotate(0) scale(1); /* Op 10.5-12 */
+                transform: rotate(0) scale(1); /* Fx 16+, IE 10+ */
+        .transition(all 0.3s);
+      }
+
+      .vrcmodcarsname {
+        color: @brand-dark-lv2;
+
+        &:hover, &:focus, &:active {
+          color: @link-hover-color;
+        }
+      }
+
+      .vrcmodcarscat {
+        font-style: normal;
+        font-size: @font-size-small;
+        color: @brand-light-lv3;
+        display: block;
+        min-height: @line-height-computed;
+      }
+
+      .vrcinf {
+        float: none;
+        padding: @t3-global-padding;
+      }
+
+      .vrcmodcarsview {
+        background: none;
+        border: 0;
+        height: auto;
+        padding: 0;
+        margin: 0;
+        float: none;
+        color: inherit;
+        width: auto;
+        text-align: left;
+        display: block;
+        line-height: inherit;
+
+        a {
+          .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+          .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-base; @border-radius-base);
+        }
+      }
+
+      .vrc-car-thumb {
+        position: relative;
+        overflow: hidden;
+
+        .vrc-car-price {
+          background-color: @brand-primary;
+          color: @white;
+          position: absolute;
+          top: 0;
+          left: 0;
+          line-height: 1;
+          padding: 8px 10px;
+
+          .vrcmodcarsstartfrom {
+            font-size: @font-size-small - 1;
+            margin: 0;
+            padding: 0;
+            text-transform: uppercase;
+            vertical-align: middle;
+            display: inline-block;
+            color: @white;
+          }
+
+          .vrcmodcarscarcost {
+            color: @white;
+            font-size: @font-size-base;
+            font-weight: 600;
+            vertical-align: middle;
+            display: inline-block;
+          }
+        }
+      }
+
+      .vrc-car-more {
+        background: @brand-dark-lv3;
+        padding: @t3-global-padding/2 @t3-global-padding;
+        text-align: right;
+
+        a {
+          color: @brand-light-lv3;
+          .transition(all 0.3s);
+
+          &:hover, &:focus, &:active {
+            color: @white;
+          }
+        }
+      }
+
+
+      // Hover style
+      &:hover {
+        .vrc-car-more a {
+          color: @white;
+        }
+
+        .vrcmodcarsname {
+          color: @brand-primary;
+        }
+
+        @media (min-width: @screen-sm-min) {
+          img {
+          -webkit-transform: rotate(-2deg) scale(1.1); /* Chrome 4+, Op 15+, Saf 3.1, iOS Saf 3.2+ */
+             -moz-transform: rotate(-2deg) scale(1.1); /* Fx 3.5-15 */
+              -ms-transform: rotate(-2deg) scale(1.1); /* IE 9 */
+               -o-transform: rotate(-2deg) scale(1.1); /* Op 10.5-12 */
+                  transform: rotate(-2deg) scale(1.1); /* Fx 16+, IE 10+ */
+          }
+        }
+      }
+    }
+  }
+
+  .owl-theme .owl-controls {
+    position: relative;
+    margin-top: 50px;
+    height: 50px;
+
+    .owl-buttons { 
+
+      div {
+        position: absolute;
+        left: 0;        
+        top: -@t3-global-margin;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        padding: 0;
+        margin: 0 0 0 @grid-gutter-width/2;
+        text-align: center;
+        background: @brand-primary;
+        color: @white;
+        border-radius: 0;
+        .opacity(1);
+
+        &.owl-next {
+          right: 0;
+          left: auto;
+          margin: 0 @grid-gutter-width/2 0 0;
+        }
+      }
+    }
+
+    .owl-page {
+      span {
+        width: 8px;
+        height: 8px;
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+      &.active {
+        span {
+          background: @brand-primary;
+        }
+      }
+    }
+  }
+}
+
+// Vik Cars in Footer
+.vrcmodcarssingle {
+  overflow: visible;
+
+  .vrcmodcarshorizontal {
+    margin: 0;
+
+    .vrcmodcarsboxdiv {
+      background: none;
+      .box-shadow(none);
+
+      .vrcinf {
+        padding: 8px 10px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        z-index: 2;
+        background: rgba(0,0,0,0.5);
+      }
+
+      .vrcmodcarsname {
+        color: @white;
+      }
+    }
+  }
+
+  .owl-theme .owl-controls {
+    height: auto;
+    margin-top: @t3-global-margin/2;
+    .clearfix();
+
+    .owl-buttons {
+      div {
+        margin-left: 0;
+        width: 27px;
+        height: 27px;
+        line-height: 27px;
+        position: static;
+        float: left;
+
+        &.owl-next {
+          margin-right: 0;
+          float: right;
+        }
+      }
+    }
+  }
+}
+
+// VIK CURRENCY CONVERTER
+// ----------------------
+.vrccurconvcontainer {
+
+  .t3-sidebar & {
+    .vrccurconv-menu {
+      overflow: visible;
+      float: none;
+    }
+
+    .vrccurconv-flag {
+      display: none;
+    }
+
+    .chzn-container {
+      width: 100% !important;
+    }
+
+    .chzn-container-single .chzn-single {
+      color: @brand-light-lv3;
+      text-transform: uppercase;
+      height: @input-height-base - 2px;
+      background: @white;
+      .button-size(@padding-base-vertical; @padding-base-horizontal; @font-size-small; @line-height-computed; @border-radius-base);
+    }
+
+    .chzn-container-single .chzn-single div b {
+      background-position: 0 @line-height-computed/2;
+    }
+
+    .chzn-container-single .chzn-single span {
+      margin-right: @t3-global-margin/2;
+    }
+
+    .chzn-container-single .chzn-drop, .chzn-container .chzn-drop {
+      box-sizing: border-box !important;
+    }
+  }
+
+  // J4 override VIK CURRENCY CONVERTER
+  .chosen-container-single {
+    width: 100% !important;
+  }
+
+}
+
+
+// FIX FOR IE8
+// -----------------
+
+.ie8 {
+  &.com_vikrentcar {
+    .car_result .vrc-car-thumb .vrc-car-price .vrcstartfrom {
+      display: inline;
+    }
+
+    .vrc-search-results-block.vrc-search-results-grid .vrccarcarat span {
+      background: @black;
+    }
+
+    .vrccustomfields .vrccustomfldinfo {
+      width: 100% !important;
+    }
+  }
+}
+
+// CAR SEARCH
+// ----------
+.com_vikrentcar {
+  .vrcdivsearch {
+    flex-direction: column;
+    margin: 0;
+
+    span#vrccomselph select,
+    span#vrccomselpm select,
+    span#vrccomseldh select,
+    span#vrccomseldm select {
+      border: 1px solid #c7d7e1;
+      border-radius: 0;
+    }
+
+    // Map
+    .vrclocationsmapdiv {
+      text-align: right;
+      padding: 0 15px;
+      a {
+        display: inline-block;
+        padding:  72px 0 0;
+      }
+
+      i {
+        font-size: 32px;
+        margin: 12px 0;
+      }
+
+      span {
+        color: @brand-primary;
+        font-size: 12px;
+        font-weight: 400;
+        text-transform: unset;
+      }
+    }
+
+  }
+}
+
+// Version 1.15
+
+// List Car 
+.vrc-main-title {
+  display: none;
+}
+
+// Detail Car
+.car-detail {
+  .vrclistcarcat {
+    margin-bottom: 5px;
+  }
+
+  .vrc-avcals-container {
+  display: flex;
+  flex-wrap: wrap;
+  }
+
+  .vrc-avcals-container .vrccaldivcont {
+    width: auto;
+  }
+
+  .chzn-container-single .chzn-single div {
+    width: 18px !important;
+  }
+
+  .vrcdivsearch {
+    display: block;
+
+    // Form
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .vrc-searchf-section-datetimes {
+      .vrcsfentrycont div:first-child{
+        margin-bottom: 22px;
+      }
+
+      i {
+        display: none;
+      }
+    }
+
+    // Mobile
+    @media screen and (max-width: 657px) {
+      .vrc-searchf-section-datetimes {
+        flex-direction: column;
+      }
+    }
+
+    // Button Submit 
+    .vrc-searchf-section-sbmt {
+      align-self: flex-start;
+    }
+
+    // Map
+
+    .vrclocationsbox {
+      flex: 100%;
+      text-align: right;
+      display: inline-block;
+      width: 100%;
+      .vrclocationsmapdiv {
+        float: right;
+        font-size: 12px;
+
+        span {
+          color: @brand-primary;
+          font-weight: 500;
+          font-size: 10px;
+          margin-top: 8px;
+        }
+
+        i{
+          display: none;
+        }
+      }
+    }
+
+  }
+
+}
+
+// Module mod_vikrentcar_cars
+
+// Grid Layout
+div.vrcmodcarscontainer,
+div.vrcmodcarsgridcontainer {
+
+  .vrcmodcarsgridcont-items {
+    width: auto;
+    margin: 0 -15px;
+  }
+
+  .vrc-car-thumb {
+    position: relative;
+    overflow: hidden;
+
+    img {
+      max-width: 100%;
+    }
+
+    .vrcmodcarsgrid-box-cost {
+      background-color: @brand-primary;
+      color: #ffffff;
+      font-size: 12px;
+      padding: 8px 10px;
+      position: absolute;
+      top: 0;
+      text-transform: uppercase;
+      left: 0;
+      line-height: 1;
+      width: auto;
+    }
+
+    .vrcmodcarsgridcarcost {
+      font-weight: 600;
+    }
+  }
+
+  .vrcmodcarsgrid-item_details {
+    padding: 24px;
+    text-align: left;
+
+    .vrcmodcarsgrid-item_cat {
+      float: unset;
+      font-weight: 600;
+      font-size: 12px;
+      color: #829eaf;
+      display: block;
+      cursor: text;
+    }
+
+    .vrcmodcarsgrid-item_title:hover {
+      color: @brand-primary;
+      cursor: pointer;
+    }
+  }
+
+  .vrcmodcarsgrid-item-btm {
+    align-items: center;
+    background-color: #1d4156;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 24px;
+
+    .vrcmodcarsgridview {
+      margin: 0;
+      padding: 0;
+      a {
+        background-color: transparent;
+        color: #829eaf;
+        padding: 0;
+      }
+    }
+  }
+  
+}
+
+// Carousel
+.owl-carousel {
+  .owl-nav {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 12px;
+
+    button[type="button"].owl-next,
+    button[type="button"].owl-prev {
+      background: @brand-primary !important;
+      border-radius: 0;
+      color: #ffffff !important;
+      text-align: center;
+      margin: 0;
+      padding: 12px !important;
+      opacity: 1;
+  
+      span {
+        display: inline-block;
+        font-size: 24px;
+        font-weight: 600;
+        height: 24px;
+        line-height: 24px;
+        width: 24px;
+        ;
+      }
+    }
+  }
+
+  .owl-dots {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    .owl-dot.active {
+      background-color: #0085B2;
+    }
+    
+     .owl-dot {
+      background-color: #869791;
+      border-radius: 50%;
+      display: inline-block;
+      height: 8px;
+      width: 8px;
+      margin: 0 4px;
+     }
+  }
+}
+
+// Foot Nav
+div.t3-footnav {
+  .vrcmodcarsgridcontainer {
+
+    .vrcmodcarsgridboxdiv {
+      border: 0;
+    }
+
+    .vrcmodcarsgrid-item_title {
+      bottom: 0;
+      background: #000;
+      color: #fff;
+      font-size: 14px;
+      right: 0;
+      text-align: left;
+      left: 0;
+      opacity: .8;
+      position: absolute;
+      padding: 8px 10px;
+    }
+    .owl-carousel .owl-nav button {
+      border-radius: 0;
+      padding: 0 !important;
+      margin: 0;
+      max-height: 24px;
+    }
+
+    .owl-carousel .owl-dots {
+      display: none;
+    }
+
+  }
+}
+
+.vrc-searchsuggestions-solution-booknow {
+  margin-bottom: 0;
+}
+
+.vrcsfentrycont #vrccomselph select,
+.vrcsfentrycont #vrccomseldh select {
+  height: 100% !important;
+}
+
+
+

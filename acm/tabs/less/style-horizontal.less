@@ -1,0 +1,49 @@
+/*
+$JA#COPYRIGHT$
+*/
+
+// ------------------------------------------------
+// TAB VERTICAL
+// ------------------------------------------------
+.t3-tabs-horizontal {
+  text-align: left;
+
+  .nav-tabs {
+    border-bottom: 0;
+    text-align: center;
+    margin-bottom: @t3-global-margin;
+
+    > li {
+      float: left;
+      background: @brand-dark-lv3;
+      border: 0;
+      margin-bottom: 0;
+
+      &.active {
+        background: @brand-primary;
+
+        a,a:hover, a:focus,a:active {
+          background: @brand-primary;
+          color: @white;
+          border: 0;
+        }
+      }
+
+      a {
+        background: transparent;
+        color: @brand-light-lv3;
+        text-transform: uppercase;
+        border: 0;
+        margin: 0;
+        padding: @t3-global-padding;
+        font-size: @font-size-small;
+        font-weight: @font-weight-bold;
+        border-right: 1px solid @brand-dark-max;
+      }
+    }
+  }
+
+  .tab-content {
+    padding: 0;
+  }
+}

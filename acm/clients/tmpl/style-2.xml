@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<title>Clients Style 2 (AutoRent Ticker)</title>
+	<sampledata><![CDATA[
+  {":type":"ja_rent:clients","clients":{"jatools-layout-clients":"style-2","clients[img-gray]":["1"],"clients[ticker-speed]":["30"],"clients[client-item]":{"clients[client-item][client-logo]":["images/joomlart/clients/partners.png"],"clients[client-item][client-name]":[""],"clients[client-item][client-link]":["#"],"rows":1,"cols":3,"type":"list"}}}
+  ]]>
+	</sampledata>
+
+	<fields name="clients">
+
+		<fieldset name="clients-basic" label="CLIENTS_BASIC_LABEL" description="CLIENTS_BASIC_DESC">
+
+			<field name="img-gray" type="radio" default="1"
+				label="CLIENTS_IMG_GRAY_LABEL"
+				description="CLIENTS_IMG_GRAY_DESC">
+				<option value="0" class="off">JNO</option>
+				<option value="1" class="on">JYES</option>
+			</field>
+
+			<field name="ticker-speed" size="10" type="text" default="30"
+				label="Ticker Speed (seconds)"
+				description="Duration in seconds for one full scroll cycle. Lower = faster. Default: 30" />
+
+		</fieldset>
+
+		<fieldset name="client-items" label="CLIENT_ITEM_LABEL" description="CLIENT_ITEM_DESC">
+			<field name="client-item" type="jalist">
+				<item name="client-logo" type="media" default="" label="CLIENT_ITEM_LOGO_LABEL" description="CLIENT_ITEM_LOGO_DESC" required="1" />
+				<item name="client-name" size="50" type="text" default="" label="CLIENT_ITEM_NAME_LABEL" description="CLIENT_ITEM_NAME_DESC" />
+				<item name="client-link" size="50" type="text" default="" label="CLIENT_ITEM_LINK_LABEL" description="CLIENT_ITEM_LINK_DESC" />
+			</field>
+		</fieldset>
+
+	</fields>
+</form>

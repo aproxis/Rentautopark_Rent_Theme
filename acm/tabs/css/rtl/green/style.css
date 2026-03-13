@@ -1,0 +1,110 @@
+.t3-tabs-horizontal {
+  text-align: right;
+}
+.t3-tabs-horizontal .nav-tabs {
+  border-bottom: 0;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.t3-tabs-horizontal .nav-tabs > li {
+  float: right;
+  background: #191919;
+  border: 0;
+  margin-bottom: 0;
+}
+.t3-tabs-horizontal .nav-tabs > li.active {
+  background: #72af1a;
+}
+.t3-tabs-horizontal .nav-tabs > li.active a,
+.t3-tabs-horizontal .nav-tabs > li.active a:hover,
+.t3-tabs-horizontal .nav-tabs > li.active a:focus,
+.t3-tabs-horizontal .nav-tabs > li.active a:active {
+  background: #72af1a;
+  color: #ffffff;
+  border: 0;
+}
+.t3-tabs-horizontal .nav-tabs > li a {
+  background: transparent;
+  color: #999999;
+  text-transform: uppercase;
+  border: 0;
+  margin: 0;
+  padding: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  border-left: 1px solid #000000;
+}
+.t3-tabs-horizontal .tab-content {
+  padding: 0;
+}
+
+.t3-tabs-vertical {
+  text-align: right;
+}
+.t3-tabs-vertical .nav-tabs {
+  border-bottom: 0;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 992px) {
+  .t3-tabs-vertical .nav-tabs {
+    float: right;
+    width: 25%;
+  }
+}
+@media (max-width: 991px) {
+  .t3-tabs-vertical .nav-tabs {
+    margin-bottom: 24px;
+  }
+}
+.t3-tabs-vertical .nav-tabs > li {
+  display: block;
+  float: none;
+  background: #191919;
+  border: 0;
+  margin-bottom: 0;
+}
+.t3-tabs-vertical .nav-tabs > li.active {
+  background: #72af1a;
+}
+.t3-tabs-vertical .nav-tabs > li.active a,
+.t3-tabs-vertical .nav-tabs > li.active a:hover,
+.t3-tabs-vertical .nav-tabs > li.active a:focus,
+.t3-tabs-vertical .nav-tabs > li.active a:active {
+  background: #72af1a;
+  color: #ffffff;
+  border: 0;
+}
+.t3-tabs-vertical .nav-tabs > li a {
+  background: transparent;
+  color: #999999;
+  text-transform: uppercase;
+  border: 0;
+  margin: 0;
+  padding: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  border-bottom: 1px solid #000000;
+}
+.t3-tabs-vertical .nav-tabs > li a.active:hover,
+.t3-tabs-vertical .nav-tabs > li a.active:focus,
+.t3-tabs-vertical .nav-tabs > li a.active:active {
+  background: #72af1a;
+  color: #ffffff;
+  border: 0;
+}
+.t3-tabs-vertical .tab-content {
+  padding: 0;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 992px) {
+  .t3-tabs-vertical .tab-content {
+    float: right;
+    width: 66.66666667%;
+  }
+}

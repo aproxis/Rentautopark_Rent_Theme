@@ -1,0 +1,201 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background: #fff;
+	color: #fff;
+	font-family: "Roboto",sans-serif;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.6;
+	margin: 0;
+	padding: 0;
+}
+
+#frame {
+	background: #ff5000;
+  left: 50%;
+  padding: 50px 30px 30px;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  width: 360px;
+}
+
+#frame #offline-img {
+	margin: 0;
+  text-align: center;
+}
+
+#frame #offline-img img {
+	max-width: 100%;
+}
+
+.offline-des {
+	margin: 20px 0 30px 0;
+	text-align: center;
+	color: #fff;
+	font-size: 13px;
+}
+
+/* Title Offline
+----------------------------- */
+#offline-title {
+	color: #fff;
+	text-align: center;
+}
+
+#offline-title h1 {
+	color: #fff;
+	display: inline-block;
+	font-size: 30px;
+	font-weight: bold;
+	margin: 0;
+	text-transform: uppercase;
+}
+
+/* Form Offline
+----------------------------- */
+.form-offline {
+	margin: 0 -10px;
+}
+
+.form-group {
+	margin-bottom: 20px;
+	padding: 0 10px;
+}
+
+.control-label {
+	font-size: 12px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+	display: block;
+}
+
+.control-input {
+  background: #fff;
+	border: 1px solid #e8eef1;
+	color: #80949f;
+	display: block;
+	font-size: 11px;
+	font-weight: 500;
+	height: 40px;
+	line-height: 40px;
+	padding: 10px 14px;
+	width: 100%;
+	position: relative;
+}
+
+.control-input:focus {
+	border-color: #079aee;
+}
+
+/* Remember Login
+------------------------- */
+#form-login-remember {
+	color: #fff;
+	font-size: 11px;
+	text-transform: uppercase;
+}
+
+#remember {
+	position: relative;
+	top: 2px;
+	margin: 0 5px 0 0;
+}
+
+/* Button
+------------------------- */
+#submit-buton {
+	padding: 30px 30px 0;
+	margin: 30px -30px 0;
+	border-top: 1px solid #173547;
+}
+
+#submit-buton .button {
+	background: #003;
+	color: #fff;
+	font-family: "Roboto",sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+  	padding: 20px 28px;
+	text-transform: uppercase;
+	transition: 0.15s;
+	width: 100%;
+	border: none;
+}
+
+#submit-buton .button:hover {
+	background: #000;
+	cursor: pointer;
+}
+
+/* Message system
+----------------------------- */
+#system-message-container {
+	text-align: center;
+	margin-top: 40px;
+}
+
+#system-message {
+	border: 1px solid #ebccd1;
+	background: #f2dede;
+	margin: auto;
+	padding: 20px;
+	width: 585px;
+	color: #b94a48;
+}
+
+#system-message p {
+	margin: 0;
+}
+
+#system-message .close {
+	display: none;
+}
+
+#system-message dt,
+#system-message .alert-heading {
+	color: #b94a48;
+	display: inline-block;
+	font-size: 18px;
+	font-weight: 700;
+	margin-bottom: 10px;
+	margin-top: 0;
+}
+
+.message {
+	margin-left: 0;
+}
+
+.message ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+/* Responsive
+------------------------------*/
+/* Control screen width 640px */
+@media screen and (max-width: 640px ) {
+	#frame {
+		width: auto;
+		position: static;
+		transform: translateX(0);
+		margin: 40px 20px;
+	}
+
+	#system-message {
+		padding: 10px;
+		width: auto;
+	}
+}
+
+/*Control screen mobile */
+@media screen and (max-width: 480px ) {
+	.form-group {
+		width: 100%;
+	}
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<title>Accordion Style</title>
+	<sampledata><![CDATA[  
+		{":type":"ja_rent:accordion","accordion":{"jatools-layout-accordion":"style-1","accordion[block-intro]":["Add intro text here"],"accordion[acm-style]":["style-light"],"accordion[data]":{"accordion[data][accordion-name]":["Free Things to Do in St. Louis"],"accordion[data][accordion-desc]":["Sagittis euismod lorem sodales consectetuer orci turpis condimentum quis condimentum senectus. At ut urna convallis lacinia ac libero condimentum penatibus nisl Nullam. Pellentesque nec tempus porttitor et iaculis sem Morbi faucibus id nibh. "],"rows":1,"cols":3,"type":"list"}}}
+    ]]></sampledata>
+    <fields name="accordion">
+    	<fieldset name="accordion-header" label="ACCORDION_HEADER_SETTING_LABEL" description="ACCORDION_HEADER_SETTING_DESC">
+			<field name="block-intro" type="textarea" default="" rows="5" cols="40" label="BLOCK_INTRO_LABEL" description="BLOCK_INTRO_DESC" />
+			<field name="acm-style" type="list" default="style-light"
+			  global="1"
+			  label="ACM_STYLE_LABEL"
+			  description="ACM_STYLE_DESC">
+				<option value="style-light">LAYOUT_STYLE_LIGHT</option>
+				<option value="style-dark">LAYOUT_STYLE_DARK</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="accordion-box" label="ACCORDION_BOX_LABEL" description="ACCORDION_BOX_DESC">
+			<field name="data" type="jalist">
+				<item name="accordion-name" type="text" default="" label="ACCORDION_NAME_LABEL" description="ACCORDION_NAME_DESC" />
+				<item name="accordion-desc" type="text" default="" label="ACCORDION_DESCRIPTION_LABEL" description="ACCORDION_DESCRIPTION_DESC" />
+			</field>
+		</fieldset>
+
+    </fields>
+</form>

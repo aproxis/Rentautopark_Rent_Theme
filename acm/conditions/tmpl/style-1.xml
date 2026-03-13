@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <title>Conditions Style 1 - Rental Conditions</title>
+	<sampledata><![CDATA[ 
+	{":type":"ja_ngr:conditions","conditions":{"jatools-layout-conditions":"style-1","conditions[condition-item]":{"conditions[condition-item][icon]":["fa fa-user","fa fa-id-card","fa fa-calendar","fa fa-road"],"conditions[condition-item][title]":["Vârsta minimă","Documente necesare","Experiență minimă","Limită de kilometri"],"conditions[condition-item][text]":["Vârsta minimă pentru închiriere este de 21 de ani.","Trebuie să aveți permis de conducere valabil și un document de identitate.","Experiență minimă de 2 ani de conducere este necesară.","Limită de 300 km pe zi, cu posibilitatea de a achiziționa kilometri suplimentari."],"rows":4,"cols":3,"type":"list"}}}
+  ]]></sampledata>
+	<fields name="conditions">
+		<fieldset name="Basic Settings" description="Basic settings for the conditions component">
+			<field name="block-title" type="text" default="Condiții de închiriere" size="40" label="Block Title" description="Title for the conditions section" />
+			<field name="grid-columns" type="list" default="4" label="Grid Columns" description="Number of columns in the grid layout">
+				<option value="1">1 Column</option>
+				<option value="2">2 Columns</option>
+				<option value="3">3 Columns</option>
+				<option value="4">4 Columns</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="Condition Items" description="Rental condition items"> 
+			<field name="condition-item" type="jalist">
+				<item name="icon" type="text" size="30" default="" label="Condition Icon" description="Icon class for the condition (e.g., fa fa-user)" />
+				<item name="title" type="text" size="50" default="" label="Condition Title" description="Title of the rental condition" />
+				<item name="text" type="textarea" cols="40" rows="3" default="" label="Condition Text" description="Description of the rental condition" />
+			</field>
+		</fieldset>
+	</fields>
+</form>

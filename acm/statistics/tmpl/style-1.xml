@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<title>Statistics Style 1</title>
+	<sampledata><![CDATA[  
+		{":type":"ja_ngr:statistics","statistics":{"jatools-layout-statistics":"style-1","statistics[block-intro]":[""],"statistics[block-bg]":[""],"statistics[acm-style]":["style-dark"],"statistics[data-style-1]":{"statistics[data-style-1][font-icon]":["fa-key","fa-heart-o","fa-car","fa-bolt"],"statistics[data-style-1][stats-count]":["1258","200000","10785264","78"],"statistics[data-style-1][stats-name]":["total cars","happy customers","total miles","dealer centres"],"statistics[data-style-1][stats-desc]":["Etiam faucibus tristique vehicula. Integer interdum metus arcu, quis euismod sapien","Phasellus fringilla eros vitae tellus pretium, sit amet luctus odio mollis. Quisque convalli","Vivamus tempus commodo metus, eget convallis nisl dictum sit amet. Nam auctor dui at dolor","Etiam faucibus tristique vehicula. Integer interdum metus arcu, quis euismod sapien"],"rows":4,"cols":5,"type":"list"}}}
+    ]]></sampledata>
+    <fields name="statistics">
+    	<fieldset name="statistics-header" label="STATISTICS_HEADER_SETTING_LABEL" description="STATISTICS_HEADER_SETTING_DESC">
+			<field name="acm-style" type="list" default="style-light"
+			  global="1"
+			  label="ACM_STYLE_LABEL"
+			  description="ACM_STYLE_DESC">
+				<option value="style-light">LAYOUT_STYLE_LIGHT</option>
+				<option value="style-dark">LAYOUT_STYLE_DARK</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="statistics-box" label="STATISTICS_BOX_LABEL" description="STATISTICS_BOX_DESC">
+			<field name="data-style-1" type="jalist">
+				<item name="font-icon" type="text" default="" label="FONT_AWESOME_LABEL" description="FONT_AWESOME_DESC" />
+				<item name="stats-count" type="text" default="" label="STATISTICS_COUNT_LABEL" description="STATISTICS_COUNT_DESC" required="1" />
+				<item name="stats-name" type="text" default="" label="STATISTICS_NAME_LABEL" description="STATISTICS_NAME_DESC" />
+				<item name="stats-desc" type="text" default="" label="STATISTICS_DESCRIPTION_LABEL" description="STATISTICS_DESCRIPTION_DESC" />
+			</field>
+		</fieldset>
+
+    </fields>
+</form>

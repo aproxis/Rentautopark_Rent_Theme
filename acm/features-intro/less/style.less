@@ -1,0 +1,118 @@
+/**
+ * $JA#COPYRIGHT$
+ */
+ 
+// VARIABLES & MIXINS
+// ------------------
+@import "../../../less/vars.less"; // Modify this for custom colors, font-sizes, etc
+
+
+// FEATURES INTRO
+// ------------------------------------
+.acm-features {
+
+  .owl-carousel {
+    width: auto;
+  }
+  
+  // Font Icon
+  .font-icon {
+    color: lighten(@brand-primary, 20%);
+    font-size: 55px;
+    margin-top: @t3-global-margin;
+    margin-bottom: @t3-global-margin*2;
+    line-height: 1;
+
+    .fa {
+      font-family: "FontAwesome";
+    }
+  }
+
+  // Img Icon
+  .img-icon {
+    display: block;
+    margin-bottom: @t3-global-margin*1.5;
+
+    > img {
+      max-width: 100%;
+    }
+  }
+
+  // features description
+  .features-description {
+    font-weight: @font-weight-normal;
+    color: @gray-darker;
+    font-size: @font-size-h3;
+    margin: 0 0 (@t3-global-margin*3) 0;
+
+    @media screen and (min-width: @screen-sm) {
+      width: 65%;
+    }
+  }
+
+  // Title
+  h3 {
+    color: @gray-dark;
+    margin: 0 0 (@t3-global-margin / 2);
+    font-size: @font-size-large;
+    font-weight: @font-weight-bold;
+
+    // Control screen mobile
+    @media screen and (min-width: @screen-sm) {
+    }
+  }
+
+  h4 {
+    color: @gray-dark;
+  }
+
+  // Description
+  p {
+  }
+
+  // Style Dark
+  // ------------------
+  &.style-dark {
+
+    // Title
+    h3, h4 {
+      color: @white;
+    }
+    
+    // Description
+    p,
+    .description,
+    .lead {
+      color: @gray-lighter;
+      color: rgba(225,225,225,0.5);
+    }
+
+    // features description
+    .features-description {
+      color: @white;
+    }
+  }
+
+  // Navigation
+  // ----------
+  .owl-theme .owl-controls {
+    text-align: right;
+    padding: 0 @grid-gutter-width/2;
+    
+    .owl-buttons div {
+      border-radius: 0;
+      background: @brand-primary;
+      .opacity(1);
+    }
+  }
+}
+
+// Button
+.btn-feature {
+  margin-top: @t3-global-margin;
+}
+
+// Import Style Less
+// --------------------------
+@import "style-1.less"; // Import file style-1.less
+@import "style-2.less"; // Import file style-2.less

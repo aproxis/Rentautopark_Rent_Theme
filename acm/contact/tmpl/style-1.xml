@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <title>Contact Style 1 - Contact Form & Map</title>
+	<sampledata><![CDATA[ 
+	{":type":"ja_ngr:contact","contact":{"jatools-layout-contact":"style-1","contact[contact-item]":{"contact[contact-item][icon]":["fa fa-map-marker","fa fa-phone","fa fa-envelope","fa fa-clock"],"contact[contact-item][label]":["Adresă","Telefon","Email","Program"],"contact[contact-item][value]":["Strada Exemplu 123, Chișinău","(+373) 60 123 456","contact@rentautopark.md","Luni - Vineri: 08:00 - 20:00"],"rows":4,"cols":3,"type":"list"}}}
+  ]]></sampledata>
+	<fields name="contact">
+		<fieldset name="Basic Settings" description="Basic settings for the contact component">
+			<field name="form-enabled" type="radio" default="1" label="Form Enabled" description="Enable or disable the contact form">
+				<option value="1" class="on">Yes</option>
+				<option value="0" class="off">No</option>
+			</field>
+			<field name="map-enabled" type="radio" default="1" label="Map Enabled" description="Enable or disable the map section">
+				<option value="1" class="on">Yes</option>
+				<option value="0" class="off">No</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="Contact Items" description="Contact information items"> 
+			<field name="contact-item" type="jalist">
+				<item name="icon" type="text" size="30" default="" label="Contact Icon" description="Icon class for the contact item (e.g., fa fa-map-marker)" />
+				<item name="label" type="text" size="50" default="" label="Contact Label" description="Label for the contact information" />
+				<item name="value" type="textarea" cols="40" rows="2" default="" label="Contact Value" description="Contact information value" />
+			</field>
+		</fieldset>
+	</fields>
+</form>

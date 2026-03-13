@@ -1,0 +1,65 @@
+/*
+$JA#COPYRIGHT$
+*/
+
+// ------------------------------------
+// FEATURES INTRO STYLE 1
+// ------------------------------------
+.acm-features {
+  &.style-1 {
+    .owl-carousel {
+      .owl-wrapper {
+        height: 100%;
+      }
+
+      .owl-nav {
+        margin: 12px 15px 0;
+      }
+
+      .owl-dots {
+        display: none;
+      }
+      
+      .owl-item {
+        height: 390px;
+
+        .features-item {
+          background: @brand-dark-lv3;
+          color: @brand-light-lv3;
+          padding: @t3-global-padding;
+          text-align: center;
+          border-bottom: 5px solid @brand-dark;
+          margin: 0 @grid-gutter-width/2;
+          height: 100%;
+
+          &:after {
+            content: "";
+            border-bottom : 6px solid @brand-dark;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            position: absolute;
+            bottom: 5px;
+          }
+
+          h3 {
+            color: @white;
+            text-transform: uppercase;
+            line-height: @line-height-computed;
+          }
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &.col-sm-2:nth-child(6n+1),
+        &.col-sm-3:nth-child(4n+1),
+        &.col-sm-4:nth-child(3n+1),
+        &.col-sm-6:nth-child(2n+1) {
+          clear: both;
+        }
+      }
+    }
+  }
+}
+

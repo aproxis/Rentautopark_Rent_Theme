@@ -1,0 +1,612 @@
+/*
+$JA#COPYRIGHT$
+*/
+ 
+
+// ------------------------------------------------------
+// CORE NAVIGATIONS ELEMENTS
+// ------------------------------------------------------
+
+//
+// DROPDOWN (dropdowns.less)
+// --------------------------------------------------
+
+// Dropdown arrow/caret
+// --------------------
+.caret {
+}
+
+
+// The dropdown wrapper (div)
+// --------------------------
+.dropdown {
+}
+
+
+// The dropdown menu (ul)
+// ----------------------
+.dropdown-menu {
+
+  // Dividers (basically an hr) within the dropdown
+  .divider {
+  }
+
+  // Links within the dropdown menu
+  > li > a {
+    padding: 5px 20px;
+  }
+}
+
+// Hover/Focus state
+.dropdown-menu > li > a {
+  &:hover,
+  &:focus {
+  }
+}
+
+// Active state
+.dropdown-menu > .active > a {
+  &,
+  &:hover,
+  &:focus {
+  }
+}
+
+// Active state
+.dropdown-menu > .active.open > a {
+  &,
+  &:hover,
+  &:focus {
+    background: @brand-primary;
+  }
+}
+
+// Disabled state
+.dropdown-menu > .disabled > a {
+  &,
+  &:hover,
+  &:focus {
+  }
+}
+
+// Nuke hover/focus effects
+.dropdown-menu > .disabled > a {
+  &:hover,
+  &:focus {
+  }
+}
+
+
+// Dropdown section headers
+// ------------------------
+.dropdown-header {
+  padding: 3px 20px;
+  font-size: @font-size-base;
+  // T3: Links in Header
+  a {
+    color: @dropdown-header-color;
+  }
+}
+
+
+// T3 Note: Extend BS3 Dropdown Menu to multi level
+// See "base-bs3/less/legacy-navigation.less"
+// Dropdown Sub Menus
+// ------------------
+.dropdown-submenu > .dropdown-menu {
+}
+
+// Caret to indicate there is a submenu
+.dropdown-submenu > a:after {
+  border-left-color: @brand-light-lv3;
+  border-width: 4px 0 4px 4px;
+  margin-right: -3px;
+  margin-top: 6px;
+}
+
+.dropdown-submenu:hover > a:after {
+  border-left-color: @dropdown-link-hover-color;
+}
+
+
+
+//
+// NAVS (navs.less)
+// --------------------------------------------------
+
+// Base class
+// ----------
+.nav {
+
+  // Nav Items
+  > li {
+    > a {
+      // Hover state
+      &:hover,
+      &:focus {
+      }
+    }
+
+    // Disabled state
+    &.disabled > a {
+      // Hover state
+      &:hover,
+      &:focus {
+      }
+    }
+  }
+
+  // Seperator
+  > li > .separator {
+    position: relative;
+    display: block;
+    padding: @nav-link-padding;
+    line-height: @line-height-computed;
+
+    @media (min-width: @grid-float-breakpoint) {
+      padding-top: ((@navbar-height - @line-height-computed) / 2);
+      padding-bottom: ((@navbar-height - @line-height-computed) / 2);
+    }
+  }
+
+  > li > span {
+    @media (max-width: @screen-sm-max) {
+      padding: @nav-link-padding;
+      display: inline-block;
+    }
+  }
+
+
+  // Open dropdowns
+  .open > a {
+    &,
+    &:hover,
+    &:focus {
+      // The caret
+      .caret {
+      }
+    }
+  }
+
+  //End
+}
+
+
+// Tabs
+// ----
+.nav-tabs {
+
+  > li {
+
+    // Actual tabs (as links)
+    > a {
+
+      // Hover state
+      &:hover {
+      }
+
+    }
+
+    // Active state, and it's :hover to override normal :hover
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+      }
+    }
+
+  }
+
+  //End
+}
+
+
+// Pills
+// -----
+.nav-pills {
+  > li {
+    position: relative;
+    font-size: @t3-font-size-small;
+    color: @text-color;
+    padding: 0 20px;
+    margin-bottom: 0;
+    border: 1px solid @t3-border-color;
+
+    // Links rendered as pills
+    > a {
+      display: block;
+      padding: @line-height-computed*0.75 0;
+      border: none;
+      color: @gray-dark;
+      font-weight: @font-weight-500;
+      text-transform: uppercase;
+
+      &:hover {
+        background: none;
+        color: @brand-primary;
+      }
+    }
+
+    &:last-child {
+      > a {
+        border: 0;
+      }
+    }
+
+    + li {
+    }
+
+    // Hover state
+    &.open > a {
+      &,
+      &:hover,
+      &:focus {
+        background: none;
+        color: @brand-primary;
+
+        // The caret
+        .caret {
+        }
+      }
+    }
+
+    // Hover state
+    &.disabled > a {
+      &,
+      &:hover,
+      &:focus {
+        color: @gray-light;
+
+        // The caret
+        .caret {
+        }
+      }
+    }
+
+    // Active state
+    &.active > a {
+      &,
+      &:hover,
+      &:focus {
+        background: none;
+        color: @brand-primary;
+
+        // The caret
+        .caret {
+        }
+
+        > .badge {
+          background: @brand-primary;
+          color: @white;
+        }
+      }
+    }
+
+    // Compatible j4 Active state
+    > a.active {
+      &,
+      &:hover,
+      &:focus {
+        background: none;
+        color: @brand-primary;
+
+        // The caret
+        .caret {
+        }
+
+        > .badge {
+          background: @brand-primary;
+          color: @white;
+        }
+      }
+    }
+
+    // Dropdown Menu
+    .dropdown-menu {
+      li {
+
+        > a {
+          padding: 5px 0 5px 15px;
+          position: relative;
+
+          &:before {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 4px 0 4px 4px;
+            border-color: transparent transparent transparent @brand-primary;
+            position: absolute;
+            top: 50%;
+            left: 0px;
+            margin-top: -4px;
+          }
+
+          &:hover {
+            background: none;
+            color: @brand-primary;
+          }
+        }
+
+        &.open > a,
+        &.active > a {
+          &,
+          &:hover,
+          &:focus {
+            background: none;
+            color: @brand-primary;
+          }
+
+        }
+      }
+    }
+  }
+
+  // End
+}
+
+
+// Stacked
+// -----
+.nav.menu {
+  > li {
+    position: relative;
+    padding: 0 0 0 20px;
+    margin-bottom: 0;
+    border: none;
+    border-bottom: 1px solid @t3-border-color;
+
+    &:before {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 4px 0 4px 5px;
+      border-color: transparent transparent transparent @brand-primary;
+      position: absolute;
+      top: 23px;
+      left: 0px;
+    }
+
+    // Links rendered as pills
+    > a {
+      display: block;
+      padding: @line-height-computed*0.75 0;
+      border: none;
+      color: @gray-dark;
+      font-weight: @font-weight-500;
+      text-transform: uppercase;
+
+      &:hover {
+        background: none;
+        color: @brand-primary;
+      }
+    }
+  }
+
+  // End
+}
+
+.tab-content {
+  padding: @t3-global-padding 0;
+}
+
+
+// Dropdowns Caret in Nav
+// ----------------------
+// Make dropdown carets use link color in navs
+.nav .caret {
+  border-top-color: @link-color;
+  border-bottom-color: @link-color;
+}
+
+.nav a:hover .caret {
+  border-top-color: @link-hover-color;
+  border-bottom-color: @link-hover-color;
+}
+
+
+
+// 
+// BREADCRUMS (breadcrums.less)
+// -------------------------------------------------------
+.t3-navhelper {
+  background: @breadcrumb-bg;
+  border-top: 1px solid @t3-border-color;
+  color: @gray;
+  padding: 5px 0;
+}
+
+.breadcrumb {
+  margin-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: 0;
+
+  > li {
+    + li:before {
+      content: "@{breadcrumb-separator}\00a0"; // Unicode space added since inline-block means non-collapsing white-space
+    }
+  }
+
+  // Active
+  > .active {
+    color: @breadcrumb-active-color;
+
+    + li:before {
+      content: "";
+      padding: 0;
+    }
+
+    .hasTooltip {
+      padding-right: (@t3-global-padding / 2);
+    }
+  }
+
+  // T3 Note: Hide default Joomla! arrow in breadcrum
+  .divider {
+    display: none;
+  }
+}
+
+
+
+//
+// PAGINATION (MULTIPLE PAGES) (pagination.less)
+// --------------------------------------------------
+.pagination-wrap {
+  text-align: center;
+}
+
+.pagination {
+
+  > li {
+    > a,
+    > span {
+      display: inline-block;
+      background: @gray-lighter;
+      margin: 0 @t3-global-margin/4 @t3-global-margin/2;
+      line-height: normal;
+      float: none;
+      font-size: @t3-font-size-small;
+      font-weight: @font-weight-500;
+      border: none;
+      padding: @padding-base-horizontal @padding-large-vertical;
+      text-transform: uppercase;
+      .transition(0.2s);
+    }
+  }
+
+  // Hover state
+  > li > a,
+  > li > span {
+    &:hover,
+    &:focus {
+      background: @brand-primary;
+      color: @white;
+    }
+  }
+
+  // Active state
+  > .active > a,
+  > .active > span {
+    &,
+    &:hover,
+    &:focus {
+    }
+  }
+
+  // Disabled state
+  > .disabled {
+    > span,
+    > span:hover,
+    > span:focus,
+    > a,
+    > a:hover,
+    > a:focus {
+      background: @gray-lighter;
+    }
+  }
+}
+
+
+// T3 Note: Fix for Joomla! Pagination
+// ------------------------------------
+.pagination {
+  .clearfix();
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  &:before,
+  &:after {
+    display: none;
+  }
+
+  // left align on Tablets / Desktop
+  @media screen and (min-width: @screen-sm) {
+  }
+  // re-defined nested class - joomla structure
+  .pagination {
+    display: inline-block;
+  }
+}
+
+
+// Counter
+// -------
+.counter {
+  display: inline-block;
+  color: @gray-light;
+  font-size: @t3-font-size-small;
+  text-transform: uppercase;
+  // Right align on Tablets / Desktop
+  @media screen and (min-width: @screen-sm) {
+    
+  }
+}
+
+
+// Sizing
+// ------
+// Large
+.pagination-lg {
+}
+
+// Small
+.pagination-sm {
+}
+
+
+
+//
+// PAGER PAGINATION (pager.less)
+// --------------------------------------------------
+.pager {
+
+  li {
+  	text-transform: uppercase;
+  	font-size: @t3-font-size-smaller;
+    > a,
+    > span {
+    	padding: @t3-global-padding/2;
+    	font-weight: 400;
+    }
+
+    // Hover state
+    > a:hover,
+    > a:focus {
+    }
+
+    // Active state
+    &.active,
+    &.active:hover,
+    &.active:focus {
+    }
+  }
+
+  .next {
+    > a,
+    > span {
+    }
+  }
+
+  .previous {
+    > a,
+    > span {
+    }
+  }
+
+  // Disabled state
+  .disabled {
+    > a,
+    > a:hover,
+    > a:focus,
+    > span {
+    }
+  }
+
+}

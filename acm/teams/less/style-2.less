@@ -1,0 +1,111 @@
+/*
+$JA#COPYRIGHT$
+*/
+
+// -------------------------------
+// TEAMS STYLE 1
+// -------------------------------
+.acm-teams {
+  .style-2 {
+    overflow: hidden;
+
+    .item {
+      margin-bottom: @t3-global-margin * 2;
+      text-align: center;
+
+      // Member image
+      .member-image { 
+        margin-bottom: @t3-global-margin;
+        overflow: hidden;
+        img {
+          .transition(all 0.35s);  
+        }
+      }
+
+      // Member name
+      h4 {
+        font-size: @font-size-base;
+        font-weight: @font-weight-bold;
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+      // Member title
+      .member-title {
+        color: @gray-light;
+        font-size: @font-size-small;
+        font-weight: @font-weight-light;
+        text-align: center;
+      }
+
+      // Member description
+      .member-desc {
+        text-align: center;
+      }
+
+      // Member Phone
+      .member-phone {
+        color: @gray-light;
+        .fa {
+          color: @brand-primary;
+          margin-right: @grid-gutter-width/4;
+        }
+      }
+
+      // Member Email
+      .member-email {
+        color: @gray-light;
+        .fa {
+          color: @brand-primary;
+          margin-right: @grid-gutter-width/4;
+        }
+      }
+
+      // Member Link
+      .member-link {
+        margin-top: @t3-global-margin;
+        
+        .fa {
+          margin-right: @grid-gutter-width/4;
+        }
+      }
+
+      &:hover {
+
+        .member-image img { 
+          .scale(1.1);
+        }
+
+        h4 {
+          color: @brand-primary;
+        }
+      }
+    }
+  }
+}
+
+// FIX BUG IE 8
+// ------------
+.ie8 .team-items .item {
+  .img-intro p {
+    display: none;
+  }
+
+  &:hover {
+    .img-intro {
+      p {
+        display: block;
+        
+        &:after {
+          background: @brand-primary;
+          content: "";
+          height: 100%;
+          left: 0;
+          position: absolute;
+          top: 0;
+          width: 100%;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <title>Testimonials Style 3 - Auto-Scroll Scroller</title>
+	<sampledata><![CDATA[ 
+	{":type":"ja_ngr:testimonials","testimonials":{"jatools-layout-testimonials":"style-3","testimonials[testimonial-item]":{"testimonials[testimonial-item][text]":["You make the tough decision to consult the different approach, but help us move forward with bold steps. Huge thanks for your team. ","Very relaxing and thorough. Friendly staff will bring you awesome relaxation feeling the the moment you enter…Great prices as well. "],"testimonials[testimonial-item][author]":["Marsh W.","John D."],"rows":2,"cols":2,"type":"list"}}}
+  ]]></sampledata>
+	<fields name="testimonials">
+		<fieldset name="Basic Settings" description="Basic settings for the testimonials component">
+			<field name="autoplay-speed" type="text" size="10" default="4000" label="Autoplay Speed" description="Autoplay speed in milliseconds (default: 4000)">
+				<hint>Autoplay speed in milliseconds (default: 4000)</hint>
+			</field>
+			<field name="background-image" type="media" default="" label="Background Image" description="Background image for the testimonials section">
+				<hint>Background image for the testimonials section. If not set, a default image will be used.</hint>
+			</field>
+		</fieldset>
+
+		<fieldset name="Testimonial Items" description="Testimonial content and configuration"> 
+			<field name="testimonial-item" type="jalist">
+				<item name="text" type="textarea" cols="40" rows="5" default="" label="Testimonial Text" description="The testimonial content text" />
+				<item name="author" type="text" size="50" default="" label="Testimonial Author" description="The name of the person giving the testimonial" />
+			</field>
+		</fieldset>
+	</fields>
+</form>

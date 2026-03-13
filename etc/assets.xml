@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assets>
+	<scripts>
+    <file>js/jquery.inview.min.js</file>
+    <file>js/jquery.cookie.js</file>
+		<file>js/owl-carousel/owl.carousel.js</file>
+		<file>js/script.js</file>
+	</scripts>
+	
+  <stylesheets>
+    <file>js/owl-carousel/owl.carousel.css</file>
+    <file>js/owl-carousel/owl.theme.css</file>
+    
+    <file>css/extras/tailwind.css</file>
+	  <file>css/extras/autorent-new-designs.css</file>
+  </stylesheets>
+	
+</assets>

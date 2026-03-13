@@ -1,0 +1,3206 @@
+.com_k2 a:active,
+.com_k2 a:focus {
+  outline: 0;
+}
+.com_k2 img {
+  border: none;
+  max-width: 100%;
+}
+.com_k2 .fa {
+  font-family: "FontAwesome";
+}
+.largerFontSize {
+  font-size: 15px;
+}
+.smallerFontSize {
+  font-size: 12px;
+}
+.k2AccountPage .control-label.invalid {
+  background: none;
+  color: #cc0000;
+}
+.k2AccountPage .admintable th,
+.k2AccountPage .admintable td {
+  background: none;
+  border: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.k2AccountPage .admintable th .controls .radio,
+.k2AccountPage .admintable td .controls .radio {
+  margin-right: 10px;
+}
+.k2AccountPage input[type="radio"],
+.k2AccountPage input[type="checkbox"] {
+  position: relative;
+  margin: 0 0 0 5px;
+}
+.k2AccountPage table.admintable td.key,
+.k2AccountPage table.admintable td.paramlist_key {
+  background: none;
+  border: 0;
+  text-align: left;
+  font-size: 14px;
+  margin-left: 5px;
+  padding-left: 10px;
+}
+.k2AccountPage .k2AccountPageUpdate {
+  text-align: left;
+}
+.k2AccountPage #helpsite-refresh {
+  margin-top: 12px;
+}
+.k2AccountPage .k2PersonalDetails label,
+.k2AccountPage .k2PersonalDetails .radio-inline {
+  padding-top: 0;
+}
+.k2AccountPageNotice {
+  color: #999999;
+}
+.com_k2 .k2AdminTableFiltersSearch .input-append.btn-wrapper input[type=text].text_area {
+  display: inline-block;
+}
+.com_k2 .k2AdminTableFiltersSelects select {
+  display: inline-block;
+}
+.com_k2 #k2FrontendContainer .icon-48-k2 {
+  background-position: top right !important;
+  min-height: 36px;
+}
+.com_k2 #k2Container {
+  position: relative;
+}
+.com_k2 #k2Container .k2FeedIcon {
+  position: absolute;
+  top: -15px;
+  left: 0;
+  padding: 0;
+}
+.com_k2 #k2Container .moduleItemCategory {
+  color: #72af1a;
+}
+.com_k2 #k2Container .moduleItemCategory:hover,
+.com_k2 #k2Container .moduleItemCategory:focus {
+  color: #222222;
+}
+.com_k2 .t3-module {
+  position: relative;
+}
+.com_k2 .t3-module .k2FeedIcon {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 24px;
+}
+.com_k2 #k2FormTopNav ul.k2NavTabs li.ui-tabs-selected a:before {
+  height: 16px;
+  line-height: 16px;
+}
+.com_k2 div#k2TabContent {
+  padding: 24px;
+}
+.com_k2 #k2ModalToolbar #toolbar-cancel a {
+  margin-right: 12px;
+}
+.com_k2 a.modal {
+  position: inherit;
+  display: inline-block;
+  vertical-align: top;
+}
+.com_k2 form .inputbox {
+  width: 100%;
+}
+.com_k2 form .inputbox[type="checkbox"],
+.com_k2 form .inputbox[type="radio"] {
+  width: auto;
+  height: auto;
+}
+.com_k2 form label {
+  color: #222222;
+}
+.com_k2 .t3-mainbody .k2ReadMore,
+.com_k2 .t3-mainbody form input[type=submit],
+.com_k2 .t3-mainbody form button[type=submit] {
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #80c51d;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.715;
+  border-radius: 0;
+  border-width: 0;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
+}
+.com_k2 .t3-mainbody .k2ReadMore:focus,
+.com_k2 .t3-mainbody form input[type=submit]:focus,
+.com_k2 .t3-mainbody form button[type=submit]:focus,
+.com_k2 .t3-mainbody .k2ReadMore.focus,
+.com_k2 .t3-mainbody form input[type=submit].focus,
+.com_k2 .t3-mainbody form button[type=submit].focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #38560d;
+}
+.com_k2 .t3-mainbody .k2ReadMore:hover,
+.com_k2 .t3-mainbody form input[type=submit]:hover,
+.com_k2 .t3-mainbody form button[type=submit]:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #5e9015;
+}
+.com_k2 .t3-mainbody .k2ReadMore:active,
+.com_k2 .t3-mainbody form input[type=submit]:active,
+.com_k2 .t3-mainbody form button[type=submit]:active,
+.com_k2 .t3-mainbody .k2ReadMore.active,
+.com_k2 .t3-mainbody form input[type=submit].active,
+.com_k2 .t3-mainbody form button[type=submit].active,
+.open > .dropdown-toggle.com_k2 .t3-mainbody .k2ReadMore,
+.open > .dropdown-toggle.com_k2 .t3-mainbody form input[type=submit],
+.open > .dropdown-toggle.com_k2 .t3-mainbody form button[type=submit] {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #5e9015;
+}
+.com_k2 .t3-mainbody .k2ReadMore:active:hover,
+.com_k2 .t3-mainbody form input[type=submit]:active:hover,
+.com_k2 .t3-mainbody form button[type=submit]:active:hover,
+.com_k2 .t3-mainbody .k2ReadMore.active:hover,
+.com_k2 .t3-mainbody form input[type=submit].active:hover,
+.com_k2 .t3-mainbody form button[type=submit].active:hover,
+.open > .dropdown-toggle.com_k2 .t3-mainbody .k2ReadMore:hover,
+.open > .dropdown-toggle.com_k2 .t3-mainbody form input[type=submit]:hover,
+.open > .dropdown-toggle.com_k2 .t3-mainbody form button[type=submit]:hover,
+.com_k2 .t3-mainbody .k2ReadMore:active:focus,
+.com_k2 .t3-mainbody form input[type=submit]:active:focus,
+.com_k2 .t3-mainbody form button[type=submit]:active:focus,
+.com_k2 .t3-mainbody .k2ReadMore.active:focus,
+.com_k2 .t3-mainbody form input[type=submit].active:focus,
+.com_k2 .t3-mainbody form button[type=submit].active:focus,
+.open > .dropdown-toggle.com_k2 .t3-mainbody .k2ReadMore:focus,
+.open > .dropdown-toggle.com_k2 .t3-mainbody form input[type=submit]:focus,
+.open > .dropdown-toggle.com_k2 .t3-mainbody form button[type=submit]:focus,
+.com_k2 .t3-mainbody .k2ReadMore:active.focus,
+.com_k2 .t3-mainbody form input[type=submit]:active.focus,
+.com_k2 .t3-mainbody form button[type=submit]:active.focus,
+.com_k2 .t3-mainbody .k2ReadMore.active.focus,
+.com_k2 .t3-mainbody form input[type=submit].active.focus,
+.com_k2 .t3-mainbody form button[type=submit].active.focus,
+.open > .dropdown-toggle.com_k2 .t3-mainbody .k2ReadMore.focus,
+.open > .dropdown-toggle.com_k2 .t3-mainbody form input[type=submit].focus,
+.open > .dropdown-toggle.com_k2 .t3-mainbody form button[type=submit].focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #38560d;
+}
+.com_k2 .t3-mainbody .k2ReadMore.disabled:hover,
+.com_k2 .t3-mainbody form input[type=submit].disabled:hover,
+.com_k2 .t3-mainbody form button[type=submit].disabled:hover,
+.com_k2 .t3-mainbody .k2ReadMore[disabled]:hover,
+.com_k2 .t3-mainbody form input[type=submit][disabled]:hover,
+.com_k2 .t3-mainbody form button[type=submit][disabled]:hover,
+fieldset[disabled] .com_k2 .t3-mainbody .k2ReadMore:hover,
+fieldset[disabled] .com_k2 .t3-mainbody form input[type=submit]:hover,
+fieldset[disabled] .com_k2 .t3-mainbody form button[type=submit]:hover,
+.com_k2 .t3-mainbody .k2ReadMore.disabled:focus,
+.com_k2 .t3-mainbody form input[type=submit].disabled:focus,
+.com_k2 .t3-mainbody form button[type=submit].disabled:focus,
+.com_k2 .t3-mainbody .k2ReadMore[disabled]:focus,
+.com_k2 .t3-mainbody form input[type=submit][disabled]:focus,
+.com_k2 .t3-mainbody form button[type=submit][disabled]:focus,
+fieldset[disabled] .com_k2 .t3-mainbody .k2ReadMore:focus,
+fieldset[disabled] .com_k2 .t3-mainbody form input[type=submit]:focus,
+fieldset[disabled] .com_k2 .t3-mainbody form button[type=submit]:focus,
+.com_k2 .t3-mainbody .k2ReadMore.disabled.focus,
+.com_k2 .t3-mainbody form input[type=submit].disabled.focus,
+.com_k2 .t3-mainbody form button[type=submit].disabled.focus,
+.com_k2 .t3-mainbody .k2ReadMore[disabled].focus,
+.com_k2 .t3-mainbody form input[type=submit][disabled].focus,
+.com_k2 .t3-mainbody form button[type=submit][disabled].focus,
+fieldset[disabled] .com_k2 .t3-mainbody .k2ReadMore.focus,
+fieldset[disabled] .com_k2 .t3-mainbody form input[type=submit].focus,
+fieldset[disabled] .com_k2 .t3-mainbody form button[type=submit].focus {
+  background-color: #72af1a;
+  border-color: #80c51d;
+}
+.com_k2 .t3-mainbody .k2ReadMore .badge,
+.com_k2 .t3-mainbody form input[type=submit] .badge,
+.com_k2 .t3-mainbody form button[type=submit] .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.com_k2 .t3-sidebar ul {
+  padding: 0;
+}
+.com_k2 .t3-sidebar ul li {
+  list-style: square;
+}
+.com_k2 div.itemContainer {
+  float: right;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (max-width: 1199px) {
+  .com_k2 div.itemContainer {
+    width: 100% !important;
+  }
+}
+.com_k2 #itemListPrimary,
+.com_k2 #itemListSecondary {
+  margin-right: -15px;
+  margin-left: -15px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.com_k2 #itemListPrimary .itemContainer,
+.com_k2 #itemListSecondary .itemContainer {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.com_k2 #itemListLinks {
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+.com_k2 #itemListLinks:before,
+.com_k2 #itemListLinks:after {
+  display: table;
+  content: " ";
+}
+.com_k2 #itemListLinks:after {
+  clear: both;
+}
+.com_k2 #itemListLinks > div {
+  padding: 0;
+}
+.com_k2 #itemListLinks h4 {
+  color: #222222;
+  text-transform: uppercase;
+  font-size: 18px;
+  margin: 0 0 24px 0;
+}
+.com_k2 #itemListLinks .groupLinks {
+  border-bottom: 1px solid #eeeeee;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+}
+.com_k2 #itemListLinks .groupLinks:before,
+.com_k2 #itemListLinks .groupLinks:after {
+  display: table;
+  content: " ";
+}
+.com_k2 #itemListLinks .groupLinks:after {
+  clear: both;
+}
+.com_k2 #itemListLinks .groupLinks h3 {
+  display: inline-block;
+}
+.com_k2 #itemListLinks .groupLinks > div {
+  float: right;
+  margin-bottom: 0;
+  margin-left: 12px;
+}
+.com_k2 div.k2Pagination {
+  padding: 0;
+  text-align: right;
+}
+.com_k2 div.k2Pagination:before,
+.com_k2 div.k2Pagination:after {
+  display: table;
+  content: " ";
+}
+.com_k2 div.k2Pagination:after {
+  clear: both;
+}
+.com_k2 div.k2Pagination .pagination {
+  margin: 0;
+  float: left;
+}
+.com_k2 div.k2Pagination .clr {
+  display: none;
+}
+.com_k2 .catInfoDetail,
+.com_k2 .itemInfoDetail,
+.com_k2 .tagInfoDetail,
+.com_k2 .userInfoDetail,
+.com_k2 .lastestInfoDetail,
+.com_k2 .genericInfoDetail {
+  color: #999999;
+}
+.com_k2 .catInfoDetail > span,
+.com_k2 .itemInfoDetail > span,
+.com_k2 .tagInfoDetail > span,
+.com_k2 .userInfoDetail > span,
+.com_k2 .lastestInfoDetail > span,
+.com_k2 .genericInfoDetail > span {
+  font-size: 12px;
+}
+.com_k2 .catInfoDetail > span:before,
+.com_k2 .itemInfoDetail > span:before,
+.com_k2 .tagInfoDetail > span:before,
+.com_k2 .userInfoDetail > span:before,
+.com_k2 .lastestInfoDetail > span:before,
+.com_k2 .genericInfoDetail > span:before {
+  content: "/";
+}
+.com_k2 .catInfoDetail > span:first-child:before,
+.com_k2 .itemInfoDetail > span:first-child:before,
+.com_k2 .tagInfoDetail > span:first-child:before,
+.com_k2 .userInfoDetail > span:first-child:before,
+.com_k2 .lastestInfoDetail > span:first-child:before,
+.com_k2 .genericInfoDetail > span:first-child:before {
+  display: none;
+}
+.com_k2 .catInfoDetail .catItemCategory a,
+.com_k2 .itemInfoDetail .catItemCategory a,
+.com_k2 .tagInfoDetail .catItemCategory a,
+.com_k2 .userInfoDetail .catItemCategory a,
+.com_k2 .lastestInfoDetail .catItemCategory a,
+.com_k2 .genericInfoDetail .catItemCategory a {
+  color: #191919;
+  font-size: 12px;
+}
+.com_k2 .catInfoDetail .catItemCategory a:hover,
+.com_k2 .itemInfoDetail .catItemCategory a:hover,
+.com_k2 .tagInfoDetail .catItemCategory a:hover,
+.com_k2 .userInfoDetail .catItemCategory a:hover,
+.com_k2 .lastestInfoDetail .catItemCategory a:hover,
+.com_k2 .genericInfoDetail .catItemCategory a:hover,
+.com_k2 .catInfoDetail .catItemCategory a:focus,
+.com_k2 .itemInfoDetail .catItemCategory a:focus,
+.com_k2 .tagInfoDetail .catItemCategory a:focus,
+.com_k2 .userInfoDetail .catItemCategory a:focus,
+.com_k2 .lastestInfoDetail .catItemCategory a:focus,
+.com_k2 .genericInfoDetail .catItemCategory a:focus,
+.com_k2 .catInfoDetail .catItemCategory a:active,
+.com_k2 .itemInfoDetail .catItemCategory a:active,
+.com_k2 .tagInfoDetail .catItemCategory a:active,
+.com_k2 .userInfoDetail .catItemCategory a:active,
+.com_k2 .lastestInfoDetail .catItemCategory a:active,
+.com_k2 .genericInfoDetail .catItemCategory a:active {
+  color: #72af1a;
+}
+.com_k2 .catInfoDetail > div,
+.com_k2 .itemInfoDetail > div,
+.com_k2 .tagInfoDetail > div,
+.com_k2 .userInfoDetail > div,
+.com_k2 .lastestInfoDetail > div,
+.com_k2 .genericInfoDetail > div {
+  float: left;
+  font-size: 12px;
+}
+@media (max-width: 767px) {
+  .com_k2 .catInfoDetail > div,
+  .com_k2 .itemInfoDetail > div,
+  .com_k2 .tagInfoDetail > div,
+  .com_k2 .userInfoDetail > div,
+  .com_k2 .lastestInfoDetail > div,
+  .com_k2 .genericInfoDetail > div {
+    float: none;
+  }
+}
+.com_k2 .catInfoDetail > div a,
+.com_k2 .itemInfoDetail > div a,
+.com_k2 .tagInfoDetail > div a,
+.com_k2 .userInfoDetail > div a,
+.com_k2 .lastestInfoDetail > div a,
+.com_k2 .genericInfoDetail > div a {
+  color: #191919;
+}
+.com_k2 .catInfoDetail > div a:hover,
+.com_k2 .itemInfoDetail > div a:hover,
+.com_k2 .tagInfoDetail > div a:hover,
+.com_k2 .userInfoDetail > div a:hover,
+.com_k2 .lastestInfoDetail > div a:hover,
+.com_k2 .genericInfoDetail > div a:hover,
+.com_k2 .catInfoDetail > div a:focus,
+.com_k2 .itemInfoDetail > div a:focus,
+.com_k2 .tagInfoDetail > div a:focus,
+.com_k2 .userInfoDetail > div a:focus,
+.com_k2 .lastestInfoDetail > div a:focus,
+.com_k2 .genericInfoDetail > div a:focus,
+.com_k2 .catInfoDetail > div a:active,
+.com_k2 .itemInfoDetail > div a:active,
+.com_k2 .tagInfoDetail > div a:active,
+.com_k2 .userInfoDetail > div a:active,
+.com_k2 .lastestInfoDetail > div a:active,
+.com_k2 .genericInfoDetail > div a:active {
+  color: #72af1a;
+}
+.com_k2 div.catItemView,
+.com_k2 div.tagItemView,
+.com_k2 div.userItemView,
+.com_k2 div.latestItemView,
+.com_k2 div.genericItemView {
+  margin-bottom: 60px;
+  padding: 0;
+}
+.com_k2 div.catItemView.groupLinks,
+.com_k2 div.tagItemView.groupLinks,
+.com_k2 div.userItemView.groupLinks,
+.com_k2 div.latestItemView.groupLinks,
+.com_k2 div.genericItemView.groupLinks {
+  padding: 0;
+}
+.com_k2 div.catItemView.groupLinks .catItemTitle,
+.com_k2 div.tagItemView.groupLinks .catItemTitle,
+.com_k2 div.userItemView.groupLinks .catItemTitle,
+.com_k2 div.latestItemView.groupLinks .catItemTitle,
+.com_k2 div.genericItemView.groupLinks .catItemTitle {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+}
+.com_k2 .itemHeader,
+.com_k2 .catItemHeader,
+.com_k2 .userItemHeader,
+.com_k2 .tagItemHeader,
+.com_k2 .userItemHeader,
+.com_k2 .latestItemHeader,
+.com_k2 .genericItemHeader {
+  margin-bottom: 24px;
+}
+.com_k2 .itemHeader .catItemDateCreated,
+.com_k2 .catItemHeader .catItemDateCreated,
+.com_k2 .userItemHeader .catItemDateCreated,
+.com_k2 .tagItemHeader .catItemDateCreated,
+.com_k2 .userItemHeader .catItemDateCreated,
+.com_k2 .latestItemHeader .catItemDateCreated,
+.com_k2 .genericItemHeader .catItemDateCreated,
+.com_k2 .itemHeader .itemDateCreated,
+.com_k2 .catItemHeader .itemDateCreated,
+.com_k2 .userItemHeader .itemDateCreated,
+.com_k2 .tagItemHeader .itemDateCreated,
+.com_k2 .userItemHeader .itemDateCreated,
+.com_k2 .latestItemHeader .itemDateCreated,
+.com_k2 .genericItemHeader .itemDateCreated,
+.com_k2 .itemHeader .tagItemDateCreated,
+.com_k2 .catItemHeader .tagItemDateCreated,
+.com_k2 .userItemHeader .tagItemDateCreated,
+.com_k2 .tagItemHeader .tagItemDateCreated,
+.com_k2 .userItemHeader .tagItemDateCreated,
+.com_k2 .latestItemHeader .tagItemDateCreated,
+.com_k2 .genericItemHeader .tagItemDateCreated,
+.com_k2 .itemHeader .userItemDateCreated,
+.com_k2 .catItemHeader .userItemDateCreated,
+.com_k2 .userItemHeader .userItemDateCreated,
+.com_k2 .tagItemHeader .userItemDateCreated,
+.com_k2 .userItemHeader .userItemDateCreated,
+.com_k2 .latestItemHeader .userItemDateCreated,
+.com_k2 .genericItemHeader .userItemDateCreated,
+.com_k2 .itemHeader .latestItemDateCreated,
+.com_k2 .catItemHeader .latestItemDateCreated,
+.com_k2 .userItemHeader .latestItemDateCreated,
+.com_k2 .tagItemHeader .latestItemDateCreated,
+.com_k2 .userItemHeader .latestItemDateCreated,
+.com_k2 .latestItemHeader .latestItemDateCreated,
+.com_k2 .genericItemHeader .latestItemDateCreated,
+.com_k2 .itemHeader .genericItemDateCreated,
+.com_k2 .catItemHeader .genericItemDateCreated,
+.com_k2 .userItemHeader .genericItemDateCreated,
+.com_k2 .tagItemHeader .genericItemDateCreated,
+.com_k2 .userItemHeader .genericItemDateCreated,
+.com_k2 .latestItemHeader .genericItemDateCreated,
+.com_k2 .genericItemHeader .genericItemDateCreated {
+  color: #999999;
+  font-size: 12px;
+}
+.com_k2 .itemHeader .catItemTitle,
+.com_k2 .catItemHeader .catItemTitle,
+.com_k2 .userItemHeader .catItemTitle,
+.com_k2 .tagItemHeader .catItemTitle,
+.com_k2 .userItemHeader .catItemTitle,
+.com_k2 .latestItemHeader .catItemTitle,
+.com_k2 .genericItemHeader .catItemTitle,
+.com_k2 .itemHeader .itemTitle,
+.com_k2 .catItemHeader .itemTitle,
+.com_k2 .userItemHeader .itemTitle,
+.com_k2 .tagItemHeader .itemTitle,
+.com_k2 .userItemHeader .itemTitle,
+.com_k2 .latestItemHeader .itemTitle,
+.com_k2 .genericItemHeader .itemTitle,
+.com_k2 .itemHeader .userItemTitle,
+.com_k2 .catItemHeader .userItemTitle,
+.com_k2 .userItemHeader .userItemTitle,
+.com_k2 .tagItemHeader .userItemTitle,
+.com_k2 .userItemHeader .userItemTitle,
+.com_k2 .latestItemHeader .userItemTitle,
+.com_k2 .genericItemHeader .userItemTitle,
+.com_k2 .itemHeader .tagItemTitle,
+.com_k2 .catItemHeader .tagItemTitle,
+.com_k2 .userItemHeader .tagItemTitle,
+.com_k2 .tagItemHeader .tagItemTitle,
+.com_k2 .userItemHeader .tagItemTitle,
+.com_k2 .latestItemHeader .tagItemTitle,
+.com_k2 .genericItemHeader .tagItemTitle,
+.com_k2 .itemHeader .userItemTitle,
+.com_k2 .catItemHeader .userItemTitle,
+.com_k2 .userItemHeader .userItemTitle,
+.com_k2 .tagItemHeader .userItemTitle,
+.com_k2 .userItemHeader .userItemTitle,
+.com_k2 .latestItemHeader .userItemTitle,
+.com_k2 .genericItemHeader .userItemTitle,
+.com_k2 .itemHeader .latestItemTitle,
+.com_k2 .catItemHeader .latestItemTitle,
+.com_k2 .userItemHeader .latestItemTitle,
+.com_k2 .tagItemHeader .latestItemTitle,
+.com_k2 .userItemHeader .latestItemTitle,
+.com_k2 .latestItemHeader .latestItemTitle,
+.com_k2 .genericItemHeader .latestItemTitle,
+.com_k2 .itemHeader .genericItemTitle,
+.com_k2 .catItemHeader .genericItemTitle,
+.com_k2 .userItemHeader .genericItemTitle,
+.com_k2 .tagItemHeader .genericItemTitle,
+.com_k2 .userItemHeader .genericItemTitle,
+.com_k2 .latestItemHeader .genericItemTitle,
+.com_k2 .genericItemHeader .genericItemTitle {
+  padding: 0;
+  margin: 0;
+  color: #191919;
+  text-transform: uppercase;
+}
+.com_k2 .itemHeader .catItemTitle span.catItemEditLink,
+.com_k2 .catItemHeader .catItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink,
+.com_k2 .tagItemHeader .catItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink,
+.com_k2 .latestItemHeader .catItemTitle span.catItemEditLink,
+.com_k2 .genericItemHeader .catItemTitle span.catItemEditLink,
+.com_k2 .itemHeader .itemTitle span.catItemEditLink,
+.com_k2 .catItemHeader .itemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink,
+.com_k2 .tagItemHeader .itemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink,
+.com_k2 .latestItemHeader .itemTitle span.catItemEditLink,
+.com_k2 .genericItemHeader .itemTitle span.catItemEditLink,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .itemHeader .tagItemTitle span.catItemEditLink,
+.com_k2 .catItemHeader .tagItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink,
+.com_k2 .tagItemHeader .tagItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink,
+.com_k2 .latestItemHeader .tagItemTitle span.catItemEditLink,
+.com_k2 .genericItemHeader .tagItemTitle span.catItemEditLink,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink,
+.com_k2 .itemHeader .latestItemTitle span.catItemEditLink,
+.com_k2 .catItemHeader .latestItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink,
+.com_k2 .tagItemHeader .latestItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink,
+.com_k2 .latestItemHeader .latestItemTitle span.catItemEditLink,
+.com_k2 .genericItemHeader .latestItemTitle span.catItemEditLink,
+.com_k2 .itemHeader .genericItemTitle span.catItemEditLink,
+.com_k2 .catItemHeader .genericItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink,
+.com_k2 .tagItemHeader .genericItemTitle span.catItemEditLink,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink,
+.com_k2 .latestItemHeader .genericItemTitle span.catItemEditLink,
+.com_k2 .genericItemHeader .genericItemTitle span.catItemEditLink,
+.com_k2 .itemHeader .catItemTitle .itemEditLink,
+.com_k2 .catItemHeader .catItemTitle .itemEditLink,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink,
+.com_k2 .tagItemHeader .catItemTitle .itemEditLink,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink,
+.com_k2 .latestItemHeader .catItemTitle .itemEditLink,
+.com_k2 .genericItemHeader .catItemTitle .itemEditLink,
+.com_k2 .itemHeader .itemTitle .itemEditLink,
+.com_k2 .catItemHeader .itemTitle .itemEditLink,
+.com_k2 .userItemHeader .itemTitle .itemEditLink,
+.com_k2 .tagItemHeader .itemTitle .itemEditLink,
+.com_k2 .userItemHeader .itemTitle .itemEditLink,
+.com_k2 .latestItemHeader .itemTitle .itemEditLink,
+.com_k2 .genericItemHeader .itemTitle .itemEditLink,
+.com_k2 .itemHeader .userItemTitle .itemEditLink,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink,
+.com_k2 .itemHeader .tagItemTitle .itemEditLink,
+.com_k2 .catItemHeader .tagItemTitle .itemEditLink,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink,
+.com_k2 .tagItemHeader .tagItemTitle .itemEditLink,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink,
+.com_k2 .latestItemHeader .tagItemTitle .itemEditLink,
+.com_k2 .genericItemHeader .tagItemTitle .itemEditLink,
+.com_k2 .itemHeader .userItemTitle .itemEditLink,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink,
+.com_k2 .itemHeader .latestItemTitle .itemEditLink,
+.com_k2 .catItemHeader .latestItemTitle .itemEditLink,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink,
+.com_k2 .tagItemHeader .latestItemTitle .itemEditLink,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink,
+.com_k2 .latestItemHeader .latestItemTitle .itemEditLink,
+.com_k2 .genericItemHeader .latestItemTitle .itemEditLink,
+.com_k2 .itemHeader .genericItemTitle .itemEditLink,
+.com_k2 .catItemHeader .genericItemTitle .itemEditLink,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink,
+.com_k2 .tagItemHeader .genericItemTitle .itemEditLink,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink,
+.com_k2 .latestItemHeader .genericItemTitle .itemEditLink,
+.com_k2 .genericItemHeader .genericItemTitle .itemEditLink,
+.com_k2 .itemHeader .catItemTitle .userItemEditLink,
+.com_k2 .catItemHeader .catItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink,
+.com_k2 .tagItemHeader .catItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink,
+.com_k2 .latestItemHeader .catItemTitle .userItemEditLink,
+.com_k2 .genericItemHeader .catItemTitle .userItemEditLink,
+.com_k2 .itemHeader .itemTitle .userItemEditLink,
+.com_k2 .catItemHeader .itemTitle .userItemEditLink,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink,
+.com_k2 .tagItemHeader .itemTitle .userItemEditLink,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink,
+.com_k2 .latestItemHeader .itemTitle .userItemEditLink,
+.com_k2 .genericItemHeader .itemTitle .userItemEditLink,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .itemHeader .tagItemTitle .userItemEditLink,
+.com_k2 .catItemHeader .tagItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink,
+.com_k2 .tagItemHeader .tagItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink,
+.com_k2 .latestItemHeader .tagItemTitle .userItemEditLink,
+.com_k2 .genericItemHeader .tagItemTitle .userItemEditLink,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink,
+.com_k2 .itemHeader .latestItemTitle .userItemEditLink,
+.com_k2 .catItemHeader .latestItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink,
+.com_k2 .tagItemHeader .latestItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink,
+.com_k2 .latestItemHeader .latestItemTitle .userItemEditLink,
+.com_k2 .genericItemHeader .latestItemTitle .userItemEditLink,
+.com_k2 .itemHeader .genericItemTitle .userItemEditLink,
+.com_k2 .catItemHeader .genericItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink,
+.com_k2 .tagItemHeader .genericItemTitle .userItemEditLink,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink,
+.com_k2 .latestItemHeader .genericItemTitle .userItemEditLink,
+.com_k2 .genericItemHeader .genericItemTitle .userItemEditLink {
+  float: left;
+  position: relative;
+  top: -20px;
+  width: auto;
+}
+.com_k2 .itemHeader .catItemTitle span.catItemEditLink a,
+.com_k2 .catItemHeader .catItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink a,
+.com_k2 .tagItemHeader .catItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink a,
+.com_k2 .latestItemHeader .catItemTitle span.catItemEditLink a,
+.com_k2 .genericItemHeader .catItemTitle span.catItemEditLink a,
+.com_k2 .itemHeader .itemTitle span.catItemEditLink a,
+.com_k2 .catItemHeader .itemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink a,
+.com_k2 .tagItemHeader .itemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink a,
+.com_k2 .latestItemHeader .itemTitle span.catItemEditLink a,
+.com_k2 .genericItemHeader .itemTitle span.catItemEditLink a,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .itemHeader .tagItemTitle span.catItemEditLink a,
+.com_k2 .catItemHeader .tagItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink a,
+.com_k2 .tagItemHeader .tagItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink a,
+.com_k2 .latestItemHeader .tagItemTitle span.catItemEditLink a,
+.com_k2 .genericItemHeader .tagItemTitle span.catItemEditLink a,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink a,
+.com_k2 .itemHeader .latestItemTitle span.catItemEditLink a,
+.com_k2 .catItemHeader .latestItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink a,
+.com_k2 .tagItemHeader .latestItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink a,
+.com_k2 .latestItemHeader .latestItemTitle span.catItemEditLink a,
+.com_k2 .genericItemHeader .latestItemTitle span.catItemEditLink a,
+.com_k2 .itemHeader .genericItemTitle span.catItemEditLink a,
+.com_k2 .catItemHeader .genericItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink a,
+.com_k2 .tagItemHeader .genericItemTitle span.catItemEditLink a,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink a,
+.com_k2 .latestItemHeader .genericItemTitle span.catItemEditLink a,
+.com_k2 .genericItemHeader .genericItemTitle span.catItemEditLink a,
+.com_k2 .itemHeader .catItemTitle .itemEditLink a,
+.com_k2 .catItemHeader .catItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink a,
+.com_k2 .tagItemHeader .catItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink a,
+.com_k2 .latestItemHeader .catItemTitle .itemEditLink a,
+.com_k2 .genericItemHeader .catItemTitle .itemEditLink a,
+.com_k2 .itemHeader .itemTitle .itemEditLink a,
+.com_k2 .catItemHeader .itemTitle .itemEditLink a,
+.com_k2 .userItemHeader .itemTitle .itemEditLink a,
+.com_k2 .tagItemHeader .itemTitle .itemEditLink a,
+.com_k2 .userItemHeader .itemTitle .itemEditLink a,
+.com_k2 .latestItemHeader .itemTitle .itemEditLink a,
+.com_k2 .genericItemHeader .itemTitle .itemEditLink a,
+.com_k2 .itemHeader .userItemTitle .itemEditLink a,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .itemHeader .tagItemTitle .itemEditLink a,
+.com_k2 .catItemHeader .tagItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink a,
+.com_k2 .tagItemHeader .tagItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink a,
+.com_k2 .latestItemHeader .tagItemTitle .itemEditLink a,
+.com_k2 .genericItemHeader .tagItemTitle .itemEditLink a,
+.com_k2 .itemHeader .userItemTitle .itemEditLink a,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink a,
+.com_k2 .itemHeader .latestItemTitle .itemEditLink a,
+.com_k2 .catItemHeader .latestItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink a,
+.com_k2 .tagItemHeader .latestItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink a,
+.com_k2 .latestItemHeader .latestItemTitle .itemEditLink a,
+.com_k2 .genericItemHeader .latestItemTitle .itemEditLink a,
+.com_k2 .itemHeader .genericItemTitle .itemEditLink a,
+.com_k2 .catItemHeader .genericItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink a,
+.com_k2 .tagItemHeader .genericItemTitle .itemEditLink a,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink a,
+.com_k2 .latestItemHeader .genericItemTitle .itemEditLink a,
+.com_k2 .genericItemHeader .genericItemTitle .itemEditLink a,
+.com_k2 .itemHeader .catItemTitle .userItemEditLink a,
+.com_k2 .catItemHeader .catItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink a,
+.com_k2 .tagItemHeader .catItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink a,
+.com_k2 .latestItemHeader .catItemTitle .userItemEditLink a,
+.com_k2 .genericItemHeader .catItemTitle .userItemEditLink a,
+.com_k2 .itemHeader .itemTitle .userItemEditLink a,
+.com_k2 .catItemHeader .itemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink a,
+.com_k2 .tagItemHeader .itemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink a,
+.com_k2 .latestItemHeader .itemTitle .userItemEditLink a,
+.com_k2 .genericItemHeader .itemTitle .userItemEditLink a,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .itemHeader .tagItemTitle .userItemEditLink a,
+.com_k2 .catItemHeader .tagItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink a,
+.com_k2 .tagItemHeader .tagItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink a,
+.com_k2 .latestItemHeader .tagItemTitle .userItemEditLink a,
+.com_k2 .genericItemHeader .tagItemTitle .userItemEditLink a,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink a,
+.com_k2 .itemHeader .latestItemTitle .userItemEditLink a,
+.com_k2 .catItemHeader .latestItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink a,
+.com_k2 .tagItemHeader .latestItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink a,
+.com_k2 .latestItemHeader .latestItemTitle .userItemEditLink a,
+.com_k2 .genericItemHeader .latestItemTitle .userItemEditLink a,
+.com_k2 .itemHeader .genericItemTitle .userItemEditLink a,
+.com_k2 .catItemHeader .genericItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink a,
+.com_k2 .tagItemHeader .genericItemTitle .userItemEditLink a,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink a,
+.com_k2 .latestItemHeader .genericItemTitle .userItemEditLink a,
+.com_k2 .genericItemHeader .genericItemTitle .userItemEditLink a {
+  background-color: #72af1a;
+  color: #ffffff;
+  font-weight: 500;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  line-height: 1;
+  padding: 5px;
+  font-size: 10px;
+}
+.com_k2 .itemHeader .catItemTitle span.catItemEditLink a:hover,
+.com_k2 .catItemHeader .catItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink a:hover,
+.com_k2 .tagItemHeader .catItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink a:hover,
+.com_k2 .latestItemHeader .catItemTitle span.catItemEditLink a:hover,
+.com_k2 .genericItemHeader .catItemTitle span.catItemEditLink a:hover,
+.com_k2 .itemHeader .itemTitle span.catItemEditLink a:hover,
+.com_k2 .catItemHeader .itemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink a:hover,
+.com_k2 .tagItemHeader .itemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink a:hover,
+.com_k2 .latestItemHeader .itemTitle span.catItemEditLink a:hover,
+.com_k2 .genericItemHeader .itemTitle span.catItemEditLink a:hover,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .itemHeader .tagItemTitle span.catItemEditLink a:hover,
+.com_k2 .catItemHeader .tagItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink a:hover,
+.com_k2 .tagItemHeader .tagItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink a:hover,
+.com_k2 .latestItemHeader .tagItemTitle span.catItemEditLink a:hover,
+.com_k2 .genericItemHeader .tagItemTitle span.catItemEditLink a:hover,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink a:hover,
+.com_k2 .itemHeader .latestItemTitle span.catItemEditLink a:hover,
+.com_k2 .catItemHeader .latestItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink a:hover,
+.com_k2 .tagItemHeader .latestItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink a:hover,
+.com_k2 .latestItemHeader .latestItemTitle span.catItemEditLink a:hover,
+.com_k2 .genericItemHeader .latestItemTitle span.catItemEditLink a:hover,
+.com_k2 .itemHeader .genericItemTitle span.catItemEditLink a:hover,
+.com_k2 .catItemHeader .genericItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink a:hover,
+.com_k2 .tagItemHeader .genericItemTitle span.catItemEditLink a:hover,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink a:hover,
+.com_k2 .latestItemHeader .genericItemTitle span.catItemEditLink a:hover,
+.com_k2 .genericItemHeader .genericItemTitle span.catItemEditLink a:hover,
+.com_k2 .itemHeader .catItemTitle .itemEditLink a:hover,
+.com_k2 .catItemHeader .catItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink a:hover,
+.com_k2 .tagItemHeader .catItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink a:hover,
+.com_k2 .latestItemHeader .catItemTitle .itemEditLink a:hover,
+.com_k2 .genericItemHeader .catItemTitle .itemEditLink a:hover,
+.com_k2 .itemHeader .itemTitle .itemEditLink a:hover,
+.com_k2 .catItemHeader .itemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .itemTitle .itemEditLink a:hover,
+.com_k2 .tagItemHeader .itemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .itemTitle .itemEditLink a:hover,
+.com_k2 .latestItemHeader .itemTitle .itemEditLink a:hover,
+.com_k2 .genericItemHeader .itemTitle .itemEditLink a:hover,
+.com_k2 .itemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .itemHeader .tagItemTitle .itemEditLink a:hover,
+.com_k2 .catItemHeader .tagItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink a:hover,
+.com_k2 .tagItemHeader .tagItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink a:hover,
+.com_k2 .latestItemHeader .tagItemTitle .itemEditLink a:hover,
+.com_k2 .genericItemHeader .tagItemTitle .itemEditLink a:hover,
+.com_k2 .itemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink a:hover,
+.com_k2 .itemHeader .latestItemTitle .itemEditLink a:hover,
+.com_k2 .catItemHeader .latestItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink a:hover,
+.com_k2 .tagItemHeader .latestItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink a:hover,
+.com_k2 .latestItemHeader .latestItemTitle .itemEditLink a:hover,
+.com_k2 .genericItemHeader .latestItemTitle .itemEditLink a:hover,
+.com_k2 .itemHeader .genericItemTitle .itemEditLink a:hover,
+.com_k2 .catItemHeader .genericItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink a:hover,
+.com_k2 .tagItemHeader .genericItemTitle .itemEditLink a:hover,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink a:hover,
+.com_k2 .latestItemHeader .genericItemTitle .itemEditLink a:hover,
+.com_k2 .genericItemHeader .genericItemTitle .itemEditLink a:hover,
+.com_k2 .itemHeader .catItemTitle .userItemEditLink a:hover,
+.com_k2 .catItemHeader .catItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink a:hover,
+.com_k2 .tagItemHeader .catItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink a:hover,
+.com_k2 .latestItemHeader .catItemTitle .userItemEditLink a:hover,
+.com_k2 .genericItemHeader .catItemTitle .userItemEditLink a:hover,
+.com_k2 .itemHeader .itemTitle .userItemEditLink a:hover,
+.com_k2 .catItemHeader .itemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink a:hover,
+.com_k2 .tagItemHeader .itemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink a:hover,
+.com_k2 .latestItemHeader .itemTitle .userItemEditLink a:hover,
+.com_k2 .genericItemHeader .itemTitle .userItemEditLink a:hover,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .itemHeader .tagItemTitle .userItemEditLink a:hover,
+.com_k2 .catItemHeader .tagItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink a:hover,
+.com_k2 .tagItemHeader .tagItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink a:hover,
+.com_k2 .latestItemHeader .tagItemTitle .userItemEditLink a:hover,
+.com_k2 .genericItemHeader .tagItemTitle .userItemEditLink a:hover,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink a:hover,
+.com_k2 .itemHeader .latestItemTitle .userItemEditLink a:hover,
+.com_k2 .catItemHeader .latestItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink a:hover,
+.com_k2 .tagItemHeader .latestItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink a:hover,
+.com_k2 .latestItemHeader .latestItemTitle .userItemEditLink a:hover,
+.com_k2 .genericItemHeader .latestItemTitle .userItemEditLink a:hover,
+.com_k2 .itemHeader .genericItemTitle .userItemEditLink a:hover,
+.com_k2 .catItemHeader .genericItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink a:hover,
+.com_k2 .tagItemHeader .genericItemTitle .userItemEditLink a:hover,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink a:hover,
+.com_k2 .latestItemHeader .genericItemTitle .userItemEditLink a:hover,
+.com_k2 .genericItemHeader .genericItemTitle .userItemEditLink a:hover,
+.com_k2 .itemHeader .catItemTitle span.catItemEditLink a:focus,
+.com_k2 .catItemHeader .catItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink a:focus,
+.com_k2 .tagItemHeader .catItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .catItemTitle span.catItemEditLink a:focus,
+.com_k2 .latestItemHeader .catItemTitle span.catItemEditLink a:focus,
+.com_k2 .genericItemHeader .catItemTitle span.catItemEditLink a:focus,
+.com_k2 .itemHeader .itemTitle span.catItemEditLink a:focus,
+.com_k2 .catItemHeader .itemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink a:focus,
+.com_k2 .tagItemHeader .itemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .itemTitle span.catItemEditLink a:focus,
+.com_k2 .latestItemHeader .itemTitle span.catItemEditLink a:focus,
+.com_k2 .genericItemHeader .itemTitle span.catItemEditLink a:focus,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .itemHeader .tagItemTitle span.catItemEditLink a:focus,
+.com_k2 .catItemHeader .tagItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink a:focus,
+.com_k2 .tagItemHeader .tagItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .tagItemTitle span.catItemEditLink a:focus,
+.com_k2 .latestItemHeader .tagItemTitle span.catItemEditLink a:focus,
+.com_k2 .genericItemHeader .tagItemTitle span.catItemEditLink a:focus,
+.com_k2 .itemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .catItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .tagItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .latestItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .genericItemHeader .userItemTitle span.catItemEditLink a:focus,
+.com_k2 .itemHeader .latestItemTitle span.catItemEditLink a:focus,
+.com_k2 .catItemHeader .latestItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink a:focus,
+.com_k2 .tagItemHeader .latestItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .latestItemTitle span.catItemEditLink a:focus,
+.com_k2 .latestItemHeader .latestItemTitle span.catItemEditLink a:focus,
+.com_k2 .genericItemHeader .latestItemTitle span.catItemEditLink a:focus,
+.com_k2 .itemHeader .genericItemTitle span.catItemEditLink a:focus,
+.com_k2 .catItemHeader .genericItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink a:focus,
+.com_k2 .tagItemHeader .genericItemTitle span.catItemEditLink a:focus,
+.com_k2 .userItemHeader .genericItemTitle span.catItemEditLink a:focus,
+.com_k2 .latestItemHeader .genericItemTitle span.catItemEditLink a:focus,
+.com_k2 .genericItemHeader .genericItemTitle span.catItemEditLink a:focus,
+.com_k2 .itemHeader .catItemTitle .itemEditLink a:focus,
+.com_k2 .catItemHeader .catItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink a:focus,
+.com_k2 .tagItemHeader .catItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .catItemTitle .itemEditLink a:focus,
+.com_k2 .latestItemHeader .catItemTitle .itemEditLink a:focus,
+.com_k2 .genericItemHeader .catItemTitle .itemEditLink a:focus,
+.com_k2 .itemHeader .itemTitle .itemEditLink a:focus,
+.com_k2 .catItemHeader .itemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .itemTitle .itemEditLink a:focus,
+.com_k2 .tagItemHeader .itemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .itemTitle .itemEditLink a:focus,
+.com_k2 .latestItemHeader .itemTitle .itemEditLink a:focus,
+.com_k2 .genericItemHeader .itemTitle .itemEditLink a:focus,
+.com_k2 .itemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .itemHeader .tagItemTitle .itemEditLink a:focus,
+.com_k2 .catItemHeader .tagItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink a:focus,
+.com_k2 .tagItemHeader .tagItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .tagItemTitle .itemEditLink a:focus,
+.com_k2 .latestItemHeader .tagItemTitle .itemEditLink a:focus,
+.com_k2 .genericItemHeader .tagItemTitle .itemEditLink a:focus,
+.com_k2 .itemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .catItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .tagItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .latestItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .genericItemHeader .userItemTitle .itemEditLink a:focus,
+.com_k2 .itemHeader .latestItemTitle .itemEditLink a:focus,
+.com_k2 .catItemHeader .latestItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink a:focus,
+.com_k2 .tagItemHeader .latestItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .latestItemTitle .itemEditLink a:focus,
+.com_k2 .latestItemHeader .latestItemTitle .itemEditLink a:focus,
+.com_k2 .genericItemHeader .latestItemTitle .itemEditLink a:focus,
+.com_k2 .itemHeader .genericItemTitle .itemEditLink a:focus,
+.com_k2 .catItemHeader .genericItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink a:focus,
+.com_k2 .tagItemHeader .genericItemTitle .itemEditLink a:focus,
+.com_k2 .userItemHeader .genericItemTitle .itemEditLink a:focus,
+.com_k2 .latestItemHeader .genericItemTitle .itemEditLink a:focus,
+.com_k2 .genericItemHeader .genericItemTitle .itemEditLink a:focus,
+.com_k2 .itemHeader .catItemTitle .userItemEditLink a:focus,
+.com_k2 .catItemHeader .catItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink a:focus,
+.com_k2 .tagItemHeader .catItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .catItemTitle .userItemEditLink a:focus,
+.com_k2 .latestItemHeader .catItemTitle .userItemEditLink a:focus,
+.com_k2 .genericItemHeader .catItemTitle .userItemEditLink a:focus,
+.com_k2 .itemHeader .itemTitle .userItemEditLink a:focus,
+.com_k2 .catItemHeader .itemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink a:focus,
+.com_k2 .tagItemHeader .itemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .itemTitle .userItemEditLink a:focus,
+.com_k2 .latestItemHeader .itemTitle .userItemEditLink a:focus,
+.com_k2 .genericItemHeader .itemTitle .userItemEditLink a:focus,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .itemHeader .tagItemTitle .userItemEditLink a:focus,
+.com_k2 .catItemHeader .tagItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink a:focus,
+.com_k2 .tagItemHeader .tagItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .tagItemTitle .userItemEditLink a:focus,
+.com_k2 .latestItemHeader .tagItemTitle .userItemEditLink a:focus,
+.com_k2 .genericItemHeader .tagItemTitle .userItemEditLink a:focus,
+.com_k2 .itemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .catItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .tagItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .latestItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .genericItemHeader .userItemTitle .userItemEditLink a:focus,
+.com_k2 .itemHeader .latestItemTitle .userItemEditLink a:focus,
+.com_k2 .catItemHeader .latestItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink a:focus,
+.com_k2 .tagItemHeader .latestItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .latestItemTitle .userItemEditLink a:focus,
+.com_k2 .latestItemHeader .latestItemTitle .userItemEditLink a:focus,
+.com_k2 .genericItemHeader .latestItemTitle .userItemEditLink a:focus,
+.com_k2 .itemHeader .genericItemTitle .userItemEditLink a:focus,
+.com_k2 .catItemHeader .genericItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink a:focus,
+.com_k2 .tagItemHeader .genericItemTitle .userItemEditLink a:focus,
+.com_k2 .userItemHeader .genericItemTitle .userItemEditLink a:focus,
+.com_k2 .latestItemHeader .genericItemTitle .userItemEditLink a:focus,
+.com_k2 .genericItemHeader .genericItemTitle .userItemEditLink a:focus {
+  background: #649917;
+  color: #ffffff;
+}
+.com_k2 .itemHeader .catItemTitle a,
+.com_k2 .catItemHeader .catItemTitle a,
+.com_k2 .userItemHeader .catItemTitle a,
+.com_k2 .tagItemHeader .catItemTitle a,
+.com_k2 .userItemHeader .catItemTitle a,
+.com_k2 .latestItemHeader .catItemTitle a,
+.com_k2 .genericItemHeader .catItemTitle a,
+.com_k2 .itemHeader .itemTitle a,
+.com_k2 .catItemHeader .itemTitle a,
+.com_k2 .userItemHeader .itemTitle a,
+.com_k2 .tagItemHeader .itemTitle a,
+.com_k2 .userItemHeader .itemTitle a,
+.com_k2 .latestItemHeader .itemTitle a,
+.com_k2 .genericItemHeader .itemTitle a,
+.com_k2 .itemHeader .userItemTitle a,
+.com_k2 .catItemHeader .userItemTitle a,
+.com_k2 .userItemHeader .userItemTitle a,
+.com_k2 .tagItemHeader .userItemTitle a,
+.com_k2 .userItemHeader .userItemTitle a,
+.com_k2 .latestItemHeader .userItemTitle a,
+.com_k2 .genericItemHeader .userItemTitle a,
+.com_k2 .itemHeader .tagItemTitle a,
+.com_k2 .catItemHeader .tagItemTitle a,
+.com_k2 .userItemHeader .tagItemTitle a,
+.com_k2 .tagItemHeader .tagItemTitle a,
+.com_k2 .userItemHeader .tagItemTitle a,
+.com_k2 .latestItemHeader .tagItemTitle a,
+.com_k2 .genericItemHeader .tagItemTitle a,
+.com_k2 .itemHeader .userItemTitle a,
+.com_k2 .catItemHeader .userItemTitle a,
+.com_k2 .userItemHeader .userItemTitle a,
+.com_k2 .tagItemHeader .userItemTitle a,
+.com_k2 .userItemHeader .userItemTitle a,
+.com_k2 .latestItemHeader .userItemTitle a,
+.com_k2 .genericItemHeader .userItemTitle a,
+.com_k2 .itemHeader .latestItemTitle a,
+.com_k2 .catItemHeader .latestItemTitle a,
+.com_k2 .userItemHeader .latestItemTitle a,
+.com_k2 .tagItemHeader .latestItemTitle a,
+.com_k2 .userItemHeader .latestItemTitle a,
+.com_k2 .latestItemHeader .latestItemTitle a,
+.com_k2 .genericItemHeader .latestItemTitle a,
+.com_k2 .itemHeader .genericItemTitle a,
+.com_k2 .catItemHeader .genericItemTitle a,
+.com_k2 .userItemHeader .genericItemTitle a,
+.com_k2 .tagItemHeader .genericItemTitle a,
+.com_k2 .userItemHeader .genericItemTitle a,
+.com_k2 .latestItemHeader .genericItemTitle a,
+.com_k2 .genericItemHeader .genericItemTitle a {
+  color: #191919;
+  text-transform: uppercase;
+  font-size: 30px;
+  font-weight: 700;
+}
+.com_k2 .itemHeader .catItemTitle a:hover,
+.com_k2 .catItemHeader .catItemTitle a:hover,
+.com_k2 .userItemHeader .catItemTitle a:hover,
+.com_k2 .tagItemHeader .catItemTitle a:hover,
+.com_k2 .userItemHeader .catItemTitle a:hover,
+.com_k2 .latestItemHeader .catItemTitle a:hover,
+.com_k2 .genericItemHeader .catItemTitle a:hover,
+.com_k2 .itemHeader .itemTitle a:hover,
+.com_k2 .catItemHeader .itemTitle a:hover,
+.com_k2 .userItemHeader .itemTitle a:hover,
+.com_k2 .tagItemHeader .itemTitle a:hover,
+.com_k2 .userItemHeader .itemTitle a:hover,
+.com_k2 .latestItemHeader .itemTitle a:hover,
+.com_k2 .genericItemHeader .itemTitle a:hover,
+.com_k2 .itemHeader .userItemTitle a:hover,
+.com_k2 .catItemHeader .userItemTitle a:hover,
+.com_k2 .userItemHeader .userItemTitle a:hover,
+.com_k2 .tagItemHeader .userItemTitle a:hover,
+.com_k2 .userItemHeader .userItemTitle a:hover,
+.com_k2 .latestItemHeader .userItemTitle a:hover,
+.com_k2 .genericItemHeader .userItemTitle a:hover,
+.com_k2 .itemHeader .tagItemTitle a:hover,
+.com_k2 .catItemHeader .tagItemTitle a:hover,
+.com_k2 .userItemHeader .tagItemTitle a:hover,
+.com_k2 .tagItemHeader .tagItemTitle a:hover,
+.com_k2 .userItemHeader .tagItemTitle a:hover,
+.com_k2 .latestItemHeader .tagItemTitle a:hover,
+.com_k2 .genericItemHeader .tagItemTitle a:hover,
+.com_k2 .itemHeader .userItemTitle a:hover,
+.com_k2 .catItemHeader .userItemTitle a:hover,
+.com_k2 .userItemHeader .userItemTitle a:hover,
+.com_k2 .tagItemHeader .userItemTitle a:hover,
+.com_k2 .userItemHeader .userItemTitle a:hover,
+.com_k2 .latestItemHeader .userItemTitle a:hover,
+.com_k2 .genericItemHeader .userItemTitle a:hover,
+.com_k2 .itemHeader .latestItemTitle a:hover,
+.com_k2 .catItemHeader .latestItemTitle a:hover,
+.com_k2 .userItemHeader .latestItemTitle a:hover,
+.com_k2 .tagItemHeader .latestItemTitle a:hover,
+.com_k2 .userItemHeader .latestItemTitle a:hover,
+.com_k2 .latestItemHeader .latestItemTitle a:hover,
+.com_k2 .genericItemHeader .latestItemTitle a:hover,
+.com_k2 .itemHeader .genericItemTitle a:hover,
+.com_k2 .catItemHeader .genericItemTitle a:hover,
+.com_k2 .userItemHeader .genericItemTitle a:hover,
+.com_k2 .tagItemHeader .genericItemTitle a:hover,
+.com_k2 .userItemHeader .genericItemTitle a:hover,
+.com_k2 .latestItemHeader .genericItemTitle a:hover,
+.com_k2 .genericItemHeader .genericItemTitle a:hover,
+.com_k2 .itemHeader .catItemTitle a:focus,
+.com_k2 .catItemHeader .catItemTitle a:focus,
+.com_k2 .userItemHeader .catItemTitle a:focus,
+.com_k2 .tagItemHeader .catItemTitle a:focus,
+.com_k2 .userItemHeader .catItemTitle a:focus,
+.com_k2 .latestItemHeader .catItemTitle a:focus,
+.com_k2 .genericItemHeader .catItemTitle a:focus,
+.com_k2 .itemHeader .itemTitle a:focus,
+.com_k2 .catItemHeader .itemTitle a:focus,
+.com_k2 .userItemHeader .itemTitle a:focus,
+.com_k2 .tagItemHeader .itemTitle a:focus,
+.com_k2 .userItemHeader .itemTitle a:focus,
+.com_k2 .latestItemHeader .itemTitle a:focus,
+.com_k2 .genericItemHeader .itemTitle a:focus,
+.com_k2 .itemHeader .userItemTitle a:focus,
+.com_k2 .catItemHeader .userItemTitle a:focus,
+.com_k2 .userItemHeader .userItemTitle a:focus,
+.com_k2 .tagItemHeader .userItemTitle a:focus,
+.com_k2 .userItemHeader .userItemTitle a:focus,
+.com_k2 .latestItemHeader .userItemTitle a:focus,
+.com_k2 .genericItemHeader .userItemTitle a:focus,
+.com_k2 .itemHeader .tagItemTitle a:focus,
+.com_k2 .catItemHeader .tagItemTitle a:focus,
+.com_k2 .userItemHeader .tagItemTitle a:focus,
+.com_k2 .tagItemHeader .tagItemTitle a:focus,
+.com_k2 .userItemHeader .tagItemTitle a:focus,
+.com_k2 .latestItemHeader .tagItemTitle a:focus,
+.com_k2 .genericItemHeader .tagItemTitle a:focus,
+.com_k2 .itemHeader .userItemTitle a:focus,
+.com_k2 .catItemHeader .userItemTitle a:focus,
+.com_k2 .userItemHeader .userItemTitle a:focus,
+.com_k2 .tagItemHeader .userItemTitle a:focus,
+.com_k2 .userItemHeader .userItemTitle a:focus,
+.com_k2 .latestItemHeader .userItemTitle a:focus,
+.com_k2 .genericItemHeader .userItemTitle a:focus,
+.com_k2 .itemHeader .latestItemTitle a:focus,
+.com_k2 .catItemHeader .latestItemTitle a:focus,
+.com_k2 .userItemHeader .latestItemTitle a:focus,
+.com_k2 .tagItemHeader .latestItemTitle a:focus,
+.com_k2 .userItemHeader .latestItemTitle a:focus,
+.com_k2 .latestItemHeader .latestItemTitle a:focus,
+.com_k2 .genericItemHeader .latestItemTitle a:focus,
+.com_k2 .itemHeader .genericItemTitle a:focus,
+.com_k2 .catItemHeader .genericItemTitle a:focus,
+.com_k2 .userItemHeader .genericItemTitle a:focus,
+.com_k2 .tagItemHeader .genericItemTitle a:focus,
+.com_k2 .userItemHeader .genericItemTitle a:focus,
+.com_k2 .latestItemHeader .genericItemTitle a:focus,
+.com_k2 .genericItemHeader .genericItemTitle a:focus {
+  color: #72af1a;
+}
+.com_k2 .itemHeader .catItemAuthor a,
+.com_k2 .catItemHeader .catItemAuthor a,
+.com_k2 .userItemHeader .catItemAuthor a,
+.com_k2 .tagItemHeader .catItemAuthor a,
+.com_k2 .userItemHeader .catItemAuthor a,
+.com_k2 .latestItemHeader .catItemAuthor a,
+.com_k2 .genericItemHeader .catItemAuthor a {
+  color: #191919;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.com_k2 .itemHeader .catItemAuthor a:hover,
+.com_k2 .catItemHeader .catItemAuthor a:hover,
+.com_k2 .userItemHeader .catItemAuthor a:hover,
+.com_k2 .tagItemHeader .catItemAuthor a:hover,
+.com_k2 .userItemHeader .catItemAuthor a:hover,
+.com_k2 .latestItemHeader .catItemAuthor a:hover,
+.com_k2 .genericItemHeader .catItemAuthor a:hover,
+.com_k2 .itemHeader .catItemAuthor a:focus,
+.com_k2 .catItemHeader .catItemAuthor a:focus,
+.com_k2 .userItemHeader .catItemAuthor a:focus,
+.com_k2 .tagItemHeader .catItemAuthor a:focus,
+.com_k2 .userItemHeader .catItemAuthor a:focus,
+.com_k2 .latestItemHeader .catItemAuthor a:focus,
+.com_k2 .genericItemHeader .catItemAuthor a:focus,
+.com_k2 .itemHeader .catItemAuthor a:active,
+.com_k2 .catItemHeader .catItemAuthor a:active,
+.com_k2 .userItemHeader .catItemAuthor a:active,
+.com_k2 .tagItemHeader .catItemAuthor a:active,
+.com_k2 .userItemHeader .catItemAuthor a:active,
+.com_k2 .latestItemHeader .catItemAuthor a:active,
+.com_k2 .genericItemHeader .catItemAuthor a:active {
+  color: #72af1a;
+}
+.com_k2 div.itemToolbar {
+  background: none;
+  border: 0;
+  margin: 0 0 24px 0;
+  padding: 0;
+}
+.com_k2 div.itemToolbar .itemTextResizerTitle {
+  font-size: 12px;
+}
+.com_k2 div.itemToolbar ul {
+  text-align: right;
+  margin-right: 0;
+}
+.com_k2 div.itemToolbar ul li:first-child {
+  padding-right: 0;
+  margin-right: 0;
+}
+.com_k2 .catItemImageBlock,
+.com_k2 .itemImageBlock,
+.com_k2 .tagItemImageBlock,
+.com_k2 .userItemImageBlock,
+.com_k2 .latestItemImageBlock,
+.com_k2 .genericItemImageBlock {
+  padding: 0;
+  float: none;
+  margin-bottom: 24px;
+}
+.com_k2 .catItemImageBlock .catItemImage,
+.com_k2 .itemImageBlock .catItemImage,
+.com_k2 .tagItemImageBlock .catItemImage,
+.com_k2 .userItemImageBlock .catItemImage,
+.com_k2 .latestItemImageBlock .catItemImage,
+.com_k2 .genericItemImageBlock .catItemImage,
+.com_k2 .catItemImageBlock .itemImage,
+.com_k2 .itemImageBlock .itemImage,
+.com_k2 .tagItemImageBlock .itemImage,
+.com_k2 .userItemImageBlock .itemImage,
+.com_k2 .latestItemImageBlock .itemImage,
+.com_k2 .genericItemImageBlock .itemImage,
+.com_k2 .catItemImageBlock .userItemImage,
+.com_k2 .itemImageBlock .userItemImage,
+.com_k2 .tagItemImageBlock .userItemImage,
+.com_k2 .userItemImageBlock .userItemImage,
+.com_k2 .latestItemImageBlock .userItemImage,
+.com_k2 .genericItemImageBlock .userItemImage,
+.com_k2 .catItemImageBlock .tagItemImage,
+.com_k2 .itemImageBlock .tagItemImage,
+.com_k2 .tagItemImageBlock .tagItemImage,
+.com_k2 .userItemImageBlock .tagItemImage,
+.com_k2 .latestItemImageBlock .tagItemImage,
+.com_k2 .genericItemImageBlock .tagItemImage,
+.com_k2 .catItemImageBlock .userItemImage,
+.com_k2 .itemImageBlock .userItemImage,
+.com_k2 .tagItemImageBlock .userItemImage,
+.com_k2 .userItemImageBlock .userItemImage,
+.com_k2 .latestItemImageBlock .userItemImage,
+.com_k2 .genericItemImageBlock .userItemImage,
+.com_k2 .catItemImageBlock .latestItemImage,
+.com_k2 .itemImageBlock .latestItemImage,
+.com_k2 .tagItemImageBlock .latestItemImage,
+.com_k2 .userItemImageBlock .latestItemImage,
+.com_k2 .latestItemImageBlock .latestItemImage,
+.com_k2 .genericItemImageBlock .latestItemImage,
+.com_k2 .catItemImageBlock .genericItemImage,
+.com_k2 .itemImageBlock .genericItemImage,
+.com_k2 .tagItemImageBlock .genericItemImage,
+.com_k2 .userItemImageBlock .genericItemImage,
+.com_k2 .latestItemImageBlock .genericItemImage,
+.com_k2 .genericItemImageBlock .genericItemImage {
+  text-align: right;
+  margin: 0;
+}
+.com_k2 .catItemImageBlock .catItemImage a,
+.com_k2 .itemImageBlock .catItemImage a,
+.com_k2 .tagItemImageBlock .catItemImage a,
+.com_k2 .userItemImageBlock .catItemImage a,
+.com_k2 .latestItemImageBlock .catItemImage a,
+.com_k2 .genericItemImageBlock .catItemImage a,
+.com_k2 .catItemImageBlock .itemImage a,
+.com_k2 .itemImageBlock .itemImage a,
+.com_k2 .tagItemImageBlock .itemImage a,
+.com_k2 .userItemImageBlock .itemImage a,
+.com_k2 .latestItemImageBlock .itemImage a,
+.com_k2 .genericItemImageBlock .itemImage a,
+.com_k2 .catItemImageBlock .userItemImage a,
+.com_k2 .itemImageBlock .userItemImage a,
+.com_k2 .tagItemImageBlock .userItemImage a,
+.com_k2 .userItemImageBlock .userItemImage a,
+.com_k2 .latestItemImageBlock .userItemImage a,
+.com_k2 .genericItemImageBlock .userItemImage a,
+.com_k2 .catItemImageBlock .tagItemImage a,
+.com_k2 .itemImageBlock .tagItemImage a,
+.com_k2 .tagItemImageBlock .tagItemImage a,
+.com_k2 .userItemImageBlock .tagItemImage a,
+.com_k2 .latestItemImageBlock .tagItemImage a,
+.com_k2 .genericItemImageBlock .tagItemImage a,
+.com_k2 .catItemImageBlock .userItemImage a,
+.com_k2 .itemImageBlock .userItemImage a,
+.com_k2 .tagItemImageBlock .userItemImage a,
+.com_k2 .userItemImageBlock .userItemImage a,
+.com_k2 .latestItemImageBlock .userItemImage a,
+.com_k2 .genericItemImageBlock .userItemImage a,
+.com_k2 .catItemImageBlock .latestItemImage a,
+.com_k2 .itemImageBlock .latestItemImage a,
+.com_k2 .tagItemImageBlock .latestItemImage a,
+.com_k2 .userItemImageBlock .latestItemImage a,
+.com_k2 .latestItemImageBlock .latestItemImage a,
+.com_k2 .genericItemImageBlock .latestItemImage a,
+.com_k2 .catItemImageBlock .genericItemImage a,
+.com_k2 .itemImageBlock .genericItemImage a,
+.com_k2 .tagItemImageBlock .genericItemImage a,
+.com_k2 .userItemImageBlock .genericItemImage a,
+.com_k2 .latestItemImageBlock .genericItemImage a,
+.com_k2 .genericItemImageBlock .genericItemImage a,
+.com_k2 .catItemImageBlock .catItemImage a.modal,
+.com_k2 .itemImageBlock .catItemImage a.modal,
+.com_k2 .tagItemImageBlock .catItemImage a.modal,
+.com_k2 .userItemImageBlock .catItemImage a.modal,
+.com_k2 .latestItemImageBlock .catItemImage a.modal,
+.com_k2 .genericItemImageBlock .catItemImage a.modal,
+.com_k2 .catItemImageBlock .itemImage a.modal,
+.com_k2 .itemImageBlock .itemImage a.modal,
+.com_k2 .tagItemImageBlock .itemImage a.modal,
+.com_k2 .userItemImageBlock .itemImage a.modal,
+.com_k2 .latestItemImageBlock .itemImage a.modal,
+.com_k2 .genericItemImageBlock .itemImage a.modal,
+.com_k2 .catItemImageBlock .userItemImage a.modal,
+.com_k2 .itemImageBlock .userItemImage a.modal,
+.com_k2 .tagItemImageBlock .userItemImage a.modal,
+.com_k2 .userItemImageBlock .userItemImage a.modal,
+.com_k2 .latestItemImageBlock .userItemImage a.modal,
+.com_k2 .genericItemImageBlock .userItemImage a.modal,
+.com_k2 .catItemImageBlock .tagItemImage a.modal,
+.com_k2 .itemImageBlock .tagItemImage a.modal,
+.com_k2 .tagItemImageBlock .tagItemImage a.modal,
+.com_k2 .userItemImageBlock .tagItemImage a.modal,
+.com_k2 .latestItemImageBlock .tagItemImage a.modal,
+.com_k2 .genericItemImageBlock .tagItemImage a.modal,
+.com_k2 .catItemImageBlock .userItemImage a.modal,
+.com_k2 .itemImageBlock .userItemImage a.modal,
+.com_k2 .tagItemImageBlock .userItemImage a.modal,
+.com_k2 .userItemImageBlock .userItemImage a.modal,
+.com_k2 .latestItemImageBlock .userItemImage a.modal,
+.com_k2 .genericItemImageBlock .userItemImage a.modal,
+.com_k2 .catItemImageBlock .latestItemImage a.modal,
+.com_k2 .itemImageBlock .latestItemImage a.modal,
+.com_k2 .tagItemImageBlock .latestItemImage a.modal,
+.com_k2 .userItemImageBlock .latestItemImage a.modal,
+.com_k2 .latestItemImageBlock .latestItemImage a.modal,
+.com_k2 .genericItemImageBlock .latestItemImage a.modal,
+.com_k2 .catItemImageBlock .genericItemImage a.modal,
+.com_k2 .itemImageBlock .genericItemImage a.modal,
+.com_k2 .tagItemImageBlock .genericItemImage a.modal,
+.com_k2 .userItemImageBlock .genericItemImage a.modal,
+.com_k2 .latestItemImageBlock .genericItemImage a.modal,
+.com_k2 .genericItemImageBlock .genericItemImage a.modal {
+  display: block;
+  position: inherit;
+}
+.com_k2 .catItemImageBlock .catItemImage a img,
+.com_k2 .itemImageBlock .catItemImage a img,
+.com_k2 .tagItemImageBlock .catItemImage a img,
+.com_k2 .userItemImageBlock .catItemImage a img,
+.com_k2 .latestItemImageBlock .catItemImage a img,
+.com_k2 .genericItemImageBlock .catItemImage a img,
+.com_k2 .catItemImageBlock .itemImage a img,
+.com_k2 .itemImageBlock .itemImage a img,
+.com_k2 .tagItemImageBlock .itemImage a img,
+.com_k2 .userItemImageBlock .itemImage a img,
+.com_k2 .latestItemImageBlock .itemImage a img,
+.com_k2 .genericItemImageBlock .itemImage a img,
+.com_k2 .catItemImageBlock .userItemImage a img,
+.com_k2 .itemImageBlock .userItemImage a img,
+.com_k2 .tagItemImageBlock .userItemImage a img,
+.com_k2 .userItemImageBlock .userItemImage a img,
+.com_k2 .latestItemImageBlock .userItemImage a img,
+.com_k2 .genericItemImageBlock .userItemImage a img,
+.com_k2 .catItemImageBlock .tagItemImage a img,
+.com_k2 .itemImageBlock .tagItemImage a img,
+.com_k2 .tagItemImageBlock .tagItemImage a img,
+.com_k2 .userItemImageBlock .tagItemImage a img,
+.com_k2 .latestItemImageBlock .tagItemImage a img,
+.com_k2 .genericItemImageBlock .tagItemImage a img,
+.com_k2 .catItemImageBlock .userItemImage a img,
+.com_k2 .itemImageBlock .userItemImage a img,
+.com_k2 .tagItemImageBlock .userItemImage a img,
+.com_k2 .userItemImageBlock .userItemImage a img,
+.com_k2 .latestItemImageBlock .userItemImage a img,
+.com_k2 .genericItemImageBlock .userItemImage a img,
+.com_k2 .catItemImageBlock .latestItemImage a img,
+.com_k2 .itemImageBlock .latestItemImage a img,
+.com_k2 .tagItemImageBlock .latestItemImage a img,
+.com_k2 .userItemImageBlock .latestItemImage a img,
+.com_k2 .latestItemImageBlock .latestItemImage a img,
+.com_k2 .genericItemImageBlock .latestItemImage a img,
+.com_k2 .catItemImageBlock .genericItemImage a img,
+.com_k2 .itemImageBlock .genericItemImage a img,
+.com_k2 .tagItemImageBlock .genericItemImage a img,
+.com_k2 .userItemImageBlock .genericItemImage a img,
+.com_k2 .latestItemImageBlock .genericItemImage a img,
+.com_k2 .genericItemImageBlock .genericItemImage a img,
+.com_k2 .catItemImageBlock .catItemImage a.modal img,
+.com_k2 .itemImageBlock .catItemImage a.modal img,
+.com_k2 .tagItemImageBlock .catItemImage a.modal img,
+.com_k2 .userItemImageBlock .catItemImage a.modal img,
+.com_k2 .latestItemImageBlock .catItemImage a.modal img,
+.com_k2 .genericItemImageBlock .catItemImage a.modal img,
+.com_k2 .catItemImageBlock .itemImage a.modal img,
+.com_k2 .itemImageBlock .itemImage a.modal img,
+.com_k2 .tagItemImageBlock .itemImage a.modal img,
+.com_k2 .userItemImageBlock .itemImage a.modal img,
+.com_k2 .latestItemImageBlock .itemImage a.modal img,
+.com_k2 .genericItemImageBlock .itemImage a.modal img,
+.com_k2 .catItemImageBlock .userItemImage a.modal img,
+.com_k2 .itemImageBlock .userItemImage a.modal img,
+.com_k2 .tagItemImageBlock .userItemImage a.modal img,
+.com_k2 .userItemImageBlock .userItemImage a.modal img,
+.com_k2 .latestItemImageBlock .userItemImage a.modal img,
+.com_k2 .genericItemImageBlock .userItemImage a.modal img,
+.com_k2 .catItemImageBlock .tagItemImage a.modal img,
+.com_k2 .itemImageBlock .tagItemImage a.modal img,
+.com_k2 .tagItemImageBlock .tagItemImage a.modal img,
+.com_k2 .userItemImageBlock .tagItemImage a.modal img,
+.com_k2 .latestItemImageBlock .tagItemImage a.modal img,
+.com_k2 .genericItemImageBlock .tagItemImage a.modal img,
+.com_k2 .catItemImageBlock .userItemImage a.modal img,
+.com_k2 .itemImageBlock .userItemImage a.modal img,
+.com_k2 .tagItemImageBlock .userItemImage a.modal img,
+.com_k2 .userItemImageBlock .userItemImage a.modal img,
+.com_k2 .latestItemImageBlock .userItemImage a.modal img,
+.com_k2 .genericItemImageBlock .userItemImage a.modal img,
+.com_k2 .catItemImageBlock .latestItemImage a.modal img,
+.com_k2 .itemImageBlock .latestItemImage a.modal img,
+.com_k2 .tagItemImageBlock .latestItemImage a.modal img,
+.com_k2 .userItemImageBlock .latestItemImage a.modal img,
+.com_k2 .latestItemImageBlock .latestItemImage a.modal img,
+.com_k2 .genericItemImageBlock .latestItemImage a.modal img,
+.com_k2 .catItemImageBlock .genericItemImage a.modal img,
+.com_k2 .itemImageBlock .genericItemImage a.modal img,
+.com_k2 .tagItemImageBlock .genericItemImage a.modal img,
+.com_k2 .userItemImageBlock .genericItemImage a.modal img,
+.com_k2 .latestItemImageBlock .genericItemImage a.modal img,
+.com_k2 .genericItemImageBlock .genericItemImage a.modal img {
+  border: 0;
+  padding: 0;
+}
+.com_k2 .itemView {
+  border: 0;
+}
+.com_k2 .itemView .itemImageBlock {
+  margin: 0 0 24px 0;
+}
+.com_k2 .tagItemBody,
+.com_k2 .catItemBody,
+.com_k2 .latestItemBody,
+.com_k2 .userItemBody,
+.com_k2 .genericItemBody {
+  padding: 0;
+}
+.com_k2 .tagItemBody .catItemIntroText,
+.com_k2 .catItemBody .catItemIntroText,
+.com_k2 .latestItemBody .catItemIntroText,
+.com_k2 .userItemBody .catItemIntroText,
+.com_k2 .genericItemBody .catItemIntroText,
+.com_k2 .tagItemBody .tagItemIntroText,
+.com_k2 .catItemBody .tagItemIntroText,
+.com_k2 .latestItemBody .tagItemIntroText,
+.com_k2 .userItemBody .tagItemIntroText,
+.com_k2 .genericItemBody .tagItemIntroText,
+.com_k2 .tagItemBody .latestItemIntroText,
+.com_k2 .catItemBody .latestItemIntroText,
+.com_k2 .latestItemBody .latestItemIntroText,
+.com_k2 .userItemBody .latestItemIntroText,
+.com_k2 .genericItemBody .latestItemIntroText,
+.com_k2 .tagItemBody .userItemIntroText .genericItemIntroText,
+.com_k2 .catItemBody .userItemIntroText .genericItemIntroText,
+.com_k2 .latestItemBody .userItemIntroText .genericItemIntroText,
+.com_k2 .userItemBody .userItemIntroText .genericItemIntroText,
+.com_k2 .genericItemBody .userItemIntroText .genericItemIntroText {
+  padding: 0;
+  margin-bottom: 24px;
+  font-weight: 300;
+}
+.com_k2 .tagItemBody .catItemIntroText p:last-child,
+.com_k2 .catItemBody .catItemIntroText p:last-child,
+.com_k2 .latestItemBody .catItemIntroText p:last-child,
+.com_k2 .userItemBody .catItemIntroText p:last-child,
+.com_k2 .genericItemBody .catItemIntroText p:last-child,
+.com_k2 .tagItemBody .tagItemIntroText p:last-child,
+.com_k2 .catItemBody .tagItemIntroText p:last-child,
+.com_k2 .latestItemBody .tagItemIntroText p:last-child,
+.com_k2 .userItemBody .tagItemIntroText p:last-child,
+.com_k2 .genericItemBody .tagItemIntroText p:last-child,
+.com_k2 .tagItemBody .latestItemIntroText p:last-child,
+.com_k2 .catItemBody .latestItemIntroText p:last-child,
+.com_k2 .latestItemBody .latestItemIntroText p:last-child,
+.com_k2 .userItemBody .latestItemIntroText p:last-child,
+.com_k2 .genericItemBody .latestItemIntroText p:last-child,
+.com_k2 .tagItemBody .userItemIntroText .genericItemIntroText p:last-child,
+.com_k2 .catItemBody .userItemIntroText .genericItemIntroText p:last-child,
+.com_k2 .latestItemBody .userItemIntroText .genericItemIntroText p:last-child,
+.com_k2 .userItemBody .userItemIntroText .genericItemIntroText p:last-child,
+.com_k2 .genericItemBody .userItemIntroText .genericItemIntroText p:last-child {
+  margin-bottom: 0;
+}
+.com_k2 .itemFullText h1,
+.com_k2 .itemFullText h2,
+.com_k2 .itemFullText h3,
+.com_k2 .itemFullText h4,
+.com_k2 .itemFullText h5,
+.com_k2 .itemFullText h6 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #222222;
+}
+.com_k2 .itemListCategory {
+  background-color: #191919;
+  display: block;
+  padding: 24px;
+  margin-bottom: 48px;
+}
+.com_k2 .itemListCategory:before,
+.com_k2 .itemListCategory:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .itemListCategory:after {
+  clear: both;
+}
+.com_k2 .itemListCategory h2 {
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+.com_k2 .itemListCategory p {
+  color: #999999;
+  font-weight: 300;
+  margin: 0;
+}
+.com_k2 .itemListCategory img {
+  float: right;
+  margin-left: 24px;
+}
+.com_k2 .itemAuthorBlock {
+  background: #f3f8fa;
+  padding: 24px;
+  margin-bottom: 48px;
+}
+.com_k2 .itemAuthorBlock .itemAuthorAvatar {
+  border: 0;
+  padding: 0;
+  margin-left: 24px;
+  max-width: 80px;
+  float: right;
+}
+@media (max-width: 767px) {
+  .com_k2 .itemAuthorBlock .itemAuthorAvatar {
+    margin-left: 12px;
+  }
+}
+.com_k2 .itemAuthorBlock .itemAuthorDetails {
+  padding: 0;
+}
+.com_k2 .itemAuthorBlock .itemAuthorDetails:before,
+.com_k2 .itemAuthorBlock .itemAuthorDetails:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .itemAuthorBlock .itemAuthorDetails:after {
+  clear: both;
+}
+.com_k2 .itemAuthorBlock .itemAuthorDetails > p {
+  font-weight: 300;
+}
+.com_k2 .itemAuthorBlock .itemAuthorDetails span.itemAuthorUrl {
+  border: 0;
+  float: left;
+}
+.com_k2 .itemAuthorBlock .itemAuthorDetails span.itemAuthorUrl a {
+  color: #72af1a;
+}
+.com_k2 .itemAuthorBlock .itemAuthorName {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+.com_k2 .itemAuthorBlock .itemAuthorName a {
+  display: block;
+  line-height: 1;
+  margin-top: -3px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.com_k2 .itemAuthorLatest {
+  margin-bottom: 24px;
+}
+.com_k2 .itemAuthorLatest h3,
+.com_k2 .itemRelated h3 {
+  color: #191919;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.com_k2 .itemAuthorLatest ul,
+.com_k2 .itemRelated ul {
+  padding: 0;
+  margin-right: 24px;
+}
+.com_k2 .itemAuthorLatest ul li,
+.com_k2 .itemRelated ul li {
+  background: none;
+  padding: 8px 0;
+  border-bottom: 0;
+}
+.com_k2 .itemAuthorLatest ul li:last-child,
+.com_k2 .itemRelated ul li:last-child {
+  border: 0;
+}
+.com_k2 .userBlock,
+.com_k2 .latestItemsUser {
+  background: #f3f8fa;
+  border-color: 1px solid #f1f1f1;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+@media (max-width: 767px) {
+  .com_k2 .userBlock,
+  .com_k2 .latestItemsUser {
+    padding: 12px;
+  }
+}
+.com_k2 .userBlock h2,
+.com_k2 .latestItemsUser h2 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 24px;
+  font-weight: 700;
+  color: #222222;
+}
+.com_k2 .userBlock img,
+.com_k2 .latestItemsUser img {
+  border: 0;
+  padding: 0;
+  margin-left: 24px;
+  float: right;
+}
+@media (max-width: 767px) {
+  .com_k2 .userBlock img,
+  .com_k2 .latestItemsUser img {
+    margin-left: 12px;
+  }
+}
+.com_k2 .userBlock .userAdditionalInfo,
+.com_k2 .latestItemsUser .userAdditionalInfo {
+  text-align: left;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.com_k2 .userBlock .userAdditionalInfo a,
+.com_k2 .latestItemsUser .userAdditionalInfo a {
+  color: #72af1a;
+}
+.com_k2 .userBlock .userAdditionalInfo a:hover,
+.com_k2 .latestItemsUser .userAdditionalInfo a:hover,
+.com_k2 .userBlock .userAdditionalInfo a:focus,
+.com_k2 .latestItemsUser .userAdditionalInfo a:focus,
+.com_k2 .userBlock .userAdditionalInfo a:active,
+.com_k2 .latestItemsUser .userAdditionalInfo a:active {
+  color: #649917;
+}
+.com_k2 .itemNavigation {
+  background: none;
+  margin-bottom: 48px;
+}
+.com_k2 .itemNavigation:before,
+.com_k2 .itemNavigation:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .itemNavigation:after {
+  clear: both;
+}
+.com_k2 .itemNavigation .itemNavigationTitle {
+  color: #191919;
+  display: block;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+.com_k2 .itemNavigation a {
+  display: block;
+}
+@media screen and (min-width: 992px) {
+  .com_k2 .itemNavigation a {
+    display: inline-block;
+  }
+}
+.com_k2 .itemNavigation a.itemPrevious,
+.com_k2 .itemNavigation a.itemNext {
+  padding: 0;
+}
+@media screen and (min-width: 992px) {
+  .com_k2 .itemNavigation a.itemNext {
+    float: left;
+  }
+}
+.com_k2 div.itemSocialSharing,
+.com_k2 div.itemLinks,
+.com_k2 div.userItemLinks,
+.com_k2 .latestItemLinks {
+  padding: 0;
+  margin-bottom: 24px;
+  border: 0;
+}
+.com_k2 div.itemSocialSharing .itemCategory,
+.com_k2 div.itemLinks .itemCategory,
+.com_k2 div.userItemLinks .itemCategory,
+.com_k2 .latestItemLinks .itemCategory,
+.com_k2 div.itemSocialSharing .userItemCategory,
+.com_k2 div.itemLinks .userItemCategory,
+.com_k2 div.userItemLinks .userItemCategory,
+.com_k2 .latestItemLinks .userItemCategory,
+.com_k2 div.itemSocialSharing .latestItemCategory,
+.com_k2 div.itemLinks .latestItemCategory,
+.com_k2 div.userItemLinks .latestItemCategory,
+.com_k2 .latestItemLinks .latestItemCategory {
+  padding: 0;
+  border: 0;
+  margin-bottom: 12px;
+}
+.com_k2 div.itemSocialSharing:before,
+.com_k2 div.itemSocialSharing:after {
+  display: table;
+  content: " ";
+}
+.com_k2 div.itemSocialSharing:after {
+  clear: both;
+}
+.com_k2 div.itemSocialSharing .itemTwitterButton,
+.com_k2 div.itemSocialSharing .itemFacebookButton,
+.com_k2 div.itemSocialSharing .itemGooglePlusOneButton {
+  float: right;
+  margin-left: 10px;
+  width: auto;
+}
+.com_k2 .itemRatingBlock {
+  padding: 0;
+  margin: 0;
+}
+.com_k2 .itemRatingBlock span,
+.com_k2 .itemRatingBlock .itemRatingLog,
+.com_k2 .itemRatingBlock .itemRatingForm {
+  font-size: 12px;
+  color: #191919;
+  float: right;
+}
+.com_k2 .itemRatingBlock span {
+  margin: 0 0 0 5px;
+}
+.com_k2 .itemRatingBlock .itemRatingList {
+  margin-right: 0;
+  top: -2px;
+}
+.com_k2 .itemView .itemHeader {
+  margin-bottom: 0;
+}
+.com_k2 .itemView .itemHeader .itemTitle {
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+@media screen and (min-width: 992px) {
+  .com_k2 .itemView .itemHeader .itemTitle {
+    font-size: 30px;
+  }
+}
+.com_k2 .itemView .itemHeader .itemTitle > span {
+  display: block;
+}
+.com_k2 .itemView .itemHeader .itemTitle > span > sup {
+  background-color: #72af1a;
+  color: #ffffff;
+  font-size: 11px;
+  padding: 4px 6px;
+}
+.com_k2 .itemView div.itemToolbar,
+.com_k2 .itemView .itemRatingBlock {
+  display: inline-block;
+  margin: 0;
+  font-size: 12px;
+}
+.com_k2 .itemView div.itemToolbar a,
+.com_k2 .itemView .itemRatingBlock a {
+  font-size: 12px;
+}
+.com_k2 .itemView div.itemToolbar .itemRatingLog,
+.com_k2 .itemView .itemRatingBlock .itemRatingLog {
+  color: #191919;
+  font-size: 12px;
+}
+.com_k2 .itemView span.itemAuthor,
+.com_k2 .itemView .itemDateCreated,
+.com_k2 .itemView span.itemHits {
+  display: inline-block;
+  font-size: 12px;
+  border: 0;
+  padding: 0;
+}
+.com_k2 .itemView span.itemAuthor a.itemCommentsLink,
+.com_k2 .itemView .itemDateCreated a.itemCommentsLink,
+.com_k2 .itemView span.itemHits a.itemCommentsLink {
+  font-size: 12px;
+}
+.com_k2 .itemView span.itemAuthor span,
+.com_k2 .itemView .itemDateCreated span,
+.com_k2 .itemView span.itemHits span,
+.com_k2 .itemView span.itemAuthor a,
+.com_k2 .itemView .itemDateCreated a,
+.com_k2 .itemView span.itemHits a {
+  color: #191919;
+}
+.com_k2 .itemView span.itemAuthor a,
+.com_k2 .itemView .itemDateCreated a,
+.com_k2 .itemView span.itemHits a {
+  color: #191919;
+}
+.com_k2 .itemView span.itemAuthor a:hover,
+.com_k2 .itemView .itemDateCreated a:hover,
+.com_k2 .itemView span.itemHits a:hover,
+.com_k2 .itemView span.itemAuthor a:focus,
+.com_k2 .itemView .itemDateCreated a:focus,
+.com_k2 .itemView span.itemHits a:focus {
+  color: #72af1a;
+}
+.com_k2 .itemView .editItem {
+  margin: 6px 0;
+}
+.com_k2 .itemView .itemDateModified {
+  font-size: 12px;
+}
+.com_k2 .itemView .itemAuthor {
+  text-transform: uppercase;
+}
+.com_k2 .itemView .itemBody {
+  padding: 0;
+  font-weight: 300;
+}
+.com_k2 .itemView .itemBody .itemFullText h1,
+.com_k2 .itemView .itemBody .itemFullText h2,
+.com_k2 .itemView .itemBody .itemFullText h3,
+.com_k2 .itemView .itemBody .itemFullText h4,
+.com_k2 .itemView .itemBody .itemFullText h5,
+.com_k2 .itemView .itemBody .itemFullText h6 {
+  text-transform: uppercase;
+  color: #222222;
+}
+.com_k2 .itemView .itemContentFooter {
+  text-align: left;
+  margin-bottom: 12px;
+}
+.com_k2 .itemView .itemContentFooter .itemHits {
+  background-color: #fafafa;
+  padding: 6px 12px;
+}
+.com_k2 .componentheading {
+  font-size: 18px;
+  color: #222222;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+.com_k2 .itemComments .itemCommentsCounter {
+  color: #191919;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  margin: 0 0 48px 0;
+}
+.com_k2 .itemComments .itemCommentsList {
+  margin: 0;
+  padding: 0;
+}
+.com_k2 .itemComments .itemCommentsList li {
+  background: none;
+  padding: 0;
+  list-style: none;
+  margin-bottom: 48px;
+}
+.com_k2 .itemComments .itemCommentsList li:before,
+.com_k2 .itemComments .itemCommentsList li:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .itemComments .itemCommentsList li:after {
+  clear: both;
+}
+.com_k2 .itemComments .itemCommentsList li:last-child {
+  border-bottom: 0;
+}
+.com_k2 .itemComments .itemCommentsList li:first-child {
+  border-top: 0;
+}
+.com_k2 .itemComments .itemCommentsList li .commentToolbar {
+  float: left;
+}
+.com_k2 .itemComments .itemCommentsList li .commentToolbar a {
+  color: #72af1a;
+  display: inline-block;
+  font-size: 12px;
+  text-decoration: none;
+  line-height: 1;
+  overflow: unset;
+  vertical-align: unset;
+}
+.com_k2 .itemComments .itemCommentsList li .commentToolbar a.k2ReportUserButton {
+  border-right: 1px solid #999999;
+  margin-right: 6px;
+  padding-right: 6px;
+}
+.com_k2 .itemComments .itemCommentsList li .commentToolbar a:hover,
+.com_k2 .itemComments .itemCommentsList li .commentToolbar a:focus {
+  color: #222222;
+  font-size: 12px;
+}
+.com_k2 .itemComments .itemCommentsList li img {
+  border: 0;
+  border-radius: 50%;
+  height: auto;
+  padding: 0;
+  margin: 7px 0 0 12px;
+  float: right;
+}
+@media (min-width: 480px) {
+  .com_k2 .itemComments .itemCommentsList li img {
+    margin: 7px 0 0 24px;
+  }
+}
+@media (min-width: 480px) {
+  .com_k2 .itemComments .itemCommentsList li .commentDetail {
+    overflow: hidden;
+  }
+}
+.com_k2 .itemComments .itemCommentsList li .commentDetail > p {
+  font-weight: 300;
+  margin: 12px 0;
+}
+.com_k2 .itemComments .itemCommentsList li .commentDate {
+  color: #999999;
+  display: block;
+  font-weight: 400;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+@media (min-width: 480px) {
+  .com_k2 .itemComments .itemCommentsList li .commentDate {
+    display: inline;
+  }
+}
+.com_k2 .itemComments .itemCommentsList li .commentLink a {
+  font-size: 12px;
+  color: #72af1a;
+}
+.com_k2 .itemComments .itemCommentsList li .commentLink a:hover,
+.com_k2 .itemComments .itemCommentsList li .commentLink a:focus {
+  color: #222222;
+}
+.com_k2 .itemComments .itemCommentsList li .commentAuthorName {
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.com_k2 .itemComments .itemCommentsList li .commentAuthorName:after {
+  content: "/";
+  color: #999999;
+  margin: 0 12px;
+}
+@media (max-width: 480px) {
+  .com_k2 .itemComments .itemCommentsList li .commentAuthorName:after {
+    display: none;
+  }
+}
+.com_k2 .itemComments .itemCommentsForm h3 {
+  color: #191919;
+  font-size: 24px;
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+.com_k2 .itemComments .itemCommentsForm .itemCommentsFormNotes {
+  font-size: 12px;
+  font-weight: 300;
+}
+.com_k2 .itemComments .itemCommentsForm .controlForm {
+  margin-bottom: 24px;
+}
+@media (max-width: 767px) {
+  .com_k2 .itemComments .itemCommentsForm .controlForm > div:first-child {
+    margin-bottom: 15px;
+  }
+}
+.com_k2 .itemComments .itemCommentsForm .controlForm label {
+  color: #191919;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.com_k2 .itemComments .itemCommentsForm .controlForm input[disabled="disabled"] {
+  background-color: #fafafa;
+}
+.com_k2 .itemComments #recaptcha {
+  margin-bottom: 24px;
+}
+.com_k2 .itemComments .k2Submit {
+  display: inline-block;
+  position: relative;
+}
+.com_k2 .itemComments .k2Submit:after {
+  background-color: #80c51d;
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 100%;
+  right: 0;
+  left: 0;
+}
+.com_k2 .itemComments .k2Submit:before {
+  content: "";
+  position: absolute;
+  border-style: solid;
+  border-width: 5px;
+  border-color: transparent #80c51d transparent transparent;
+  right: 5px;
+  top: 50%;
+  margin-top: -5px;
+  z-index: 2;
+}
+.com_k2 div.catItemIsFeatured .userItemHeader:before,
+.com_k2 div.userItemIsFeatured .userItemHeader:before,
+.com_k2 div.catItemIsFeatured .catItemHeader:before,
+.com_k2 div.userItemIsFeatured .catItemHeader:before {
+  background-color: #72af1a;
+  content: "Feature";
+  color: #ffffff;
+  display: inline-block;
+  line-height: 1;
+  font-weight: 500;
+  font-size: 11px;
+  padding: 4px 6px;
+  text-transform: uppercase;
+}
+.com_k2 .itemBackToTop {
+  text-align: left;
+}
+.com_k2 .itemBackToTop a {
+  background-color: #72af1a;
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  width: 30px;
+}
+.com_k2 .itemBackToTop a:hover,
+.com_k2 .itemBackToTop a:focus,
+.com_k2 .itemBackToTop a:active {
+  background-color: #649917;
+}
+.com_k2 .itemBackToTop a .fa {
+  color: #ffffff;
+}
+.com_k2 .latestItemsCategory {
+  background-color: #191919;
+  display: block;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.com_k2 .latestItemsCategory:before,
+.com_k2 .latestItemsCategory:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .latestItemsCategory:after {
+  clear: both;
+}
+.com_k2 .latestItemsCategory .latestItemsCategoryImage {
+  float: right;
+  margin-left: 24px;
+}
+.com_k2 .latestItemsCategory h2 {
+  margin: 0;
+}
+.com_k2 .latestItemsCategory h2 a {
+  color: #ffffff;
+  text-transform: uppercase;
+}
+.com_k2 .latestItemsCategory h2 a:hover,
+.com_k2 .latestItemsCategory h2 a:focus,
+.com_k2 .latestItemsCategory h2 a:active {
+  color: #eeeeee;
+}
+.com_k2 .latestItemsCategory p {
+  color: #999999;
+  margin-bottom: 0;
+  margin-top: 6px;
+  font-weight: 300;
+}
+.com_k2 .itemRatingList,
+.com_k2 .itemRatingList a:hover,
+.com_k2 .itemRatingList .itemCurrentRating {
+  background-image: url(../../../images/system/transparent_star.png);
+}
+.com_k2 .itemRatingList {
+  background-position: right top;
+  float: right;
+  height: 25px;
+  list-style: outside none none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  width: 125px;
+}
+.com_k2 .itemRatingList li {
+  background: rgba(0, 0, 0, 0) none repeat scroll 100% 0;
+  display: inline;
+  padding: 0;
+}
+.com_k2 .itemRatingList a,
+.com_k2 .itemRatingList .itemCurrentRating {
+  border: medium none;
+  cursor: pointer;
+  height: 25px;
+  right: 0;
+  line-height: 25px;
+  outline: medium none;
+  overflow: hidden;
+  position: absolute;
+  text-indent: -1000px;
+  top: 0;
+}
+.com_k2 .itemRatingList a:hover {
+  background-position: right bottom;
+}
+.com_k2 .itemRatingList a.one-star {
+  width: 20%;
+  z-index: 6;
+}
+.com_k2 .itemRatingList a.two-stars {
+  width: 40%;
+  z-index: 5;
+}
+.com_k2 .itemRatingList a.three-stars {
+  width: 60%;
+  z-index: 4;
+}
+.com_k2 .itemRatingList a.four-stars {
+  width: 80%;
+  z-index: 3;
+}
+.com_k2 .itemRatingList a.five-stars {
+  width: 100%;
+  z-index: 2;
+}
+.com_k2 .itemRatingList .itemCurrentRating {
+  background-position: 100% center;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+.com_k2 .k2Avatar {
+  float: right;
+  margin: 5px 0 0 12px;
+}
+.com_k2 .k2Avatar img {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  float: none;
+  border-radius: 3px;
+}
+.com_k2 .k2ItemsBlock ul {
+  padding: 0;
+  margin: 0;
+}
+.com_k2 .k2ItemsBlock ul li {
+  border-bottom: 1px solid #f1f1f1;
+  padding: 0 0 24px 0;
+  background: none;
+  display: block;
+  margin-bottom: 24px;
+}
+.com_k2 .k2ItemsBlock ul li:before,
+.com_k2 .k2ItemsBlock ul li:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .k2ItemsBlock ul li:after {
+  clear: both;
+}
+.com_k2 .k2ItemsBlock ul li.lastItem {
+  border-bottom: 0;
+}
+.com_k2 .k2ItemsBlock ul li .moduleItemTitle {
+  font-weight: 700;
+  display: block;
+  margin-top: 12px;
+  text-transform: uppercase;
+}
+.com_k2 .k2ItemsBlock ul li .ItemAuthor {
+  background-color: #f3f8fa;
+  padding: 6px;
+  margin-bottom: 12px;
+}
+.com_k2 .k2ItemsBlock ul li .ItemAuthor .userDescription {
+  font-size: 12px;
+  font-weight: 300;
+}
+.com_k2 .k2ItemsBlock ul li .moduleItemIntrotext {
+  padding: 0;
+  line-height: 1.5;
+  font-weight: 300;
+}
+.com_k2 .k2ItemsBlock ul li .moduleItemIntrotext .k2VideoContainer {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+.com_k2 .k2ItemsBlock ul li .moduleItemIntrotext p {
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+.com_k2 .k2ItemsBlock ul li .moduleItemIntrotext .moduleItemDateCreated {
+  color: #999999;
+  font-size: 12px;
+}
+.com_k2 .k2ItemsBlock ul li .moduleItemIntrotext .moduleItemImage img {
+  float: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  width: 100%;
+}
+.com_k2 .k2ItemsBlock ul li .moduleItemComments,
+.com_k2 .k2ItemsBlock ul li .moduleItemHits {
+  display: block;
+}
+.com_k2 .k2UserBlock .k2UserBlockDetails:before,
+.com_k2 .k2UserBlock .k2UserBlockDetails:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .k2UserBlock .k2UserBlockDetails:after {
+  clear: both;
+}
+.com_k2 .k2UserBlock .k2UserBlockActions {
+  clear: both;
+  padding-right: 15px;
+  margin-top: 12px;
+}
+.com_k2 .k2UsersBlock {
+  position: relative;
+}
+.com_k2 .k2UsersBlock .ubUserAdditionalInfo {
+  margin: 12px 0;
+}
+.com_k2 .k2UsersBlock .ubUserAdditionalInfo .ubUserURL {
+  display: block;
+}
+.com_k2 .k2UsersBlock .ubUserAdditionalInfo + h3 {
+  color: #222222;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 12px 0;
+}
+.com_k2 .k2UsersBlock .ubUserDescription {
+  font-size: 12px;
+}
+.com_k2 .k2UsersBlock ul {
+  margin: 0;
+}
+.com_k2 .k2UsersBlock ul li {
+  background: none;
+  padding: 0;
+  list-style: none;
+}
+.com_k2 .k2UsersBlock ul li a.ubUserName {
+  font-weight: 500;
+}
+.com_k2 .k2UsersBlock ul li ul {
+  margin-right: 24px;
+}
+.com_k2 .k2UsersBlock ul li ul li {
+  list-style: square;
+}
+.com_k2 .k2UsersBlock .ubUserItems li a {
+  font-weight: 500;
+}
+.com_k2 .k2LoginBlock #form-login fieldset > p {
+  margin-bottom: 12px;
+}
+.com_k2 .k2LoginBlock #form-login fieldset > p .inputbox[type="checkbox"] {
+  float: right;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.com_k2 .k2LoginBlock .form-group {
+  margin-bottom: 12px;
+}
+.com_k2 .k2LoginBlock ul {
+  padding-right: 13px;
+  margin-top: 12px;
+}
+.com_k2 .k2LoginBlock ul li {
+  padding: 8px 0;
+  line-height: 1;
+}
+.com_k2 .k2LoginBlock ul li a {
+  color: #191919;
+}
+.com_k2 .k2LoginBlock ul li a:hover,
+.com_k2 .k2LoginBlock ul li a:focus,
+.com_k2 .k2LoginBlock ul li a:active {
+  color: #72af1a;
+}
+.com_k2 .k2SearchBlock .button {
+  margin-top: 12px;
+}
+.com_k2 .k2CalendarBlock table.calendar {
+  width: 100%;
+}
+.com_k2 .k2CalendarBlock table.calendar td {
+  border-top-color: #f1f1f1;
+  padding: 6px;
+  text-align: center;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .com_k2 .k2CalendarBlock table.calendar td {
+    padding: 0;
+  }
+}
+.com_k2 .k2CalendarBlock table.calendar td.calendarToday {
+  background-color: #72af1a;
+  color: #ffffff;
+}
+.com_k2 .k2CalendarBlock table.calendar td.calendarDateLinked a:hover {
+  color: #72af1a;
+}
+.com_k2 .k2CalendarBlock table.calendar td.calendarNavMonthPrev,
+.com_k2 .k2CalendarBlock table.calendar td.calendarNavMonthNext {
+  background-color: #191919;
+  text-align: center;
+}
+.com_k2 .k2CalendarBlock table.calendar td.calendarNavMonthPrev a,
+.com_k2 .k2CalendarBlock table.calendar td.calendarNavMonthNext a {
+  color: #ffffff;
+}
+.com_k2 .k2CalendarBlock table.calendar td.calendarCurrentMonth {
+  background-color: #191919;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+.com_k2 div.k2TagCloudBlock {
+  padding: 0;
+  margin: 0;
+}
+.com_k2 div.k2TagCloudBlock a {
+  color: #191919;
+  background: #fafafa;
+  padding: 6px 12px;
+  font-size: 10px !important;
+  float: right;
+  margin: 0 0 5px 5px;
+  text-transform: uppercase;
+}
+.com_k2 div.k2TagCloudBlock a:hover,
+.com_k2 div.k2TagCloudBlock a:focus {
+  background: #72af1a;
+  color: #ffffff;
+}
+.com_k2 .catItemTagsBlock > span,
+.com_k2 .itemTagsBlock > span,
+.com_k2 .userItemTagsBlock > span,
+.com_k2 .latestItemTagsBlock > span {
+  color: #191919;
+  display: inline-block;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 2px;
+  vertical-align: top;
+}
+.com_k2 .catItemTagsBlock ul,
+.com_k2 .itemTagsBlock ul,
+.com_k2 .userItemTagsBlock ul,
+.com_k2 .latestItemTagsBlock ul {
+  display: inline-block;
+  padding-right: 0;
+  margin: 0;
+  list-style: none;
+}
+.com_k2 .catItemTagsBlock ul li,
+.com_k2 .itemTagsBlock ul li,
+.com_k2 .userItemTagsBlock ul li,
+.com_k2 .latestItemTagsBlock ul li {
+  display: inline-block;
+}
+.com_k2 .catItemTagsBlock ul li a,
+.com_k2 .itemTagsBlock ul li a,
+.com_k2 .userItemTagsBlock ul li a,
+.com_k2 .latestItemTagsBlock ul li a {
+  color: #191919;
+  background: #fafafa;
+  padding: 6px 12px;
+  font-size: 10px !important;
+  float: right;
+  margin-right: 5px;
+  text-transform: uppercase;
+}
+.com_k2 .catItemTagsBlock ul li a:hover,
+.com_k2 .itemTagsBlock ul li a:hover,
+.com_k2 .userItemTagsBlock ul li a:hover,
+.com_k2 .latestItemTagsBlock ul li a:hover,
+.com_k2 .catItemTagsBlock ul li a:focus,
+.com_k2 .itemTagsBlock ul li a:focus,
+.com_k2 .userItemTagsBlock ul li a:focus,
+.com_k2 .latestItemTagsBlock ul li a:focus {
+  background: #72af1a;
+  color: #ffffff;
+}
+.com_k2 .k2LatestCommentsBlock ul {
+  margin: 0;
+  padding: 0;
+}
+.com_k2 .k2LatestCommentsBlock li {
+  list-style: none;
+  background: none;
+  padding: 12px 0;
+  display: block;
+}
+.com_k2 .k2LatestCommentsBlock li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.com_k2 .k2LatestCommentsBlock li:first-child {
+  padding-top: 0;
+}
+.com_k2 .k2LatestCommentsBlock li .k2Avatar {
+  margin-top: 0;
+}
+.com_k2 .k2LatestCommentsBlock li .commenDetail {
+  border: 1px solid #c7d7e1;
+  clear: both;
+  display: block;
+  position: relative;
+  padding: 12px;
+  margin-top: 24px;
+}
+.com_k2 .k2LatestCommentsBlock li .commenDetail:after {
+  content: "";
+  position: absolute;
+  border-width: 9px;
+  border-style: solid;
+  border-color: transparent transparent #ffffff transparent;
+  top: -18px;
+  right: 13px;
+}
+.com_k2 .k2LatestCommentsBlock li .commenDetail:before {
+  content: "";
+  position: absolute;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent #c7d7e1 transparent;
+  top: -20px;
+  right: 12px;
+}
+.com_k2 .k2LatestCommentsBlock li .lcComment {
+  color: #191919;
+  display: block;
+  font-weight: 300;
+}
+.com_k2 .k2LatestCommentsBlock li .lcComment:hover,
+.com_k2 .k2LatestCommentsBlock li .lcComment:focus,
+.com_k2 .k2LatestCommentsBlock li .lcComment:active {
+  color: #72af1a;
+}
+.com_k2 .k2LatestCommentsBlock li .lcCommentDate {
+  color: #999999;
+  display: block;
+  font-size: 12px;
+  font-weight: 300;
+}
+.com_k2 .k2LatestCommentsBlock li .lcUsername {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.com_k2 .k2LatestCommentsBlock li .lcItemTitle {
+  font-weight: 300;
+  font-size: 12px;
+}
+.com_k2 .k2LatestCommentsBlock li .lcItemCategory {
+  color: #555555;
+  display: block;
+}
+.com_k2 .k2LatestCommentsBlock li .lcItemCategory a {
+  color: #555555;
+  font-weight: 300;
+  font-size: 12px;
+}
+.com_k2 .k2LatestCommentsBlock li .lcItemCategory a:hover,
+.com_k2 .k2LatestCommentsBlock li .lcItemCategory a:focus {
+  color: #72af1a;
+}
+.com_k2 .k2CategoriesListBlock ul {
+  border: 1px solid #f1f1f1;
+  margin-right: 0;
+}
+.com_k2 .k2CategoriesListBlock li {
+  border-bottom: 1px solid #f1f1f1;
+  padding: 12px 24px;
+  list-style: none;
+  display: block;
+}
+.com_k2 .k2CategoriesListBlock li:last-child {
+  border-bottom: 0;
+}
+.com_k2 .k2CategoriesListBlock li a {
+  color: #191919;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.com_k2 .k2CategoriesListBlock li a:hover,
+.com_k2 .k2CategoriesListBlock li a:focus,
+.com_k2 .k2CategoriesListBlock li a:active {
+  color: #72af1a;
+}
+.com_k2 .k2CategoriesListBlock li a:before {
+  content: "\f04b";
+  color: #72af1a;
+  font-family: FontAwesome;
+  font-size: 10px;
+  font-weight: normal;
+  position: relative;
+  top: -2px;
+  margin-left: 12px;
+  text-decoration: inherit;
+}
+.com_k2 .k2CategoriesListBlock li a .catTitle {
+  font-weight: 500;
+}
+.com_k2 .k2CategoriesListBlock li a .catCounter {
+  font-weight: 300;
+  float: left;
+}
+div.k2ItemsGridBlock {
+  text-align: right;
+}
+div.k2ItemsGridBlock .owl-carousel {
+  padding: 0;
+  margin: 0 -15px;
+  width: auto;
+}
+div.k2ItemsGridBlock .owl-carousel .inner {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+div.k2ItemsGridBlock .moduleItemIntrotext {
+  background: #ffffff;
+  padding: 24px;
+  position: relative;
+}
+div.k2ItemsGridBlock .moduleItemTitle {
+  display: block;
+  color: #191919;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+div.k2ItemsGridBlock .moduleItemTitle:hover,
+div.k2ItemsGridBlock .moduleItemTitle:focus,
+div.k2ItemsGridBlock .moduleItemTitle:active {
+  color: #72af1a;
+}
+div.k2ItemsGridBlock .moduleItemImage {
+  display: block;
+  margin: -24px -24px 24px;
+}
+div.k2ItemsGridBlock .moduleItemImage img {
+  max-width: 100%;
+}
+div.k2ItemsGridBlock .item-price {
+  position: absolute;
+  background: #72af1a;
+  color: #ffffff;
+  top: 0;
+  right: 0;
+  padding: 8px 10px;
+  line-height: 1;
+}
+div.k2ItemsGridBlock .owl-theme .owl-controls {
+  position: relative;
+  margin-top: 50px;
+  height: 50px;
+}
+div.k2ItemsGridBlock .owl-theme .owl-controls .owl-buttons div {
+  position: absolute;
+  right: 0;
+  top: -24px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  padding: 0;
+  margin: 0 15px 0 0;
+  text-align: center;
+  background: #72af1a;
+  color: #ffffff;
+  border-radius: 0;
+  filter: alpha(opacity=100);
+  opacity: 1;
+}
+div.k2ItemsGridBlock .owl-theme .owl-controls .owl-buttons div.owl-next {
+  left: 0;
+  right: auto;
+  margin: 0 0 0 15px;
+}
+div.k2ItemsGridBlock .owl-theme .owl-controls .owl-page span {
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
+  margin-left: 4px;
+}
+div.k2ItemsGridBlock .owl-theme .owl-controls .owl-page.active span {
+  background: #72af1a;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .moduleItemIntrotext {
+  padding: 0;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .moduleItemImage {
+  margin: 0;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .moduleItemTitle {
+  margin-bottom: 0;
+  position: absolute;
+  bottom: 0;
+  padding: 8px 10px;
+  width: 100%;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-carousel {
+  margin: 0;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-carousel .inner {
+  padding: 0;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-theme .owl-controls {
+  height: auto;
+  margin-top: 12px;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-theme .owl-controls:before,
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-theme .owl-controls:after {
+  display: table;
+  content: " ";
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-theme .owl-controls:after {
+  clear: both;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-theme .owl-controls .owl-buttons div {
+  margin-right: 0;
+  width: 27px;
+  height: 27px;
+  line-height: 27px;
+  position: static;
+  float: right;
+}
+div.k2ItemsGridBlock.k2ItemsSingleBlock .owl-theme .owl-controls .owl-buttons div.owl-next {
+  margin-left: 0;
+  float: left;
+}
+div.k2FeedIcon {
+  padding: 4px 8px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+div.k2FeedIcon a,
+div.k2FeedIcon a:hover {
+  background: url("../../../images/fugue/feed.png") no-repeat 50% 50%;
+  display: block;
+  float: left;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  width: 16px;
+}
+div.k2FeedIcon a span,
+div.k2FeedIcon a:hover span {
+  display: none;
+}
+div.itemToolbar {
+  font-size: 12px;
+  color: #191919;
+  padding: 12px 0;
+}
+div.itemToolbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+div.itemToolbar ul li {
+  background: none;
+  display: inline;
+  list-style: none;
+}
+div.itemToolbar ul li:before {
+  content: "/";
+}
+div.itemToolbar ul > li:first-child:before {
+  display: none;
+}
+div.itemToolbar ul li a {
+  font-size: 12px;
+  color: #191919;
+}
+div.itemToolbar ul li a:hover {
+  color: #72af1a;
+  text-decoration: none;
+}
+div.itemToolbar ul li a img {
+  vertical-align: middle;
+}
+div.itemToolbar ul li a#fontDecrease {
+  margin: 0 2px 0 0;
+  font-family: "FontAwesome";
+  font-size: 14px;
+  color: #999999;
+}
+div.itemToolbar ul li a#fontDecrease:hover,
+div.itemToolbar ul li a#fontDecrease:active,
+div.itemToolbar ul li a#fontDecrease:focus {
+  color: #72af1a;
+}
+div.itemToolbar ul li a#fontDecrease:before {
+  content: "\f056";
+}
+div.itemToolbar ul li a#fontDecrease img {
+  display: none;
+}
+div.itemToolbar ul li a#fontIncrease {
+  margin: 0 2px 0 0;
+  font-family: "FontAwesome";
+  font-size: 14px;
+  color: #999999;
+}
+div.itemToolbar ul li a#fontIncrease:hover,
+div.itemToolbar ul li a#fontIncrease:active,
+div.itemToolbar ul li a#fontIncrease:focus {
+  color: #72af1a;
+}
+div.itemToolbar ul li a#fontIncrease:before {
+  content: "\f055";
+}
+div.itemToolbar ul li a#fontIncrease img {
+  display: none;
+}
+div.itemToolbar ul li a#fontDecrease span,
+div.itemToolbar ul li a#fontIncrease span {
+  display: none;
+}
+div.itemRatingBlock span {
+  display: inline-block;
+  font-style: normal;
+  margin: 0;
+  padding: 0 0 0 4px;
+}
+.com_k2 div.demo-detailk2 h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 48px;
+  margin-bottom: 24px;
+}
+.com_k2 div.demo-detailk2 ul {
+  list-style: none;
+}
+.com_k2 div.demo-detailk2 ul li {
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 500;
+}
+.com_k2 div.demo-detailk2 ul li .fa {
+  color: #72af1a;
+  font-size: 14px;
+  margin-left: 6px;
+}
+.com_k2 div.demo-detailk2 .row > p {
+  margin-top: 24px;
+  margin-bottom: 48px;
+}
+.com_k2 .itemGridView .catItemView {
+  background: #ffffff;
+  padding: 24px 24px 72px;
+  margin-bottom: 30px;
+  position: relative;
+}
+.com_k2 .itemGridView .catItemImageBlock {
+  margin: -24px -24px 24px;
+}
+.com_k2 .itemGridView .catItemImageBlock .catItemImage {
+  position: relative;
+  display: block;
+}
+.com_k2 .itemGridView .catItemImageBlock .catItemImage .item-price {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #72af1a;
+  color: #ffffff;
+  padding: 8px 10px;
+  line-height: 1;
+}
+.com_k2 .itemGridView .catItemTitle a {
+  font-size: 14px;
+}
+.com_k2 .itemGridView .catItemHeader {
+  margin-bottom: 0;
+  position: relative;
+}
+.com_k2 .itemGridView .catItemHeader span.catItemEditLink {
+  position: absolute;
+  left: -24px;
+  top: -24px;
+  float: none;
+}
+.com_k2 .itemGridView .catItemHeader span.catItemEditLink .modal {
+  position: static;
+}
+.com_k2 .itemGridView .catItemDateCreated,
+.com_k2 .itemGridView .catItemAuthor,
+.com_k2 .itemGridView .catItemHits,
+.com_k2 .itemGridView .catItemCategory,
+.com_k2 .itemGridView .itemRatingLog {
+  color: #999999;
+  font-size: 12px;
+}
+.com_k2 .itemGridView .itemRatingForm:before,
+.com_k2 .itemGridView .itemRatingForm:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .itemGridView .itemRatingForm:after {
+  clear: both;
+}
+.com_k2 .itemGridView .itemRatingForm .itemRatingLog {
+  float: right;
+  line-height: 25px;
+}
+.com_k2 .itemGridView .catItemAuthor a {
+  text-transform: none;
+}
+.com_k2 .itemGridView .catItemReadMore {
+  margin-top: 24px;
+}
+.com_k2 .itemGridView .catItemExtraFields {
+  margin-top: 24px;
+}
+.com_k2 .itemGridView .catItemExtraFields > h4 {
+  display: none;
+}
+.com_k2 .itemGridView .catItemExtraFields ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: #999999;
+}
+.com_k2 .itemGridView .catItemExtraFields ul li + li {
+  margin-top: 12px;
+}
+.com_k2 .itemGridView .catItemExtraFields ul i {
+  color: #72af1a;
+  min-width: 20px;
+  font-size: 14px;
+}
+.com_k2 .itemGridView .catItemExtraFields ul a {
+  color: #999999;
+}
+.com_k2 .itemGridView .catItemBody {
+  clear: both;
+}
+.com_k2 .itemGridView .catItemIntroText {
+  margin-top: 24px;
+}
+.com_k2 .itemGridView .catItemFooter {
+  text-align: center;
+  margin: 0 -24px;
+  padding: 12px 24px;
+  background: #191919;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: #999999;
+}
+.com_k2 .itemGridView .catItemFooter a {
+  color: #999999;
+  display: inline-block;
+  width: 20%;
+}
+.com_k2 .itemGridView .catItemFooter a:hover,
+.com_k2 .itemGridView .catItemFooter a:focus,
+.com_k2 .itemGridView .catItemFooter a:active {
+  color: #ffffff;
+}
+.com_k2 .itemGrid .itemImageBlockWrap {
+  background: #ffffff;
+  margin-bottom: 24px;
+}
+.com_k2 .itemGrid .itemImageBlockWrap:before,
+.com_k2 .itemGrid .itemImageBlockWrap:after {
+  display: table;
+  content: " ";
+}
+.com_k2 .itemGrid .itemImageBlockWrap:after {
+  clear: both;
+}
+.com_k2 .itemGrid .itemImageBlock {
+  float: right;
+  margin: 0;
+  padding-left: 15px;
+}
+.com_k2 .itemGrid .itemTitle {
+  text-transform: uppercase;
+  font-size: 18px;
+}
+.com_k2 .itemGrid .itemTitle span.itemEditLink {
+  text-transform: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.com_k2 .itemGrid .itemTitle span.itemEditLink a {
+  background-color: #72af1a;
+  color: #ffffff;
+  font-weight: 500;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  line-height: 1;
+  padding: 5px;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.com_k2 .itemGrid .itemTitle span.itemEditLink a:hover,
+.com_k2 .itemGrid .itemTitle span.itemEditLink a:focus {
+  background: #649917;
+  color: #ffffff;
+}
+.com_k2 .itemGrid .itemTitle span.itemEditLink .modal {
+  position: static;
+}
+.com_k2 .itemGrid .itemExtraFields {
+  background: #ffffff;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+.com_k2 .itemGrid .itemExtraFields > h3 {
+  display: none;
+}
+.com_k2 .itemGrid .itemExtraFields ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: #999999;
+}
+.com_k2 .itemGrid .itemExtraFields ul li + li {
+  margin-top: 12px;
+}
+.com_k2 .itemGrid .itemExtraFields ul i {
+  color: #72af1a;
+  min-width: 20px;
+  font-size: 14px;
+}
+.com_k2 .itemGrid .itemExtraFields ul a {
+  color: #999999;
+}
+.com_k2 .itemGrid .itemComments .itemCommentsForm h3 {
+  font-size: 30px;
+  margin-bottom: 24px;
+}
+.com_k2 .itemComments {
+  margin-top: 48px;
+}
+#k2ReportCommentForm input,
+#k2ReportCommentForm textarea {
+  margin-bottom: 12px;
+}
+#k2ReportCommentForm button {
+  border: 0;
+  border-right: 5px solid #80c51d;
+  background-color: #72af1a;
+  color: #ffffff;
+  padding: 10px 14px;
+  position: relative;
+}
+#k2ReportCommentForm button:after {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #80c51d transparent transparent;
+  right: 0;
+  top: 50%;
+  margin-top: -5px;
+}
+#k2ReportCommentForm button:hover,
+#k2ReportCommentForm button:focus,
+#k2ReportCommentForm button:active {
+  background-color: #649917;
+}
+.k2VideoContainer {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  margin-bottom: 24px;
+  height: 0;
+  overflow: hidden;
+}
+.k2VideoContainer iframe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+.ie8 .itemGridView .catItemView .catItemImageBlock img {
+  width: 100% !important;
+}
+.ie8 .itemView div.itemToolbar {
+  width: 30%;
+  white-space: nowrap;
+}
+.ie8 .itemView div.itemToolbar ul {
+  text-align: left;
+}
+.ie8 .itemView div.itemToolbar ul li {
+  display: inline;
+}
+.ie8 .itemView .itemTagsBlock > span {
+  display: inline;
+}

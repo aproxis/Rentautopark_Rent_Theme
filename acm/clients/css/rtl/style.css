@@ -1,0 +1,90 @@
+.uber-cliens.multi-row .row {
+  border-bottom: 1px solid #f1f1f1;
+}
+.uber-cliens.multi-row .row .client-item {
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-left: 1px solid #f1f1f1;
+  min-height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+.uber-cliens.multi-row .row .client-item img {
+  display: inline-block;
+  -webkit-transition: all 500ms;
+  -o-transition: all 500ms;
+  transition: all 500ms;
+}
+.uber-cliens.multi-row .row .client-item:last-child {
+  border-left: 0;
+}
+.uber-cliens.multi-row .row .client-item:hover img {
+  filter: alpha(opacity=100) !important;
+  opacity: 1 !important;
+}
+.uber-cliens.multi-row .row:last-child {
+  border-bottom: 0;
+}
+.uber-cliens.multi-row.style-dark .row {
+  border-color: #2c353b;
+}
+.uber-cliens.multi-row.style-dark .row .client-item {
+  border-color: #2c353b;
+}
+.uber-cliens.img-grayscale .client-item span {
+  position: relative;
+}
+@media (max-width: 1199px) {
+  .uber-cliens.img-grayscale .client-item span {
+    width: 100% !important;
+  }
+}
+.uber-cliens.img-grayscale .client-img {
+  display: inline-block;
+  line-height: 1;
+}
+@media (max-width: 1199px) {
+  .uber-cliens.img-grayscale .client-img {
+    display: block;
+  }
+}
+@media (max-width: 767px) {
+  .uber-cliens .client-item {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    width: 100% !important;
+    text-align: center;
+  }
+  .uber-cliens .client-item img {
+    display: inline-block;
+  }
+}
+.uber-cliens .client-item:hover .client-img img {
+  filter: alpha(opacity=100) !important;
+  opacity: 1 !important;
+}
+.uber-cliens .owl-theme .owl-controls {
+  margin: 0;
+}
+@media (max-width: 767px) {
+  .uber-cliens .owl-theme .owl-controls {
+    display: none !important;
+  }
+}
+.uber-cliens .owl-theme .owl-controls .owl-buttons div {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  padding: 0;
+  margin: -20px 0 0;
+  border-radius: 0;
+  background: #079aee;
+}
+.uber-cliens .owl-theme .owl-controls .owl-buttons div.owl-next {
+  right: auto;
+  left: -40px;
+}

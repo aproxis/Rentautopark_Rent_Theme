@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+  <title>Simple Steps Style 1 - Booking Process</title>
+	<sampledata><![CDATA[ 
+	{":type":"ja_ngr:simple-steps","simple-steps":{"jatools-layout-simple-steps":"style-1","simple-steps[step-item]":{"simple-steps[step-item][icon]":["fa fa-search","fa fa-calendar","fa fa-credit-card","fa fa-car"],"simple-steps[step-item][title]":["Alege Mașina","Selectează Datele","Plătește Online","Preia Mașina"],"simple-steps[step-item][description]":["Răsfoiește flota noastră și alege mașina potrivită nevoilor tale.","Selectează datele de ridicare și returnare pentru a vedea disponibilitatea și prețurile.","Completează datele de plată în siguranță și primește confirmarea instantanee.","Vino la sediul nostru la data stabilită și preia mașina cu toate documentele necesare."],"rows":4,"cols":3,"type":"list"}}}
+  ]]></sampledata>
+	<fields name="simple-steps">
+		<fieldset name="Basic Settings" description="Basic settings for the simple steps component">
+			<field name="block-title" type="text" default="Pași Simpli Pentru Mașina Ta" size="40" label="Block Title" description="Title for the steps section" />
+			<field name="watermark-text" type="text" default="RENTAUTOPARK" size="40" label="Watermark Text" description="Large background text behind the steps" />
+			<field name="layout-style" type="list" default="horizontal" label="Layout Style" description="Choose the layout style for the steps">
+				<option value="vertical">Vertical Timeline</option>
+				<option value="horizontal">Horizontal Timeline</option>
+			</field>
+		</fieldset>
+
+		<fieldset name="Step Items" description="Booking process steps"> 
+			<field name="step-item" type="jalist">
+				<item name="wheel-image" type="media" default="" label="Wheel Image" description="Upload rotating wheel image for this step" />
+				<item name="title" type="text" size="50" default="" label="Step Title" description="Title of the booking step" />
+			</field>
+		</fieldset>
+	</fields>
+</form>

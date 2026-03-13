@@ -1,0 +1,2818 @@
+.com_vikrentcar .err {
+  border-radius: 0;
+}
+.com_vikrentcar .successmade {
+  background-color: #dff0d8 !important;
+  border: 1px solid #d6e9c6 !important;
+  border-radius: 0;
+  color: #468847 !important;
+  height: auto;
+  padding: 12px 24px 12px 48px !important;
+}
+.com_vikrentcar .warn {
+  background-color: #fcf8e3 !important;
+  border: 1px solid #faebcc !important;
+  border-radius: 0;
+  color: #c09853 !important;
+  height: auto;
+  padding: 12px 24px 12px 48px !important;
+}
+.com_vikrentcar .booknow {
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #72af1a;
+  padding: 8px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.com_vikrentcar .booknow:focus,
+.com_vikrentcar .booknow.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #2a400a;
+}
+.com_vikrentcar .booknow:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .booknow:active,
+.com_vikrentcar .booknow.active,
+.open > .dropdown-toggle.com_vikrentcar .booknow {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .booknow:active:hover,
+.com_vikrentcar .booknow.active:hover,
+.open > .dropdown-toggle.com_vikrentcar .booknow:hover,
+.com_vikrentcar .booknow:active:focus,
+.com_vikrentcar .booknow.active:focus,
+.open > .dropdown-toggle.com_vikrentcar .booknow:focus,
+.com_vikrentcar .booknow:active.focus,
+.com_vikrentcar .booknow.active.focus,
+.open > .dropdown-toggle.com_vikrentcar .booknow.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #2a400a;
+}
+.com_vikrentcar .booknow.disabled:hover,
+.com_vikrentcar .booknow[disabled]:hover,
+fieldset[disabled] .com_vikrentcar .booknow:hover,
+.com_vikrentcar .booknow.disabled:focus,
+.com_vikrentcar .booknow[disabled]:focus,
+fieldset[disabled] .com_vikrentcar .booknow:focus,
+.com_vikrentcar .booknow.disabled.focus,
+.com_vikrentcar .booknow[disabled].focus,
+fieldset[disabled] .com_vikrentcar .booknow.focus {
+  background-color: #72af1a;
+  border-color: #72af1a;
+}
+.com_vikrentcar .booknow .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.com_vikrentcar .goback {
+  background-color: transparent;
+  border-radius: 0;
+  border: 0;
+  height: auto;
+  text-align: left;
+  width: auto;
+}
+.com_vikrentcar .goback a {
+  display: inline-block;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  background-color: #999999;
+  border-color: #999999;
+  padding: 6px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.com_vikrentcar .goback a:focus,
+.com_vikrentcar .goback a.focus {
+  color: #ffffff;
+  background-color: #808080;
+  border-color: #595959;
+}
+.com_vikrentcar .goback a:hover {
+  color: #ffffff;
+  background-color: #808080;
+  border-color: #7a7a7a;
+}
+.com_vikrentcar .goback a:active,
+.com_vikrentcar .goback a.active,
+.open > .dropdown-toggle.com_vikrentcar .goback a {
+  color: #ffffff;
+  background-color: #808080;
+  background-image: none;
+  border-color: #7a7a7a;
+}
+.com_vikrentcar .goback a:active:hover,
+.com_vikrentcar .goback a.active:hover,
+.open > .dropdown-toggle.com_vikrentcar .goback a:hover,
+.com_vikrentcar .goback a:active:focus,
+.com_vikrentcar .goback a.active:focus,
+.open > .dropdown-toggle.com_vikrentcar .goback a:focus,
+.com_vikrentcar .goback a:active.focus,
+.com_vikrentcar .goback a.active.focus,
+.open > .dropdown-toggle.com_vikrentcar .goback a.focus {
+  color: #ffffff;
+  background-color: #6e6e6e;
+  border-color: #595959;
+}
+.com_vikrentcar .goback a.disabled:hover,
+.com_vikrentcar .goback a[disabled]:hover,
+fieldset[disabled] .com_vikrentcar .goback a:hover,
+.com_vikrentcar .goback a.disabled:focus,
+.com_vikrentcar .goback a[disabled]:focus,
+fieldset[disabled] .com_vikrentcar .goback a:focus,
+.com_vikrentcar .goback a.disabled.focus,
+.com_vikrentcar .goback a[disabled].focus,
+fieldset[disabled] .com_vikrentcar .goback a.focus {
+  background-color: #999999;
+  border-color: #999999;
+}
+.com_vikrentcar .goback a .badge {
+  color: #999999;
+  background-color: #ffffff;
+}
+.com_vikrentcar .goback a i {
+  margin-right: 10px;
+  margin-bottom: 5px;
+  vertical-align: middle;
+}
+.com_vikrentcar .vrclocationsbox {
+  height: auto;
+}
+.com_vikrentcar .vrclocationsbox .vrclocationsmapdiv a {
+  background: url("../../../../images/gmap.jpg") no-repeat center top #eeeeee;
+  border: 5px solid #eeeeee;
+  padding-top: 72px;
+}
+.com_vikrentcar .vrc-search-results-block {
+  padding: 0 15px;
+}
+.com_vikrentcar .vrc-search-results-block .gridlist {
+  margin: 0 -15px 24px;
+  text-align: right;
+  line-height: 45px;
+}
+.com_vikrentcar .vrc-search-results-block .gridlist:before,
+.com_vikrentcar .vrc-search-results-block .gridlist:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrc-search-results-block .gridlist:after {
+  clear: both;
+}
+.com_vikrentcar .vrc-search-results-block .gridlist .view {
+  float: right;
+  margin-left: 15px;
+}
+.com_vikrentcar .vrc-search-results-block .gridlist .view a {
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #f1f1f1;
+  display: inline-block;
+}
+.com_vikrentcar .vrc-search-results-block .gridlist .view a.active {
+  background-color: #72af1a;
+  color: #ffffff;
+  border-color: #72af1a;
+}
+.com_vikrentcar .vrc-search-results-block.vrc-search-results-grid {
+  padding: 0;
+  margin: 0 -15px;
+}
+.com_vikrentcar .vrc-search-results-block.vrc-search-results-grid:before,
+.com_vikrentcar .vrc-search-results-block.vrc-search-results-grid:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrc-search-results-block.vrc-search-results-grid:after {
+  clear: both;
+}
+.com_vikrentcar .vrc-search-results-block.vrc-search-results-grid .gridlist {
+  margin-right: 0;
+  margin-left: 0;
+  padding: 0 15px;
+}
+.com_vikrentcar .car_result {
+  background-color: #f6f6f6;
+  border: 0;
+  margin-bottom: 24px;
+  width: auto;
+}
+.com_vikrentcar .car_result .vrc-car-thumb {
+  float: left;
+  padding-left: 0;
+  padding-right: 24px;
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .com_vikrentcar .car_result .vrc-car-thumb {
+    float: none;
+    padding-right: 0;
+  }
+}
+.com_vikrentcar .car_result .vrc-car-thumb img {
+  max-width: 100%;
+  width: 100%;
+  float: none;
+  -webkit-transform: rotate(0) scale(1);
+  
+  -moz-transform: rotate(0) scale(1);
+  
+  -ms-transform: rotate(0) scale(1);
+  
+  -o-transform: rotate(0) scale(1);
+  
+  transform: rotate(0) scale(1);
+  
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+@media (min-width: 767px) {
+  .com_vikrentcar .car_result .vrc-car-thumb img {
+    width: auto;
+  }
+}
+.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price {
+  background-color: #72af1a;
+  color: #ffffff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 1;
+  padding: 8px 10px;
+}
+.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price .vrcstartfrom {
+  font-size: 11px;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price .car_cost {
+  color: #ffffff;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  vertical-align: middle;
+}
+.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price .vrc-car-result-dailycost {
+  color: #ffffff;
+}
+.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price .vrc-car-result-dailycost .vrc_currency,
+.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price .vrc-car-result-dailycost .vrc_price {
+  font-weight: 700;
+  vertical-align: middle;
+}
+.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price .vrc-car-result-dailycost .vrc-perday-txt {
+  background: url("../../../../images/slash-bg.png") no-repeat left center;
+  font-size: 12px;
+  margin-left: 2px;
+  padding-left: 8px;
+  text-transform: uppercase;
+}
+.com_vikrentcar .car_result .vrc-car-result-info {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .vrc-car-name {
+  line-height: 1.3;
+  margin: 0 0 12px;
+  padding: 0;
+  text-transform: uppercase;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .vrc-car-name a {
+  color: #191919;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .vrc-car-name a:hover,
+.com_vikrentcar .car_result .vrc-car-result-info .vrc-car-name a:focus,
+.com_vikrentcar .car_result .vrc-car-result-info .vrc-car-name a:active {
+  color: #72af1a;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .vrc-car-bookingbtn {
+  padding-top: 12px;
+  text-align: right;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .readmore {
+  display: block;
+  margin-top: 12px;
+  text-align: right;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a {
+  color: #191919;
+  display: inline-block;
+  line-height: 1;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a .fa {
+  background-color: #999999;
+  border-radius: 2px;
+  color: #ffffff;
+  display: inline-block;
+  font-size: 11px;
+  height: 14px;
+  line-height: 14px;
+  margin-right: 5px;
+  text-align: center;
+  width: 14px;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a:hover,
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a:focus,
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a:active {
+  color: #72af1a;
+}
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a:hover .fa,
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a:focus .fa,
+.com_vikrentcar .car_result .vrc-car-result-info .readmore a:active .fa {
+  background-color: #72af1a;
+}
+.com_vikrentcar .car_result > .vrc-car-characteristics {
+  background-color: #191919;
+  border: 0;
+  color: #ffffff;
+}
+.com_vikrentcar .car_result > .vrc-car-characteristics .vrccarcarat {
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+  border-right: 0;
+  font-weight: 500;
+  padding: 8px 12px;
+}
+.com_vikrentcar .car_result > .vrc-car-characteristics .vrccarcarat span {
+  font-size: 12px;
+}
+.com_vikrentcar .car_result.car_result_grid {
+  margin-right: 0;
+  margin-left: 0;
+  background: none;
+  float: left;
+  width: 50%;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 768px) {
+  .com_vikrentcar .car_result.car_result_grid {
+    float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 992px) {
+  .com_vikrentcar .car_result.car_result_grid {
+    float: left;
+    width: 33.33333333%;
+  }
+}
+@media (min-width: 768px) {
+  .com_vikrentcar .car_result.car_result_grid:nth-child(2n+2) {
+    clear: both;
+  }
+}
+@media (min-width: 992px) {
+  .com_vikrentcar .car_result.car_result_grid:nth-child(2n+2) {
+    clear: none;
+  }
+  .com_vikrentcar .car_result.car_result_grid:nth-child(3n+2) {
+    clear: both;
+  }
+}
+@media (max-width: 420px) {
+  .com_vikrentcar .car_result.car_result_grid {
+    width: 100%;
+  }
+}
+.com_vikrentcar .car_result.car_result_grid .imgresult {
+  max-width: 100%;
+}
+.com_vikrentcar .car_result.car_result_grid .vrc-car-thumb {
+  width: 100%;
+  padding: 0;
+}
+.com_vikrentcar .car_result.car_result_grid .vrc-car-result-info {
+  background-color: #f6f6f6;
+  width: 100%;
+  clear: both;
+}
+.com_vikrentcar .car_result:hover .vrc-car-result-info .vrc-car-name a {
+  color: #72af1a;
+}
+@media (min-width: 768px) {
+  .com_vikrentcar .car_result:hover.car_result_grid .vrc-car-thumb img {
+    -webkit-transform: rotate(-2deg) scale(1.1);
+    
+    -moz-transform: rotate(-2deg) scale(1.1);
+    
+    -ms-transform: rotate(-2deg) scale(1.1);
+    
+    -o-transform: rotate(-2deg) scale(1.1);
+    
+    transform: rotate(-2deg) scale(1.1);
+    
+  }
+}
+.com_vikrentcar .vrc-promotion-price:before {
+  z-index: 1;
+}
+.com_vikrentcar .vrc-promotion-price:after {
+  z-index: 2;
+}
+.com_vikrentcar .car-detail .vrc-cdetails-cgroup h1 {
+  margin: 0 0 24px;
+}
+.com_vikrentcar .car-detail .vrc-cdetails-cmainimg {
+  background-color: #eeeeee;
+  margin-bottom: 6px;
+  padding: 5px;
+}
+.com_vikrentcar .car-detail .vrc-cdetails-cmainimg img {
+  max-width: 100%;
+}
+.com_vikrentcar .car-detail .cardetails_moreimages:before,
+.com_vikrentcar .car-detail .cardetails_moreimages:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .car-detail .cardetails_moreimages:after {
+  clear: both;
+}
+.com_vikrentcar .car-detail .cardetails_moreimages a {
+  background-color: #eeeeee;
+  border: 0;
+  display: block;
+  float: left;
+  margin-right: 5px;
+  padding: 5px;
+}
+.com_vikrentcar .car-detail .cardetails_moreimages a img {
+  border-radius: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.com_vikrentcar .car-detail .vrc-cdetails-cardesc {
+  margin: 24px 0;
+}
+.com_vikrentcar .car-detail .vrclegendediv .vrclegenda div {
+  display: inline-block;
+}
+.com_vikrentcar .car-detail .vrccaldivcont {
+  margin-right: 12px;
+  vertical-align: top;
+}
+.com_vikrentcar .car-detail .vrccaldivcont .vrccal tr:first-child td {
+  background-color: #191919;
+  color: #ffffff;
+}
+.com_vikrentcar .car-detail .vrccaldivcont .vrccal tr:first-child td strong {
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.com_vikrentcar .car-detail .vrccaldivcont .vrccal td {
+  border: 1px solid #e4e4e4;
+  min-width: 36px;
+  padding: 5px;
+  text-align: center;
+  vertical-align: middle;
+}
+.com_vikrentcar .car-detail .vrccaldivcont .vrccal .vrccaldays td {
+  background-color: #eeeeee;
+  font-size: 13px;
+  padding: 5px;
+  text-transform: uppercase;
+}
+.com_vikrentcar .car-detail .vrccaldivcont .vrccal td.vrctdfree {
+  border-color: #c1e5bc;
+}
+.com_vikrentcar .car-detail .vrccaldivcont .vrccal td.vrctdwarning {
+  border-color: #fcd6aa;
+  color: #ffffff;
+}
+.com_vikrentcar .car-detail .vrcdetsep {
+  margin-top: 24px;
+}
+.com_vikrentcar .car-detail .vrclistcarcat span {
+  background-color: #72af1a;
+  display: inline-block;
+  color: #ffffff;
+  font-weight: 500;
+  line-height: 1;
+  padding: 5px 10px;
+  text-transform: uppercase;
+}
+.com_vikrentcar .car-detail .vrc-cdetails-cost {
+  background: transparent;
+  border-top: 1px solid #f1f1f1;
+  border-bottom: 0;
+  font-size: 14px;
+  margin: 0;
+  padding: 12px 0;
+  text-align: left;
+}
+.com_vikrentcar .car-detail .vrc-cdetails-cost .car_cost {
+  color: #72af1a;
+  font-size: 18px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+.com_vikrentcar .car-detail .vrc-car-carats {
+  border-top: 1px solid #f1f1f1;
+  border-bottom: 0;
+  padding: 12px 0 0;
+}
+.com_vikrentcar .car-detail .vrc-car-carats .vrccaratsdiv {
+  background-color: #f3f3f3;
+}
+.com_vikrentcar .car-detail .vrc-car-carats .vrccaratsdiv:before,
+.com_vikrentcar .car-detail .vrc-car-carats .vrccaratsdiv:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .car-detail .vrc-car-carats .vrccaratsdiv:after {
+  clear: both;
+}
+.com_vikrentcar .car-detail .vrc-car-carats .vrccarcarat {
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 12px;
+  border-right: 1px solid #ffffff;
+}
+.com_vikrentcar .car-detail .vrc-car-carats .vrccarcarat img {
+  margin-top: 0;
+  vertical-align: middle;
+}
+.com_vikrentcar .car-detail .vrc-car-carats .vrccarcarat span {
+  font-size: 14px;
+  padding: 0;
+  vertical-align: middle;
+}
+.com_vikrentcar .car-detail .vrcdivsearch {
+  background-color: #eeeeee;
+  border: 0;
+  margin: 0;
+  padding: 24px;
+  width: 100%;
+}
+.com_vikrentcar .car-detail .vrcdivsearch .vrcdetbooksubmit {
+  background-color: #72af1a;
+  border: 0;
+  border-radius: 0;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  text-transform: uppercase;
+}
+.com_vikrentcar .car-detail .vrcdivsearch .vrcsfentrycont .vrcsfentrylabsel {
+  margin-right: 0;
+  padding-right: 0;
+}
+@media screen and (max-width: 1199px) {
+  .com_vikrentcar .car-detail .vrcdivsearch .vrcsfentrycont .vrcsfentrylabsel,
+  .com_vikrentcar .car-detail .vrcdivsearch .vrcsfentrycont .vrcsfentrytime {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 991px) {
+  .com_vikrentcar .car-detail .vrcdivsearch .vrcsfentrycont .vrcsfentrylabsel,
+  .com_vikrentcar .car-detail .vrcdivsearch .vrcsfentrycont .vrcsfentrytime {
+    width: auto;
+  }
+}
+.com_vikrentcar .vrc-searchfilter-characteristics-container {
+  border-radius: 0;
+}
+.com_vikrentcar .vrc-searchfilter-characteristics-container .vrc-searchfilter-characteristics-list {
+  padding: 12px;
+}
+.com_vikrentcar .vrc-searchfilter-characteristics-container .vrc-searchfilter-characteristic > * {
+  vertical-align: middle;
+}
+.com_vikrentcar .vrc-searchfilter-characteristics-container .vrc-searchfilter-cinput input {
+  border-color: #f1f1f1;
+  vertical-align: middle;
+}
+.com_vikrentcar #vrcmapcanvas {
+  border-radius: 0;
+}
+.com_vikrentcar .vrclocationbox {
+  background-color: #f6f6f6;
+  border: 0;
+  margin: 0 0 24px;
+  border-radius: 0;
+  padding: 24px;
+}
+.com_vikrentcar .vrclocationbox .vrcloclistloctimebox {
+  color: #999999;
+}
+.com_vikrentcar .vrc-promotion-details {
+  margin: 0;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-name {
+  background: #72af1a;
+  color: #ffffff;
+  margin: 0;
+  padding: 10px;
+  font-size: 24px;
+  font-weight: 400;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-car-img img {
+  width: 100%;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-dates {
+  width: 100%;
+  border-color: #f1f1f1;
+  background-color: #ddd;
+  padding: 10px;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-dates-left {
+  margin: 0 auto 0 0;
+  background: transparent;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-dates-left div {
+  padding: 0;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-dates .vrc-promotion-date-validuntil {
+  color: #0085B2;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-dates .vrc-promotion-date-weekdays {
+  display: inline-flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block {
+  width: 100%;
+  padding: 0;
+  border: 0;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-cars-list {
+  margin: 24px -15px 0;
+  width: auto;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-block {
+  padding: 0;
+  margin: 0 0 30px;
+  background: none;
+  border: 0;
+  flex-basis: auto;
+  float: left;
+  width: 50%;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 768px) {
+  .com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-block {
+    float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 992px) {
+  .com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-block {
+    float: left;
+    width: 33.33333333%;
+  }
+}
+@media (max-width: 460px) {
+  .com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-block {
+    width: 100%;
+  }
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-name {
+  margin: 0;
+  padding: 12px 24px;
+  background: #f7f7f7;
+  font-size: 14px;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-block {
+  margin: 0;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link {
+  color: #ffffff;
+  background-color: #191919;
+  border-color: #000000;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.715;
+  border-radius: 0;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:focus,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.focus {
+  color: #ffffff;
+  background-color: #000000;
+  border-color: #000000;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:hover {
+  color: #ffffff;
+  background-color: #000000;
+  border-color: #000000;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:active,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.active,
+.open > .dropdown-toggle.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link {
+  color: #ffffff;
+  background-color: #000000;
+  background-image: none;
+  border-color: #000000;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:active:hover,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.active:hover,
+.open > .dropdown-toggle.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:hover,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:active:focus,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.active:focus,
+.open > .dropdown-toggle.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:focus,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:active.focus,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.active.focus,
+.open > .dropdown-toggle.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.focus {
+  color: #ffffff;
+  background-color: #000000;
+  border-color: #000000;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.disabled:hover,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link[disabled]:hover,
+fieldset[disabled] .com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:hover,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.disabled:focus,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link[disabled]:focus,
+fieldset[disabled] .com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link:focus,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.disabled.focus,
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link[disabled].focus,
+fieldset[disabled] .com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link.focus {
+  background-color: #191919;
+  border-color: #000000;
+}
+.com_vikrentcar .vrc-promotion-details .vrc-promotion-bottom-block .vrc-promotion-car-book-link .badge {
+  color: #191919;
+  background-color: #ffffff;
+}
+.com_vikrentcar .err {
+  color: #ebccd1 !important;
+  background-color: #b94a48 !important;
+  border-color: #b94a48 !important;
+  background-image: none !important;
+  margin-bottom: 24px !important;
+  position: relative;
+  padding: 24px !important;
+  padding-left: 10% !important;
+}
+.com_vikrentcar .err hr {
+  border-top-color: #a74240 !important;
+}
+.com_vikrentcar .err .alert-link {
+  color: #dda7b0 !important;
+}
+.com_vikrentcar .err:before {
+  background: #a74240;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7%;
+  height: 100%;
+}
+.com_vikrentcar .err:after {
+  content: "x";
+  font-weight: bold;
+  color: #ebccd1;
+  font-size: 16px;
+  position: absolute;
+  left: 3%;
+  top: 50%;
+  margin-top: -16px;
+  text-shadow: 0 1px 0 #fff;
+}
+.com_vikrentcar .vrcsearchconfnumb {
+  border-color: #eeeeee;
+  padding: 24px;
+  width: 100%;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbinp input {
+  border-radius: 0;
+  height: 42px;
+  line-height: 42px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm {
+  margin-top: 30px;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"] {
+  border: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  width: auto;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #80c51d;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.715;
+  border-radius: 0;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:focus,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #38560d;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #5e9015;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:active,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].active,
+.open > .dropdown-toggle.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"] {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #5e9015;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:active:hover,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].active:hover,
+.open > .dropdown-toggle.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:hover,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:active:focus,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].active:focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:focus,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:active.focus,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].active.focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #38560d;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].disabled:hover,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"][disabled]:hover,
+fieldset[disabled] .com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:hover,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].disabled:focus,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"][disabled]:focus,
+fieldset[disabled] .com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"]:focus,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].disabled.focus,
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"][disabled].focus,
+fieldset[disabled] .com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"].focus {
+  background-color: #72af1a;
+  border-color: #80c51d;
+}
+.com_vikrentcar .vrcsearchconfnumb .vrcconfnumbsubm input[type="submit"] .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.com_vikrentcar table.vrcuserorderstable td {
+  border-bottom: 1px solid #f1f1f1;
+  padding: 12px 12px;
+}
+.com_vikrentcar table.vrcuserorderstable .vrcuserorderstablerow td {
+  background-color: #191919;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+.com_vikrentcar .loginregistercont:before,
+.com_vikrentcar .loginregistercont:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .loginregistercont:after {
+  clear: both;
+}
+.com_vikrentcar .loginregistercont .registerblock,
+.com_vikrentcar .loginregistercont .loginblock {
+  border-radius: 0;
+  float: left;
+  width: 48%;
+}
+.com_vikrentcar .loginregistercont .registerblock h3,
+.com_vikrentcar .loginregistercont .loginblock h3 {
+  margin: 0;
+}
+.com_vikrentcar .loginregistercont .registerblock input[type="text"],
+.com_vikrentcar .loginregistercont .loginblock input[type="text"],
+.com_vikrentcar .loginregistercont .registerblock input[type="password"],
+.com_vikrentcar .loginregistercont .loginblock input[type="password"] {
+  width: 100%;
+}
+.com_vikrentcar .loginregistercont .loginblock {
+  float: right;
+}
+.com_vikrentcar .loginregistercont table {
+  width: 100%;
+}
+.com_vikrentcar .loginregistercont table td {
+  border: 0;
+  padding: 6px 24px;
+  vertical-align: middle;
+}
+.com_vikrentcar .car_container {
+  margin: 0 0 24px;
+}
+.com_vikrentcar .car_container .car_img_box {
+  border: 0;
+  border-radius: 0;
+  float: none;
+  margin: 0 0 24px;
+  padding: 0;
+}
+.com_vikrentcar .car_container .car_img_box img {
+  background-color: #eeeeee;
+  border-radius: 0;
+  padding: 8px;
+  width: 100%;
+}
+.com_vikrentcar .car_container .car_img_box .car_moreimages:before,
+.com_vikrentcar .car_container .car_img_box .car_moreimages:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .car_container .car_img_box .car_moreimages:after {
+  clear: both;
+}
+.com_vikrentcar .car_container .car_img_box .car_moreimages a {
+  display: block;
+  float: left;
+  margin-right: 5px;
+}
+.com_vikrentcar .car_container .car_img_box .car_moreimages img {
+  border: 0;
+  margin: 0;
+}
+.com_vikrentcar .car_container .car_description_box {
+  display: block;
+  margin-bottom: 24px;
+}
+.com_vikrentcar .car_container .car_description_box:before,
+.com_vikrentcar .car_container .car_description_box:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .car_container .car_description_box:after {
+  clear: both;
+}
+.com_vikrentcar .car_container .car_carats {
+  display: block;
+}
+.com_vikrentcar .car_container .car_carats:before,
+.com_vikrentcar .car_container .car_carats:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .car_container .car_carats:after {
+  clear: both;
+}
+.com_vikrentcar .car_container .car_carats .vrccarcarat {
+  background-color: #eeeeee;
+  margin-right: 8px;
+  padding: 6px 12px;
+}
+@media (max-width: 991px) {
+  .com_vikrentcar .car_container .car_carats .vrccarcarat {
+    margin-bottom: 6px;
+  }
+}
+.com_vikrentcar .car_container .car_carats .vrccarcarat span {
+  font-size: 14px;
+}
+.com_vikrentcar .table-responsive {
+  padding: 24px;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  margin: 0 0 24px;
+  width: auto;
+}
+.com_vikrentcar .table-responsive .vrhword {
+  font-size: 15px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-weight: bold;
+  display: block;
+  text-transform: uppercase;
+}
+.com_vikrentcar .car_prices .vrc-label-promo-price:after {
+  right: -50px;
+}
+@media (max-width: 767px) {
+  .com_vikrentcar .car_prices .vrc-label-promo-price:after {
+    background: transparent;
+    color: #ff8000;
+    padding: 0;
+    right: -25px;
+    top: -8px;
+  }
+}
+.com_vikrentcar .car_options td {
+  padding: 12px 0;
+  vertical-align: middle;
+}
+.com_vikrentcar .car_options td input {
+  border-radius: 0;
+  box-shadow: none;
+  height: 32px;
+  padding: 0 12px;
+}
+.com_vikrentcar .vrc-showprc-container {
+  margin: 0 0 24px;
+}
+@media (max-width: 991px) {
+  .com_vikrentcar .vrc-showprc-container {
+    display: block;
+  }
+}
+.com_vikrentcar .vrc-showprc-container .car_img_box {
+  border: 0;
+  border-radius: 0;
+  float: none;
+  margin: 0 0 24px;
+  padding: 0;
+}
+.com_vikrentcar .vrc-showprc-container .car_img_box img {
+  background-color: #eeeeee;
+  border-radius: 0;
+  padding: 8px;
+  width: 100%;
+}
+.com_vikrentcar .vrc-showprc-container .car_img_box .car_moreimages:before,
+.com_vikrentcar .vrc-showprc-container .car_img_box .car_moreimages:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrc-showprc-container .car_img_box .car_moreimages:after {
+  clear: both;
+}
+.com_vikrentcar .vrc-showprc-container .car_img_box .car_moreimages a {
+  display: block;
+  float: left;
+  margin-right: 5px;
+}
+.com_vikrentcar .vrc-showprc-container .car_img_box .car_moreimages img {
+  border: 0;
+  margin: 0;
+}
+.com_vikrentcar .vrc-showprc-container .car_description_box {
+  display: block;
+  margin-bottom: 24px;
+}
+.com_vikrentcar .vrc-showprc-container .car_description_box:before,
+.com_vikrentcar .vrc-showprc-container .car_description_box:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrc-showprc-container .car_description_box:after {
+  clear: both;
+}
+.com_vikrentcar .vrc-showprc-container .car_carats {
+  display: block;
+}
+.com_vikrentcar .vrc-showprc-container .car_carats:before,
+.com_vikrentcar .vrc-showprc-container .car_carats:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrc-showprc-container .car_carats:after {
+  clear: both;
+}
+.com_vikrentcar .vrc-showprc-container .car_carats .vrccarcarat {
+  background-color: #eeeeee;
+  margin-right: 8px;
+  padding: 6px 12px;
+}
+@media (max-width: 991px) {
+  .com_vikrentcar .vrc-showprc-container .car_carats .vrccarcarat {
+    margin-bottom: 6px;
+  }
+}
+.com_vikrentcar .vrc-showprc-container .car_carats .vrccarcarat span {
+  font-size: 14px;
+}
+.com_vikrentcar .vrc-showprc-container .vrc-showprc-car-carats {
+  border-bottom: 1px dotted #ccc;
+  border-top: 1px dotted #ccc;
+  padding: 5px 0 0;
+}
+@media screen and (max-width: 991px) {
+  .com_vikrentcar .vrcstepsbarcont .vrc-stepbar {
+    border: none;
+    display: block;
+  }
+}
+@media screen and (max-width: 991px) {
+  .com_vikrentcar .vrcstepsbarcont .vrc-stepbar > li {
+    padding: 6px 12px;
+    border: 1px solid #f1f1f1;
+    margin-bottom: -1px;
+    height: auto;
+    text-align: left;
+  }
+  .com_vikrentcar .vrcstepsbarcont .vrc-stepbar > li:before,
+  .com_vikrentcar .vrcstepsbarcont .vrc-stepbar > li:after {
+    display: none;
+  }
+}
+.com_vikrentcar .vrcstepsbarcont .vrc-stepbar > li > ::before {
+  border: 1px solid #666;
+  width: 24px;
+  height: 24px;
+  line-height: 22px;
+}
+.com_vikrentcar .vrcstepsbarcont .vrc-stepbar > li.vrc-step-complete > ::before {
+  color: #72af1a;
+  border: 1px solid #72af1a;
+}
+.com_vikrentcar .vrcstepsbarcont .vrc-stepbar > li.vrc-step-complete > :hover::before {
+  background: #72af1a;
+  color: #fff;
+}
+.com_vikrentcar .vrcstepsbarcont .vrc-stepbar > li.vrc-step-current > ::before {
+  background: #72af1a;
+  border: 1px solid #72af1a;
+}
+.com_vikrentcar .vrcinfocarcontainer {
+  margin: 0;
+}
+@media screen and (max-width: 991px) {
+  .com_vikrentcar .vrcinfocarcontainer {
+    display: block;
+  }
+}
+.com_vikrentcar .vrcinfocarcontainer .vrcrentforlocs {
+  display: block;
+  float: none;
+  margin: 0;
+}
+.com_vikrentcar .vrcinfocarcontainer .vrcrentforlocs .vrcrentalfor {
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.com_vikrentcar .vrcinfocarcontainer .vrc-summary-car-img {
+  display: block;
+  float: none;
+  padding: 24px;
+}
+.com_vikrentcar .vrcinfocarcontainer .vrc-summary-car-img img {
+  width: 100%;
+  float: none;
+}
+.com_vikrentcar .vrcinfocarcontainer .vrcrentalfortwo:before,
+.com_vikrentcar .vrcinfocarcontainer .vrcrentalfortwo:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrcinfocarcontainer .vrcrentalfortwo:after {
+  clear: both;
+}
+.com_vikrentcar .vrcinfocarcontainer .vrcrentalfortwo p {
+  display: block;
+  float: left;
+  width: 50%;
+}
+.com_vikrentcar table.vrctableorder td {
+  border: 0;
+  padding: 6px 12px;
+  vertical-align: middle;
+  text-align: center;
+}
+.com_vikrentcar table.vrctableorder td:first-child {
+  text-align: left;
+}
+.com_vikrentcar table.vrctableorder .vrctableorder-car-row td {
+  border-bottom: 1px solid #eeeeee;
+}
+.com_vikrentcar table.vrctableorder .vrctableorderfrow td {
+  background-color: #191919;
+  color: #ffffff;
+  font-size: 14px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.com_vikrentcar table.vrctableorder .vrcordrowtotal td {
+  font-size: 14px;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+.com_vikrentcar .vrclocsboxsum {
+  background-color: #eeeeee;
+  border: 0;
+}
+.com_vikrentcar .vrclocsboxsum .vrcpickuploc,
+.com_vikrentcar .vrclocsboxsum .vrcdropoffloc {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.com_vikrentcar .vrclocsboxsum .vrcpickuploc span,
+.com_vikrentcar .vrclocsboxsum .vrcdropoffloc span {
+  text-transform: none;
+}
+@media screen and (max-width: 991px) {
+  .com_vikrentcar .vrc-oconfirm-middlep {
+    display: block;
+  }
+}
+.com_vikrentcar .vrcentercoupon {
+  border: 0;
+  border-radius: 0;
+  margin: 0 0 24px 0;
+  width: 100%;
+}
+.com_vikrentcar .vrcentercoupon .vrcinputcoupon {
+  border-radius: 0;
+  height: 38px;
+  line-height: 38px;
+  margin: 0 12px 12px 0;
+}
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon {
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #72af1a;
+  padding: 6px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:focus,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #2a400a;
+}
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:active,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.active,
+.open > .dropdown-toggle.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:active:hover,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.active:hover,
+.open > .dropdown-toggle.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:hover,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:active:focus,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.active:focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:focus,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:active.focus,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.active.focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #2a400a;
+}
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.disabled:hover,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon[disabled]:hover,
+fieldset[disabled] .com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:hover,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.disabled:focus,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon[disabled]:focus,
+fieldset[disabled] .com_vikrentcar .vrcentercoupon .vrcsubmitcoupon:focus,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.disabled.focus,
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon[disabled].focus,
+fieldset[disabled] .com_vikrentcar .vrcentercoupon .vrcsubmitcoupon.focus {
+  background-color: #72af1a;
+  border-color: #72af1a;
+}
+.com_vikrentcar .vrcentercoupon .vrcsubmitcoupon .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.com_vikrentcar .vrc-enterpin-block #vrc-pincode-inp {
+  border-radius: 0;
+  height: 38px;
+  line-height: 38px;
+  margin: 0 12px 12px 0;
+  min-width: 140px;
+}
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt {
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #72af1a;
+  padding: 6px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:focus,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #2a400a;
+}
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:active,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.active,
+.open > .dropdown-toggle.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:active:hover,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.active:hover,
+.open > .dropdown-toggle.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:hover,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:active:focus,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.active:focus,
+.open > .dropdown-toggle.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:focus,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:active.focus,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.active.focus,
+.open > .dropdown-toggle.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #2a400a;
+}
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.disabled:hover,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt[disabled]:hover,
+fieldset[disabled] .com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:hover,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.disabled:focus,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt[disabled]:focus,
+fieldset[disabled] .com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt:focus,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.disabled.focus,
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt[disabled].focus,
+fieldset[disabled] .com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt.focus {
+  background-color: #72af1a;
+  border-color: #72af1a;
+}
+.com_vikrentcar .vrc-enterpin-block .vrc-pincode-sbmt .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.com_vikrentcar .vrc-oconfirm-paym-block {
+  text-align: left;
+}
+.com_vikrentcar .vrc-oconfirm-paym-block .vrc-noliststyletype {
+  padding: 0;
+}
+.com_vikrentcar .vrc-oconfirm-paym-block .vrc-noliststyletype li {
+  margin-bottom: 5px;
+}
+.com_vikrentcar .vrccustomfields {
+  margin: 0 -12px;
+}
+.com_vikrentcar .vrccustomfields:before,
+.com_vikrentcar .vrccustomfields:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrccustomfields:after {
+  clear: both;
+}
+.com_vikrentcar .vrccustomfields .vrcdivcustomfield {
+  box-sizing: border-box;
+  float: left;
+  margin-right: 0;
+  min-height: 75px;
+  padding: 0 12px;
+  width: 100%;
+}
+@media screen and (min-width: 991px) {
+  .com_vikrentcar .vrccustomfields .vrcdivcustomfield {
+    width: 50%;
+  }
+}
+.com_vikrentcar .vrccustomfields .vrcdivcustomfield:last-child {
+  width: 100%;
+}
+.com_vikrentcar .vrccustomfields .vrcdivcustomfield .vrcinput {
+  width: 100%;
+}
+.com_vikrentcar .vrccustomfields .vrcdivcustomfield .vrctextarea {
+  background-color: #ffffff;
+  border-color: #c7d7e1;
+  border-radius: 0;
+  min-height: 100px;
+  width: 100%;
+}
+@media screen and (min-width: 991px) {
+  .com_vikrentcar .vrccustomfields .vrcdivcustomfield .vrctextarea {
+    width: 720px;
+  }
+}
+.com_vikrentcar .vrccustomfields .vrccustomfldinfo {
+  margin-right: 0;
+  width: 100%;
+}
+.com_vikrentcar .vrc-save-order-block {
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+@media screen and (max-width: 991px) {
+  .com_vikrentcar .vrcvordudata-cnt {
+    display: block;
+  }
+  .com_vikrentcar .vrcvordudata-cnt .vrcvordudata {
+    margin-bottom: 10px;
+  }
+  .com_vikrentcar .vrcvordudata-cnt .vrcvordcarinfo .vrc-imgorder-block {
+    float: none;
+  }
+}
+.com_vikrentcar .vrcvordudata-cnt .vrcvordudata {
+  margin-top: 0;
+}
+.com_vikrentcar .vrcprintdiv {
+  float: none;
+  text-align: right;
+}
+.com_vikrentcar .vrcprintdiv:before,
+.com_vikrentcar .vrcprintdiv:after {
+  display: table;
+  content: " ";
+}
+.com_vikrentcar .vrcprintdiv:after {
+  clear: both;
+}
+.com_vikrentcar .vrcvordudata,
+.com_vikrentcar .vrcvordcarinfo,
+.com_vikrentcar .vrcvordcosts {
+  box-sizing: border-box;
+  border-radius: 0;
+  margin: 0 0 24px;
+  width: 100%;
+}
+.com_vikrentcar .vrcvordudata {
+  margin-top: 24px;
+}
+.com_vikrentcar .vrcordcancbox,
+.com_vikrentcar .vrcvordpaybutton {
+  border-radius: 0;
+  width: 100%;
+}
+.com_vikrentcar .vrcordcancbox h3,
+.com_vikrentcar .vrcvordpaybutton h3 {
+  font-size: 18px;
+  margin: 0 0 12px;
+}
+.com_vikrentcar .vrcordcancbox table,
+.com_vikrentcar .vrcvordpaybutton table {
+  width: 100%;
+}
+.com_vikrentcar .vrcordcancbox table td,
+.com_vikrentcar .vrcvordpaybutton table td {
+  border: 0;
+  padding: 6px 12px;
+}
+.com_vikrentcar .vrcordcancbox table td .vrctextarea,
+.com_vikrentcar .vrcvordpaybutton table td .vrctextarea {
+  border-color: #c7d7e1;
+  border-radius: 0;
+  box-sizing: border-box;
+  min-height: 100px;
+  padding: 24px;
+  width: 100%;
+}
+.com_vikrentcar .vrcordcancbox table td .button,
+.com_vikrentcar .vrcvordpaybutton table td .button {
+  border: 0;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #72af1a;
+  padding: 6px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.com_vikrentcar .vrcordcancbox table td .button:focus,
+.com_vikrentcar .vrcvordpaybutton table td .button:focus,
+.com_vikrentcar .vrcordcancbox table td .button.focus,
+.com_vikrentcar .vrcvordpaybutton table td .button.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #2a400a;
+}
+.com_vikrentcar .vrcordcancbox table td .button:hover,
+.com_vikrentcar .vrcvordpaybutton table td .button:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .vrcordcancbox table td .button:active,
+.com_vikrentcar .vrcvordpaybutton table td .button:active,
+.com_vikrentcar .vrcordcancbox table td .button.active,
+.com_vikrentcar .vrcvordpaybutton table td .button.active,
+.open > .dropdown-toggle.com_vikrentcar .vrcordcancbox table td .button,
+.open > .dropdown-toggle.com_vikrentcar .vrcvordpaybutton table td .button {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #4f7a12;
+}
+.com_vikrentcar .vrcordcancbox table td .button:active:hover,
+.com_vikrentcar .vrcvordpaybutton table td .button:active:hover,
+.com_vikrentcar .vrcordcancbox table td .button.active:hover,
+.com_vikrentcar .vrcvordpaybutton table td .button.active:hover,
+.open > .dropdown-toggle.com_vikrentcar .vrcordcancbox table td .button:hover,
+.open > .dropdown-toggle.com_vikrentcar .vrcvordpaybutton table td .button:hover,
+.com_vikrentcar .vrcordcancbox table td .button:active:focus,
+.com_vikrentcar .vrcvordpaybutton table td .button:active:focus,
+.com_vikrentcar .vrcordcancbox table td .button.active:focus,
+.com_vikrentcar .vrcvordpaybutton table td .button.active:focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcordcancbox table td .button:focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcvordpaybutton table td .button:focus,
+.com_vikrentcar .vrcordcancbox table td .button:active.focus,
+.com_vikrentcar .vrcvordpaybutton table td .button:active.focus,
+.com_vikrentcar .vrcordcancbox table td .button.active.focus,
+.com_vikrentcar .vrcvordpaybutton table td .button.active.focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcordcancbox table td .button.focus,
+.open > .dropdown-toggle.com_vikrentcar .vrcvordpaybutton table td .button.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #2a400a;
+}
+.com_vikrentcar .vrcordcancbox table td .button.disabled:hover,
+.com_vikrentcar .vrcvordpaybutton table td .button.disabled:hover,
+.com_vikrentcar .vrcordcancbox table td .button[disabled]:hover,
+.com_vikrentcar .vrcvordpaybutton table td .button[disabled]:hover,
+fieldset[disabled] .com_vikrentcar .vrcordcancbox table td .button:hover,
+fieldset[disabled] .com_vikrentcar .vrcvordpaybutton table td .button:hover,
+.com_vikrentcar .vrcordcancbox table td .button.disabled:focus,
+.com_vikrentcar .vrcvordpaybutton table td .button.disabled:focus,
+.com_vikrentcar .vrcordcancbox table td .button[disabled]:focus,
+.com_vikrentcar .vrcvordpaybutton table td .button[disabled]:focus,
+fieldset[disabled] .com_vikrentcar .vrcordcancbox table td .button:focus,
+fieldset[disabled] .com_vikrentcar .vrcvordpaybutton table td .button:focus,
+.com_vikrentcar .vrcordcancbox table td .button.disabled.focus,
+.com_vikrentcar .vrcvordpaybutton table td .button.disabled.focus,
+.com_vikrentcar .vrcordcancbox table td .button[disabled].focus,
+.com_vikrentcar .vrcvordpaybutton table td .button[disabled].focus,
+fieldset[disabled] .com_vikrentcar .vrcordcancbox table td .button.focus,
+fieldset[disabled] .com_vikrentcar .vrcvordpaybutton table td .button.focus {
+  background-color: #72af1a;
+  border-color: #72af1a;
+}
+.com_vikrentcar .vrcordcancbox table td .button .badge,
+.com_vikrentcar .vrcvordpaybutton table td .button .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.com_vikrentcar .vrcvordpaybutton {
+  background-color: #eeeeee;
+  padding: 24px;
+}
+.com_vikrentcar .vrcvordpaybutton table td:first-child {
+  text-align: right;
+  width: 20%;
+}
+.com_vikrentcar .vrcvordpaybutton table td .chzn-container {
+  display: inline-block;
+}
+html .vrcdivsearch {
+  background: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  margin: 0 -15px;
+}
+html .vrcdivsearch:before,
+html .vrcdivsearch:after {
+  display: table;
+  content: " ";
+}
+html .vrcdivsearch:after {
+  clear: both;
+}
+html .vrcdivsearch .vrcsfentrysubmit {
+  margin-top: 32.58px;
+}
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch,
+html .vrcdivsearch .vrcsfentrysubmit .btn {
+  width: auto;
+  border: 1px solid;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #80c51d;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.715;
+  border-radius: 0;
+}
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn:focus,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #38560d;
+}
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:hover,
+html .vrcdivsearch .vrcsfentrysubmit .btn:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #5e9015;
+}
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:active,
+html .vrcdivsearch .vrcsfentrysubmit .btn:active,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.active,
+html .vrcdivsearch .vrcsfentrysubmit .btn.active,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .vrcsearch,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .btn {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #5e9015;
+}
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:active:hover,
+html .vrcdivsearch .vrcsfentrysubmit .btn:active:hover,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.active:hover,
+html .vrcdivsearch .vrcsfentrysubmit .btn.active:hover,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .vrcsearch:hover,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .btn:hover,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:active:focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn:active:focus,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.active:focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn.active:focus,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .vrcsearch:focus,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .btn:focus,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:active.focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn:active.focus,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.active.focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn.active.focus,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .vrcsearch.focus,
+.open > .dropdown-togglehtml .vrcdivsearch .vrcsfentrysubmit .btn.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #38560d;
+}
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.disabled:hover,
+html .vrcdivsearch .vrcsfentrysubmit .btn.disabled:hover,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch[disabled]:hover,
+html .vrcdivsearch .vrcsfentrysubmit .btn[disabled]:hover,
+fieldset[disabled] html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:hover,
+fieldset[disabled] html .vrcdivsearch .vrcsfentrysubmit .btn:hover,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.disabled:focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn.disabled:focus,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch[disabled]:focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn[disabled]:focus,
+fieldset[disabled] html .vrcdivsearch .vrcsfentrysubmit .vrcsearch:focus,
+fieldset[disabled] html .vrcdivsearch .vrcsfentrysubmit .btn:focus,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.disabled.focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn.disabled.focus,
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch[disabled].focus,
+html .vrcdivsearch .vrcsfentrysubmit .btn[disabled].focus,
+fieldset[disabled] html .vrcdivsearch .vrcsfentrysubmit .vrcsearch.focus,
+fieldset[disabled] html .vrcdivsearch .vrcsfentrysubmit .btn.focus {
+  background-color: #72af1a;
+  border-color: #80c51d;
+}
+html .vrcdivsearch .vrcsfentrysubmit .vrcsearch .badge,
+html .vrcdivsearch .vrcsfentrysubmit .btn .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+html .vrcdivsearch .chzn-container {
+  width: 100% !important;
+}
+html .vrcdivsearch .chzn-container .chzn-single > div {
+  width: 18px !important;
+}
+html .vrcdivsearch .vrcsfentrylabsel label,
+html .vrcdivsearch .vrcsfentrycont label {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 400;
+  display: block;
+  margin: 0 0 12px;
+  float: none;
+}
+html .vrcdivsearch .vrcsfentrycont {
+  float: left;
+  width: 100%;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  min-width: 0;
+  min-height: 80px;
+}
+@media (min-width: 768px) {
+  html .vrcdivsearch .vrcsfentrycont {
+    float: left;
+    width: 100%;
+  }
+}
+@media (min-width: 992px) {
+  html .vrcdivsearch .vrcsfentrycont {
+    float: left;
+    width: 50%;
+  }
+}
+html .vrcdivsearch .vrcsfentrycont.vrcsfentrycontsubmit {
+  min-height: 0;
+  margin-bottom: 0;
+}
+html .vrcdivsearch .vrcsfentrycont .vrcsfentrylabsel,
+html .vrcdivsearch .vrcsfentrycont .vrcsfentrytime {
+  margin: 0;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-left: 0;
+}
+@media (min-width: 992px) {
+  html .vrcdivsearch .vrcsfentrycont .vrcsfentrylabsel,
+  html .vrcdivsearch .vrcsfentrycont .vrcsfentrytime {
+    float: left;
+    width: 50%;
+  }
+}
+@media (max-width: 460px) {
+  html .vrcdivsearch .vrcsfentrycont .vrcsfentrylabsel,
+  html .vrcdivsearch .vrcsfentrycont .vrcsfentrytime {
+    width: 100%;
+  }
+}
+html .vrcdivsearch .vrcsfentrycont .vrcsfentrytime {
+  padding-right: 0;
+}
+html .vrcdivsearch .vrcsfentryselect {
+  background: none;
+  border: 0;
+  min-width: 0;
+  overflow: visible;
+  width: 100%;
+  color: #999999;
+}
+html .vrcdivsearch .vrcsfentryselect select {
+  width: 100%;
+}
+html .vrcdivsearch .vrcsfentrycont .vrcsfentrydate {
+  display: block;
+  border-color: #c7d7e1;
+  border-radius: 0;
+}
+html .vrcdivsearch .vrcsfentrycont .vrcsfentrydate .hasDatepicker {
+  background: url("../../../../images/calendar-ext.png") 90% center no-repeat;
+  color: #999999;
+  text-transform: uppercase;
+  height: 44px;
+  border-color: #c7d7e1;
+  display: inline-block;
+  width: 100%;
+  float: none;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+html .vrcdivsearch .vrcsfentrycont .vrcsfentrydate > .fa {
+  display: none;
+}
+html .vrcdivsearch .vrcsfentrycont #vrcmodselph,
+html .vrcdivsearch .vrcsfentrycont #vrcmodselpm,
+html .vrcdivsearch .vrcsfentrycont #vrcmodseldh,
+html .vrcdivsearch .vrcsfentrycont #vrcmodseldm,
+html .vrcdivsearch .vrcsfentrycont #vrccomselph,
+html .vrcdivsearch .vrcsfentrycont #vrccomselpm,
+html .vrcdivsearch .vrcsfentrycont #vrccomseldh,
+html .vrcdivsearch .vrcsfentrycont #vrccomseldm,
+html .vrcdivsearch .vrcsfentryselect {
+  background: none;
+  border: 0;
+  min-width: 0;
+  overflow: visible;
+  color: #999999;
+}
+html .vrcdivsearch .vrcsfentrycont #vrcmodselph select,
+html .vrcdivsearch .vrcsfentrycont #vrcmodselpm select,
+html .vrcdivsearch .vrcsfentrycont #vrcmodseldh select,
+html .vrcdivsearch .vrcsfentrycont #vrcmodseldm select,
+html .vrcdivsearch .vrcsfentrycont #vrccomselph select,
+html .vrcdivsearch .vrcsfentrycont #vrccomselpm select,
+html .vrcdivsearch .vrcsfentrycont #vrccomseldh select,
+html .vrcdivsearch .vrcsfentrycont #vrccomseldm select,
+html .vrcdivsearch .vrcsfentryselect select {
+  width: 100%;
+  background: #ffffff;
+  padding: 10px 42px 10px 14px;
+  height: auto;
+  line-height: 23px;
+}
+html .vrcdivsearch .vrclocationsmapdiv a.modal {
+  display: inline-block;
+  position: static;
+}
+html .vrcdivsearch .far.fa-calendar-alt {
+  display: none;
+}
+.chosen-container-single .chosen-single {
+  background: #ffffff;
+  border-radius: 0;
+  color: #829eaf;
+  height: 44px;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 10px 14px;
+}
+.chosen-container-single .chosen-single > div {
+  width: 18px !important;
+}
+.chosen-container-single .chosen-single span {
+  overflow: visible !important;
+}
+.chosen-container-single .chosen-single div b {
+  background-position: 2px 12px;
+}
+.chosen-container-active.chosen-with-drop .chosen-single div b {
+  background-position: -16px 12px !important;
+}
+.t3-section .vrcdivsearchmodule {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 24px;
+  border-radius: 0;
+  color: #ffffff;
+  margin: 0;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 992px) {
+  .t3-section .vrcdivsearchmodule {
+    float: left;
+    width: 66.66666667%;
+  }
+}
+.t3-section .vrcdivsearchmodule .chzn-container-single .chzn-single {
+  color: #999999;
+  text-transform: uppercase;
+  height: 44px;
+  background: #ffffff;
+  border: 0;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.t3-section .vrcdivsearchmodule .chzn-container-single .chzn-single div b {
+  background-position: 0 12px;
+}
+.t3-section .vrcdivsearchmodule .chzn-container-single .chzn-single span {
+  margin-right: 12px;
+}
+.t3-section .vrcdivsearchmodule .chzn-container.chzn-with-drop .chzn-drop {
+  border: 0;
+}
+.t3-section .vrcdivsearchmodule .vrc-searchmod-heading {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 992px) {
+  .t3-section .vrcdivsearchmodule .vrc-searchmod-heading {
+    float: left;
+    width: 100%;
+  }
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit {
+  margin-top: 32.58px;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch {
+  width: auto;
+  border: 1px solid;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #80c51d;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.715;
+  border-radius: 0;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:focus,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #38560d;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #5e9015;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active,
+.open > .dropdown-toggle.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #5e9015;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active:hover,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active:hover,
+.open > .dropdown-toggle.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:hover,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active:focus,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active:focus,
+.open > .dropdown-toggle.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:focus,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active.focus,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active.focus,
+.open > .dropdown-toggle.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #38560d;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.disabled:hover,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch[disabled]:hover,
+fieldset[disabled] .t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:hover,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.disabled:focus,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch[disabled]:focus,
+fieldset[disabled] .t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:focus,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.disabled.focus,
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch[disabled].focus,
+fieldset[disabled] .t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.focus {
+  background-color: #72af1a;
+  border-color: #80c51d;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrylabsel label,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont label {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 400;
+  display: block;
+  margin: 0 0 12px;
+  float: none;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrycont {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  min-width: 0;
+  min-height: 80px;
+}
+@media (min-width: 992px) {
+  .t3-section .vrcdivsearchmodule .vrcsfentrycont {
+    float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .t3-section .vrcdivsearchmodule .vrcsfentrycont {
+    width: 100%;
+  }
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrycont.vrcsfentrycontsubmit {
+  min-height: 0;
+  margin-bottom: 0;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrylabsel,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrytime {
+  margin: 0;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media (min-width: 992px) {
+  .t3-section .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrylabsel,
+  .t3-section .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrytime {
+    float: left;
+    width: 50%;
+  }
+}
+.t3-section .vrcdivsearchmodule .vrcsfentryselect {
+  background: none;
+  border: 0;
+  min-width: 0;
+  overflow: visible;
+  width: 100%;
+  color: #999999;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentryselect select {
+  width: 100%;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrydate {
+  display: block;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrydate .hasDatepicker {
+  color: #999999;
+  text-transform: uppercase;
+  height: 44px;
+  float: none;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodselph,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodselpm,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldh,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldm,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomselph,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomselpm,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomseldh,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomseldm {
+  background: none;
+  border: 0;
+  min-width: 0;
+  overflow: visible;
+  color: #999999;
+}
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodselph select,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodselpm select,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldh select,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldm select,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomselph select,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomselpm select,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomseldh select,
+.t3-section .vrcdivsearchmodule .vrcsfentrycont #vrccomseldm select {
+  width: 100%;
+  background: #ffffff;
+  padding: 10px 42px 10px 14px;
+  height: 44px;
+  line-height: 23px;
+}
+.t3-section .vrcdivsearchmodule .vrc-searchmod-section-pickup {
+  width: 100%;
+  float: left;
+}
+.t3-section .vrcdivsearchmodule .vrc-searchmod-section-datetimes .vrcsfentrycont {
+  padding-right: 0;
+  padding-left: 0;
+}
+.t3-section .vrcdivsearchmodule .vrc-searchmod-section-sbmt {
+  margin-top: 0;
+}
+.module-darker .vrcdivsearchmodule {
+  background: none;
+  width: 100%;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+.module-darker .vrcdivsearchmodule:before,
+.module-darker .vrcdivsearchmodule:after {
+  display: table;
+  content: " ";
+}
+.module-darker .vrcdivsearchmodule:after {
+  clear: both;
+}
+.module-darker .vrcdivsearchmodule .chzn-container-single .chzn-single {
+  color: #999999;
+  text-transform: uppercase;
+  height: 44px;
+  background: #ffffff;
+  border: 0;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.module-darker .vrcdivsearchmodule .chzn-container-single .chzn-single div b {
+  background-position: 0 12px;
+}
+.module-darker .vrcdivsearchmodule .chzn-container-single .chzn-single span {
+  margin-right: 12px;
+}
+.module-darker .vrcdivsearchmodule .chzn-container.chzn-with-drop .chzn-drop {
+  border: 0;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit {
+  margin-top: 0;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch {
+  width: auto;
+  border: 1px solid;
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #80c51d;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.715;
+  border-radius: 0;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:focus,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #38560d;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #5e9015;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active,
+.open > .dropdown-toggle.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #5e9015;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active:hover,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active:hover,
+.open > .dropdown-toggle.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:hover,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active:focus,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active:focus,
+.open > .dropdown-toggle.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:focus,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:active.focus,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.active.focus,
+.open > .dropdown-toggle.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #38560d;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.disabled:hover,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch[disabled]:hover,
+fieldset[disabled] .module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:hover,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.disabled:focus,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch[disabled]:focus,
+fieldset[disabled] .module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch:focus,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.disabled.focus,
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch[disabled].focus,
+fieldset[disabled] .module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch.focus {
+  background-color: #72af1a;
+  border-color: #80c51d;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrysubmit .vrcsearch .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrylabsel label,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont label {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 400;
+  display: block;
+  margin: 0 0 12px;
+  color: #ffffff;
+  float: none;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrylabsel .vrctimesep,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont .vrctimesep {
+  color: #ffffff;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont {
+  min-width: 0;
+  min-height: 80px;
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding: 0;
+}
+@media (min-width: 992px) {
+  .module-darker .vrcdivsearchmodule .vrcsfentrycont {
+    float: left;
+    width: 100%;
+  }
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont.vrcsfentrycontsubmit {
+  min-height: 0;
+  margin-bottom: 0;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrylabsel,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrytime {
+  margin: 0 0 10px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrytime {
+  padding-right: 0;
+  margin-bottom: 0;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentryselect {
+  background: none;
+  border: 0;
+  min-width: 0;
+  overflow: visible;
+  width: 100%;
+  color: #999999;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentryselect select {
+  width: 100%;
+  background: #ffffff;
+  padding: 10px 14px;
+  height: auto;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont {
+  display: flex;
+  flex-direction: column;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrydate {
+  display: block;
+  clear: both;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont .vrcsfentrydate .hasDatepicker {
+  color: #999999;
+  text-transform: uppercase;
+  float: none;
+  height: 44px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodselph,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodselpm,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldh,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldm {
+  background: none;
+  border: 0;
+  min-width: 0;
+  overflow: visible;
+  color: #999999;
+}
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodselph select,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodselpm select,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldh select,
+.module-darker .vrcdivsearchmodule .vrcsfentrycont #vrcmodseldm select {
+  width: 100%;
+  background: #ffffff;
+  padding: 10px 42px 10px 14px;
+  height: auto;
+  line-height: 23px;
+}
+.module-darker .vrcdivsearchmodule .vrc-searchmod-section-categories,
+.module-darker .vrcdivsearchmodule .vrc-searchmod-section-sbmt {
+  width: 100%;
+  clear: both;
+  float: left;
+}
+.vrc-searchmod-wrap-vertical form,
+.vrc-searchmod-wrap-vertical .vrcsfentrycont div {
+  max-width: 100%;
+}
+.vrc-searchmod-wrap-vertical .vrcsfentrycont .chzn-container-single .chzn-single div {
+  width: 18px;
+}
+.vrc-searchmod-wrap-vertical .chosen-container-single {
+  width: 100% !important;
+}
+.vrcmodcarscontainer {
+  overflow: hidden;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal {
+  margin: 0 -15px;
+  padding: 0;
+  width: auto;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal li {
+  float: none;
+  padding: 0;
+  margin: 0 15px !important;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv {
+  background: #ffffff;
+  border-radius: 0;
+  border: 0;
+  text-align: left;
+  padding: 0;
+  width: 100%;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv img {
+  float: none;
+  width: 100%;
+  -webkit-transform: rotate(0) scale(1);
+  
+  -moz-transform: rotate(0) scale(1);
+  
+  -ms-transform: rotate(0) scale(1);
+  
+  -o-transform: rotate(0) scale(1);
+  
+  transform: rotate(0) scale(1);
+  
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsname {
+  color: #191919;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsname:hover,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsname:focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsname:active {
+  color: #72af1a;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarscat {
+  font-style: normal;
+  font-size: 12px;
+  color: #999999;
+  display: block;
+  min-height: 24px;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcinf {
+  float: none;
+  padding: 24px;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview {
+  background: none;
+  border: 0;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  float: none;
+  color: inherit;
+  width: auto;
+  text-align: left;
+  display: block;
+  line-height: inherit;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a {
+  color: #ffffff;
+  background-color: #72af1a;
+  border-color: #80c51d;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.715;
+  border-radius: 0;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.focus {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #38560d;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:hover {
+  color: #ffffff;
+  background-color: #558313;
+  border-color: #5e9015;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:active,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.active,
+.open > .dropdown-toggle.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a {
+  color: #ffffff;
+  background-color: #558313;
+  background-image: none;
+  border-color: #5e9015;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:active:hover,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.active:hover,
+.open > .dropdown-toggle.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:hover,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:active:focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.active:focus,
+.open > .dropdown-toggle.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:active.focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.active.focus,
+.open > .dropdown-toggle.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.focus {
+  color: #ffffff;
+  background-color: #41640f;
+  border-color: #38560d;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.disabled:hover,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a[disabled]:hover,
+fieldset[disabled] .vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:hover,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.disabled:focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a[disabled]:focus,
+fieldset[disabled] .vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a:focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.disabled.focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a[disabled].focus,
+fieldset[disabled] .vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a.focus {
+  background-color: #72af1a;
+  border-color: #80c51d;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsview a .badge {
+  color: #72af1a;
+  background-color: #ffffff;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-thumb {
+  position: relative;
+  overflow: hidden;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-thumb .vrc-car-price {
+  background-color: #72af1a;
+  color: #ffffff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 1;
+  padding: 8px 10px;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-thumb .vrc-car-price .vrcmodcarsstartfrom {
+  font-size: 11px;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  vertical-align: middle;
+  display: inline-block;
+  color: #ffffff;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-thumb .vrc-car-price .vrcmodcarscarcost {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  vertical-align: middle;
+  display: inline-block;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-more {
+  background: #191919;
+  padding: 12px 24px;
+  text-align: right;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-more a {
+  color: #999999;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-more a:hover,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-more a:focus,
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-more a:active {
+  color: #ffffff;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv:hover .vrc-car-more a {
+  color: #ffffff;
+}
+.vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv:hover .vrcmodcarsname {
+  color: #72af1a;
+}
+@media (min-width: 768px) {
+  .vrcmodcarscontainer .vrcmodcarshorizontal .vrcmodcarsboxdiv:hover img {
+    -webkit-transform: rotate(-2deg) scale(1.1);
+    
+    -moz-transform: rotate(-2deg) scale(1.1);
+    
+    -ms-transform: rotate(-2deg) scale(1.1);
+    
+    -o-transform: rotate(-2deg) scale(1.1);
+    
+    transform: rotate(-2deg) scale(1.1);
+    
+  }
+}
+.vrcmodcarscontainer .owl-theme .owl-controls {
+  position: relative;
+  margin-top: 50px;
+  height: 50px;
+}
+.vrcmodcarscontainer .owl-theme .owl-controls .owl-buttons div {
+  position: absolute;
+  left: 0;
+  top: -24px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  padding: 0;
+  margin: 0 0 0 15px;
+  text-align: center;
+  background: #72af1a;
+  color: #ffffff;
+  border-radius: 0;
+  filter: alpha(opacity=100);
+  opacity: 1;
+}
+.vrcmodcarscontainer .owl-theme .owl-controls .owl-buttons div.owl-next {
+  right: 0;
+  left: auto;
+  margin: 0 15px 0 0;
+}
+.vrcmodcarscontainer .owl-theme .owl-controls .owl-page span {
+  width: 8px;
+  height: 8px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+.vrcmodcarscontainer .owl-theme .owl-controls .owl-page.active span {
+  background: #72af1a;
+}
+.vrcmodcarssingle {
+  overflow: visible;
+}
+.vrcmodcarssingle .vrcmodcarshorizontal {
+  margin: 0;
+}
+.vrcmodcarssingle .vrcmodcarshorizontal .vrcmodcarsboxdiv {
+  background: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.vrcmodcarssingle .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcinf {
+  padding: 8px 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.5);
+}
+.vrcmodcarssingle .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcmodcarsname {
+  color: #ffffff;
+}
+.vrcmodcarssingle .owl-theme .owl-controls {
+  height: auto;
+  margin-top: 12px;
+}
+.vrcmodcarssingle .owl-theme .owl-controls:before,
+.vrcmodcarssingle .owl-theme .owl-controls:after {
+  display: table;
+  content: " ";
+}
+.vrcmodcarssingle .owl-theme .owl-controls:after {
+  clear: both;
+}
+.vrcmodcarssingle .owl-theme .owl-controls .owl-buttons div {
+  margin-left: 0;
+  width: 27px;
+  height: 27px;
+  line-height: 27px;
+  position: static;
+  float: left;
+}
+.vrcmodcarssingle .owl-theme .owl-controls .owl-buttons div.owl-next {
+  margin-right: 0;
+  float: right;
+}
+.t3-sidebar .vrccurconvcontainer .vrccurconv-menu {
+  overflow: visible;
+  float: none;
+}
+.t3-sidebar .vrccurconvcontainer .vrccurconv-flag {
+  display: none;
+}
+.t3-sidebar .vrccurconvcontainer .chzn-container {
+  width: 100% !important;
+}
+.t3-sidebar .vrccurconvcontainer .chzn-container-single .chzn-single {
+  color: #999999;
+  text-transform: uppercase;
+  height: 44px;
+  background: #ffffff;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 24px;
+  border-radius: 0;
+}
+.t3-sidebar .vrccurconvcontainer .chzn-container-single .chzn-single div b {
+  background-position: 0 12px;
+}
+.t3-sidebar .vrccurconvcontainer .chzn-container-single .chzn-single span {
+  margin-right: 12px;
+}
+.t3-sidebar .vrccurconvcontainer .chzn-container-single .chzn-drop,
+.t3-sidebar .vrccurconvcontainer .chzn-container .chzn-drop {
+  box-sizing: border-box !important;
+}
+.vrccurconvcontainer .chosen-container-single {
+  width: 100% !important;
+}
+.ie8.com_vikrentcar .car_result .vrc-car-thumb .vrc-car-price .vrcstartfrom {
+  display: inline;
+}
+.ie8.com_vikrentcar .vrc-search-results-block.vrc-search-results-grid .vrccarcarat span {
+  background: #000000;
+}
+.ie8.com_vikrentcar .vrccustomfields .vrccustomfldinfo {
+  width: 100% !important;
+}
+.com_vikrentcar .vrcdivsearch {
+  flex-direction: column;
+  margin: 0;
+}
+.com_vikrentcar .vrcdivsearch span#vrccomselph select,
+.com_vikrentcar .vrcdivsearch span#vrccomselpm select,
+.com_vikrentcar .vrcdivsearch span#vrccomseldh select,
+.com_vikrentcar .vrcdivsearch span#vrccomseldm select {
+  border: 1px solid #c7d7e1;
+  border-radius: 0;
+}
+.com_vikrentcar .vrcdivsearch .vrclocationsmapdiv {
+  text-align: right;
+  padding: 0 15px;
+}
+.com_vikrentcar .vrcdivsearch .vrclocationsmapdiv a {
+  display: inline-block;
+  padding: 72px 0 0;
+}
+.com_vikrentcar .vrcdivsearch .vrclocationsmapdiv i {
+  font-size: 32px;
+  margin: 12px 0;
+}
+.com_vikrentcar .vrcdivsearch .vrclocationsmapdiv span {
+  color: #72af1a;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: unset;
+}
+.vrc-main-title {
+  display: none;
+}
+.car-detail .vrclistcarcat {
+  margin-bottom: 5px;
+}
+.car-detail .vrc-avcals-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.car-detail .vrc-avcals-container .vrccaldivcont {
+  width: auto;
+}
+.car-detail .chzn-container-single .chzn-single div {
+  width: 18px !important;
+}
+.car-detail .vrcdivsearch {
+  display: block;
+}
+.car-detail .vrcdivsearch form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.car-detail .vrcdivsearch .vrc-searchf-section-datetimes .vrcsfentrycont div:first-child {
+  margin-bottom: 22px;
+}
+.car-detail .vrcdivsearch .vrc-searchf-section-datetimes i {
+  display: none;
+}
+@media screen and (max-width: 657px) {
+  .car-detail .vrcdivsearch .vrc-searchf-section-datetimes {
+    flex-direction: column;
+  }
+}
+.car-detail .vrcdivsearch .vrc-searchf-section-sbmt {
+  align-self: flex-start;
+}
+.car-detail .vrcdivsearch .vrclocationsbox {
+  flex: 100%;
+  text-align: right;
+  display: inline-block;
+  width: 100%;
+}
+.car-detail .vrcdivsearch .vrclocationsbox .vrclocationsmapdiv {
+  float: right;
+  font-size: 12px;
+}
+.car-detail .vrcdivsearch .vrclocationsbox .vrclocationsmapdiv span {
+  color: #72af1a;
+  font-weight: 500;
+  font-size: 10px;
+  margin-top: 8px;
+}
+.car-detail .vrcdivsearch .vrclocationsbox .vrclocationsmapdiv i {
+  display: none;
+}
+div.vrcmodcarscontainer .vrcmodcarsgridcont-items,
+div.vrcmodcarsgridcontainer .vrcmodcarsgridcont-items {
+  width: auto;
+  margin: 0 -15px;
+}
+div.vrcmodcarscontainer .vrc-car-thumb,
+div.vrcmodcarsgridcontainer .vrc-car-thumb {
+  position: relative;
+  overflow: hidden;
+}
+div.vrcmodcarscontainer .vrc-car-thumb img,
+div.vrcmodcarsgridcontainer .vrc-car-thumb img {
+  max-width: 100%;
+}
+div.vrcmodcarscontainer .vrc-car-thumb .vrcmodcarsgrid-box-cost,
+div.vrcmodcarsgridcontainer .vrc-car-thumb .vrcmodcarsgrid-box-cost {
+  background-color: #72af1a;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 8px 10px;
+  position: absolute;
+  top: 0;
+  text-transform: uppercase;
+  left: 0;
+  line-height: 1;
+  width: auto;
+}
+div.vrcmodcarscontainer .vrc-car-thumb .vrcmodcarsgridcarcost,
+div.vrcmodcarsgridcontainer .vrc-car-thumb .vrcmodcarsgridcarcost {
+  font-weight: 600;
+}
+div.vrcmodcarscontainer .vrcmodcarsgrid-item_details,
+div.vrcmodcarsgridcontainer .vrcmodcarsgrid-item_details {
+  padding: 24px;
+  text-align: left;
+}
+div.vrcmodcarscontainer .vrcmodcarsgrid-item_details .vrcmodcarsgrid-item_cat,
+div.vrcmodcarsgridcontainer .vrcmodcarsgrid-item_details .vrcmodcarsgrid-item_cat {
+  float: unset;
+  font-weight: 600;
+  font-size: 12px;
+  color: #829eaf;
+  display: block;
+  cursor: text;
+}
+div.vrcmodcarscontainer .vrcmodcarsgrid-item_details .vrcmodcarsgrid-item_title:hover,
+div.vrcmodcarsgridcontainer .vrcmodcarsgrid-item_details .vrcmodcarsgrid-item_title:hover {
+  color: #72af1a;
+  cursor: pointer;
+}
+div.vrcmodcarscontainer .vrcmodcarsgrid-item-btm,
+div.vrcmodcarsgridcontainer .vrcmodcarsgrid-item-btm {
+  align-items: center;
+  background-color: #1d4156;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+div.vrcmodcarscontainer .vrcmodcarsgrid-item-btm .vrcmodcarsgridview,
+div.vrcmodcarsgridcontainer .vrcmodcarsgrid-item-btm .vrcmodcarsgridview {
+  margin: 0;
+  padding: 0;
+}
+div.vrcmodcarscontainer .vrcmodcarsgrid-item-btm .vrcmodcarsgridview a,
+div.vrcmodcarsgridcontainer .vrcmodcarsgrid-item-btm .vrcmodcarsgridview a {
+  background-color: transparent;
+  color: #829eaf;
+  padding: 0;
+}
+.owl-carousel .owl-nav {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 12px;
+}
+.owl-carousel .owl-nav button[type="button"].owl-next,
+.owl-carousel .owl-nav button[type="button"].owl-prev {
+  background: #72af1a !important;
+  border-radius: 0;
+  color: #ffffff !important;
+  text-align: center;
+  margin: 0;
+  padding: 12px !important;
+  opacity: 1;
+}
+.owl-carousel .owl-nav button[type="button"].owl-next span,
+.owl-carousel .owl-nav button[type="button"].owl-prev span {
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 600;
+  height: 24px;
+  line-height: 24px;
+  width: 24px;
+}
+.owl-carousel .owl-dots {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.owl-carousel .owl-dots .owl-dot.active {
+  background-color: #0085B2;
+}
+.owl-carousel .owl-dots .owl-dot {
+  background-color: #869791;
+  border-radius: 50%;
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+  margin: 0 4px;
+}
+div.t3-footnav .vrcmodcarsgridcontainer .vrcmodcarsgridboxdiv {
+  border: 0;
+}
+div.t3-footnav .vrcmodcarsgridcontainer .vrcmodcarsgrid-item_title {
+  bottom: 0;
+  background: #000;
+  color: #fff;
+  font-size: 14px;
+  right: 0;
+  text-align: left;
+  left: 0;
+  opacity: .8;
+  position: absolute;
+  padding: 8px 10px;
+}
+div.t3-footnav .vrcmodcarsgridcontainer .owl-carousel .owl-nav button {
+  border-radius: 0;
+  padding: 0 !important;
+  margin: 0;
+  max-height: 24px;
+}
+div.t3-footnav .vrcmodcarsgridcontainer .owl-carousel .owl-dots {
+  display: none;
+}
+.vrc-searchsuggestions-solution-booknow {
+  margin-bottom: 0;
+}
+.vrcsfentrycont #vrccomselph select,
+.vrcsfentrycont #vrccomseldh select {
+  height: 100% !important;
+}

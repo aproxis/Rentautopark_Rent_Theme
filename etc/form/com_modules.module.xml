@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="custom-field" label="JA Extra Fields" description="">
+			<field name="module-intro" type="textarea" default="" label="TPL_MENU_ITEM_MODULE_INTRO_LABEL" description="TPL_MENU_ITEM_MODULE_INTRO_DESC" filter="RAW" />
+      <field name="module-background" type="media" default="" label="TPL_MENU_ITEM_MODULE_BACKGROUND_LABEL" description="TPL_MENU_ITEM_MODULE_BACKGROUND_DESC" />
+      <field
+        name="module-specical-title"
+        type="radio"
+        class="btn-group"
+        label="TPL_MENU_ITEM_MODULE_SPECICAL_TITLE_LABEL"
+        description="TPL_MENU_ITEM_MODULE_SPECICAL_TITLE_DESC"
+        default="0">
+        <option value="1">JSHOW</option>
+        <option value="0">JHIDE</option>
+      </field>
+      <field
+        name="module-full-width"
+        type="radio"
+        class="btn-group btn-group-yesno"
+        label="TPL_MENU_ITEM_MODULE_FULL_WIDTH_LABEL"
+        default="0">
+        <option value="1">JSHOW</option>
+        <option value="0">JHIDE</option>
+      </field>
+    </fieldset>
+  </fields>
+</form>

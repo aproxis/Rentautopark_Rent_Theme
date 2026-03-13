@@ -1,0 +1,65 @@
+/*
+$JA#COPYRIGHT$
+*/
+
+// ------------------------------------
+// FEATURES INTRO STYLE 1
+// ------------------------------------
+.acm-features {
+  &.style-2 {
+    .owl-carousel {
+      .owl-wrapper {
+        height: 100%;
+      }
+      
+      .owl-item {
+        height: 100%;
+
+        .features-item {
+          background: @white;
+          color: @brand-light-lv3;
+          padding: @t3-global-padding;
+          text-align: center;
+          border-bottom: 5px solid @gray-lighter;
+          margin: 0 @grid-gutter-width/2;
+          height: 100%;
+
+          &:after {
+            content: "";
+            border-bottom : 6px solid @gray-lighter;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            position: absolute;
+            bottom: 5px;
+          }
+
+          h3 {
+            color: @headings-color;
+            text-transform: uppercase;
+            line-height: @line-height-computed;
+          }
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &.col-sm-2:nth-child(6n+1),
+        &.col-sm-3:nth-child(4n+1),
+        &.col-sm-4:nth-child(3n+1),
+        &.col-sm-6:nth-child(2n+1) {
+          clear: both;
+        }
+
+        .features-img {
+          margin: -@t3-global-margin -@t3-global-margin @t3-global-margin;
+
+          img {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+

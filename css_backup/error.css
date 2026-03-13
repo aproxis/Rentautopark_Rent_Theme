@@ -1,0 +1,469 @@
+/*
+ * ------------------------------------------------------------------------
+ * JA Rent template
+ * ------------------------------------------------------------------------
+ * Copyright (C) 2004-2011 J.O.O.M Solutions Co., Ltd. All Rights Reserved.
+ * @license - Copyrighted Commercial Software
+ * Author: J.O.O.M Solutions Co., Ltd
+ * Websites:  http://www.joomlart.com -  http://www.joomlancers.com
+ * This file may not be redistributed in whole or significant part.
+ * ------------------------------------------------------------------------
+*/
+
+/* MAIN STYLE
+---------------------*/
+* {
+	box-sizing: border-box;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	font-family: "Roboto",sans-serif;
+	font-size: 14px;
+	line-height: 1.625;
+	height: 100%;
+	margin: 0;
+}
+
+/* OutLine */
+#outline {
+	text-align: center;
+	animation: scale linear 700ms;
+}
+
+.page-error {
+	position: relative;
+}
+
+.error {
+	background: #fff url(../images/not-found-bg.jpg) no-repeat 0 0;
+	background-size: cover;
+	width: 100%;
+	padding: 90px 0;
+}
+
+/* small title */
+.small-title {
+	color: #1d4156;
+	font-weight: bold;
+	margin-bottom: 25px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* Eror Code */
+.error-code {
+	font-size: 40px;
+	line-height: normal;
+	font-weight: bold;
+	color: #fff;
+	text-transform: uppercase;
+	margin-bottom: 65px;
+}
+
+/* Message Error */
+.error-message h2 {
+	color: #fff;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 40px;
+	margin-bottom: 10px;
+	text-transform: uppercase;
+}
+
+#errorboxbody {
+	margin-bottom: 24px;
+}
+
+#errorboxbody p {
+	color: #b5e4ff;
+	font-size: 14px;
+	font-weight: 300;
+	line-height: 24px;
+	margin-bottom: 35px;
+}
+
+/* Image 404 */
+.icon-404 {
+	background: url(../images/404.jpg) no-repeat 0 0;
+	border: 4px solid #fff;
+	border-radius: 262px;
+	display: block;
+	height: 262px;
+	margin: 0 auto 45px;
+	width: 262px;
+}
+
+/* Button Home */
+.button-home {
+	background-color: #1d4156;
+	color: #fff;
+	border-radius: 0;
+	font-size: 13px;
+	font-weight: bold;
+	display: inline-block;
+	padding: 20px 28px;
+	text-transform: uppercase;
+	text-decoration: none;
+	transition: 0.15s;
+	position: relative;
+}
+
+.button-home:before {
+	background: #39647d;
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 5px;
+    height: 100%; 
+}
+
+.button-home:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    margin-top: -5px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 4px 0 4px 5px; 
+    border-color: transparent transparent transparent #39647d;
+}
+
+.button-home:hover,
+.button-home:focus,
+.button-home:active {
+	background: #102430;
+	color: #fff;
+	text-decoration: none;
+}
+
+/* Header */
+.t3-header {
+    background: #ffffff;
+    border-bottom: 5px solid #079aee;
+    padding-bottom: 24px;
+    padding-top: 24px;
+}
+
+/* Logo */
+.page-error .logo {
+	line-height: 50px;
+}
+
+/* NavBar */
+.page-error .navbar-default {
+  background-color: #fff;
+  border-color: transparent;
+  margin: 0;
+}
+
+.page-error .navbar-default ul {
+  float: right;
+  margin: 0;
+}
+
+.navbar-default ul.nav-pills > li {
+	float: left;
+}
+
+.navbar-default ul.nav-pills > li > a {
+	color: #1d4156;
+	font-weight: bold;
+    text-transform: uppercase;
+}
+
+.navbar-default ul.nav-pills > li > a:hover,
+.navbar-default ul.nav-pills > li > a:focus {
+	color: #079aee;
+	background-color: transparent;
+}
+
+.navbar-default ul.nav-pills > .active > a,
+.navbar-default ul.nav-pills > .active > a:hover,
+.navbar-default ul.nav-pills > .active > a:focus {
+	color: #079aee;
+	background-color: transparent;
+}
+
+.navbar-default ul.nav-pills > .disabled > a,
+.navbar-default ul.nav-pills > .disabled > a:hover,
+.navbar-default ul.nav-pills > .disabled > a:focus {
+	color: @gray;
+	background-color: transparent;
+}
+
+
+/* Footer */
+.t3-footer {
+    background: #1d4156 ;
+    border-top: 5px solid #079aee;
+    color: #829eaf;
+    padding: 72px 0;
+}
+
+.t3-footer ul {
+	list-style: none;
+	margin: 0;
+	padding-left: 0;
+}
+
+.t3-footer ul.nav > li {
+    line-height: 24px;
+    position: relative;
+    border: none;
+    font-size: 14px;
+    font-weight: normal;
+    padding-left: 15px;
+    text-transform: none;
+}
+
+.t3-footer ul.nav > li:before {
+	border: 4px solid transparent;
+	border-left-color: #fff;
+	top: 50%;
+	margin-top: -4px;
+    content: "";
+    display: block;
+    height: 0;
+    left: 0;
+    position: absolute;
+    width: 0;
+}
+
+.t3-footer ul.nav > li > a {
+	color: #829eaf;
+	padding: 0;
+	display: inline;
+	text-transform: none;
+	font-weight: normal;
+}
+
+
+.t3-footer ul.nav > li a:hover, 
+.t3-footer ul.nav > li a:active, 
+.t3-footer ul.nav > li a:focus {
+	background: none;
+	color: #fff;
+}
+
+.t3-footer ul.nav > li.active > a {
+	color: #fff;
+}
+
+.t3-footer .custom {
+   line-height: 1.715;
+}
+
+.t3-footer .address {
+	line-height: normal;
+}
+
+.t3-footer .address i {
+	color: #079aee;
+	margin-right: 5px;
+	font-weight: bold;
+	width: 20px;
+	font-size: 18px;
+}
+
+.t3-footer .address li {
+	color: #fff;
+	text-transform: uppercase;
+	font-weight: bold;
+	padding-bottom: 12px;
+	font-size: 11px;
+}
+
+.t3-footer .address strong {
+	color: #829eaf;
+	font-weight: normal;
+	margin-right: 5px;
+}
+
+.t3-copyright {
+	background: #183545 none repeat scroll 0 0;
+	font-size: 12px;
+	padding: 24px 0;
+	color: #829eaf;
+}
+
+.t3-copyright a {
+	color: #ffffff;
+}
+
+.t3-copyright a:hover {
+	text-decoration: none;
+}
+
+
+/* Module Cars Single */
+.vrcmodcarssingle {
+  overflow: visible;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal {
+  margin: 0;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .vrcmodcarsboxdiv {
+  background: none;
+  box-shadow: none;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcinf {
+  padding: 8px 10px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+  background: rgba(0,0,0,0.5);
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrcinf > a {
+  color: #fff;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .vrcmodcarsboxdiv .vrc-car-thumb img {
+  max-width: 100%;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .owl-theme .owl-controls {
+  height: auto;
+  margin-top: 12px;
+  position: relative;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .owl-theme .owl-controls:after {
+  clear: both;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .owl-theme .owl-controls .owl-buttons div {
+  margin-left: 0;
+  width: 27px;
+  height: 27px;
+  line-height: 27px;
+  position: static;
+  float: left;
+  background: #079aee;
+  border-radius: 0;
+  color: #ffffff;
+  left: 0;
+  opacity: 1;
+  padding: 0;
+  text-align: center;
+  top: -24px;
+}
+
+.vrcmodcarssingle .vrcmodcarshorizontal .owl-theme .owl-controls .owl-buttons div.owl-next {
+  margin-right: 0;
+  float: right;
+}
+
+.vrc-car-thumb {
+	position: relative;
+	overflow: hidden;
+}
+
+.vrc-car-thumb:hover .vrcinf > a {
+	color: #079aee !important;
+}
+
+.vrc-car-thumb .vrc-car-price {
+	background-color: #079aee;
+	color: #fff;
+	position: absolute;
+	top: 0;
+	left: 0;
+	line-height: 1;
+	padding: 8px 10px;
+}
+
+.vrc-car-thumb .vrcmodcarsstartfrom {
+	font-size: 12px;
+	margin: 0;
+	padding: 0;
+	text-transform: uppercase;
+	vertical-align: middle;
+	display: inline-block;
+	color: #fff;
+}
+
+.vrc-car-thumb .vrcmodcarscarcost {
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.owl-theme .owl-controls {
+	position: relative;
+	height: auto;
+	margin-top: 12px;
+}
+
+.owl-theme .owl-controls:after {
+	content: "";
+	display: block;
+	clear: both;
+}
+
+.owl-buttons div {
+	background: #079aee;
+	float: left;
+	height: 27px;
+	line-height: 27px;
+	margin-left: 0;
+	position: static;
+	width: 27px;
+	display: inline-block;
+	font-size: 12px;
+	opacity: 1;
+	position: relative;
+}
+
+.owl-buttons div:before {
+	content: "";
+	display: inline-block;
+	border: 4px solid transparent;
+	border-right-color: #fff;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -4px 0 0 -8px;
+}
+
+.owl-buttons div.owl-next {
+	float: right;
+}
+
+.owl-buttons div.owl-next:before {
+	border: 4px solid transparent;
+	border-left-color: #fff;
+	margin-left: 0;
+}
+
+.owl-page span {
+	width: 8px;
+	height: 8px;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+.owl-page .active span {
+	background: @brand-primary;
+}
+
+
+/* Responsive */
+/* Mobile */

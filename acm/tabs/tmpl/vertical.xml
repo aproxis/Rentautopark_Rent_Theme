@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<title>Tabs Style 1</title>
+	<sampledata><![CDATA[
+    ]]></sampledata>
+    <fields name="tab">
+  		<fieldset name="basic" label="TAB_LABEL" description="TAB_DESC" multiple="1">
+  		  <field name="position" type="modulesPosition"    
+        description="TABS_POSITION_DESC"
+        label="TABS_POSITION_LABEL"
+        default=""
+        maxlength="50" />
+      </fieldset>
+    </fields>
+</form>
