@@ -89,13 +89,37 @@ foreach ($cars as $c) {
    AutoRent carslist v4
    ================================================================ */
 
+/* ── Page wrapper ─────────────────────────────────────────────── */
+.ar-page-wrap {
+	padding: 0 20px;
+}
+@media (min-width: 640px)  { .ar-page-wrap { padding: 0 30px; } }
+@media (min-width: 768px)  { .ar-page-wrap { padding: 0 40px; } }
+@media (min-width: 1024px) { .ar-page-wrap { padding: 0 50px; } }
+.ar-page-inner {
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
 /* Hero */
 .ar-hero {
 	background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
 	color: #fff;
-	padding: 52px 24px 44px;
+	padding: 52px 20px 44px;
 	text-align: center;
 	margin-bottom: 32px;
+	/* full-width: break out of .ar-page-wrap */
+	margin-left: -20px;
+	margin-right: -20px;
+}
+@media (min-width: 640px)  {
+	.ar-hero { padding-left: 30px; padding-right: 30px; margin-left: -30px; margin-right: -30px; }
+}
+@media (min-width: 768px)  {
+	.ar-hero { padding-left: 40px; padding-right: 40px; margin-left: -40px; margin-right: -40px; }
+}
+@media (min-width: 1024px) {
+	.ar-hero { padding-left: 50px; padding-right: 50px; margin-left: -50px; margin-right: -50px; }
 }
 .ar-hero h1 {
 	font-size: clamp(2rem, 4.5vw, 3.2rem);
@@ -532,8 +556,10 @@ foreach ($cars as $c) {
 <?php
 /* Page header */
 if (is_array($category)) {
+	echo '<div class="ar-page-wrap"><div class="ar-page-inner">';
 	echo '<h3 class="vrcclistheadt">' . $category['name'] . '</h3>';
 	if (strlen($category['descr']) > 0) echo '<div class="vrccatdescr">' . $category['descr'] . '</div>';
+	echo '</div></div>';
 } else {
 ?>
 <div class="ar-hero">
@@ -541,6 +567,9 @@ if (is_array($category)) {
 	<p><?php echo Text::_('VRCALLCARSDESCR') ?: 'Descoperă întreaga noastră colecție de automobile premium'; ?></p>
 </div>
 <?php } ?>
+
+<div class="ar-page-wrap">
+<div class="ar-page-inner">
 
 <!-- Toolbar -->
 <div class="ar-toolbar">
@@ -674,6 +703,9 @@ if (is_array($category)) {
 <?php if (!empty($navig)): ?>
 <div class="vrc-pagination"><?php echo $navig; ?></div>
 <?php endif; ?>
+
+</div><!-- /.ar-page-inner -->
+</div><!-- /.ar-page-wrap -->
 
 <?php
 /**
