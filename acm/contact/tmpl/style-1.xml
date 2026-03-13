@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-  <title>Contact Style 1 - Contact Form & Map</title>
+  <title>Contact Style 1 - Contact Form &amp; Map</title>
 	<sampledata><![CDATA[ 
-	{":type":"ja_ngr:contact","contact":{"jatools-layout-contact":"style-1","contact[contact-item]":{"contact[contact-item][icon]":["fa fa-map-marker","fa fa-phone","fa fa-envelope","fa fa-clock"],"contact[contact-item][label]":["Adresă","Telefon","Email","Program"],"contact[contact-item][value]":["Strada Exemplu 123, Chișinău","(+373) 60 123 456","contact@rentautopark.md","Luni - Vineri: 08:00 - 20:00"],"rows":4,"cols":3,"type":"list"}}}
+	{":type":"ja_ngr:contact","contact":{"jatools-layout-contact":"style-1","contact[map-url]":"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d87388.3241920343!2d28.784565399999997!3d47.010453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97c3628b769a1%3A0xb106659da8f41093!2zQ2hpxZ9pbsSDbywgTW9sZG92YQ!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s"}}
   ]]></sampledata>
 	<fields name="contact">
 		<fieldset name="Basic Settings" description="Basic settings for the contact component">
-			<field name="form-enabled" type="radio" default="1" label="Form Enabled" description="Enable or disable the contact form">
-				<option value="1" class="on">Yes</option>
-				<option value="0" class="off">No</option>
-			</field>
-			<field name="map-enabled" type="radio" default="1" label="Map Enabled" description="Enable or disable the map section">
-				<option value="1" class="on">Yes</option>
-				<option value="0" class="off">No</option>
-			</field>
-		</fieldset>
-
-		<fieldset name="Contact Items" description="Contact information items"> 
-			<field name="contact-item" type="jalist">
-				<item name="icon" type="text" size="30" default="" label="Contact Icon" description="Icon class for the contact item (e.g., fa fa-map-marker)" />
-				<item name="label" type="text" size="50" default="" label="Contact Label" description="Label for the contact information" />
-				<item name="value" type="textarea" cols="40" rows="2" default="" label="Contact Value" description="Contact information value" />
-			</field>
+			<field name="map-url" type="text" size="100" default="" label="Google Maps Embed URL" description="Paste the Google Maps embed src URL here. Leave empty to use the default Chisinau map." />
 		</fieldset>
 	</fields>
 </form>
