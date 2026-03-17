@@ -333,3 +333,12 @@
 		display: none;
 	}
 }
+
+    .container {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .plain-style {
+        display: none
+    }
