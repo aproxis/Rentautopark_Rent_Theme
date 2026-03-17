@@ -24,7 +24,12 @@ $uid       = 'ar-contact-' . $module->id;
 $mapUrl    = $helper->get('map-url');
 $contactId = (int) $helper->get('contact-id');
 
-Factory::getApplication()->getLanguage()->load('com_contact', JPATH_ROOT . '/components/com_contact');
+Factory::getApplication()->getLanguage()->load(
+    'com_contact',
+    JPATH_SITE,
+    Factory::getApplication()->getLanguage()->getTag(),
+    true
+);
 
 if (empty($mapUrl)) {
     $mapUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d87388.3241920343!2d28.784565399999997!3d47.010453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97c3628b769a1%3A0xb106659da8f41093!2zQ2hpxZ9pbsSDbywgTW9sZG92YQ!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s';
@@ -286,19 +291,3 @@ $formAction = Route::_('index.php');
 		</div>
 	</div>
 </section>
-<?php
-$langFile = JPATH_SITE . '/language/ro-RO/com_contact.ini';
-$langFile2 = JPATH_SITE . '/components/com_contact/language/ro-RO/com_contact.ini';
-
-echo '<pre>';
-echo 'File 1 exists: ' . (file_exists($langFile) ? 'YES' : 'NO') . "\n";
-echo 'File 2 exists: ' . (file_exists($langFile2) ? 'YES' : 'NO') . "\n";
-
-if (file_exists($langFile)) {
-    $contents = file_get_contents($langFile);
-    // Show only COM_CONTACT_CONTACT_ keys
-    preg_match_all('/^COM_CONTACT_CONTACT_[A-Z_]+.*/m', $contents, $matches);
-    echo implode("\n", $matches[0]);
-}
-echo '</pre>';
-?>
