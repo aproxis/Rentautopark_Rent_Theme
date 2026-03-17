@@ -201,7 +201,7 @@ $formAction = Route::_('index.php');
 
 			<!-- Contact Form -->
 			<div class="<?php echo $uid; ?>-form-card">
-				<h2 class="<?php echo $uid; ?>-form-title">Trimite-ne un mesaj</h2>
+				<h2 class="<?php echo $uid; ?>-form-title"><?php echo Text::_('COM_CONTACT_CONTACT_DEFAULT_LABEL'); ?></h2>
 
 				<form id="contact-form-<?php echo $module->id; ?>"
 				      action="<?php echo $formAction; ?>"
@@ -215,7 +215,7 @@ $formAction = Route::_('index.php');
 						<div class="<?php echo $uid; ?>-row">
 							<div class="<?php echo $uid; ?>-form-group required">
 								<label class="<?php echo $uid; ?>-label" for="jform_contact_name_<?php echo $module->id; ?>">
-									<?php echo Text::_('COM_CONTACT_NAME'); ?>
+									<?php echo Text::_('COM_CONTACT_CONTACT_EMAIL_NAME_LABEL'); ?>
 								</label>
 								<input type="text"
 								       id="jform_contact_name_<?php echo $module->id; ?>"
@@ -226,7 +226,7 @@ $formAction = Route::_('index.php');
 							</div>
 							<div class="<?php echo $uid; ?>-form-group required">
 								<label class="<?php echo $uid; ?>-label" for="jform_contact_email_<?php echo $module->id; ?>">
-									<?php echo Text::_('COM_CONTACT_EMAIL'); ?>
+									<?php echo Text::_('COM_CONTACT_EMAIL_LABEL'); ?>
 								</label>
 								<input type="email"
 								       id="jform_contact_email_<?php echo $module->id; ?>"
@@ -240,7 +240,7 @@ $formAction = Route::_('index.php');
 						<!-- Message -->
 						<div class="<?php echo $uid; ?>-form-group required">
 							<label class="<?php echo $uid; ?>-label" for="jform_contact_message_<?php echo $module->id; ?>">
-								<?php echo Text::_('COM_CONTACT_MESSAGE'); ?>
+								<?php echo Text::_('COM_CONTACT_CONTACT_ENTER_MESSAGE_LABEL'); ?>
 							</label>
 							<textarea id="jform_contact_message_<?php echo $module->id; ?>"
 							          name="jform[contact_message]"
