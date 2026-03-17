@@ -25,7 +25,7 @@ if (empty($mapUrl)) {
 }
 
 // Get contact ID from module parameters or use default
-$contactId = $helper->get('contact_contact_id', 1);
+$contactId = $helper->get('contact_contact_id');
 ?>
 
 <style>
@@ -193,7 +193,7 @@ $contactId = $helper->get('contact_contact_id', 1);
 				// Create form action URL
 				$formAction = Route::_('index.php');
 				
-				// Get the contact form using Joomla 4 approach
+				// Get the contact form using Joomla 5 approach
 				$contactModel = Factory::getApplication()->bootComponent('com_contact')
 					->getMVCFactory()
 					->createModel('Contact', 'Site', ['ignore_request' => true]);
