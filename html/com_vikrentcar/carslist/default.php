@@ -95,13 +95,14 @@ foreach ($cars as $c) {
 	padding: 0 20px;
 	box-sizing: border-box;
 }
-@media (min-width: 640px)  { .ar-page-wrap { padding: 0 30px; } }
-@media (min-width: 768px)  { .ar-page-wrap { padding: 0 40px; } }
-@media (min-width: 1024px) { .ar-page-wrap { padding: 0 50px; } }
+@media (min-width: 640px)  { .ar-page-wrap { padding: 15px 30px; } }
+@media (min-width: 768px)  { .ar-page-wrap { padding: 30px 40px; } }
+@media (min-width: 1024px) { .ar-page-wrap { padding: 60px 70px; } }
 .ar-page-inner {
 	max-width: 1440px;
 	margin: 0 auto;
 }
+
 
 /* Hero — always 100% viewport width */
 .ar-hero {
