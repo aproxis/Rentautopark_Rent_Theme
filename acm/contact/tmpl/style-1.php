@@ -286,3 +286,19 @@ $formAction = Route::_('index.php');
 		</div>
 	</div>
 </section>
+<?php
+$langFile = JPATH_SITE . '/language/ro-RO/com_contact.ini';
+$langFile2 = JPATH_SITE . '/components/com_contact/language/ro-RO/com_contact.ini';
+
+echo '<pre>';
+echo 'File 1 exists: ' . (file_exists($langFile) ? 'YES' : 'NO') . "\n";
+echo 'File 2 exists: ' . (file_exists($langFile2) ? 'YES' : 'NO') . "\n";
+
+if (file_exists($langFile)) {
+    $contents = file_get_contents($langFile);
+    // Show only COM_CONTACT_CONTACT_ keys
+    preg_match_all('/^COM_CONTACT_CONTACT_[A-Z_]+.*/m', $contents, $matches);
+    echo implode("\n", $matches[0]);
+}
+echo '</pre>';
+?>
