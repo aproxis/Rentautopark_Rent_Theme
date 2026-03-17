@@ -23,6 +23,7 @@ use Joomla\CMS\Factory;
 $uid       = 'ar-contact-' . $module->id;
 $mapUrl    = $helper->get('map-url');
 $contactId = (int) $helper->get('contact-id');
+Factory::getApplication()->getLanguage()->load('com_contact', JPATH_SITE);
 
 if (empty($mapUrl)) {
     $mapUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d87388.3241920343!2d28.784565399999997!3d47.010453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97c3628b769a1%3A0xb106659da8f41093!2zQ2hpxZ9pbsSDbywgTW9sZG92YQ!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s';
