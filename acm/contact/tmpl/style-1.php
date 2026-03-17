@@ -8,6 +8,7 @@
  *
  * Extra Fields used:
  *   map-url   (Google Maps embed URL)
+ *   contact-id (Joomla contact ID)
  *
  * ------------------------------------------------------------------------
 */
@@ -19,23 +20,45 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Factory;
 
-$uid     = 'ar-contact-' . $module->id;
-$mapUrl  = $helper->get('map-url');
+$uid       = 'ar-contact-' . $module->id;
+$mapUrl    = $helper->get('map-url');
+$contactId = (int) $helper->get('contact-id');
+
 if (empty($mapUrl)) {
     $mapUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d87388.3241920343!2d28.784565399999997!3d47.010453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97c3628b769a1%3A0xb106659da8f41093!2zQ2hpxZ9pbsSDbywgTW9sZG92YQ!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s';
 }
 
-// Get contact ID from module parameters or use default
-$contactId = (int) $helper->get('contact-id');
+// Load contact item directly from DB — avoids MVC model cloning issues in module context
+if ($contactId > 0) {
+    $db = Factory::getDbo();
+    $db->setQuery('SELECT * FROM #__contact_details WHERE id = ' . $contactId . ' AND published = 1');
+    $contact = $db->loadObject();
 
+    if (!$contact) {
+        if (Factory::getApplication()->isClient('administrator')) {
+            echo '<div class="alert alert-warning">Contact ID ' . $contactId . ' not found or unpublished.</div>';
+        }
+        return;
+    }
+} else {
+    if (Factory::getApplication()->isClient('administrator')) {
+        echo '<div class="alert alert-warning">No contact ID set in module parameters.</div>';
+    }
+    return;
+}
 
+// Load Joomla form assets
+HTMLHelper::_('behavior.keepalive');
+HTMLHelper::_('behavior.formvalidator');
+
+$formAction = Route::_('index.php');
 ?>
 
 <style>
 /* ═══ AutoRent Contact (contact/style-1) ════════════════════════════════ */
 #<?php echo $uid; ?> {
 	padding: 48px 20px;
-	background: #f9fafb; /* bg-gray-50 */
+	background: #f9fafb;
 }
 @media (min-width: 640px)  { #<?php echo $uid; ?> { padding: 64px 30px; } }
 @media (min-width: 768px)  { #<?php echo $uid; ?> { padding: 80px 40px; } }
@@ -52,14 +75,14 @@ $contactId = (int) $helper->get('contact-id');
 	grid-template-columns: 1fr;
 	gap: 32px;
 }
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
 	.<?php echo $uid; ?>-grid {
-		grid-template-columns: 1fr 1fr;
 		gap: 48px;
 	}
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
 	.<?php echo $uid; ?>-grid {
+		grid-template-columns: 1fr 1fr;
 		gap: 48px;
 	}
 }
@@ -95,11 +118,12 @@ $contactId = (int) $helper->get('contact-id');
 	.<?php echo $uid; ?>-row { grid-template-columns: 1fr 1fr; }
 }
 
-.<?php echo $uid; ?>-field {
-	margin-bottom: 0;
-}
-.<?php echo $uid; ?>-field-single {
+.<?php echo $uid; ?>-form-group {
 	margin-bottom: 24px;
+}
+.<?php echo $uid; ?>-form-group.required .<?php echo $uid; ?>-label::after {
+	content: ' *';
+	color: #ef4444;
 }
 
 .<?php echo $uid; ?>-label {
@@ -130,7 +154,7 @@ $contactId = (int) $helper->get('contact-id');
 }
 .<?php echo $uid; ?>-textarea {
 	resize: none;
-	min-height: 112px; /* rows="4" */
+	min-height: 112px;
 }
 
 .<?php echo $uid; ?>-submit {
@@ -151,15 +175,6 @@ $contactId = (int) $helper->get('contact-id');
 }
 .<?php echo $uid; ?>-submit:hover {
 	background: #E54801;
-}
-
-/* Form validation styles */
-.<?php echo $uid; ?>-form-group {
-	margin-bottom: 24px;
-}
-.<?php echo $uid; ?>-form-group.required .<?php echo $uid; ?>-label::after {
-	content: ' *';
-	color: #ef4444;
 }
 
 /* ── Map card ── */
@@ -187,85 +202,68 @@ $contactId = (int) $helper->get('contact-id');
 			<!-- Contact Form -->
 			<div class="<?php echo $uid; ?>-form-card">
 				<h2 class="<?php echo $uid; ?>-form-title">Trimite-ne un mesaj</h2>
-				
-				<?php
-				// Load Joomla's contact form functionality
-				HTMLHelper::_('behavior.keepalive');
-				HTMLHelper::_('behavior.formvalidator');
-				
-				// Create form action URL
-				$formAction = Route::_('index.php');
-				
-				if ($contactId > 0) {
-					$contactModel = Factory::getApplication()
-						->bootComponent('com_contact')
-						->getMVCFactory()
-						->createModel('Contact', 'Site', ['ignore_request' => true]);
 
-					// State must be set before getItem()
-					$contactModel->setState('contact.id', $contactId);
-					$contact = $contactModel->getItem($contactId); // pass ID directly too
-					$form    = $contactModel->getForm();
-				} else {
-					// Fallback: warn in admin, render nothing in frontend
-					if (Factory::getApplication()->isClient('administrator')) {
-						echo '<div class="alert alert-warning">No contact ID set in module parameters.</div>';
-					}
-					return;
-				}
-				
-				// Set default values
-				$form->setValue('contact_subject', null, 'General Inquiry');
-				?>
-				
-				<form id="contact-form-<?php echo $module->id; ?>" 
-				      action="<?php echo $formAction; ?>" 
-				      method="post" 
+				<form id="contact-form-<?php echo $module->id; ?>"
+				      action="<?php echo $formAction; ?>"
+				      method="post"
 				      class="form-validate form-horizontal"
 				      novalidate>
-					
+
 					<fieldset>
+
+						<!-- Name + Email row -->
 						<div class="<?php echo $uid; ?>-row">
 							<div class="<?php echo $uid; ?>-form-group required">
-								<?php echo $form->getLabel('contact_name'); ?>
-								<?php echo $form->getInput('contact_name'); ?>
+								<label class="<?php echo $uid; ?>-label" for="jform_contact_name_<?php echo $module->id; ?>">
+									<?php echo Text::_('COM_CONTACT_NAME'); ?>
+								</label>
+								<input type="text"
+								       id="jform_contact_name_<?php echo $module->id; ?>"
+								       name="jform[contact_name]"
+								       class="<?php echo $uid; ?>-input required"
+								       autocomplete="name"
+								       required>
 							</div>
 							<div class="<?php echo $uid; ?>-form-group required">
-								<?php echo $form->getLabel('contact_email'); ?>
-								<?php echo $form->getInput('contact_email'); ?>
+								<label class="<?php echo $uid; ?>-label" for="jform_contact_email_<?php echo $module->id; ?>">
+									<?php echo Text::_('COM_CONTACT_EMAIL'); ?>
+								</label>
+								<input type="email"
+								       id="jform_contact_email_<?php echo $module->id; ?>"
+								       name="jform[contact_email]"
+								       class="<?php echo $uid; ?>-input required"
+								       autocomplete="email"
+								       required>
 							</div>
 						</div>
-						
-						<!-- Hidden subject field -->
-						<input type="hidden" name="contact_subject" value="General Inquiry">
-						
+
+						<!-- Message -->
 						<div class="<?php echo $uid; ?>-form-group required">
-							<?php echo $form->getLabel('contact_message'); ?>
-							<?php echo $form->getInput('contact_message'); ?>
+							<label class="<?php echo $uid; ?>-label" for="jform_contact_message_<?php echo $module->id; ?>">
+								<?php echo Text::_('COM_CONTACT_MESSAGE'); ?>
+							</label>
+							<textarea id="jform_contact_message_<?php echo $module->id; ?>"
+							          name="jform[contact_message]"
+							          class="<?php echo $uid; ?>-textarea required"
+							          rows="4"
+							          required></textarea>
 						</div>
-						
-						<?php if ($params->get('show_email_copy')) : ?>
-							<div class="<?php echo $uid; ?>-form-group">
-								<div class="checkbox">
-									<?php echo $form->getInput('contact_email_copy'); ?>
-									<?php echo $form->getLabel('contact_email_copy'); ?>
-								</div>
-							</div>
-						<?php endif; ?>
-						
+
+						<!-- Submit -->
 						<div class="<?php echo $uid; ?>-form-group">
-							<button class="<?php echo $uid; ?>-submit validate" 
-							        type="submit">
+							<button type="submit" class="<?php echo $uid; ?>-submit">
 								<?php echo Text::_('COM_CONTACT_CONTACT_SEND'); ?>
 							</button>
 						</div>
-						
-						<!-- Hidden form fields -->
-						<input type="hidden" name="option" value="com_contact" />
-						<input type="hidden" name="task" value="contact.submit" />
-						<input type="hidden" name="return" value="<?php echo base64_encode(Uri::getInstance()->toString()); ?>" />
-						<input type="hidden" name="id" value="<?php echo $contactId; ?>" />
+
+						<!-- Hidden fields -->
+						<input type="hidden" name="jform[contact_subject]" value="General Inquiry" />
+						<input type="hidden" name="option"  value="com_contact" />
+						<input type="hidden" name="task"    value="contact.submit" />
+						<input type="hidden" name="return"  value="<?php echo base64_encode(Uri::getInstance()->toString()); ?>" />
+						<input type="hidden" name="id"      value="<?php echo $contactId; ?>" />
 						<?php echo HTMLHelper::_('form.token'); ?>
+
 					</fieldset>
 				</form>
 			</div>
@@ -273,13 +271,14 @@ $contactId = (int) $helper->get('contact-id');
 			<!-- Google Maps -->
 			<div class="<?php echo $uid; ?>-map-card">
 				<iframe
-					src="<?php echo htmlspecialchars($mapUrl); ?>"
+					src="<?php echo htmlspecialchars($mapUrl, ENT_QUOTES, 'UTF-8'); ?>"
 					width="100%"
 					height="100%"
 					allowfullscreen=""
 					loading="lazy"
 					referrerpolicy="no-referrer-when-downgrade"
-					style="border:0;"></iframe>
+					style="border:0;"
+					title="<?php echo htmlspecialchars($contact->name ?? 'Location', ENT_QUOTES, 'UTF-8'); ?>"></iframe>
 			</div>
 
 		</div>
