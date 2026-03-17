@@ -345,6 +345,6 @@
 
 /* Hide plain style sections if needed */
 .contact .plain-style,
-.contact .contaier.content-wrapper {
+.contact .container.content-wrapper {
 	display: none;
 }
