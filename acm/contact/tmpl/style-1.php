@@ -24,7 +24,7 @@ if (empty($mapUrl)) {
 }
 
 // Get contact ID from module parameters or use default
-$contactId = $helper->get('contact-id', 1);
+$contactId = $helper->get('contact_contact_id', 1);
 ?>
 
 <style>
@@ -191,6 +191,20 @@ $contactId = $helper->get('contact-id', 1);
 				
 				// Create form action URL
 				$formAction = Route::_('index.php');
+				
+				// Get the contact form object
+				JLoader::import('components.com_contact.models.contact', JPATH_SITE);
+				$contactModel = JModelLegacy::getInstance('Contact', 'ContactModel', array('ignore_request' => true));
+				$contactModel->setState('contact.id', $contactId);
+				$contact = $contactModel->getItem();
+				
+				// Get the form
+				JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
+				JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+				$form = $contactModel->getForm();
+				
+				// Set default values
+				$form->setValue('contact_subject', null, 'General Inquiry');
 				?>
 				
 				<form id="contact-form-<?php echo $module->id; ?>" 
@@ -202,67 +216,28 @@ $contactId = $helper->get('contact-id', 1);
 					<fieldset>
 						<div class="<?php echo $uid; ?>-row">
 							<div class="<?php echo $uid; ?>-form-group required">
-								<label class="<?php echo $uid; ?>-label" for="contact_name_<?php echo $module->id; ?>">
-									<?php echo Text::_('COM_CONTACT_CONTACT_NAME'); ?>
-								</label>
-								<input type="text" 
-								       name="contact_name" 
-								       id="contact_name_<?php echo $module->id; ?>"
-								       required
-								       aria-required="true"
-								       class="<?php echo $uid; ?>-input"
-								       placeholder="<?php echo Text::_('COM_CONTACT_CONTACT_NAME'); ?>">
+								<?php echo $form->getLabel('contact_name'); ?>
+								<?php echo $form->getInput('contact_name'); ?>
 							</div>
 							<div class="<?php echo $uid; ?>-form-group required">
-								<label class="<?php echo $uid; ?>-label" for="contact_email_<?php echo $module->id; ?>">
-									<?php echo Text::_('COM_CONTACT_EMAIL_ADDRESS'); ?>
-								</label>
-								<input type="email" 
-								       name="contact_email" 
-								       id="contact_email_<?php echo $module->id; ?>"
-								       required
-								       aria-required="true"
-								       class="<?php echo $uid; ?>-input"
-								       placeholder="<?php echo Text::_('COM_CONTACT_EMAIL_ADDRESS'); ?>">
+								<?php echo $form->getLabel('contact_email'); ?>
+								<?php echo $form->getInput('contact_email'); ?>
 							</div>
 						</div>
 						
-						<div class="<?php echo $uid; ?>-form-group required">
-							<label class="<?php echo $uid; ?>-label" for="contact_subject_<?php echo $module->id; ?>">
-								<?php echo Text::_('COM_CONTACT_SUBJECT'); ?>
-							</label>
-							<input type="text" 
-							       name="contact_subject" 
-							       id="contact_subject_<?php echo $module->id; ?>"
-							       required
-							       aria-required="true"
-							       class="<?php echo $uid; ?>-input"
-							       placeholder="<?php echo Text::_('COM_CONTACT_SUBJECT'); ?>">
-						</div>
+						<!-- Hidden subject field -->
+						<input type="hidden" name="contact_subject" value="General Inquiry">
 						
 						<div class="<?php echo $uid; ?>-form-group required">
-							<label class="<?php echo $uid; ?>-label" for="contact_message_<?php echo $module->id; ?>">
-								<?php echo Text::_('COM_CONTACT_MESSAGE'); ?>
-							</label>
-							<textarea name="contact_message" 
-							          id="contact_message_<?php echo $module->id; ?>"
-							          required
-							          aria-required="true"
-							          rows="4"
-							          class="<?php echo $uid; ?>-textarea"
-							          placeholder="<?php echo Text::_('COM_CONTACT_MESSAGE'); ?>"></textarea>
+							<?php echo $form->getLabel('contact_message'); ?>
+							<?php echo $form->getInput('contact_message'); ?>
 						</div>
 						
 						<?php if ($params->get('show_email_copy')) : ?>
 							<div class="<?php echo $uid; ?>-form-group">
 								<div class="checkbox">
-									<input type="checkbox" 
-									       name="contact_email_copy" 
-									       id="contact_email_copy_<?php echo $module->id; ?>"
-									       value="1">
-									<label for="contact_email_copy_<?php echo $module->id; ?>">
-										<?php echo Text::_('COM_CONTACT_EMAIL_A_COPY'); ?>
-									</label>
+									<?php echo $form->getInput('contact_email_copy'); ?>
+									<?php echo $form->getLabel('contact_email_copy'); ?>
 								</div>
 							</div>
 						<?php endif; ?>
