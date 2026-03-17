@@ -192,15 +192,15 @@ $contactId = $helper->get('contact_contact_id', 1);
 				// Create form action URL
 				$formAction = Route::_('index.php');
 				
-				// Get the contact form object
-				JLoader::import('components.com_contact.models.contact', JPATH_SITE);
-				$contactModel = JModelLegacy::getInstance('Contact', 'ContactModel', array('ignore_request' => true));
+				// Get the contact form using Joomla 4 approach
+				$contactModel = Factory::getApplication()->bootComponent('com_contact')
+					->getMVCFactory()
+					->createModel('Contact', 'Site', ['ignore_request' => true]);
+				
 				$contactModel->setState('contact.id', $contactId);
 				$contact = $contactModel->getItem();
 				
 				// Get the form
-				JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
-				JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
 				$form = $contactModel->getForm();
 				
 				// Set default values
