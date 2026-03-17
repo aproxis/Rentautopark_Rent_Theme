@@ -577,6 +577,7 @@ foreach ($cars as $c) {
 }
 </style>
 
+
 <!-- Header Section with Dynamic Title -->
 <section class="relative py-20 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] text-white overflow-hidden">
 	<div class="absolute inset-0 opacity-10">
@@ -584,26 +585,19 @@ foreach ($cars as $c) {
 	</div>
 	<div class="relative container mx-auto px-4">
 		<div class="max-w-4xl mx-auto text-center">
+			<?php
+			/* Page header */
+			if (is_array($category)) {
+				echo '<h1 class="text-5xl md:text-6xl font-bold mb-6">' . $category['name'] . '</h1>';
+				echo '<p class="text-xl text-gray-300">' . $category['descr'] . '</p>';
+			} else {
+				?>
 			<h1 class="text-5xl md:text-6xl font-bold mb-6"><?php echo is_array($category) ? $category['name'] : (Text::_('VRCALLCARSHEADING') ?: 'Toate Automobilele'); ?></h1>
 			<p class="text-xl text-gray-300"><?php echo is_array($category) ? $category['descr'] : (Text::_('VRCALLCARSDESCR') ?: 'Descoperă întreaga noastră colecție de automobile premium'); ?></p>
+			<?php } ?>
 		</div>
 	</div>
 </section>
-
-<?php
-/* Page header */
-if (is_array($category)) {
-	echo '<div class="ar-page-wrap"><div class="ar-page-inner">';
-	echo '<h3 class="vrcclistheadt">' . $category['name'] . '</h3>';
-	if (strlen($category['descr']) > 0) echo '<div class="vrccatdescr">' . $category['descr'] . '</div>';
-	echo '</div></div>';
-} else {
-?>
-<div class="ar-hero">
-	<h1><?php echo Text::_('VRCALLCARSHEADING') ?: 'Toate Automobilele'; ?></h1>
-	<p><?php echo Text::_('VRCALLCARSDESCR') ?: 'Descoperă întreaga noastră colecție de automobile premium'; ?></p>
-</div>
-<?php } ?>
 
 <div class="ar-page-wrap">
 <div class="ar-page-inner">

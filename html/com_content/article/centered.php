@@ -91,7 +91,7 @@ section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] .container.mx-auto.p
 		<div class="relative container mx-auto px-4">
 			<div class="max-w-4xl mx-auto text-center">
 				<h1 class="text-5xl md:text-6xl font-bold mb-6"><?php echo $this->escape($this->item->title); ?></h1>
-				<p class="text-xl text-gray-300">Lider în domeniul închirierii auto din Moldova. Oferim cele mai bune automobile și servicii premium.</p>
+				<p class="text-xl text-gray-300"></p>
 			</div>
 		</div>
 	</section>
