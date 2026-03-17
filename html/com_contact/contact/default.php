@@ -35,14 +35,106 @@ if(version_compare(JVERSION, '4', 'ge')) {
 	$canEdit = $canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by === Factory::getUser()->id);
 } 
 ?>
+<link rel="stylesheet" href="<?php echo JURI::base(true); ?>/templates/rent/css/contact-styles.css">
 <div class="contact <?php echo $this->pageclass_sfx; ?>" itemscope itemtype="https://schema.org/Person">
-	<!-- Page heading -->
-	<?php if ($tparams->get('show_page_heading')) : ?>
-		<h1>
-			<?php echo $this->escape($tparams->get('page_heading')); ?>
-		</h1>
-	<?php endif; ?>
-	<!-- End page heading -->
+	<!-- Header Section with Dynamic Title -->
+	<section class="relative py-20 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] text-white overflow-hidden">
+		<div class="absolute inset-0 opacity-10">
+			<div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0px); background-size: 40px 40px;"></div>
+		</div>
+		<div class="relative container mx-auto px-4">
+			<div class="max-w-4xl mx-auto text-center">
+				<?php if ($tparams->get('show_page_heading')) : ?>
+					<h1 class="text-5xl md:text-6xl font-bold mb-6">
+						<?php echo $this->escape($tparams->get('page_heading')); ?>
+					</h1>
+				<?php elseif ($this->contact->name && $tparams->get('show_name')) : ?>
+					<h1 class="text-5xl md:text-6xl font-bold mb-6">
+						<?php if ($this->item->published == 0) : ?>
+							<span class="label label-warning"><?php echo Text::_('JUNPUBLISHED'); ?></span>
+						<?php endif; ?>
+						<?php echo $this->contact->name; ?>
+					</h1>
+				<?php else : ?>
+					<h1 class="text-5xl md:text-6xl font-bold mb-6">
+						<?php echo Text::_('COM_CONTACT_CONTACT_DETAILS'); ?>
+					</h1>
+				<?php endif; ?>
+				<p class="text-xl text-gray-300"><?php echo Text::_('COM_CONTACT_CONTACT_US'); ?></p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Contact Information Cards Section -->
+	<section class="py-12 bg-white">
+		<div class="container mx-auto px-4">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+				<?php if (!empty($this->contact->address) || !empty($this->contact->suburb) || !empty($this->contact->state) || !empty($this->contact->country) || !empty($this->contact->postcode)) : ?>
+				<div class="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+					<div class="w-12 h-12 bg-gradient-to-br from-[#FE5001] to-[#E54801] rounded-lg flex items-center justify-center mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
+							<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+							<circle cx="12" cy="10" r="3"></circle>
+						</svg>
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-2"><?php echo Text::_('COM_CONTACT_ADDRESS'); ?></h3>
+					<p class="text-gray-600 text-sm whitespace-pre-line">
+						<?php if (!empty($this->contact->address)) echo $this->contact->address . "\n"; ?>
+						<?php if (!empty($this->contact->suburb)) echo $this->contact->suburb . "\n"; ?>
+						<?php if (!empty($this->contact->state)) echo $this->contact->state . "\n"; ?>
+						<?php if (!empty($this->contact->country)) echo $this->contact->country . "\n"; ?>
+						<?php if (!empty($this->contact->postcode)) echo $this->contact->postcode; ?>
+					</p>
+				</div>
+				<?php endif; ?>
+				
+				<?php if (!empty($this->contact->telephone) || !empty($this->contact->mobile) || !empty($this->contact->fax)) : ?>
+				<div class="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+					<div class="w-12 h-12 bg-gradient-to-br from-[#FE5001] to-[#E54801] rounded-lg flex items-center justify-center mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
+							<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+						</svg>
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-2"><?php echo Text::_('COM_CONTACT_TELEPHONE'); ?></h3>
+					<p class="text-gray-600 text-sm whitespace-pre-line">
+						<?php if (!empty($this->contact->telephone)) echo $this->contact->telephone . "\n"; ?>
+						<?php if (!empty($this->contact->mobile)) echo $this->contact->mobile . "\n"; ?>
+						<?php if (!empty($this->contact->fax)) echo $this->contact->fax; ?>
+					</p>
+				</div>
+				<?php endif; ?>
+				
+				<?php if (!empty($this->contact->email_to)) : ?>
+				<div class="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+					<div class="w-12 h-12 bg-gradient-to-br from-[#FE5001] to-[#E54801] rounded-lg flex items-center justify-center mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
+							<rect width="20" height="16" x="2" y="4" rx="2"></rect>
+							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+						</svg>
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-2"><?php echo Text::_('COM_CONTACT_EMAIL'); ?></h3>
+					<p class="text-gray-600 text-sm whitespace-pre-line"><?php echo $this->contact->email_to; ?></p>
+				</div>
+				<?php endif; ?>
+				
+				<?php if (!empty($this->contact->misc)) : ?>
+				<div class="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+					<div class="w-12 h-12 bg-gradient-to-br from-[#FE5001] to-[#E54801] rounded-lg flex items-center justify-center mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-white">
+							<circle cx="12" cy="12" r="10"></circle>
+							<polyline points="12 6 12 12 16 14"></polyline>
+						</svg>
+					</div>
+					<h3 class="text-lg font-bold text-foreground mb-2"><?php echo Text::_('COM_CONTACT_OTHER_INFORMATION'); ?></h3>
+					<p class="text-gray-600 text-sm whitespace-pre-line"><?php echo $this->contact->misc; ?></p>
+				</div>
+				<?php endif; ?>
+			</div>
+		</div>
+	</section>
+
+	<!-- Content wrapper -->
+	<div class="container mx-auto px-4 py-8">
 	
 	<?php if ($tparams->get('show_contact_category') == 'show_no_link') : ?>
 		<h3>
@@ -96,12 +188,15 @@ if(version_compare(JVERSION, '4', 'ge')) {
 				<div class="row">
 					<!-- Show form contact -->
 					<div class="col-sm-12 contact-bottom">
-						<div class="form-title">
-							<span><?php  echo Text::_('COM_CONTACT_EMAIL_FORM');  ?></span>
-							<h3><?php  echo Text::_('TPL_CONTACT_ASK') ;?></h3>
-						</div>
+						
 
 						<?php if ($tparams->get('show_email_form') && ($this->contact->email_to || $this->contact->user_id)) : ?>
+							
+							<div class="form-title">
+								<span><?php  echo Text::_('COM_CONTACT_EMAIL_FORM');  ?></span>
+								<h3><?php  echo Text::_('TPL_CONTACT_ASK') ;?></h3>
+							</div>
+
 							<?php echo $this->loadTemplate('form'); ?>
 						<?php endif; ?> <!-- // Show email form -->
 					</div>
@@ -444,4 +539,5 @@ if(version_compare(JVERSION, '4', 'ge')) {
 		</div>
 	<?php endif; ?>
 	<?php echo $this->item->event->afterDisplayContent; ?>
+	</div>
 </div>
