@@ -334,13 +334,17 @@
 	}
 }
 
-/* Global container fix for contact page - except section containers */
-.contact .container:not(section .container) {
-	max-width: 100%;
-	overflow-x: hidden;
+/* Target all contact containers */
+.contact .container {
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-
+/* Then undo for containers inside section */
+.contact section .container {
+    max-width: revert;
+    overflow-x: revert;
+}
 
 
 /* Hide plain style sections if needed */
