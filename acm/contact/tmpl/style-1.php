@@ -13,6 +13,7 @@
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
@@ -25,7 +26,25 @@ if (empty($mapUrl)) {
 }
 
 // Get contact ID from module parameters or use default
-$contactId = $helper->get('contact_contact_id');
+$contactId = (int) $helper->get('contact_contact_id');
+
+if ($contactId > 0) {
+    $contactModel = Factory::getApplication()
+        ->bootComponent('com_contact')
+        ->getMVCFactory()
+        ->createModel('Contact', 'Site', ['ignore_request' => true]);
+
+    // State must be set before getItem()
+    $contactModel->setState('contact.id', $contactId);
+    $contact = $contactModel->getItem($contactId); // pass ID directly too
+    $form    = $contactModel->getForm();
+} else {
+    // Fallback: warn in admin, render nothing in frontend
+    if (Factory::getApplication()->isClient('administrator')) {
+        echo '<div class="alert alert-warning">No contact ID set in module parameters.</div>';
+    }
+    return;
+}
 ?>
 
 <style>
@@ -253,7 +272,7 @@ $contactId = $helper->get('contact_contact_id');
 						<!-- Hidden form fields -->
 						<input type="hidden" name="option" value="com_contact" />
 						<input type="hidden" name="task" value="contact.submit" />
-						<input type="hidden" name="return" value="<?php echo base64_encode(JUri::getInstance()->toString()); ?>" />
+						<input type="hidden" name="return" value="<?php echo base64_encode(Uri::getInstance()->toString()); ?>" />
 						<input type="hidden" name="id" value="<?php echo $contactId; ?>" />
 						<?php echo HTMLHelper::_('form.token'); ?>
 					</fieldset>
