@@ -60,7 +60,7 @@ if(version_compare(JVERSION, '4', 'ge')) {
 						<?php echo Text::_('COM_CONTACT_CONTACT_DETAILS'); ?>
 					</h1>
 				<?php endif; ?>
-				<p class="text-xl text-gray-300"><?php echo Text::_('COM_CONTACT_CONTACT_US'); ?></p>
+				<p class="text-xl text-gray-300"><?php echo Text::_('COM_CONTACT_24_7_AVAILABILITY'); ?></p>
 			</div>
 		</div>
 	</section>

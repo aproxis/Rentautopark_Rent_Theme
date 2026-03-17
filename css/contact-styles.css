@@ -334,11 +334,15 @@
 	}
 }
 
-    .container {
-        max-width: 100%;
-        overflow-x: hidden;
-    }
+/* Global container fix for contact page - except section containers */
+.contact .container:not(section .container) {
+	max-width: 100%;
+	overflow-x: hidden;
+}
 
-    .plain-style {
-        display: none
-    }
+
+
+/* Hide plain style sections if needed */
+.contact .plain-style {
+	display: none;
+}
