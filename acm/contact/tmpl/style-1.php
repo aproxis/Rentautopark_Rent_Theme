@@ -4,7 +4,7 @@
  * JA Rent template - AutoRent Contact Style 1: Contact Form & Map
  * ------------------------------------------------------------------------
  * ACM layout: Split layout with contact form (left) and Google Maps iframe (right).
- * Matches the AutoRent React design system exactly.
+ * Uses Joomla's built-in contact form functionality with proper validation.
  *
  * Extra Fields used:
  *   map-url   (Google Maps embed URL)
@@ -13,11 +13,18 @@
 */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+
 $uid     = 'ar-contact-' . $module->id;
 $mapUrl  = $helper->get('map-url');
 if (empty($mapUrl)) {
     $mapUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d87388.3241920343!2d28.784565399999997!3d47.010453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97c3628b769a1%3A0xb106659da8f41093!2zQ2hpxZ9pbsSDbywgTW9sZG92YQ!5e0!3m2!1sen!2s!4v1234567890123!5m2!1sen!2s';
 }
+
+// Get contact ID from module parameters or use default
+$contactId = $helper->get('contact-id', 1);
 ?>
 
 <style>
@@ -73,7 +80,7 @@ if (empty($mapUrl)) {
 	.<?php echo $uid; ?>-form-title { font-size: 1.875rem; }
 }
 
-/* Two-column row for name + phone */
+/* Two-column row for name + email */
 .<?php echo $uid; ?>-row {
 	display: grid;
 	grid-template-columns: 1fr;
@@ -142,6 +149,15 @@ if (empty($mapUrl)) {
 	background: #E54801;
 }
 
+/* Form validation styles */
+.<?php echo $uid; ?>-form-group {
+	margin-bottom: 24px;
+}
+.<?php echo $uid; ?>-form-group.required .<?php echo $uid; ?>-label::after {
+	content: ' *';
+	color: #ef4444;
+}
+
 /* ── Map card ── */
 .<?php echo $uid; ?>-map-card {
 	background: #fff;
@@ -167,28 +183,104 @@ if (empty($mapUrl)) {
 			<!-- Contact Form -->
 			<div class="<?php echo $uid; ?>-form-card">
 				<h2 class="<?php echo $uid; ?>-form-title">Trimite-ne un mesaj</h2>
-				<form action="#" method="post">
-					<div class="<?php echo $uid; ?>-row">
-						<div class="<?php echo $uid; ?>-field">
-							<label class="<?php echo $uid; ?>-label">Nume complet</label>
-							<input type="text" name="name" required
-							       class="<?php echo $uid; ?>-input"
-							       placeholder="Ion Popescu">
+				
+				<?php
+				// Load Joomla's contact form functionality
+				HTMLHelper::_('behavior.keepalive');
+				HTMLHelper::_('behavior.formvalidator');
+				
+				// Create form action URL
+				$formAction = Route::_('index.php');
+				?>
+				
+				<form id="contact-form-<?php echo $module->id; ?>" 
+				      action="<?php echo $formAction; ?>" 
+				      method="post" 
+				      class="form-validate form-horizontal"
+				      novalidate>
+					
+					<fieldset>
+						<div class="<?php echo $uid; ?>-row">
+							<div class="<?php echo $uid; ?>-form-group required">
+								<label class="<?php echo $uid; ?>-label" for="contact_name_<?php echo $module->id; ?>">
+									<?php echo Text::_('COM_CONTACT_CONTACT_NAME'); ?>
+								</label>
+								<input type="text" 
+								       name="contact_name" 
+								       id="contact_name_<?php echo $module->id; ?>"
+								       required
+								       aria-required="true"
+								       class="<?php echo $uid; ?>-input"
+								       placeholder="<?php echo Text::_('COM_CONTACT_CONTACT_NAME'); ?>">
+							</div>
+							<div class="<?php echo $uid; ?>-form-group required">
+								<label class="<?php echo $uid; ?>-label" for="contact_email_<?php echo $module->id; ?>">
+									<?php echo Text::_('COM_CONTACT_EMAIL_ADDRESS'); ?>
+								</label>
+								<input type="email" 
+								       name="contact_email" 
+								       id="contact_email_<?php echo $module->id; ?>"
+								       required
+								       aria-required="true"
+								       class="<?php echo $uid; ?>-input"
+								       placeholder="<?php echo Text::_('COM_CONTACT_EMAIL_ADDRESS'); ?>">
+							</div>
 						</div>
-						<div class="<?php echo $uid; ?>-field">
-							<label class="<?php echo $uid; ?>-label">Telefon</label>
-							<input type="tel" name="phone" required
+						
+						<div class="<?php echo $uid; ?>-form-group required">
+							<label class="<?php echo $uid; ?>-label" for="contact_subject_<?php echo $module->id; ?>">
+								<?php echo Text::_('COM_CONTACT_SUBJECT'); ?>
+							</label>
+							<input type="text" 
+							       name="contact_subject" 
+							       id="contact_subject_<?php echo $module->id; ?>"
+							       required
+							       aria-required="true"
 							       class="<?php echo $uid; ?>-input"
-							       placeholder="+373 68001155">
+							       placeholder="<?php echo Text::_('COM_CONTACT_SUBJECT'); ?>">
 						</div>
-					</div>
-					<div class="<?php echo $uid; ?>-field-single">
-						<label class="<?php echo $uid; ?>-label">Mesaj</label>
-						<textarea name="message" required rows="4"
-						          class="<?php echo $uid; ?>-textarea"
-						          placeholder="Cum te putem ajuta?"></textarea>
-					</div>
-					<button type="submit" class="<?php echo $uid; ?>-submit">Trimite mesaj</button>
+						
+						<div class="<?php echo $uid; ?>-form-group required">
+							<label class="<?php echo $uid; ?>-label" for="contact_message_<?php echo $module->id; ?>">
+								<?php echo Text::_('COM_CONTACT_MESSAGE'); ?>
+							</label>
+							<textarea name="contact_message" 
+							          id="contact_message_<?php echo $module->id; ?>"
+							          required
+							          aria-required="true"
+							          rows="4"
+							          class="<?php echo $uid; ?>-textarea"
+							          placeholder="<?php echo Text::_('COM_CONTACT_MESSAGE'); ?>"></textarea>
+						</div>
+						
+						<?php if ($params->get('show_email_copy')) : ?>
+							<div class="<?php echo $uid; ?>-form-group">
+								<div class="checkbox">
+									<input type="checkbox" 
+									       name="contact_email_copy" 
+									       id="contact_email_copy_<?php echo $module->id; ?>"
+									       value="1">
+									<label for="contact_email_copy_<?php echo $module->id; ?>">
+										<?php echo Text::_('COM_CONTACT_EMAIL_A_COPY'); ?>
+									</label>
+								</div>
+							</div>
+						<?php endif; ?>
+						
+						<div class="<?php echo $uid; ?>-form-group">
+							<button class="<?php echo $uid; ?>-submit validate" 
+							        type="submit">
+								<?php echo Text::_('COM_CONTACT_CONTACT_SEND'); ?>
+							</button>
+						</div>
+						
+						<!-- Hidden form fields -->
+						<input type="hidden" name="option" value="com_contact" />
+						<input type="hidden" name="task" value="contact.submit" />
+						<input type="hidden" name="return" value="<?php echo base64_encode(JUri::getInstance()->toString()); ?>" />
+						<input type="hidden" name="id" value="<?php echo $contactId; ?>" />
+						<?php echo HTMLHelper::_('form.token'); ?>
+					</fieldset>
 				</form>
 			</div>
 

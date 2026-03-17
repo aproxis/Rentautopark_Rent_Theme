@@ -73,6 +73,7 @@ section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] .container.mx-auto.p
 
 .container.t3-mainbody {
 	max-width: 100% !important;
+	overflow-x: hidden;
 }
 
 

@@ -7,6 +7,7 @@
 	<fields name="contact">
 		<fieldset name="Basic Settings" description="Basic settings for the contact component">
 			<field name="map-url" type="text" size="100" default="" label="Google Maps Embed URL" description="Paste the Google Maps embed src URL here. Leave empty to use the default Chisinau map." />
+			<field name="contact-id" type="text" size="10" default="1" label="Contact ID" description="Enter the Joomla contact ID to use for this form. Default is 1." />
 		</fieldset>
 	</fields>
 </form>
