@@ -342,7 +342,9 @@
 
 
 
+
 /* Hide plain style sections if needed */
-.contact .plain-style {
+.contact .plain-style,
+.contact .contaier.content-wrapper {
 	display: none;
 }

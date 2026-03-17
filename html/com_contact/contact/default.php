@@ -68,7 +68,7 @@ if(version_compare(JVERSION, '4', 'ge')) {
 	<!-- Contact Information Cards Section -->
 	<section class="pt-8 bg-white">
 		<div class="container mx-auto px-4">
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 pl-6 pr-6">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 pl-8 pr-8">
 				<?php if (!empty($this->contact->address) || !empty($this->contact->suburb) || !empty($this->contact->state) || !empty($this->contact->country) || !empty($this->contact->postcode)) : ?>
 				<div class="bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
 					<div class="w-12 h-12 bg-gradient-to-br from-[#FE5001] to-[#E54801] rounded-lg flex items-center justify-center mb-4">
@@ -134,7 +134,7 @@ if(version_compare(JVERSION, '4', 'ge')) {
 	</section>
 
 	<!-- Content wrapper -->
-	<div class="container mx-auto px-4 py-8">
+	<div class="container content-wrapper mx-auto px-4 py-8">
 	
 	<?php if ($tparams->get('show_contact_category') == 'show_no_link') : ?>
 		<h3>
