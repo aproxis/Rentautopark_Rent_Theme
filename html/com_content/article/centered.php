@@ -69,6 +69,14 @@ section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] .container.mx-auto.p
         padding: 0 50px;
     }
 }
+
+
+@media (min-width: 80rem) {
+    .container {
+        max-width: 100% !important;
+    }
+}
+
 </style>
 
 <div class="item-page<?php echo $this->pageclass_sfx . $this->item->state ? ' item-is-unpublished' : ''; ?>" itemscope itemtype="https://schema.org/Article">
