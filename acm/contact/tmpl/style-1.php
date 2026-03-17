@@ -26,25 +26,9 @@ if (empty($mapUrl)) {
 }
 
 // Get contact ID from module parameters or use default
-$contactId = (int) $helper->get('contact_contact_id');
+$contactId = (int) $helper->get('contact-id');
 
-if ($contactId > 0) {
-    $contactModel = Factory::getApplication()
-        ->bootComponent('com_contact')
-        ->getMVCFactory()
-        ->createModel('Contact', 'Site', ['ignore_request' => true]);
 
-    // State must be set before getItem()
-    $contactModel->setState('contact.id', $contactId);
-    $contact = $contactModel->getItem($contactId); // pass ID directly too
-    $form    = $contactModel->getForm();
-} else {
-    // Fallback: warn in admin, render nothing in frontend
-    if (Factory::getApplication()->isClient('administrator')) {
-        echo '<div class="alert alert-warning">No contact ID set in module parameters.</div>';
-    }
-    return;
-}
 ?>
 
 <style>
@@ -212,16 +196,23 @@ if ($contactId > 0) {
 				// Create form action URL
 				$formAction = Route::_('index.php');
 				
-				// Get the contact form using Joomla 5 approach
-				$contactModel = Factory::getApplication()->bootComponent('com_contact')
-					->getMVCFactory()
-					->createModel('Contact', 'Site', ['ignore_request' => true]);
-				
-				$contactModel->setState('contact.id', $contactId);
-				$contact = $contactModel->getItem();
-				
-				// Get the form
-				$form = $contactModel->getForm();
+				if ($contactId > 0) {
+					$contactModel = Factory::getApplication()
+						->bootComponent('com_contact')
+						->getMVCFactory()
+						->createModel('Contact', 'Site', ['ignore_request' => true]);
+
+					// State must be set before getItem()
+					$contactModel->setState('contact.id', $contactId);
+					$contact = $contactModel->getItem($contactId); // pass ID directly too
+					$form    = $contactModel->getForm();
+				} else {
+					// Fallback: warn in admin, render nothing in frontend
+					if (Factory::getApplication()->isClient('administrator')) {
+						echo '<div class="alert alert-warning">No contact ID set in module parameters.</div>';
+					}
+					return;
+				}
 				
 				// Set default values
 				$form->setValue('contact_subject', null, 'General Inquiry');
