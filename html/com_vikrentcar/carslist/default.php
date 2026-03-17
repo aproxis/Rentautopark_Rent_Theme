@@ -577,6 +577,19 @@ foreach ($cars as $c) {
 }
 </style>
 
+<!-- Header Section with Dynamic Title -->
+<section class="relative py-20 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] text-white overflow-hidden">
+	<div class="absolute inset-0 opacity-10">
+		<div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0px); background-size: 40px 40px;"></div>
+	</div>
+	<div class="relative container mx-auto px-4">
+		<div class="max-w-4xl mx-auto text-center">
+			<h1 class="text-5xl md:text-6xl font-bold mb-6"><?php echo is_array($category) ? $category['name'] : (Text::_('VRCALLCARSHEADING') ?: 'Toate Automobilele'); ?></h1>
+			<p class="text-xl text-gray-300"><?php echo is_array($category) ? $category['descr'] : (Text::_('VRCALLCARSDESCR') ?: 'Descoperă întreaga noastră colecție de automobile premium'); ?></p>
+		</div>
+	</div>
+</section>
+
 <?php
 /* Page header */
 if (is_array($category)) {

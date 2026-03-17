@@ -1,0 +1,204 @@
+<?php
+/**
+ * @package     Joomla.Site
+ * @subpackage  com_content
+ *
+ * @copyright   (C) 2006 Open Source Matters, Inc. <https://www.joomla.org>
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
+
+// Create shortcuts to some parameters.
+$params  = $this->item->params;
+$images  = json_decode($this->item->images);
+$urls    = json_decode($this->item->urls);
+$canEdit = $params->get('access-edit');
+$user    = Factory::getUser();
+$info    = $params->get('info_block_position', 0);
+
+// Check if associations are implemented. If they are, define the parameter.
+$assocParam = (JLanguageAssociations::isEnabled() && $params->get('show_associations'));
+$currentDate   = Factory::getDate()->format('Y-m-d H:i:s');
+$isUnpublished = ($this->item->state == 0 || $this->item->publish_up > $currentDate
+	|| (($this->item->publish_down < $currentDate) && $this->item->publish_down !== Factory::getDbo()->getNullDate()));
+
+$htag    = $this->params->get('show_page_heading') ? 'h2' : 'h1';
+
+?>
+
+<style>
+/* ================================================================
+   Orange Block Fullwidth Background Fix
+   ================================================================ */
+/* Target orange gradient sections and make them fullwidth */
+section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    box-sizing: border-box;
+}
+
+/* Ensure content stays contained within the orange section */
+section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] .container.mx-auto.px-4 {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Responsive padding for contained content */
+@media (min-width: 640px) {
+    section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] .container.mx-auto.px-4 {
+        padding: 0 30px;
+    }
+}
+@media (min-width: 768px) {
+    section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] .container.mx-auto.px-4 {
+        padding: 0 40px;
+    }
+}
+@media (min-width: 1024px) {
+    section.bg-gradient-to-br.from-\[\#FE5001\].to-\[\#E54801\] .container.mx-auto.px-4 {
+        padding: 0 50px;
+    }
+}
+</style>
+
+<div class="item-page<?php echo $this->pageclass_sfx . $this->item->state ? ' item-is-unpublished' : ''; ?>" itemscope itemtype="https://schema.org/Article">
+	<meta itemprop="inLanguage" content="<?php echo ($this->item->language === '*') ? Factory::getConfig()->get('language') : $this->item->language; ?>">
+	<?php if ($this->params->get('show_page_heading')) : ?>
+		<div class="page-header">
+			<h1> <?php echo $this->escape($this->params->get('page_heading')); ?> </h1>
+		</div>
+	<?php endif;
+	if (!empty($this->item->pagination) && $this->item->pagination && !$this->item->paginationposition && $this->item->paginationrelative) {
+		echo $this->item->pagination;
+	}
+	?>
+
+	<!-- Header Section with Dynamic Title -->
+	<section class="relative py-20 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] text-white overflow-hidden">
+		<div class="absolute inset-0 opacity-10">
+			<div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0px); background-size: 40px 40px;"></div>
+		</div>
+		<div class="relative container mx-auto px-4">
+			<div class="max-w-4xl mx-auto text-center">
+				<h1 class="text-5xl md:text-6xl font-bold mb-6"><?php echo $this->escape($this->item->title); ?></h1>
+				<p class="text-xl text-gray-300">Lider în domeniul închirierii auto din Moldova. Oferim cele mai bune automobile și servicii premium.</p>
+			</div>
+		</div>
+	</section>
+
+	<?php // Todo Not that elegant would be nice to group the params ?>
+	<?php $useDefList = ($params->get('show_modify_date') || $params->get('show_publish_date') || $params->get('show_create_date')
+	|| $params->get('show_hits') || $params->get('show_category') || $params->get('show_parent_category') || $params->get('show_author') || $assocParam); ?>
+
+	<?php if (!$useDefList && $this->print) : ?>
+		<div id="pop-print" class="btn hidden-print d-print-block">
+			<?php echo LayoutHelper::render('joomla.content.icons.print_screen', array('params' => $params, 'article' => $this->item)); ?>
+		</div>
+	<?php endif; ?>
+
+	<?php if ($params->get('show_title') || $params->get('show_author') || $params->get('show_category')) : ?>
+	<?php endif; ?>
+
+	<?php if (!$this->print) : ?>
+		<?php if ($canEdit || $params->get('show_print_icon') || $params->get('show_email_icon')) : ?>
+			<?php echo LayoutHelper::render('joomla.content.icons', array('params' => $params, 'item' => $this->item, 'print' => false)); ?>
+		<?php endif; ?>
+	<?php else : ?>
+		<?php echo LayoutHelper::render('joomla.content.icons', array('params' => $params, 'item' => $this->item, 'print' => true)); ?>
+	<?php endif; ?>
+
+	<?php // Content is generated by content plugin event onContentAfterTitle ?>
+	<?php echo $this->item->event->afterDisplayTitle; ?>
+
+	<?php if ($useDefList && ($info == 0 || $info == 2)) : ?>
+		<?php echo LayoutHelper::render('joomla.content.info_block', array('item' => $this->item, 'params' => $params, 'position' => 'above')); ?>
+	<?php endif; ?>
+
+	<?php if ($info == 0 && $params->get('show_tags', 1) && !empty($this->item->tags->itemTags)) : ?>
+		<?php echo LayoutHelper::render('joomla.content.tags', $this->item->tags->itemTags); ?>
+	<?php endif; ?>
+
+	<?php // Content is generated by content plugin event onContentBeforeDisplay ?>
+	<?php echo $this->item->event->beforeDisplayContent; ?>
+
+	<?php if (isset($urls) && ((!empty($urls->urls_position) && ($urls->urls_position == '0')) || ($params->get('urls_position', '0') == '0' && empty($urls->urls_position)))
+		|| (empty($urls->urls_position) && (!$params->get('urls_position')))) : ?>
+	<?php echo $this->loadTemplate('links'); ?>
+	<?php endif; ?>
+	<?php if ($params->get('access-view')) : ?>
+	<?php if (!empty($this->item->pagination) && $this->item->pagination && !$this->item->paginationposition && !$this->item->paginationrelative) : ?>
+		<?php echo $this->item->pagination; ?>
+	<?php endif; ?>
+	<?php if (isset ($this->item->toc)) : ?>
+		<?php echo $this->item->toc; ?>
+	<?php endif; ?>
+
+	<div itemprop="articleBody" class="article-content">
+		<?php echo $this->item->text; ?>
+	</div>
+
+	<?php if ($info == 1 || $info == 2) : ?>
+		<?php if ($useDefList) : ?>
+				<?php echo LayoutHelper::render('joomla.content.info_block', array('item' => $this->item, 'params' => $params, 'position' => 'below')); ?>
+		<?php endif; ?>
+		<?php if ($params->get('show_tags', 1) && !empty($this->item->tags->itemTags)) : ?>
+			<?php echo LayoutHelper::render('joomla.content.tags', $this->item->tags->itemTags); ?>
+		<?php endif; ?>
+	<?php endif; ?>
+
+	<?php if (!empty($this->item->pagination) && $this->item->pagination && $this->item->paginationposition && !$this->item->paginationrelative) : ?>
+		<?php echo $this->item->pagination; ?>
+	<?php endif; ?>
+
+	<?php if (isset($urls) && ((!empty($urls->urls_position) && ($urls->urls_position == '1')) || ($params->get('urls_position', '0') == '1'))) : ?>
+
+	<?php echo $this->loadTemplate('links'); ?>
+	<?php endif; ?>
+	<?php // Optional teaser intro text for guests ?>
+	<?php elseif ($params->get('show_noauth') == true && $user->get('guest')) : ?>
+	<?php echo LayoutHelper::render('joomla.content.intro_image', $this->item); ?>
+	<?php echo HTMLHelper::_('content.prepare', $this->item->introtext); ?>
+	<?php // Optional link to let them register to see the whole article. ?>
+	<?php if ($params->get('show_readmore') && $this->item->fulltext != null) : ?>
+	<?php $menu = Factory::getApplication()->getMenu(); ?>
+	<?php $active = $menu->getActive(); ?>
+	<?php $itemId = $active->id; ?>
+	<?php $link = new Uri(Route::_('index.php?option=com_users&view=login&Itemid=' . $itemId, false)); ?>
+	<?php $link->setVar('return', base64_encode(ContentHelperRoute::getArticleRoute($this->item->slug, $this->item->catid, $this->item->language))); ?>
+	<p class="readmore">
+		<a href="<?php echo $link; ?>" class="btn btn-primary">
+			<?php $attribs = json_decode($this->item->attribs); ?>
+			<?php
+			if ($attribs->alternative_readmore == null) {
+				echo Text::_('COM_CONTENT_REGISTER_TO_READ_MORE');
+			} elseif ($readmore = $this->item->alternative_readmore) {
+				echo $readmore;
+				if ($params->get('show_readmore_title', 0) != 0) {
+					echo HTMLHelper::_('string.truncate', $this->item->title, $params->get('readmore_limit'));
+				}
+			} elseif ($params->get('show_readmore_title', 0) == 0) {
+				echo Text::sprintf('COM_CONTENT_READ_MORE_TITLE');
+			} else {
+				echo Text::_('COM_CONTENT_READ_MORE');
+				echo HTMLHelper::_('string.truncate', $this->item->title, $params->get('readmore_limit'));
+			}
+			?>
+		</a>
+	</p>
+	<?php endif; ?>
+	<?php endif; ?>
+	<?php if (!empty($this->item->pagination) && $this->item->pagination && $this->item->paginationposition && $this->item->paginationrelative) : ?>
+	<?php echo $this->item->pagination; ?>
+	<?php endif; ?>
+	<?php echo $this->item->event->afterDisplayContent; ?>
+</div>
