@@ -16,6 +16,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Factory;
 
 $uid     = 'ar-contact-' . $module->id;
 $mapUrl  = $helper->get('map-url');
