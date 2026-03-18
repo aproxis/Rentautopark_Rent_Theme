@@ -1,17 +1,7 @@
 <?php
 /**
  * Template override: /templates/rent/html/com_vikrentcar/cardetails/default.php
- * AutoRent Figma Design — v1
- * Based on cardetailsbk (modern VRC logic) + React CarDetailPage.tsx styling
- *
- * Sections:
- *   1. Breadcrumb
- *   2. Gallery (thumbnails left + main image) + Title & Specs (right)
- *   3. Booking Card (full width — locations, dates, times)
- *   4. Description (Joomla content plugins)
- *   5. Availability Calendars (styled grid)
- *   6. Hourly Calendar (optional)
- *   7. Request Info Modal
+ * AutoRent Figma Design — v2  (Tailwind step-by-step booking form)
  */
 
 defined('_JEXEC') OR die('Restricted Area');
@@ -24,13 +14,11 @@ $vrc_tn     = $this->vrc_tn;
 
 $vrc_app = VikRentCar::getVrcApplication();
 
-// Try modern config access
 $config = null;
 if (class_exists('VRCFactory')) {
 	$config = VRCFactory::getConfig();
 }
 
-// JS text strings for location break messages
 if (method_exists('Joomla\CMS\Language\Text', 'script')) {
 	Text::script('VRC_LOC_WILL_OPEN_TIME');
 	Text::script('VRC_LOC_WILL_CLOSE_TIME');
@@ -38,7 +26,6 @@ if (method_exists('Joomla\CMS\Language\Text', 'script')) {
 	Text::script('VRC_DROPLOC_IS_ON_BREAK_TIME_FROM_TO');
 }
 
-// Load jQuery & Fancybox
 $document = JFactory::getDocument();
 if (VikRentCar::loadJquery()) {
 	JHtml::_('jquery.framework', true, true);
@@ -84,10 +71,8 @@ if ($vrcdateformat == "%d/%m/%Y") {
 }
 $nowts = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
 
-// Category name
 $categoryName = VikRentCar::sayCategory($car['idcat'], $vrc_tn);
 
-// Prepare images
 $mainImgSrc = '';
 if (!empty($car['img'])) {
 	$mainImgSrc = JURI::root() . 'administrator/components/com_vikrentcar/resources/' . $car['img'];
@@ -105,11 +90,9 @@ if (!empty($car['moreimgs'])) {
 	}
 }
 
-// Price
 $showPrice = ($car['cost'] > 0);
 $priceVal  = strlen($car['startfrom']) > 0 ? VikRentCar::numberFormat($car['startfrom']) : VikRentCar::numberFormat($car['cost']);
 
-// Joomla Content Plugins for description
 JPluginHelper::importPlugin('content');
 $myItem = JTable::getInstance('content');
 $myItem->text = $car['info'];
@@ -124,7 +107,6 @@ if (class_exists('JDispatcher')) {
 }
 $car['info'] = $myItem->text;
 
-// Parse individual carats for the specs grid
 $caratDefs = array();
 if (!empty($car['idcarat'])) {
 	$caratIds = array_filter(explode(';', $car['idcarat']));
@@ -151,7 +133,6 @@ if (!empty($car['idcarat'])) {
 	}
 }
 
-// Pre-compute disabled dates from busy records (needed BEFORE booking card JS)
 $push_disabled_in = array();
 $push_disabled_out = array();
 if (is_array($busy) && count($busy) > 0) {
@@ -209,23 +190,19 @@ if (is_array($busy) && count($busy) > 0) {
 	}
 }
 
-// Carslist URL for breadcrumb
 $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''));
 ?>
 
 <style>
 /* ================================================================
-   AutoRent CarDetails v1 — Figma Design Override
+   AutoRent CarDetails v2 — Tailwind Step-Form Override
    ================================================================ */
 
 /* Breadcrumb */
 .cd-breadcrumb {
 	background: #f9fafb;
 	border-bottom: 1px solid #e5e7eb;
-	padding: 14px 0;
-	margin: -20px -15px 0;
-	padding-left: 15px;
-	padding-right: 15px;
+	padding: 14px 15px;
 }
 .cd-breadcrumb-inner {
 	display: flex;
@@ -236,21 +213,18 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	max-width: 1200px;
 	margin: 0 auto;
 }
-.cd-breadcrumb-inner a {
-	color: #6b7280;
-	text-decoration: none;
-	transition: color .2s;
-}
+.cd-breadcrumb-inner a { color: #6b7280; text-decoration: none; transition: color .2s; }
 .cd-breadcrumb-inner a:hover { color: #FE5001; }
 .cd-breadcrumb-inner .cd-bc-sep { color: #d1d5db; }
 .cd-breadcrumb-inner .cd-bc-current { color: #0a0a0a; font-weight: 600; }
 
 /* Main container */
 .cd-container {
-	max-width: 1200px;
+	max-width: 100%;
 	margin: 0 auto;
-	padding: 24px 0 48px;
+	padding: 24px 24px 48px;
 }
+.container { max-width: 100%; overflow-x: hidden; }
 
 /* Top section: Gallery + Specs */
 .cd-top {
@@ -259,747 +233,405 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	gap: 20px;
 	margin-bottom: 8px;
 }
-@media (max-width: 900px) {
-	.cd-top {
-		grid-template-columns: 1fr;
-	}
-}
+@media (max-width: 900px) { .cd-top { grid-template-columns: 1fr; } }
 
 /* ================================================================
    GALLERY
    ================================================================ */
-.cd-gallery {
-	display: flex;
-	gap: 10px;
-	align-items: stretch;
-}
-.cd-thumbs {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	width: 90px;
-	flex-shrink: 0;
-}
+.cd-gallery { display: flex; gap: 10px; align-items: stretch; }
+.cd-thumbs { display: flex; flex-direction: column; gap: 8px; width: 90px; flex-shrink: 0; }
 .cd-thumb {
-	position: relative;
-	aspect-ratio: 16/10;
-	border-radius: 8px;
-	overflow: hidden;
-	border: 2px solid transparent;
-	cursor: pointer;
-	transition: border-color .2s, transform .2s;
+	position: relative; aspect-ratio: 16/10; border-radius: 8px; overflow: hidden;
+	border: 2px solid transparent; cursor: pointer; transition: border-color .2s, transform .2s;
 }
 .cd-thumb:hover { border-color: #d1d5db; }
-.cd-thumb.active {
-	border-color: #FE5001;
-	transform: scale(1.05);
-}
-.cd-thumb img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	display: block;
-}
+.cd-thumb.active { border-color: #FE5001; transform: scale(1.05); }
+.cd-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cd-thumb-more {
-	position: absolute;
-	inset: 0;
-	background: rgba(0,0,0,.6);
-	backdrop-filter: blur(2px);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: #fff;
-	font-weight: 700;
-	font-size: 18px;
+	position: absolute; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(2px);
+	display: flex; align-items: center; justify-content: center;
+	color: #fff; font-weight: 700; font-size: 18px;
 }
-
 .cd-main-img {
-	flex: 1;
-	position: relative;
-	border-radius: 16px;
-	overflow: hidden;
-	background: #f3f4f6;
-	aspect-ratio: 16/10;
+	flex: 1; position: relative; border-radius: 16px; overflow: hidden;
+	background: #f3f4f6; aspect-ratio: 16/10;
 }
 .cd-main-img img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	display: block;
-	transition: transform .4s;
-	cursor: zoom-in;
+	width: 100%; height: 100%; object-fit: cover; display: block;
+	transition: transform .4s; cursor: zoom-in;
 }
 .cd-main-img:hover img { transform: scale(1.03); }
-
-.cd-main-img .cd-fav {
-	position: absolute;
-	top: 14px;
-	right: 14px;
-	width: 44px;
-	height: 44px;
-	background: rgba(255,255,255,.9);
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: none;
-	cursor: pointer;
-	box-shadow: 0 2px 10px rgba(0,0,0,.12);
-	transition: background .2s;
-	z-index: 2;
-}
-.cd-main-img .cd-fav:hover { background: #fff; }
-.cd-main-img .cd-fav svg { width: 20px; height: 20px; color: #6b7280; }
-
 @media (max-width: 600px) {
 	.cd-gallery { flex-direction: column-reverse; }
 	.cd-thumbs { flex-direction: row; width: 100%; overflow-x: auto; }
-	.cd-thumb { width: 70px; flex-shrink: 0; aspect-ratio: 16/10; }
+	.cd-thumb { width: 70px; flex-shrink: 0; }
 	.cd-main-img { aspect-ratio: 16/9; }
 }
 
 /* ================================================================
-   RIGHT COLUMN: Title + Specs
+   RIGHT COLUMN
    ================================================================ */
-.cd-info {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-}
-.cd-car-name {
-	font-size: clamp(1.6rem, 3vw, 2.2rem);
-	font-weight: 800;
-	color: #0a0a0a;
-	margin: 0;
-	line-height: 1.15;
-}
+.cd-info { display: flex; flex-direction: column; gap: 16px; }
+.cd-car-name { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 800; color: #0a0a0a; margin: 0; line-height: 1.15; }
 .cd-car-cat {
-	display: inline-block;
-	padding: 4px 12px;
-	background: #f3f4f6;
-	border-radius: 20px;
-	font-size: 12px;
-	font-weight: 600;
-	color: #6b7280;
-	text-transform: uppercase;
-	letter-spacing: .04em;
+	display: inline-block; padding: 4px 12px; background: #f3f4f6; border-radius: 20px;
+	font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .04em;
 }
-
-/* Specs grid 2×3 */
-.cd-specs {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 10px;
-}
-.cd-spec {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 12px;
-	background: #f9fafb;
-	border-radius: 10px;
-}
-.cd-spec-icon {
-	width: 22px;
-	height: 22px;
-	flex-shrink: 0;
-	color: #FE5001;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.cd-spec-icon i {
-	font-size: 18px;
-	color: #FE5001;
-}
-.cd-spec-icon img {
-	width: 22px;
-	height: 22px;
-	object-fit: contain;
-}
+.cd-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cd-spec { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f9fafb; border-radius: 10px; }
+.cd-spec-icon { width: 22px; height: 22px; flex-shrink: 0; color: #FE5001; display: flex; align-items: center; justify-content: center; }
+.cd-spec-icon svg { color: #FE5001; }
 .cd-spec-text { display: flex; flex-direction: column; }
 .cd-spec-label { font-size: 11px; color: #9ca3af; }
 .cd-spec-value { font-size: 13px; font-weight: 600; color: #0a0a0a; }
-
-/* Price */
-.cd-price-block {
-	display: flex;
-	align-items: baseline;
-	gap: 6px;
-	padding: 16px 0;
-	border-top: 1px solid #f3f4f6;
-}
+.cd-price-block { display: flex; align-items: baseline; gap: 6px; padding: 16px 0; border-top: 1px solid #f3f4f6; }
 .cd-price-from { font-size: 13px; color: #9ca3af; }
 .cd-price-val { font-size: 2rem; font-weight: 800; color: #0a0a0a; }
 .cd-price-cur { font-size: 1.2rem; font-weight: 700; color: #0a0a0a; }
 .cd-price-per { font-size: 13px; color: #9ca3af; }
-
-/* Request info btn */
 .cd-reqinfo-btn {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 8px;
-	padding: 12px 24px;
-	background: #fff;
-	color: #374151;
-	border: 2px solid #e5e7eb;
-	border-radius: 10px;
-	font-size: 14px;
-	font-weight: 700;
-	cursor: pointer;
-	transition: border-color .2s, color .2s;
-	text-decoration: none;
-	width: 100%;
-	text-align: center;
+	display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+	padding: 12px 24px; background: #fff; color: #374151; border: 2px solid #e5e7eb;
+	border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+	transition: border-color .2s, color .2s; text-decoration: none; width: 100%; text-align: center;
 }
 .cd-reqinfo-btn:hover { border-color: #FE5001; color: #FE5001; }
-.cd-reqinfo-btn i { font-size: 16px; }
 
 /* ================================================================
-   BOOKING CARD (full width)
+   BOOKING CARD — new step-by-step layout
    ================================================================ */
 .cd-booking-card {
-	background: linear-gradient(135deg, #f9fafb 0%, #fff 100%);
-	border: 2px solid #e5e7eb;
-	border-radius: 16px;
-	padding: 24px;
-	box-shadow: 0 8px 32px rgba(0,0,0,.06);
+	background: #f9fafb;
+	border: 1.5px solid #e5e7eb;
+	border-radius: 20px;
+	padding: 28px 28px 24px;
+	box-shadow: 0 4px 24px rgba(0,0,0,.05);
 	margin-bottom: 32px;
 }
 .cd-booking-title {
-	font-size: 1.25rem;
+	font-size: 1.4rem;
 	font-weight: 800;
 	color: #0a0a0a;
+	margin: 0 0 4px;
+}
+.cd-booking-subtitle {
+	font-size: 13px;
+	color: #6b7280;
 	margin: 0 0 20px;
-	padding-bottom: 14px;
-	border-bottom: 1px solid #e5e7eb;
 }
 
-/* Override VRC form styles inside booking card */
-.cd-booking-card .vrcdivsearch { margin: 0; padding: 0; }
-.cd-booking-card .vrcdivsearch-inner { margin: 0; padding: 0; }
-
-.cd-booking-card .vrc-searchf-section-locations {
+/* Step row — two columns */
+.cd-steps-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 16px;
+	gap: 24px;
 	margin-bottom: 20px;
 }
-.cd-booking-card .vrc-searchf-section-datetimes {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 16px;
-	margin-bottom: 20px;
-}
-@media (max-width: 700px) {
-	.cd-booking-card .vrc-searchf-section-locations,
-	.cd-booking-card .vrc-searchf-section-datetimes {
-		grid-template-columns: 1fr;
-	}
-}
+@media (max-width: 700px) { .cd-steps-grid { grid-template-columns: 1fr; gap: 20px; } }
 
-.cd-booking-card .vrcsfentrycont {
+/* Step header */
+.cd-step-header {
 	display: flex;
-	flex-direction: column;
-	gap: 4px;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 14px;
 }
-.cd-booking-card .vrcsfentrycont > label,
-.cd-booking-card .vrcsfentrylabsel > label {
+.cd-step-badge {
+	width: 28px;
+	height: 28px;
+	background: #FE5001;
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	font-weight: 800;
+	flex-shrink: 0;
+}
+.cd-step-title {
+	font-size: 15px;
+	font-weight: 800;
+	color: #0a0a0a;
+}
+
+/* Field groups inside a step */
+.cd-step-fields { display: flex; flex-direction: column; gap: 12px; }
+
+/* Individual field */
+.cd-field { display: flex; flex-direction: column; gap: 5px; }
+.cd-field-label {
+	display: flex;
+	align-items: center;
+	gap: 5px;
 	font-size: 12px;
 	font-weight: 600;
 	color: #374151;
-	margin-bottom: 4px;
 }
-.cd-booking-card .vrcsfentryselect select,
-.cd-booking-card select {
+.cd-field-label svg { color: #FE5001; flex-shrink: 0; }
+
+/* Shared input / select appearance */
+.cd-input,
+.cd-select {
 	width: 100%;
-	padding: 10px 36px 10px 12px;
+	padding: 11px 14px;
 	border: 2px solid #e5e7eb;
-	border-radius: 10px;
+	border-radius: 12px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #0a0a0a;
+	background: #fff;
+	transition: border-color .2s, box-shadow .2s;
+	box-sizing: border-box;
+}
+.cd-input:focus,
+.cd-select:focus {
+	outline: none;
+	border-color: #FE5001;
+	box-shadow: 0 0 0 3px rgba(254,80,1,.12);
+}
+.cd-input::placeholder { color: #9ca3af; font-weight: 400; }
+
+/* Select wrapper for custom arrow */
+.cd-select-wrap {
+	position: relative;
+}
+.cd-select-wrap select {
+	width: 100%;
+	padding: 11px 36px 11px 14px;
+	border: 2px solid #e5e7eb;
+	border-radius: 12px;
 	font-size: 13px;
 	font-weight: 500;
 	color: #0a0a0a;
 	background: #fff;
 	appearance: none;
 	-webkit-appearance: none;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
-	background-repeat: no-repeat;
-	background-position: right 12px center;
 	cursor: pointer;
 	transition: border-color .2s, box-shadow .2s;
+	box-sizing: border-box;
 }
-.cd-booking-card select:focus {
+.cd-select-wrap select:focus {
 	outline: none;
 	border-color: #FE5001;
 	box-shadow: 0 0 0 3px rgba(254,80,1,.12);
 }
+.cd-select-wrap .cd-arrow {
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #9ca3af;
+	pointer-events: none;
+}
 
-.cd-booking-card .vrcsfentrylabsel {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	margin-bottom: 8px;
-}
-/* On desktop: date + time inline in one row */
-@media (min-width: 701px) {
-	.cd-booking-card .vrc-searchf-section-datetimes .vrcsfentrycont {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: flex-end;
-		gap: 0 10px;
-	}
-	.cd-booking-card .vrc-searchf-section-datetimes .vrcsfentrycont > .vrcsfentrylabsel > label {
-		display: block;
-		width: 100%;
-		margin-bottom: 6px;
-	}
-	.cd-booking-card .vrc-searchf-section-datetimes .vrcsfentrylabsel {
-		flex: 1;
-		min-width: 0;
-		margin-bottom: 0;
-	}
-	.cd-booking-card .vrc-searchf-section-datetimes .vrcsfentrytime {
-		flex-shrink: 0;
-		margin-top: 0;
-	}
-}
-.cd-booking-card .vrcsfentrydate {
-	display: flex;
-	align-items: center;
-	gap: 0;
+/* Date input wrapper */
+.cd-date-wrap {
 	position: relative;
 }
-.cd-booking-card .vrcsfentrydate input {
+.cd-date-wrap input {
 	width: 100%;
-	padding: 10px 36px 10px 12px;
+	padding: 11px 36px 11px 14px;
 	border: 2px solid #e5e7eb;
-	border-radius: 10px;
+	border-radius: 12px;
 	font-size: 13px;
 	font-weight: 500;
 	color: #0a0a0a;
 	background: #fff;
 	cursor: pointer;
 	transition: border-color .2s, box-shadow .2s;
+	box-sizing: border-box;
 }
-.cd-booking-card .vrcsfentrydate input:focus {
+.cd-date-wrap input:focus {
 	outline: none;
 	border-color: #FE5001;
 	box-shadow: 0 0 0 3px rgba(254,80,1,.12);
 }
-.cd-booking-card .vrcsfentrydate i,
-.cd-booking-card .vrc-caltrigger {
+.cd-date-wrap .vrc-caltrigger {
 	position: absolute;
 	right: 12px;
 	top: 50%;
 	transform: translateY(-50%);
 	color: #9ca3af;
 	cursor: pointer;
-	font-size: 16px;
+	font-size: 15px;
+	pointer-events: none;
 }
 
-.cd-booking-card .vrcsfentrytime {
-	margin-top: 4px;
-}
-@media (min-width: 701px) {
-	.cd-booking-card .vrcsfentrytime {
-		margin-top: 0;
-	}
-}
-.cd-booking-card .vrcsfentrytime > label {
-	font-size: 11px;
-	font-weight: 600;
-	color: #6b7280;
-	display: block;
-	margin-bottom: 4px;
-}
-@media (min-width: 701px) {
-	.cd-booking-card .vrcsfentrytime > label {
-		display: none;
-	}
-}
-.cd-booking-card .vrc-sf-time-container {
+/* Time row: H : M */
+.cd-time-row {
 	display: flex;
 	align-items: center;
-	gap: 4px;
+	gap: 6px;
 }
-.cd-booking-card .vrc-sf-time-container select {
-	padding: 8px 28px 8px 10px;
-	font-size: 13px;
-	min-width: 60px;
+.cd-time-row .cd-select-wrap { flex: 1; min-width: 0; }
+.cd-time-sep { font-size: 16px; font-weight: 700; color: #6b7280; flex-shrink: 0; }
+
+/* Divider between steps */
+.cd-steps-divider {
+	display: none; /* hidden on desktop, shown on mobile as horizontal rule */
 }
-.cd-booking-card .vrctimesep {
-	font-weight: 700;
-	color: #6b7280;
-	font-size: 14px;
+@media (max-width: 700px) {
+	.cd-steps-divider { display: block; height: 1px; background: #e5e7eb; margin: 4px 0; }
 }
 
-/* Submit button */
-.cd-booking-card .vrc-searchf-section-sbmt {
-	text-align: center;
+/* Submit row */
+.cd-booking-submit-row {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
 	padding-top: 8px;
+	border-top: 1px solid #e5e7eb;
 }
-.cd-booking-card .vrcdetbooksubmit {
+.cd-booking-submit-row .vrcdetbooksubmit {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	max-width: 420px;
-	padding: 14px 32px;
+	max-width: 480px;
+	padding: 15px 32px;
 	background: #FE5001 !important;
 	color: #fff !important;
 	border: none;
-	border-radius: 12px;
+	border-radius: 14px;
 	font-size: 15px;
-	font-weight: 700;
+	font-weight: 800;
 	cursor: pointer;
-	transition: background .2s, box-shadow .2s;
-	box-shadow: 0 4px 16px rgba(254,80,1,.25);
+	transition: background .2s, box-shadow .2s, transform .1s;
+	box-shadow: 0 4px 20px rgba(254,80,1,.28);
+	letter-spacing: .01em;
 }
-.cd-booking-card .vrcdetbooksubmit:hover {
+.cd-booking-submit-row .vrcdetbooksubmit:hover {
 	background: #E54801 !important;
-	box-shadow: 0 6px 24px rgba(254,80,1,.35);
+	box-shadow: 0 6px 28px rgba(254,80,1,.38);
+	transform: translateY(-1px);
 }
+.cd-booking-submit-row .vrcdetbooksubmit:active { transform: translateY(0); }
 
-/* Locations map link */
-.cd-booking-card .vrclocationsbox {
-	text-align: center;
-	margin-top: 12px;
-}
-.cd-booking-card .vrclocationsmapdiv a {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	color: #FE5001;
-	font-size: 13px;
-	font-weight: 600;
-	text-decoration: none;
-	transition: color .2s;
-}
-.cd-booking-card .vrclocationsmapdiv a:hover { color: #E54801; }
-.cd-booking-card .vrclocationsmapdiv i { font-size: 16px; }
-
-/* Shield info line */
+/* Shield info */
 .cd-shield-info {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	font-size: 12px;
 	color: #6b7280;
-	padding-top: 14px;
-	margin-top: 14px;
-	border-top: 1px solid #e5e7eb;
-	text-align: center;
 	justify-content: center;
 }
-.cd-shield-info i,
-.cd-shield-info svg { color: #FE5001; flex-shrink: 0; }
+.cd-shield-info i, .cd-shield-info svg { color: #FE5001; flex-shrink: 0; }
+
+/* Locations map link */
+.cd-booking-card .vrclocationsbox { text-align: center; margin-top: 10px; }
+.cd-booking-card .vrclocationsmapdiv a {
+	display: inline-flex; align-items: center; gap: 6px; color: #FE5001;
+	font-size: 13px; font-weight: 600; text-decoration: none; transition: color .2s;
+}
+.cd-booking-card .vrclocationsmapdiv a:hover { color: #E54801; }
+
+/* Disable rent message */
+.cd-disabled-rent { text-align: center; padding: 40px 20px; color: #6b7280; font-size: 14px; }
 
 /* ================================================================
    DESCRIPTION
    ================================================================ */
-.cd-description {
-	margin-bottom: 32px;
-}
-.cd-description h2 {
-	font-size: 1.5rem;
-	font-weight: 800;
-	color: #0a0a0a;
-	margin: 0 0 16px;
-}
-.cd-description-text {
-	font-size: 14px;
-	line-height: 1.7;
-	color: #4b5563;
-}
+.cd-description { margin-bottom: 32px; }
+.cd-description h2 { font-size: 1.5rem; font-weight: 800; color: #0a0a0a; margin: 0 0 16px; }
+.cd-description-text { font-size: 14px; line-height: 1.7; color: #4b5563; }
 .cd-description-text p { margin: 0 0 12px; }
 .cd-description-text img { max-width: 100%; height: auto; border-radius: 8px; }
 
 /* ================================================================
    AVAILABILITY CALENDARS
    ================================================================ */
-.cd-avail-section {
-	margin-bottom: 32px;
-}
-.cd-avail-section h2 {
-	font-size: 1.5rem;
-	font-weight: 800;
-	color: #0a0a0a;
-	margin: 0 0 16px;
-}
-
-/* Legend & month selector */
+.cd-avail-section { margin-bottom: 32px; }
+.cd-avail-section h2 { font-size: 1.5rem; font-weight: 800; color: #0a0a0a; margin: 0 0 16px; }
 .cd-legend-bar {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 16px;
-	margin-bottom: 16px;
-	padding: 12px 16px;
-	background: #f9fafb;
-	border-radius: 12px;
-	border: 1px solid #f3f4f6;
+	display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+	margin-bottom: 16px; padding: 12px 16px;
+	background: #f9fafb; border-radius: 12px; border: 1px solid #f3f4f6;
 }
 .cd-legend-bar .vrcselectm {
-	padding: 8px 32px 8px 12px;
-	border: 2px solid #e5e7eb;
-	border-radius: 8px;
-	font-size: 13px;
-	font-weight: 600;
-	color: #0a0a0a;
-	background: #fff;
-	appearance: none;
-	-webkit-appearance: none;
+	padding: 8px 32px 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px;
+	font-size: 13px; font-weight: 600; color: #0a0a0a; background: #fff;
+	appearance: none; -webkit-appearance: none;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
-	background-repeat: no-repeat;
-	background-position: right 10px center;
-	cursor: pointer;
+	background-repeat: no-repeat; background-position: right 10px center; cursor: pointer;
 }
-.cd-legend-items {
-	display: flex;
-	align-items: center;
-	gap: 14px;
-	flex-wrap: wrap;
-}
-.cd-legend-item {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	font-size: 12px;
-	color: #6b7280;
-}
-.cd-leg-dot {
-	width: 14px;
-	height: 14px;
-	border-radius: 4px;
-	display: inline-block;
-}
+.cd-legend-items { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.cd-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6b7280; }
+.cd-leg-dot { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
 .cd-leg-free { background: #22c55e; }
 .cd-leg-warn { background: #f59e0b; }
 .cd-leg-busy { background: #ef4444; }
-
-/* Calendar grid */
-.cd-cals-grid {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 16px;
-}
-@media (max-width: 900px) { .cd-cals-grid { grid-template-columns: repeat(2, 1fr); } }
+.cd-cals-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+@media (max-width: 900px) { .cd-cals-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 600px) { .cd-cals-grid { grid-template-columns: 1fr; } }
-
 .cd-cals-grid .vrccaldivcont {
-	background: #fff;
-	border: 1.5px solid #f3f4f6;
-	border-radius: 12px;
-	padding: 12px;
-	box-shadow: 0 2px 8px rgba(0,0,0,.04);
+	background: #fff; border: 1.5px solid #f3f4f6; border-radius: 12px;
+	padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.04);
 }
-.cd-cals-grid .vrccal {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 12px;
-}
-.cd-cals-grid .vrccal td {
-	padding: 6px 2px;
-	text-align: center;
-	border-radius: 4px;
-}
-.cd-cals-grid .vrccal tr:first-child td {
-	font-size: 13px;
-	font-weight: 700;
-	color: #0a0a0a;
-	padding-bottom: 10px;
-	border-bottom: 1px solid #f3f4f6;
-}
-.cd-cals-grid .vrccaldays td {
-	font-size: 10px;
-	font-weight: 700;
-	color: #9ca3af;
-	text-transform: uppercase;
-	padding: 8px 2px 4px;
-}
-.cd-cals-grid .vrctdfree {
-	color: #0a0a0a;
-	background: #f0fdf4;
-}
-.cd-cals-grid .vrctdwarning {
-	color: #92400e;
-	background: #fef3c7;
-}
-.cd-cals-grid .vrctdbusy {
-	color: #991b1b;
-	background: #fee2e2;
-}
-.cd-cals-grid .vrctdbusy.vrctdbusyforcheckin {
-	background: linear-gradient(135deg, #fef3c7 50%, #fee2e2 50%);
-}
-.cd-cals-grid .vrc-cdetails-cal-pickday {
-	cursor: pointer;
-	text-decoration: underline;
-	transition: color .15s;
-}
+.cd-cals-grid .vrccal { width: 100%; border-collapse: collapse; font-size: 12px; }
+.cd-cals-grid .vrccal td { padding: 6px 2px; text-align: center; border-radius: 4px; }
+.cd-cals-grid .vrccal tr:first-child td { font-size: 13px; font-weight: 700; color: #0a0a0a; padding-bottom: 10px; border-bottom: 1px solid #f3f4f6; }
+.cd-cals-grid .vrccaldays td { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; padding: 8px 2px 4px; }
+.cd-cals-grid .vrctdfree { color: #0a0a0a; background: #f0fdf4; }
+.cd-cals-grid .vrctdwarning { color: #92400e; background: #fef3c7; }
+.cd-cals-grid .vrctdbusy { color: #991b1b; background: #fee2e2; }
+.cd-cals-grid .vrctdbusy.vrctdbusyforcheckin { background: linear-gradient(135deg,#fef3c7 50%,#fee2e2 50%); }
+.cd-cals-grid .vrc-cdetails-cal-pickday { cursor: pointer; text-decoration: underline; transition: color .15s; }
 .cd-cals-grid .vrc-cdetails-cal-pickday:hover { color: #FE5001; }
-
-/* Hourly calendar */
-.cd-hourly-cal {
-	margin-top: 20px;
-	overflow-x: auto;
-}
-.cd-hourly-cal h4 {
-	font-size: 1rem;
-	font-weight: 700;
-	color: #0a0a0a;
-	margin: 0 0 12px;
-}
-.cd-hourly-cal .vrc-hourly-cal {
-	border-collapse: collapse;
-	font-size: 11px;
-}
-.cd-hourly-cal .vrc-hourly-cal td {
-	padding: 6px 4px;
-	text-align: center;
-	border: 1px solid #f3f4f6;
-	min-width: 36px;
-}
+.cd-hourly-cal { margin-top: 20px; overflow-x: auto; }
+.cd-hourly-cal h4 { font-size: 1rem; font-weight: 700; color: #0a0a0a; margin: 0 0 12px; }
+.cd-hourly-cal .vrc-hourly-cal { border-collapse: collapse; font-size: 11px; }
+.cd-hourly-cal .vrc-hourly-cal td { padding: 6px 4px; text-align: center; border: 1px solid #f3f4f6; min-width: 36px; }
 
 /* ================================================================
    REQUEST INFO MODAL
    ================================================================ */
 #vrcdialog-overlay {
-	position: fixed;
-	inset: 0;
-	background: rgba(0,0,0,.5);
-	backdrop-filter: blur(4px);
-	-webkit-backdrop-filter: blur(4px);
-	z-index: 9999;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	position: fixed; inset: 0; background: rgba(0,0,0,.5);
+	backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+	z-index: 9999; display: flex; align-items: center; justify-content: center;
 }
 .vrcdialog-inner.vrcdialog-reqinfo {
-	background: #fff;
-	border-radius: 16px;
-	padding: 32px;
-	max-width: 500px;
-	width: 90%;
-	max-height: 90vh;
-	overflow-y: auto;
-	box-shadow: 0 20px 60px rgba(0,0,0,.2);
-	position: relative;
+	background: #fff; border-radius: 16px; padding: 32px; max-width: 500px;
+	width: 90%; max-height: 90vh; overflow-y: auto;
+	box-shadow: 0 20px 60px rgba(0,0,0,.2); position: relative;
 }
-.vrcdialog-inner h3 {
-	font-size: 1.25rem;
-	font-weight: 800;
-	color: #0a0a0a;
-	margin: 0 0 20px;
-}
-.vrcdialog-reqinfo-formcont {
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-}
+.vrcdialog-inner h3 { font-size: 1.25rem; font-weight: 800; color: #0a0a0a; margin: 0 0 20px; }
+.vrcdialog-reqinfo-formcont { display: flex; flex-direction: column; gap: 14px; }
 .vrcdialog-reqinfo-formentry { display: flex; flex-direction: column; gap: 4px; }
-.vrcdialog-reqinfo-formentry label {
-	font-size: 13px;
-	font-weight: 600;
-	color: #374151;
-}
+.vrcdialog-reqinfo-formentry label { font-size: 13px; font-weight: 600; color: #374151; }
 .vrcdialog-reqinfo-formentry input[type="text"],
 .vrcdialog-reqinfo-formentry textarea {
-	padding: 10px 14px;
-	border: 2px solid #e5e7eb;
-	border-radius: 10px;
-	font-size: 14px;
-	color: #0a0a0a;
-	transition: border-color .2s, box-shadow .2s;
-	font-family: inherit;
+	padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 10px;
+	font-size: 14px; color: #0a0a0a; transition: border-color .2s, box-shadow .2s; font-family: inherit;
 }
 .vrcdialog-reqinfo-formentry input[type="text"]:focus,
 .vrcdialog-reqinfo-formentry textarea:focus {
-	outline: none;
-	border-color: #FE5001;
-	box-shadow: 0 0 0 3px rgba(254,80,1,.12);
+	outline: none; border-color: #FE5001; box-shadow: 0 0 0 3px rgba(254,80,1,.12);
 }
-.vrcdialog-reqinfo-formentry textarea {
-	min-height: 100px;
-	resize: vertical;
-}
-.vrcdialog-reqinfo-formentry-ckbox {
-	flex-direction: row !important;
-	align-items: center;
-	gap: 8px !important;
-}
-.vrcdialog-reqinfo-formentry-ckbox input[type="checkbox"] {
-	width: 18px;
-	height: 18px;
-	accent-color: #FE5001;
-}
-.vrcdialog-reqinfo-formentry-ckbox label,
-.vrcdialog-reqinfo-formentry-ckbox a {
-	font-size: 13px;
-	color: #374151;
-}
+.vrcdialog-reqinfo-formentry textarea { min-height: 100px; resize: vertical; }
+.vrcdialog-reqinfo-formentry-ckbox { flex-direction: row !important; align-items: center; gap: 8px !important; }
+.vrcdialog-reqinfo-formentry-ckbox input[type="checkbox"] { width: 18px; height: 18px; accent-color: #FE5001; }
+.vrcdialog-reqinfo-formentry-ckbox label, .vrcdialog-reqinfo-formentry-ckbox a { font-size: 13px; color: #374151; }
 .vrcdialog-reqinfo-formentry-ckbox a { color: #FE5001; text-decoration: underline; }
 .vrcdialog-reqinfo-formsubmit { padding-top: 6px; }
 .vrcdialog-reqinfo-formsubmit button {
-	width: 100%;
-	padding: 12px;
-	background: #FE5001 !important;
-	color: #fff !important;
-	border: none;
-	border-radius: 10px;
-	font-size: 14px;
-	font-weight: 700;
-	cursor: pointer;
-	transition: background .2s;
+	width: 100%; padding: 12px; background: #FE5001 !important; color: #fff !important;
+	border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .2s;
 }
 .vrcdialog-reqinfo-formsubmit button:hover { background: #E54801 !important; }
 
-/* Disable rent message */
-.cd-disabled-rent {
-	text-align: center;
-	padding: 40px 20px;
-	color: #6b7280;
-	font-size: 14px;
-}
-
-/* jQuery UI Datepicker overrides */
-.ui-datepicker {
-	border-radius: 12px !important;
-	border: 2px solid #e5e7eb !important;
-	box-shadow: 0 8px 30px rgba(0,0,0,.1) !important;
-	padding: 12px !important;
-	font-family: inherit !important;
-}
-.ui-datepicker-header {
-	background: none !important;
-	border: none !important;
-	border-bottom: 1px solid #f3f4f6 !important;
-	padding-bottom: 10px !important;
-	margin-bottom: 8px !important;
-}
+/* jQuery UI overrides */
+.ui-datepicker { border-radius: 12px !important; border: 2px solid #e5e7eb !important; box-shadow: 0 8px 30px rgba(0,0,0,.1) !important; padding: 12px !important; font-family: inherit !important; }
+.ui-datepicker-header { background: none !important; border: none !important; border-bottom: 1px solid #f3f4f6 !important; padding-bottom: 10px !important; margin-bottom: 8px !important; }
 .ui-datepicker .ui-datepicker-title { font-weight: 700 !important; color: #0a0a0a !important; }
-.ui-datepicker .ui-datepicker-prev,
-.ui-datepicker .ui-datepicker-next {
-	border-radius: 8px !important;
-	transition: background .15s !important;
-}
-.ui-datepicker .ui-datepicker-prev:hover,
-.ui-datepicker .ui-datepicker-next:hover { background: #f3f4f6 !important; }
-.ui-datepicker td a,
-.ui-datepicker td span {
-	text-align: center !important;
-	border-radius: 6px !important;
-	transition: background .15s, color .15s !important;
-}
+.ui-datepicker td a, .ui-datepicker td span { text-align: center !important; border-radius: 6px !important; transition: background .15s, color .15s !important; }
 .ui-datepicker td a:hover { background: #FE5001 !important; color: #fff !important; }
-.ui-datepicker .ui-datepicker-current-day a {
-	background: #FE5001 !important;
-	color: #fff !important;
-	font-weight: 700 !important;
-}
+.ui-datepicker .ui-datepicker-current-day a { background: #FE5001 !important; color: #fff !important; font-weight: 700 !important; }
 
-/* Hide old VRC legacy styles */
+/* Hide old VRC legacy wrappers we've replaced */
 .vrc-cardetails-legend { display: none !important; }
 .vrc-avcals-container { display: none !important; }
 .vrc-cardetails-book-wrap > h4 { display: none !important; }
@@ -1021,26 +653,20 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 <div class="cd-container">
 
 <?php /* ================================================================
-   2. GALLERY + INFO (Title, Specs, Price)
+   2. GALLERY + INFO
    ================================================================ */ ?>
 <div class="cd-top">
 
 	<!-- Gallery -->
 	<div class="cd-gallery">
 		<?php if (!empty($mainImgSrc) || !empty($moreImages)): ?>
-		<!-- Thumbnails -->
 		<div class="cd-thumbs" id="cd-thumbs">
 			<?php
 			$allImages = array();
 			if (!empty($mainImgSrc)) {
-				$allImages[] = array(
-					'thumb' => $mainImgSrc,
-					'big'   => $mainImgSrc,
-				);
+				$allImages[] = array('thumb' => $mainImgSrc, 'big' => $mainImgSrc);
 			}
-			foreach ($moreImages as $mi) {
-				$allImages[] = $mi;
-			}
+			foreach ($moreImages as $mi) { $allImages[] = $mi; }
 			$maxThumbs = min(count($allImages), 5);
 			for ($ti = 0; $ti < $maxThumbs; $ti++):
 				$isLast = ($ti === 4 && count($allImages) > 5);
@@ -1055,8 +681,6 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 			</div>
 			<?php endfor; ?>
 		</div>
-
-		<!-- Main Image -->
 		<div class="cd-main-img">
 			<?php if (!empty($allImages)): ?>
 			<a href="<?php echo $allImages[0]['big']; ?>" class="vrcmodal" data-fancybox="gallery" id="cd-main-link">
@@ -1064,14 +688,9 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 			</a>
 			<?php endif; ?>
 		</div>
-
-		<?php
-		// Hidden fancybox links for gallery
-		if (count($allImages) > 1):
-			for ($gi = 1; $gi < count($allImages); $gi++): ?>
+		<?php if (count($allImages) > 1): for ($gi = 1; $gi < count($allImages); $gi++): ?>
 		<a href="<?php echo $allImages[$gi]['big']; ?>" class="vrcmodal" data-fancybox="gallery" style="display:none;"></a>
-			<?php endfor;
-		endif; ?>
+		<?php endfor; endif; ?>
 		<?php endif; ?>
 	</div>
 
@@ -1080,14 +699,11 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 		<?php if (!empty($categoryName)): ?>
 		<span class="cd-car-cat"><?php echo $categoryName; ?></span>
 		<?php endif; ?>
-
 		<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
 
-		<!-- Specs Grid -->
 		<?php if (!empty($caratDefs)): ?>
 		<div class="cd-specs">
-			<?php 
-			// SVG icon map keyed by carat name keywords (same as carslist template)
+			<?php
 			$svgIcons = array(
 				'automat' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>',
 				'manual'  => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg>',
@@ -1100,41 +716,26 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 				'door'    => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="6" y="6" width="12" height="6" rx="1"></rect><line x1="16" y1="15" x2="18" y2="15"></line></svg>',
 				'color'   => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>',
 			);
-			// Default icon (info circle) for unrecognised carats
 			$svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>';
-			
-			$specItems = array();
 			foreach ($caratDefs as $cid => $carat):
 				$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
 				$label = Text::_($rawLabel) ?: $rawLabel;
 				$key = strtolower($label);
 				$svg = $svgDefault;
-				
-				// Match icon by keyword
 				foreach ($svgIcons as $keyword => $iconSvg) {
-					if (strpos($key, $keyword) !== false) {
-						$svg = $iconSvg;
-						break;
-					}
+					if (strpos($key, $keyword) !== false) { $svg = $iconSvg; break; }
 				}
-				
-				$specItems[] = array('svg' => $svg, 'label' => $label);
-			endforeach;
-			
-			// Display specs in 2x3 grid
-			foreach ($specItems as $spec):
 			?>
 			<div class="cd-spec">
-				<div class="cd-spec-icon"><?php echo $spec['svg']; ?></div>
+				<div class="cd-spec-icon"><?php echo $svg; ?></div>
 				<div class="cd-spec-text">
-					<span class="cd-spec-value"><?php echo htmlspecialchars($spec['label']); ?></span>
+					<span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span>
 				</div>
 			</div>
 			<?php endforeach; ?>
 		</div>
 		<?php endif; ?>
 
-		<!-- Price -->
 		<?php if ($showPrice): ?>
 		<div class="cd-price-block">
 			<span class="cd-price-from"><?php echo Text::_('VRCLISTSFROM'); ?></span>
@@ -1144,7 +745,6 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 		</div>
 		<?php endif; ?>
 
-		<!-- Request Info Button -->
 		<?php if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']): ?>
 		<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn">
 			<i class="fas fa-envelope"></i>
@@ -1155,15 +755,24 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 </div>
 
 <?php /* ================================================================
-   3. BOOKING CARD
+   3. BOOKING CARD — Step-by-step Tailwind layout
    ================================================================ */ ?>
 <div id="vrc-bookingpart-init"></div>
 <div class="cd-booking-card">
 	<h3 class="cd-booking-title">
-		<i class="fas fa-calendar-check" style="color:#FE5001;margin-right:8px;"></i>
-		<?php echo Text::_('VRCSELECTPDDATES'); ?>
+		<?php echo Text::_('VRCSELECTPDDATES') ?: 'Забронировать'; ?>
 	</h3>
+	<p class="cd-booking-subtitle">
+		<?php echo Text::_('VRCBOOKINGSUBTITLE') ?: ''; ?>
+	</p>
+
 <?php
+/* ── SVG icon helpers used in form labels ─────────────────────── */
+$ico_pin     = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+$ico_cal     = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>';
+$ico_clock   = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+$ico_chevron = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow"><path d="m6 9 6 6 6-6"/></svg>';
+
 if (VikRentCar::allowRent()) {
 	$dbo = JFactory::getDbo();
 	$calendartype = VikRentCar::calendarType();
@@ -1182,19 +791,13 @@ if (VikRentCar::allowRent()) {
 	$ppromo  = VikRequest::getInt('promo', 0, 'request');
 	$coordsplaces = array();
 
-	$selform  = "<div class=\"vrcdivsearch\"><div class=\"vrcdivsearch-inner\">";
-	$selform .= "<form action=\"" . JRoute::_('index.php?option=com_vikrentcar' . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')) . "\" method=\"get\" onsubmit=\"return vrcValidateSearch();\">\n";
-	$selform .= "<input type=\"hidden\" name=\"option\" value=\"com_vikrentcar\"/>\n";
-	$selform .= "<input type=\"hidden\" name=\"task\" value=\"search\"/>\n";
-	$selform .= "<input type=\"hidden\" name=\"cardetail\" value=\"" . $car['id'] . "\"/>\n";
-	if ($ptmpl == 'component') {
-		$selform .= "<input type=\"hidden\" name=\"tmpl\" value=\"component\"/>\n";
-	}
-
+	/* ── Build the location options arrays ──────────────────────── */
 	$places = '';
 	$diffopentime = false;
 	$closingdays = array();
 	$declclosingdays = '';
+	$plapick_ids = array();
+	$pladrop_ids = array();
 
 	if (VikRentCar::showPlacesFront()) {
 		$q = "SELECT * FROM `#__vikrentcar_places` ORDER BY `#__vikrentcar_places`.`ordering` ASC, `#__vikrentcar_places`.`name` ASC;";
@@ -1203,28 +806,20 @@ if (VikRentCar::allowRent()) {
 		if ($dbo->getNumRows() > 0) {
 			$places = $dbo->loadAssocList();
 			$vrc_tn->translateContents($places, '#__vikrentcar_places');
-			$selform .= "<div class=\"vrc-searchf-section-locations\">\n";
-			$plapick = explode(';', $car['idplace']);
-			$pladrop = explode(';', $car['idretplace']);
+			$plapick_ids = explode(';', $car['idplace']);
+			$pladrop_ids = explode(';', $car['idretplace']);
 			foreach ($places as $kpla => $pla) {
-				if (!in_array($pla['id'], $plapick) && !in_array($pla['id'], $pladrop)) {
+				if (!in_array($pla['id'], $plapick_ids) && !in_array($pla['id'], $pladrop_ids)) {
 					unset($places[$kpla]);
 				}
 			}
-			if (count($places) == 0) {
-				$places = '';
-			}
-		} else {
-			$places = '';
-		}
+			if (count($places) == 0) { $places = ''; }
+		} else { $places = ''; }
+
 		if (is_array($places)) {
 			foreach ($places as $kpla => $pla) {
-				if (!empty($pla['opentime'])) {
-					$diffopentime = true;
-				}
-				if (!empty($pla['closingdays'])) {
-					$closingdays[$pla['id']] = $pla['closingdays'];
-				}
+				if (!empty($pla['opentime'])) { $diffopentime = true; }
+				if (!empty($pla['closingdays'])) { $closingdays[$pla['id']] = $pla['closingdays']; }
 				if (empty($indvrcplace) && !isset($places[$indvrcplace])) {
 					$indvrcplace = $kpla;
 					$indvrcreturnplace = $kpla;
@@ -1248,8 +843,6 @@ if (VikRentCar::allowRent()) {
 					}
 				}
 			}
-			$onchangeplaces = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'pickup');\"" : "";
-			$onchangeplacesdrop = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'dropoff');\"" : "";
 			if ($diffopentime) {
 				$ajaxUrl = method_exists('VikRentCar', 'ajaxUrl')
 					? VikRentCar::ajaxUrl(JRoute::_('index.php?option=com_vikrentcar&task=ajaxlocopentime&tmpl=component' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''), false))
@@ -1288,39 +881,21 @@ function vrcSetLocOpenTime(loc, where) {
 }';
 				$document->addScriptDeclaration($onchangedecl);
 			}
-
-			$check_pick_locs = count($plapick) && !empty($plapick[0]);
-			$check_drop_locs = count($pladrop) && !empty($pladrop[0]);
-
-			$selform .= "<div class=\"vrcsfentrycont\"><label for=\"place\">" . Text::_('VRPPLACE') . "</label><div class=\"vrcsfentryselect\"><select name=\"place\" id=\"place\"" . $onchangeplaces . ">";
-			foreach ($places as $pla) {
-				if (!empty($pla['lat']) && !empty($pla['lng'])) { $coordsplaces[] = $pla; }
-				if ($check_pick_locs && !in_array($pla['id'], $plapick)) { continue; }
-				$selform .= "<option value=\"" . $pla['id'] . "\" id=\"place" . $pla['id'] . "\">" . $pla['name'] . "</option>\n";
-			}
-			$selform .= "</select></div></div>\n";
-			$selform .= "<div class=\"vrcsfentrycont\"><label for=\"returnplace\">" . Text::_('VRRETURNCARORD') . "</label><div class=\"vrcsfentryselect\"><select name=\"returnplace\" id=\"returnplace\"" . (strlen($onchangeplacesdrop) > 0 ? $onchangeplacesdrop : "") . ">";
-			foreach ($places as $pla) {
-				if ($check_drop_locs && !in_array($pla['id'], $pladrop)) { continue; }
-				$selform .= "<option value=\"" . $pla['id'] . "\" id=\"returnplace" . $pla['id'] . "\">" . $pla['name'] . "</option>\n";
-			}
-			$selform .= "</select></div></div>\n";
-			$selform .= "</div>\n";
 		}
 	}
 
-	// Hours/Minutes
+	/* ── Hours / Minutes selects ────────────────────────────────── */
 	if ($diffopentime && is_array($places) && isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['opentime'])) {
 		$parts = explode("-", $places[$indvrcplace]['opentime']);
 		if (is_array($parts) && $parts[0] != $parts[1]) {
-			$opent = VikRentCar::getHoursMinutes($parts[0]);
+			$opent  = VikRentCar::getHoursMinutes($parts[0]);
 			$closet = VikRentCar::getHoursMinutes($parts[1]);
 			$i = $opent[0]; $imin = $opent[1]; $j = $closet[0];
 		} else { $i = 0; $imin = 0; $j = 23; }
 	} else {
 		$timeopst = VikRentCar::getTimeOpenStore();
 		if (is_array($timeopst) && $timeopst[0] != $timeopst[1]) {
-			$opent = VikRentCar::getHoursMinutes($timeopst[0]);
+			$opent  = VikRentCar::getHoursMinutes($timeopst[0]);
 			$closet = VikRentCar::getHoursMinutes($timeopst[1]);
 			$i = $opent[0]; $imin = $opent[1]; $j = $closet[0];
 		} else { $i = 0; $imin = 0; $j = 23; }
@@ -1330,35 +905,34 @@ function vrcSetLocOpenTime(loc, where) {
 	$pickhdeftime = isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['defaulttime']) ? ((int)$places[$indvrcplace]['defaulttime'] / 3600) : '';
 	if (!($i < $j)) {
 		while (intval($i) != (int)$j) {
-			$sayi = $i < 10 ? "0" . $i : $i;
-			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0" . $ampmh . $ampm : $ampmh . $ampm; } else { $sayh = $sayi; }
-			$hours .= "<option value=\"" . (int)$i . "\"" . ($pickhdeftime == (int)$i ? ' selected="selected"' : '') . ">" . $sayh . "</option>\n";
+			$sayi = $i < 10 ? "0".$i : $i;
+			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi; }
+			$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
 			$i++; $i = $i > 23 ? 0 : $i;
 		}
-		$sayi = $i < 10 ? "0" . $i : $i;
-		if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0" . $ampmh . $ampm : $ampmh . $ampm; } else { $sayh = $sayi; }
-		$hours .= "<option value=\"" . (int)$i . "\">" . $sayh . "</option>\n";
+		$sayi = $i < 10 ? "0".$i : $i;
+		if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi; }
+		$hours .= "<option value=\"".(int)$i."\">".$sayh."</option>\n";
 	} else {
 		while ($i <= $j) {
-			$sayi = $i < 10 ? "0" . $i : $i;
-			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0" . $ampmh . $ampm : $ampmh . $ampm; } else { $sayh = $sayi; }
-			$hours .= "<option value=\"" . (int)$i . "\"" . ($pickhdeftime == (int)$i ? ' selected="selected"' : '') . ">" . $sayh . "</option>\n";
+			$sayi = $i < 10 ? "0".$i : $i;
+			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi; }
+			$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
 			$i++;
 		}
 	}
 	$minutes = "";
 	for ($i = 0; $i < 60; $i += 15) {
-		$i = $i < 10 ? "0" . $i : $i;
-		$minutes .= "<option value=\"" . (int)$i . "\"" . ((int)$i == $imin ? " selected=\"selected\"" : "") . ">" . $i . "</option>\n";
+		$i = $i < 10 ? "0".$i : $i;
+		$minutes .= "<option value=\"".(int)$i."\"".((int)$i == $imin ? " selected=\"selected\"" : "").">".$i."</option>\n";
 	}
 
-	// jQuery UI datepicker
-	if ($calendartype == "jqueryui" || true) {
-		if ($vrcdateformat == "%d/%m/%Y") { $juidf = 'dd/mm/yy'; }
-		elseif ($vrcdateformat == "%m/%d/%Y") { $juidf = 'mm/dd/yy'; }
-		else { $juidf = 'yy/mm/dd'; }
+	/* ── jQuery UI datepicker locale & restrictions JS ──────────── */
+	if ($vrcdateformat == "%d/%m/%Y") { $juidf = 'dd/mm/yy'; }
+	elseif ($vrcdateformat == "%m/%d/%Y") { $juidf = 'mm/dd/yy'; }
+	else { $juidf = 'yy/mm/dd'; }
 
-		$ldecl = '
+	$ldecl = '
 jQuery(function($){
 	$.datepicker.regional["vikrentcar"] = {
 		closeText: "' . Text::_('VRCJQCALDONE') . '",
@@ -1366,10 +940,10 @@ jQuery(function($){
 		nextText: "' . Text::_('VRCJQCALNEXT') . '",
 		currentText: "' . Text::_('VRCJQCALTODAY') . '",
 		monthNames: ["' . Text::_('VRMONTHONE') . '","' . Text::_('VRMONTHTWO') . '","' . Text::_('VRMONTHTHREE') . '","' . Text::_('VRMONTHFOUR') . '","' . Text::_('VRMONTHFIVE') . '","' . Text::_('VRMONTHSIX') . '","' . Text::_('VRMONTHSEVEN') . '","' . Text::_('VRMONTHEIGHT') . '","' . Text::_('VRMONTHNINE') . '","' . Text::_('VRMONTHTEN') . '","' . Text::_('VRMONTHELEVEN') . '","' . Text::_('VRMONTHTWELVE') . '"],
-		monthNamesShort: ["' . mb_substr(Text::_('VRMONTHONE'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWO'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTHREE'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFOUR'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFIVE'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSIX'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSEVEN'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHEIGHT'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHNINE'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTEN'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHELEVEN'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWELVE'), 0, 3, 'UTF-8') . '"],
+		monthNamesShort: ["' . mb_substr(Text::_('VRMONTHONE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWO'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTHREE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFOUR'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFIVE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSIX'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSEVEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHEIGHT'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHNINE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHELEVEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWELVE'),0,3,'UTF-8') . '"],
 		dayNames: ["' . Text::_('VRCJQCALSUN') . '","' . Text::_('VRCJQCALMON') . '","' . Text::_('VRCJQCALTUE') . '","' . Text::_('VRCJQCALWED') . '","' . Text::_('VRCJQCALTHU') . '","' . Text::_('VRCJQCALFRI') . '","' . Text::_('VRCJQCALSAT') . '"],
-		dayNamesShort: ["' . mb_substr(Text::_('VRCJQCALSUN'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'), 0, 3, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'), 0, 3, 'UTF-8') . '"],
-		dayNamesMin: ["' . mb_substr(Text::_('VRCJQCALSUN'), 0, 2, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'), 0, 2, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'), 0, 2, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'), 0, 2, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'), 0, 2, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'), 0, 2, 'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'), 0, 2, 'UTF-8') . '"],
+		dayNamesShort: ["' . mb_substr(Text::_('VRCJQCALSUN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'),0,3,'UTF-8') . '"],
+		dayNamesMin: ["' . mb_substr(Text::_('VRCJQCALSUN'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'),0,2,'UTF-8') . '"],
 		weekHeader: "' . Text::_('VRCJQCALWKHEADER') . '",
 		dateFormat: "' . $juidf . '",
 		firstDay: ' . VikRentCar::getFirstWeekDay() . ',
@@ -1382,57 +956,57 @@ jQuery(function($){
 function vrcGetDateObject(dstring) { var dparts = dstring.split("-"); return new Date(dparts[0], (parseInt(dparts[1]) - 1), parseInt(dparts[2]), 0, 0, 0, 0); }
 function vrcFullObject(obj) { var jk; for(jk in obj) { return obj.hasOwnProperty(jk); } }
 var vrcrestrctarange, vrcrestrctdrange, vrcrestrcta, vrcrestrctd;';
-		$document->addScriptDeclaration($ldecl);
+	$document->addScriptDeclaration($ldecl);
 
-		// Restrictions
-		$totrestrictions = count($restrictions);
-		$wdaysrestrictions = array(); $wdaystworestrictions = array(); $wdaysrestrictionsrange = array();
-		$wdaysrestrictionsmonths = array(); $ctarestrictionsrange = array(); $ctarestrictionsmonths = array();
-		$ctdrestrictionsrange = array(); $ctdrestrictionsmonths = array(); $monthscomborestr = array();
-		$minlosrestrictions = array(); $minlosrestrictionsrange = array();
-		$maxlosrestrictions = array(); $maxlosrestrictionsrange = array(); $notmultiplyminlosrestrictions = array();
+	/* ── Restrictions ───────────────────────────────────────────── */
+	$totrestrictions = count($restrictions);
+	$wdaysrestrictions = array(); $wdaystworestrictions = array(); $wdaysrestrictionsrange = array();
+	$wdaysrestrictionsmonths = array(); $ctarestrictionsrange = array(); $ctarestrictionsmonths = array();
+	$ctdrestrictionsrange = array(); $ctdrestrictionsmonths = array(); $monthscomborestr = array();
+	$minlosrestrictions = array(); $minlosrestrictionsrange = array();
+	$maxlosrestrictions = array(); $maxlosrestrictionsrange = array(); $notmultiplyminlosrestrictions = array();
 
-		if ($totrestrictions > 0) {
-			foreach ($restrictions as $rmonth => $restr) {
-				if ($rmonth != 'range') {
-					if (strlen($restr['wday']) > 0) {
-						$wdaysrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wday'] . "'";
-						$wdaysrestrictionsmonths[] = $rmonth;
-						if (strlen($restr['wdaytwo']) > 0) {
-							$wdaystworestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wdaytwo'] . "'";
-							$monthscomborestr[($rmonth - 1)] = VikRentCar::parseJsDrangeWdayCombo($restr);
-						}
-					} elseif (!empty($restr['ctad']) || !empty($restr['ctdd'])) {
-						if (!empty($restr['ctad'])) { $ctarestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctad']); }
-						if (!empty($restr['ctdd'])) { $ctdrestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctdd']); }
+	if ($totrestrictions > 0) {
+		foreach ($restrictions as $rmonth => $restr) {
+			if ($rmonth != 'range') {
+				if (strlen($restr['wday']) > 0) {
+					$wdaysrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wday'] . "'";
+					$wdaysrestrictionsmonths[] = $rmonth;
+					if (strlen($restr['wdaytwo']) > 0) {
+						$wdaystworestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wdaytwo'] . "'";
+						$monthscomborestr[($rmonth - 1)] = VikRentCar::parseJsDrangeWdayCombo($restr);
 					}
-					if ($restr['multiplyminlos'] == 0) { $notmultiplyminlosrestrictions[] = $rmonth; }
-					$minlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['minlos'] . "'";
-					if (!empty($restr['maxlos']) && $restr['maxlos'] > 0 && $restr['maxlos'] > $restr['minlos']) {
-						$maxlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['maxlos'] . "'";
-					}
-				} else {
-					foreach ($restr as $kr => $drestr) {
-						if (strlen($drestr['wday']) > 0) {
-							$wdaysrestrictionsrange[$kr][0] = date('Y-m-d', $drestr['dfrom']); $wdaysrestrictionsrange[$kr][1] = date('Y-m-d', $drestr['dto']);
-							$wdaysrestrictionsrange[$kr][2] = $drestr['wday']; $wdaysrestrictionsrange[$kr][3] = $drestr['multiplyminlos'];
-							$wdaysrestrictionsrange[$kr][4] = strlen($drestr['wdaytwo']) > 0 ? $drestr['wdaytwo'] : -1;
-							$wdaysrestrictionsrange[$kr][5] = VikRentCar::parseJsDrangeWdayCombo($drestr);
-						} elseif (!empty($drestr['ctad']) || !empty($drestr['ctdd'])) {
-							$ctfrom = date('Y-m-d', $drestr['dfrom']); $ctto = date('Y-m-d', $drestr['dto']);
-							if (!empty($drestr['ctad'])) { $ctarestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctad'])); }
-							if (!empty($drestr['ctdd'])) { $ctdrestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctdd'])); }
-						}
-						$minlosrestrictionsrange[$kr] = array(date('Y-m-d', $drestr['dfrom']), date('Y-m-d', $drestr['dto']), $drestr['minlos']);
-						if (!empty($drestr['maxlos']) && $drestr['maxlos'] > 0 && $drestr['maxlos'] > $drestr['minlos']) {
-							$maxlosrestrictionsrange[$kr] = $drestr['maxlos'];
-						}
-					}
-					unset($restrictions['range']);
+				} elseif (!empty($restr['ctad']) || !empty($restr['ctdd'])) {
+					if (!empty($restr['ctad'])) { $ctarestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctad']); }
+					if (!empty($restr['ctdd'])) { $ctdrestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctdd']); }
 				}
+				if ($restr['multiplyminlos'] == 0) { $notmultiplyminlosrestrictions[] = $rmonth; }
+				$minlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['minlos'] . "'";
+				if (!empty($restr['maxlos']) && $restr['maxlos'] > 0 && $restr['maxlos'] > $restr['minlos']) {
+					$maxlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['maxlos'] . "'";
+				}
+			} else {
+				foreach ($restr as $kr => $drestr) {
+					if (strlen($drestr['wday']) > 0) {
+						$wdaysrestrictionsrange[$kr][0] = date('Y-m-d', $drestr['dfrom']); $wdaysrestrictionsrange[$kr][1] = date('Y-m-d', $drestr['dto']);
+						$wdaysrestrictionsrange[$kr][2] = $drestr['wday']; $wdaysrestrictionsrange[$kr][3] = $drestr['multiplyminlos'];
+						$wdaysrestrictionsrange[$kr][4] = strlen($drestr['wdaytwo']) > 0 ? $drestr['wdaytwo'] : -1;
+						$wdaysrestrictionsrange[$kr][5] = VikRentCar::parseJsDrangeWdayCombo($drestr);
+					} elseif (!empty($drestr['ctad']) || !empty($drestr['ctdd'])) {
+						$ctfrom = date('Y-m-d', $drestr['dfrom']); $ctto = date('Y-m-d', $drestr['dto']);
+						if (!empty($drestr['ctad'])) { $ctarestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctad'])); }
+						if (!empty($drestr['ctdd'])) { $ctdrestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctdd'])); }
+					}
+					$minlosrestrictionsrange[$kr] = array(date('Y-m-d', $drestr['dfrom']), date('Y-m-d', $drestr['dto']), $drestr['minlos']);
+					if (!empty($drestr['maxlos']) && $drestr['maxlos'] > 0 && $drestr['maxlos'] > $drestr['minlos']) {
+						$maxlosrestrictionsrange[$kr] = $drestr['maxlos'];
+					}
+				}
+				unset($restrictions['range']);
 			}
+		}
 
-			$resdecl = "
+		$resdecl = "
 var vrcrestrmonthswdays = [" . implode(", ", $wdaysrestrictionsmonths) . "];
 var vrcrestrmonths = [" . implode(", ", array_keys($restrictions)) . "];
 var vrcrestrmonthscombojn = JSON.parse('" . json_encode($monthscomborestr) . "');
@@ -1465,32 +1039,32 @@ function vrcSetMinDropoffDate() {
 	if (!vrcFullObject(vrccombowdays)) { jQuery('#releasedate').datepicker('setDate',nowpickupdate); if (!vrcDropMaxDateSetNow && vrcDropMaxDateSet === true) { jQuery('#releasedate').datepicker('option','maxDate',null); } } else { vrcRefreshDropoff(nowpickup); }
 }";
 
-			if (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0) {
-				$resdecl .= "
+		if (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0) {
+			$resdecl .= "
 var vrcrestrwdays = {" . implode(", ", $wdaysrestrictions) . "};
 var vrcrestrwdaystwo = {" . implode(", ", $wdaystworestrictions) . "};
 function vrcIsDayDisabled(date) { if (!vrcValidateCta(date)){return [false];} var actd=jQuery.datepicker.formatDate('yy-mm-dd',date); " . (strlen($declclosingdays) > 0 ? "var loc_closing=pickupClosingDays(date); if(!loc_closing[0]){return loc_closing;}" : "") . " " . (count($push_disabled_in) ? "var vrc_fulldays=[" . implode(',', $push_disabled_in) . "]; if(jQuery.inArray(actd,vrc_fulldays)>=0){return [false];}" : "") . " var m=date.getMonth(),wd=date.getDay(); if(vrcFullObject(vrcrestrwdaysrangejn)){for(var rk in vrcrestrwdaysrangejn){if(vrcrestrwdaysrangejn.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrwdaysrangejn[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrwdaysrangejn[rk][1]);if(date<=wdrangeend){if(wd!=vrcrestrwdaysrangejn[rk][2]){if(vrcrestrwdaysrangejn[rk][4]==-1||wd!=vrcrestrwdaysrangejn[rk][4]){return [false];}}}}}}} if(vrcFullObject(vrcrestrwdays)){if(jQuery.inArray((m+1),vrcrestrmonthswdays)==-1){return [true];}if(wd==vrcrestrwdays[m]){return [true];}if(vrcFullObject(vrcrestrwdaystwo)){if(wd==vrcrestrwdaystwo[m]){return [true];}}return [false];} return [true]; }
 function vrcIsDayDisabledDropoff(date) { if(!vrcValidateCtd(date)){return [false];} var actd=jQuery.datepicker.formatDate('yy-mm-dd',date); " . (strlen($declclosingdays) > 0 ? "var loc_closing=dropoffClosingDays(date);if(!loc_closing[0]){return loc_closing;}" : "") . " " . (count($push_disabled_out) ? "var vrc_fulldays=[" . implode(',', $push_disabled_out) . "];if(jQuery.inArray(actd,vrc_fulldays)>=0){return [false];}" : "") . " var m=date.getMonth(),wd=date.getDay(); if(vrcFullObject(vrccombowdays)){if(jQuery.inArray(wd,vrccombowdays)!=-1){return [true];}else{return [false];}} if(vrcFullObject(vrcrestrwdaysrangejn)){for(var rk in vrcrestrwdaysrangejn){if(vrcrestrwdaysrangejn.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrwdaysrangejn[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrwdaysrangejn[rk][1]);if(date<=wdrangeend){if(wd!=vrcrestrwdaysrangejn[rk][2]&&vrcrestrwdaysrangejn[rk][3]==1){return [false];}}}}}} if(vrcFullObject(vrcrestrwdays)){if(jQuery.inArray((m+1),vrcrestrmonthswdays)==-1||jQuery.inArray((m+1),vrcrestrmultiplyminlos)!=-1){return [true];}if(wd==vrcrestrwdays[m]){return [true];}return [false];} return [true]; }";
-			}
-			$document->addScriptDeclaration($resdecl);
 		}
+		$document->addScriptDeclaration($resdecl);
+	}
 
-		// Closing days JS
-		if (strlen($declclosingdays) > 0) {
-			$declclosingdays .= '
+	/* ── Closing days JS ────────────────────────────────────────── */
+	if (strlen($declclosingdays) > 0) {
+		$declclosingdays .= '
 function pickupClosingDays(date){var dmy=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();var wday=date.getDay().toString();var arrlocclosd=jQuery("#place").val();var checklocarr=window["loc"+arrlocclosd+"closingdays"];if(jQuery.inArray(dmy,checklocarr)==-1&&jQuery.inArray(wday,checklocarr)==-1){return [true,""];}else{return [false,"","' . addslashes(Text::_('VRCLOCDAYCLOSED')) . '"];}}
 function dropoffClosingDays(date){var dmy=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();var wday=date.getDay().toString();var arrlocclosd=jQuery("#returnplace").val();var checklocarr=window["loc"+arrlocclosd+"closingdays"];if(jQuery.inArray(dmy,checklocarr)==-1&&jQuery.inArray(wday,checklocarr)==-1){return [true,""];}else{return [false,"","' . addslashes(Text::_('VRCLOCDAYCLOSED')) . '"];}}';
-			$document->addScriptDeclaration($declclosingdays);
-		}
+		$document->addScriptDeclaration($declclosingdays);
+	}
 
-		// Min days of rental
-		$dropdayplus = $def_min_los;
-		$forcedropday = "jQuery('#releasedate').datepicker('option','minDate',selectedDate);";
-		if (strlen($dropdayplus) > 0 && intval($dropdayplus) > 0) {
-			$forcedropday = "var nowpick=jQuery(this).datepicker('getDate');if(nowpick){var nowpickdate=new Date(nowpick.getTime());nowpickdate.setDate(nowpickdate.getDate()+" . $dropdayplus . ");jQuery('#releasedate').datepicker('option','minDate',nowpickdate);jQuery('#releasedate').datepicker('setDate',nowpickdate);}";
-		}
+	/* ── Min days + datepicker init JS ─────────────────────────── */
+	$dropdayplus = $def_min_los;
+	$forcedropday = "jQuery('#releasedate').datepicker('option','minDate',selectedDate);";
+	if (strlen($dropdayplus) > 0 && intval($dropdayplus) > 0) {
+		$forcedropday = "var nowpick=jQuery(this).datepicker('getDate');if(nowpick){var nowpickdate=new Date(nowpick.getTime());nowpickdate.setDate(nowpickdate.getDate()+" . $dropdayplus . ");jQuery('#releasedate').datepicker('option','minDate',nowpickdate);jQuery('#releasedate').datepicker('setDate',nowpickdate);}";
+	}
 
-		$sdecl = "
+	$sdecl = "
 var vrc_fulldays_in = [" . implode(', ', $push_disabled_in) . "];
 var vrc_fulldays_out = [" . implode(', ', $push_disabled_out) . "];
 function vrcIsDayFullIn(date){if(!vrcValidateCta(date)){return [false];}var actd=jQuery.datepicker.formatDate('yy-mm-dd',date);if(jQuery.inArray(actd,vrc_fulldays_in)==-1){return " . (strlen($declclosingdays) > 0 ? 'pickupClosingDays(date)' : '[true]') . ";}return [false];}
@@ -1513,50 +1087,221 @@ jQuery(function(){
 	jQuery('#releasedate').datepicker('option',jQuery.datepicker.regional['vikrentcar']);
 	jQuery('.vr-cal-img,.vrc-caltrigger').click(function(){var jdp=jQuery(this).prev('input.hasDatepicker');if(jdp.length){jdp.focus();}});
 });";
-		$document->addScriptDeclaration($sdecl);
+	$document->addScriptDeclaration($sdecl);
 
-		// Forced time check
-		$forced_pickup = $config ? $config->get('forced_pickup', '') : '';
-		$forced_dropoff = $config ? $config->get('forced_dropoff', '') : '';
+	$forced_pickup  = $config ? $config->get('forced_pickup', '')  : '';
+	$forced_dropoff = $config ? $config->get('forced_dropoff', '') : '';
 
-		// Date-time fields
-		$selform .= "<div class=\"vrc-searchf-section-datetimes\">\n";
-		$selform .= '<div class="vrcsfentrycont"><div class="vrcsfentrylabsel"><label for="pickupdate">' . Text::_('VRPICKUPCAR') . '</label><div class="vrcsfentrydate"><input type="text" name="pickupdate" id="pickupdate" size="10" autocomplete="off" onfocus="this.blur();" readonly/><i class="' . VikRentCarIcons::i('calendar', 'vrc-caltrigger') . '"></i></div></div>';
-		if (!strlen($forced_pickup)) {
-			$selform .= '<div class="vrcsfentrytime"><label>' . Text::_('VRALLE') . '</label><div class="vrc-sf-time-container"><span id="vrccomselph"><select name="pickuph">' . $hours . '</select></span><span class="vrctimesep">:</span><span id="vrccomselpm"><select name="pickupm">' . $minutes . '</select></span></div></div>';
-		} else {
-			$fp = (int)$forced_pickup; $fph = floor($fp / 3600); $fpm = floor(($fp - ($fph * 3600)) / 60);
-			$selform .= '<input type="hidden" name="pickuph" value="' . $fph . '"/><input type="hidden" name="pickupm" value="' . $fpm . '"/>';
-		}
-		$selform .= "</div>\n";
-
-		$selform .= '<div class="vrcsfentrycont"><div class="vrcsfentrylabsel"><label for="releasedate">' . Text::_('VRRETURNCAR') . '</label><div class="vrcsfentrydate"><input type="text" name="releasedate" id="releasedate" size="10" autocomplete="off" onfocus="this.blur();" readonly/><i class="' . VikRentCarIcons::i('calendar', 'vrc-caltrigger') . '"></i></div></div>';
-		if (!strlen($forced_dropoff)) {
-			$selform .= '<div class="vrcsfentrytime"><label>' . Text::_('VRALLEDROP') . '</label><div class="vrc-sf-time-container"><span id="vrccomseldh"><select name="releaseh">' . $hours . '</select></span><span class="vrctimesep">:</span><span id="vrccomseldm"><select name="releasem">' . $minutes . '</select></span></div></div>';
-		} else {
-			$fd = (int)$forced_dropoff; $fdh = floor($fd / 3600); $fdm = floor(($fd - ($fdh * 3600)) / 60);
-			$selform .= '<input type="hidden" name="releaseh" value="' . $fdh . '"/><input type="hidden" name="releasem" value="' . $fdm . '"/>';
-		}
-		$selform .= "</div>\n";
-		$selform .= "</div>\n";
-	}
-
-	// Submit
-	$selform .= '<div class="vrc-searchf-section-sbmt"><div class="vrcsfentrycont"><div class="vrcsfentrysubmit"><input type="submit" name="search" value="' . Text::_('VRCBOOKTHISCAR') . '" class="btn vrcdetbooksubmit vrc-pref-color-btn"/></div></div></div>';
-	$selform .= (!empty($pitemid) ? '<input type="hidden" name="Itemid" value="' . $pitemid . '"/>' : '') . '</form></div>';
-
-	// Map link
-	if (count($coordsplaces) > 0) {
-		$selform .= '<div class="vrclocationsbox"><div class="vrclocationsmapdiv"><a href="' . VikRentCar::externalRoute('index.php?option=com_vikrentcar&view=locationsmap&tmpl=component') . '" class="vrcmodalframe" target="_blank"><i class="' . VikRentCarIcons::i('map-marked-alt') . '"></i><span>' . Text::_('VRCLOCATIONSMAP') . '</span></a></div></div>';
-	}
-	$selform .= "</div>";
-	echo $selform;
-
-	// Shield info
-	echo '<div class="cd-shield-info"><i class="fas fa-shield-alt"></i><span>' . (Text::_('VRCSHIELDINFO') ?: 'Anulare gratuită cu 72h înainte • Suport 24/7 • Mașini asigurate') . '</span></div>';
+	/* ── CHECK PICK-LOCATION RESTRICTION ────────────────────────── */
+	$check_pick_locs = is_array($places) && count($plapick_ids) && !empty($plapick_ids[0]);
+	$check_drop_locs = is_array($places) && count($pladrop_ids) && !empty($pladrop_ids[0]);
+	$onchangeplaces     = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'pickup');\"" : "";
+	$onchangeplacesdrop = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'dropoff');\"" : "";
 ?>
+
+	<!-- ══════════════════════════════════════════════════
+	     BOOKING FORM — step layout
+	     ══════════════════════════════════════════════════ -->
+	<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar' . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')); ?>"
+	      method="get"
+	      onsubmit="return vrcValidateSearch();">
+		<input type="hidden" name="option" value="com_vikrentcar"/>
+		<input type="hidden" name="task" value="search"/>
+		<input type="hidden" name="cardetail" value="<?php echo $car['id']; ?>"/>
+		<?php if (VikRequest::getString('tmpl','','request') == 'component'): ?>
+		<input type="hidden" name="tmpl" value="component"/>
+		<?php endif; ?>
+		<?php if (!empty($pitemid)): ?>
+		<input type="hidden" name="Itemid" value="<?php echo $pitemid; ?>"/>
+		<?php endif; ?>
+
+		<div class="cd-steps-grid">
+
+			<!-- ── STEP 1: PICKUP ─────────────────────── -->
+			<div class="cd-step">
+				<div class="cd-step-header">
+					<div class="cd-step-badge">1</div>
+					<span class="cd-step-title"><?php echo Text::_('VRPICKUPCAR') ?: 'Получение'; ?></span>
+				</div>
+				<div class="cd-step-fields">
+
+					<?php if (is_array($places) && count($places) > 0): ?>
+					<!-- Pickup location -->
+					<div class="cd-field">
+						<label class="cd-field-label" for="place">
+							<?php echo $ico_pin; ?>
+							<?php echo Text::_('VRPPLACE'); ?>
+						</label>
+						<div class="cd-select-wrap">
+							<select name="place" id="place"<?php echo $onchangeplaces; ?>>
+								<?php foreach ($places as $pla):
+									if ($check_pick_locs && !in_array($pla['id'], $plapick_ids)) { continue; }
+									if (!empty($pla['lat']) && !empty($pla['lng'])) { $coordsplaces[] = $pla; }
+								?>
+								<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
+								<?php endforeach; ?>
+							</select>
+							<?php echo $ico_chevron; ?>
+						</div>
+					</div>
+					<?php endif; ?>
+
+					<!-- Pickup date -->
+					<div class="cd-field">
+						<label class="cd-field-label" for="pickupdate">
+							<?php echo $ico_cal; ?>
+							<?php echo Text::_('VRPICKUPCAR'); ?>
+						</label>
+						<div class="cd-date-wrap">
+							<input type="text" name="pickupdate" id="pickupdate"
+							       size="10" autocomplete="off"
+							       onfocus="this.blur();" readonly
+							       placeholder="<?php echo Text::_('VRCHOOSEDATE') ?: 'Выберите'; ?>"/>
+							<i class="<?php echo VikRentCarIcons::i('calendar', 'vrc-caltrigger'); ?>"></i>
+						</div>
+					</div>
+
+					<!-- Pickup time -->
+					<?php if (!strlen($forced_pickup)): ?>
+					<div class="cd-field">
+						<label class="cd-field-label">
+							<?php echo $ico_clock; ?>
+							<?php echo Text::_('VRALLE') ?: 'Время'; ?>
+						</label>
+						<div class="cd-time-row">
+							<div class="cd-select-wrap" id="vrccomselph">
+								<select name="pickuph">
+									<?php echo $hours; ?>
+								</select>
+								<?php echo $ico_chevron; ?>
+							</div>
+							<span class="cd-time-sep">:</span>
+							<div class="cd-select-wrap" id="vrccomselpm">
+								<select name="pickupm">
+									<?php echo $minutes; ?>
+								</select>
+								<?php echo $ico_chevron; ?>
+							</div>
+						</div>
+					</div>
+					<?php else:
+						$fp = (int)$forced_pickup; $fph = floor($fp / 3600); $fpm = floor(($fp - ($fph * 3600)) / 60);
+					?>
+					<input type="hidden" name="pickuph" value="<?php echo $fph; ?>"/>
+					<input type="hidden" name="pickupm" value="<?php echo $fpm; ?>"/>
+					<?php endif; ?>
+
+				</div><!-- /.cd-step-fields -->
+			</div><!-- /.cd-step (pickup) -->
+
+			<div class="cd-steps-divider"></div>
+
+			<!-- ── STEP 2: RETURN ─────────────────────── -->
+			<div class="cd-step">
+				<div class="cd-step-header">
+					<div class="cd-step-badge">2</div>
+					<span class="cd-step-title"><?php echo Text::_('VRRETURNCARORD') ?: 'Возврат'; ?></span>
+				</div>
+				<div class="cd-step-fields">
+
+					<?php if (is_array($places) && count($places) > 0): ?>
+					<!-- Return location -->
+					<div class="cd-field">
+						<label class="cd-field-label" for="returnplace">
+							<?php echo $ico_pin; ?>
+							<?php echo Text::_('VRRETURNCARORD'); ?>
+						</label>
+						<div class="cd-select-wrap">
+							<select name="returnplace" id="returnplace"<?php echo $onchangeplacesdrop; ?>>
+								<?php foreach ($places as $pla):
+									if ($check_drop_locs && !in_array($pla['id'], $pladrop_ids)) { continue; }
+								?>
+								<option value="<?php echo $pla['id']; ?>" id="returnplace<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
+								<?php endforeach; ?>
+							</select>
+							<?php echo $ico_chevron; ?>
+						</div>
+					</div>
+					<?php endif; ?>
+
+					<!-- Return date -->
+					<div class="cd-field">
+						<label class="cd-field-label" for="releasedate">
+							<?php echo $ico_cal; ?>
+							<?php echo Text::_('VRRETURNCAR'); ?>
+						</label>
+						<div class="cd-date-wrap">
+							<input type="text" name="releasedate" id="releasedate"
+							       size="10" autocomplete="off"
+							       onfocus="this.blur();" readonly
+							       placeholder="<?php echo Text::_('VRCHOOSEDATE') ?: 'Выберите'; ?>"/>
+							<i class="<?php echo VikRentCarIcons::i('calendar', 'vrc-caltrigger'); ?>"></i>
+						</div>
+					</div>
+
+					<!-- Return time -->
+					<?php if (!strlen($forced_dropoff)): ?>
+					<div class="cd-field">
+						<label class="cd-field-label">
+							<?php echo $ico_clock; ?>
+							<?php echo Text::_('VRALLEDROP') ?: 'Время'; ?>
+						</label>
+						<div class="cd-time-row">
+							<div class="cd-select-wrap" id="vrccomseldh">
+								<select name="releaseh">
+									<?php echo $hours; ?>
+								</select>
+								<?php echo $ico_chevron; ?>
+							</div>
+							<span class="cd-time-sep">:</span>
+							<div class="cd-select-wrap" id="vrccomseldm">
+								<select name="releasem">
+									<?php echo $minutes; ?>
+								</select>
+								<?php echo $ico_chevron; ?>
+							</div>
+						</div>
+					</div>
+					<?php else:
+						$fd = (int)$forced_dropoff; $fdh = floor($fd / 3600); $fdm = floor(($fd - ($fdh * 3600)) / 60);
+					?>
+					<input type="hidden" name="releaseh" value="<?php echo $fdh; ?>"/>
+					<input type="hidden" name="releasem" value="<?php echo $fdm; ?>"/>
+					<?php endif; ?>
+
+				</div><!-- /.cd-step-fields -->
+			</div><!-- /.cd-step (return) -->
+
+		</div><!-- /.cd-steps-grid -->
+
+		<!-- Locations map link -->
+		<?php if (count($coordsplaces) > 0): ?>
+		<div class="vrclocationsbox">
+			<div class="vrclocationsmapdiv">
+				<a href="<?php echo VikRentCar::externalRoute('index.php?option=com_vikrentcar&view=locationsmap&tmpl=component'); ?>"
+				   class="vrcmodalframe" target="_blank">
+					<i class="<?php echo VikRentCarIcons::i('map-marked-alt'); ?>"></i>
+					<span><?php echo Text::_('VRCLOCATIONSMAP'); ?></span>
+				</a>
+			</div>
+		</div>
+		<?php endif; ?>
+
+		<!-- Submit + shield -->
+		<div class="cd-booking-submit-row">
+			<input type="submit" name="search"
+			       value="<?php echo Text::_('VRCBOOKTHISCAR'); ?>"
+			       class="btn vrcdetbooksubmit vrc-pref-color-btn"/>
+			<div class="cd-shield-info">
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+				<span><?php echo Text::_('VRCSHIELDINFO') ?: 'Anulare gratuită • Suport 24/7 • Mașini asigurate'; ?></span>
+			</div>
+		</div>
+
+	</form>
+
 	<script type="text/javascript">
-	function vrcCleanNumber(snum) { if (snum.length > 1 && snum.substr(0, 1) == '0') { return parseInt(snum.substr(1)); } return parseInt(snum); }
+	function vrcCleanNumber(snum) { if (snum.length > 1 && snum.substr(0,1) == '0') { return parseInt(snum.substr(1)); } return parseInt(snum); }
 	function vrcValidateSearch() {
 		if (typeof jQuery === 'undefined' || typeof vrc_wopening_pick === 'undefined') return true;
 		if (vrc_mopening_pick !== null) {
@@ -1576,16 +1321,11 @@ jQuery(function(){
 		return true;
 	}
 	jQuery(document).ready(function() {
-	<?php
-	if (!empty($ppickup)) {
-		if ($calendartype == "jqueryui") { ?>
+	<?php if (!empty($ppickup)): ?>
 		jQuery("#pickupdate").datepicker("setDate", new Date(<?php echo date('Y', $ppickup); ?>, <?php echo ((int)date('n', $ppickup) - 1); ?>, <?php echo date('j', $ppickup); ?>));
 		jQuery(".ui-datepicker-current-day").click();
-		<?php } else { ?>
-		jQuery("#pickupdate").val("<?php echo date($df, $ppickup); ?>");
-		<?php }
-	}
-
+	<?php endif; ?>
+	<?php
 	$pday = VikRequest::getInt('dt', '', 'request');
 	$viewingdayts = !empty($pday) && $pday >= $nowts ? $pday : $nowts;
 	if (!empty($viewingdayts) && !empty($pday) && $viewingdayts >= $nowts) {
@@ -1609,6 +1349,7 @@ jQuery(function(){
 		});
 	});
 	</script>
+
 <?php
 } else {
 	echo '<div class="cd-disabled-rent">' . VikRentCar::getDisabledRentMsg() . '</div>';
@@ -1639,16 +1380,16 @@ $show_hourly_cal = (array_key_exists('shourlycal', $car_params) && intval($car_p
 
 $arr = getdate();
 $mon = $arr['mon'];
-$realmon = ($mon < 10 ? "0" . $mon : $mon);
+$realmon = ($mon < 10 ? "0".$mon : $mon);
 $year = $arr['year'];
-$day = $realmon . "/01/" . $year;
+$day = $realmon."/01/".$year;
 $dayts = strtotime($day);
 $validmonth = false;
 if ($pmonth > 0 && $pmonth >= $dayts) { $validmonth = true; }
 
 $moptions = "";
 for ($i = 0; $i < 12; $i++) {
-	$moptions .= "<option value=\"" . $dayts . "\"" . ($validmonth && $pmonth == $dayts ? " selected=\"selected\"" : "") . ">" . VikRentCar::sayMonth($arr['mon']) . " " . $arr['year'] . "</option>\n";
+	$moptions .= "<option value=\"".$dayts."\"".($validmonth && $pmonth == $dayts ? " selected=\"selected\"" : "").">".VikRentCar::sayMonth($arr['mon'])." ".$arr['year']."</option>\n";
 	$next = $arr['mon'] + 1;
 	$dayts = mktime(0, 0, 0, $next, 1, $arr['year']);
 	$arr = getdate($dayts);
@@ -1660,7 +1401,7 @@ if ($numcalendars > 0):
 	<h2><?php echo Text::_('VRCAVAILABILITY') ?: 'Disponibilitate'; ?></h2>
 
 	<div class="cd-legend-bar">
-		<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar&view=cardetails&carid=' . $car['id'] . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')); ?>" method="post" name="vrcmonths" style="margin:0;">
+		<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar&view=cardetails&carid='.$car['id'].(!empty($pitemid) ? '&Itemid='.$pitemid : '')); ?>" method="post" name="vrcmonths" style="margin:0;">
 			<select name="month" onchange="javascript: document.vrcmonths.submit();" class="vrcselectm"><?php echo $moptions; ?></select>
 		</form>
 		<div class="cd-legend-items">
@@ -1675,11 +1416,11 @@ if ($numcalendars > 0):
 <?php
 $check = is_array($busy);
 if ($validmonth) {
-	$arr = getdate($pmonth); $mon = $arr['mon']; $realmon = ($mon < 10 ? "0" . $mon : $mon);
-	$year = $arr['year']; $day = $realmon . "/01/" . $year; $dayts = strtotime($day); $newarr = getdate($dayts);
+	$arr = getdate($pmonth); $mon = $arr['mon']; $realmon = ($mon < 10 ? "0".$mon : $mon);
+	$year = $arr['year']; $day = $realmon."/01/".$year; $dayts = strtotime($day); $newarr = getdate($dayts);
 } else {
-	$arr = getdate(); $mon = $arr['mon']; $realmon = ($mon < 10 ? "0" . $mon : $mon);
-	$year = $arr['year']; $day = $realmon . "/01/" . $year; $dayts = strtotime($day); $newarr = getdate($dayts);
+	$arr = getdate(); $mon = $arr['mon']; $realmon = ($mon < 10 ? "0".$mon : $mon);
+	$year = $arr['year']; $day = $realmon."/01/".$year; $dayts = strtotime($day); $newarr = getdate($dayts);
 }
 $first_month_info = $newarr;
 $firstwday = (int)VikRentCar::getFirstWeekDay();
@@ -1696,9 +1437,9 @@ for ($jj = 1; $jj <= $numcalendars; $jj++) {
 ?>
 		<div class="vrccaldivcont">
 			<table class="vrccal">
-				<tr><td colspan="7" align="center"><strong><?php echo VikRentCar::sayMonth($newarr['mon']) . " " . $newarr['year']; ?></strong></td></tr>
+				<tr><td colspan="7" align="center"><strong><?php echo VikRentCar::sayMonth($newarr['mon'])." ".$newarr['year']; ?></strong></td></tr>
 				<tr class="vrccaldays">
-				<?php for ($i = 0; $i < 7; $i++) { $d_ind = ($i + $firstwday) < 7 ? ($i + $firstwday) : ($i + $firstwday - 7); echo '<td>' . $days_labels[$d_ind] . '</td>'; } ?>
+				<?php for ($i = 0; $i < 7; $i++) { $d_ind = ($i + $firstwday) < 7 ? ($i + $firstwday) : ($i + $firstwday - 7); echo '<td>'.$days_labels[$d_ind].'</td>'; } ?>
 				</tr>
 				<tr>
 <?php
@@ -1726,15 +1467,15 @@ for ($jj = 1; $jj <= $numcalendars; $jj++) {
 			} elseif ($totfound > 0 && $showpartlyres) { $dclass = "vrctdwarning"; }
 		}
 		$previousdayclass = $dclass;
-		$useday = ($newarr['mday'] < 10 ? "0" . $newarr['mday'] : $newarr['mday']);
+		$useday = ($newarr['mday'] < 10 ? "0".$newarr['mday'] : $newarr['mday']);
 		if ($newarr[0] >= $nowts) {
 			if ($show_hourly_cal) {
-				$useday = '<a href="' . JRoute::_('index.php?option=com_vikrentcar&view=cardetails&carid=' . $car['id'] . '&dt=' . $newarr[0] . (!empty($pmonth) && $validmonth ? '&month=' . $pmonth : '') . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')) . '">' . $useday . '</a>';
+				$useday = '<a href="'.JRoute::_('index.php?option=com_vikrentcar&view=cardetails&carid='.$car['id'].'&dt='.$newarr[0].(!empty($pmonth) && $validmonth ? '&month='.$pmonth : '').(!empty($pitemid) ? '&Itemid='.$pitemid : '')).'">'. $useday.'</a>';
 			} else {
-				$useday = '<span class="vrc-cdetails-cal-pickday" data-daydate="' . date($df, $newarr[0]) . '">' . $useday . '</span>';
+				$useday = '<span class="vrc-cdetails-cal-pickday" data-daydate="'.date($df, $newarr[0]).'">'.$useday.'</span>';
 			}
 		}
-		$cal .= "<td class=\"" . $dclass . "\">" . $useday . "</td>\n";
+		$cal .= "<td class=\"".$dclass."\">".$useday."</td>\n";
 		$dayts = mktime(0, 0, 0, $newarr['mon'], ($newarr['mday'] + 1), $newarr['year']);
 		$newarr = getdate($dayts);
 		$d_count++;
@@ -1755,9 +1496,7 @@ for ($jj = 1; $jj <= $numcalendars; $jj++) {
 </div><!-- /.cd-avail-section -->
 <?php endif; ?>
 
-<?php /* ================================================================
-   5b. Extra year disabled dates for datepicker (hidden logic)
-   ================================================================ */
+<?php
 if (is_array($busy)) {
 	$missing_intervals = array();
 	$months_parsed = true;
@@ -1788,8 +1527,8 @@ if (is_array($busy)) {
 				}
 			}
 			if ($totfound >= $car['units']) {
-				if ($ischeckinday || !$ischeckoutday) { if ($lasttotfound > 1 || $lastfoundritts != $lastfoundconts) { if (($totfound - $unitsadjuster) >= $car['units']) { $push_disabled_in[] = '"' . date('Y-m-d', $newarr[0]) . '"'; } } }
-				if (!$ischeckinday && !$ischeckoutday) { $push_disabled_out[] = '"' . date('Y-m-d', $newarr[0]) . '"'; }
+				if ($ischeckinday || !$ischeckoutday) { if ($lasttotfound > 1 || $lastfoundritts != $lastfoundconts) { if (($totfound - $unitsadjuster) >= $car['units']) { $push_disabled_in[] = '"'.date('Y-m-d', $newarr[0]).'"'; } } }
+				if (!$ischeckinday && !$ischeckoutday) { $push_disabled_out[] = '"'.date('Y-m-d', $newarr[0]).'"'; }
 			}
 			$newarr = getdate(mktime(0, 0, 0, $newarr['mon'], ($newarr['mday'] + 1), $newarr['year']));
 		}
@@ -1809,9 +1548,9 @@ if ($show_hourly_cal):
 		<table class="vrc-hourly-cal table">
 			<tr><td style="text-align:center;"><?php echo Text::_('VRCLEGH'); ?></td>
 <?php for ($h = 0; $h <= 23; $h++) {
-	if ($nowtf == 'H:i') { $sayh = $h < 10 ? "0" . $h : $h; }
-	else { $ampm = $h < 12 ? ' am' : ' pm'; $ampmh = $h > 12 ? ($h - 12) : $h; $sayh = $ampmh < 10 ? "0" . $ampmh . $ampm : $ampmh . $ampm; }
-	echo '<td style="text-align:center;">' . $sayh . '</td>';
+	if ($nowtf == 'H:i') { $sayh = $h < 10 ? "0".$h : $h; }
+	else { $ampm = $h < 12 ? ' am' : ' pm'; $ampmh = $h > 12 ? ($h - 12) : $h; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; }
+	echo '<td style="text-align:center;">'.$sayh.'</td>';
 } ?>
 			</tr>
 			<tr class="vrc-hourlycal-rowavail"><td style="text-align:center;"> </td>
@@ -1834,7 +1573,7 @@ if ($show_hourly_cal):
 		if ($totfound >= $car['units']) { $dclass = "vrctdbusy"; }
 		elseif ($totfound > 0 && $showpartlyres) { $dclass = "vrctdwarning"; }
 	}
-	echo '<td style="text-align:center;" class="' . $dclass . '"> </td>';
+	echo '<td style="text-align:center;" class="'.$dclass.'"> </td>';
 } ?>
 			</tr>
 		</table>
@@ -1853,7 +1592,7 @@ if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']):
 	<a class="vrcdialog-overlay-close" href="javascript:void(0);"></a>
 	<div class="vrcdialog-inner vrcdialog-reqinfo">
 		<h3><?php echo Text::sprintf('VRCCARREQINFOTITLE', $car['name']); ?></h3>
-		<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar&task=reqinfo' . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')); ?>" method="post" onsubmit="return vrcValidateReqInfo();">
+		<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar&task=reqinfo'.(!empty($pitemid) ? '&Itemid='.$pitemid : '')); ?>" method="post" onsubmit="return vrcValidateReqInfo();">
 			<input type="hidden" name="carid" value="<?php echo $car['id']; ?>" />
 			<input type="hidden" name="Itemid" value="<?php echo $pitemid; ?>" />
 			<div class="vrcdialog-reqinfo-formcont">
@@ -1872,8 +1611,8 @@ if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']):
 				<?php
 				if (count($this->terms_fields)) {
 					$fname = !empty($this->terms_fields['poplink'])
-						? '<a href="' . $this->terms_fields['poplink'] . '" target="_blank" class="vrcmodalframe">' . Text::_($this->terms_fields['name']) . '</a>'
-						: '<label for="vrcf-inp" style="display:inline-block;">' . Text::_($this->terms_fields['name']) . '</label>';
+						? '<a href="'.$this->terms_fields['poplink'].'" target="_blank" class="vrcmodalframe">'.Text::_($this->terms_fields['name']).'</a>'
+						: '<label for="vrcf-inp" style="display:inline-block;">'.Text::_($this->terms_fields['name']).'</label>';
 				?>
 				<div class="vrcdialog-reqinfo-formentry vrcdialog-reqinfo-formentry-ckbox">
 					<?php echo $fname; ?>
@@ -1913,7 +1652,7 @@ function vrcValidateReqInfo() { if (document.getElementById('vrcf-inp').checked)
 
 <script type="text/javascript">
 /* Gallery thumbnail switching */
-var cdAllImages = <?php echo json_encode(array_map(function($img) { return $img['big']; }, $allImages)); ?>;
+var cdAllImages = <?php echo json_encode(array_map(function($img) { return $img['big']; }, !empty($allImages) ? $allImages : array())); ?>;
 function cdSetImage(idx) {
 	if (idx >= cdAllImages.length) return;
 	var mainEl = document.getElementById('cd-main-img-el');
