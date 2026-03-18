@@ -335,13 +335,13 @@
 }
 
 /* Target all contact containers */
-.contact .container {
+.com_contact .container {
     max-width: 100%;
     overflow-x: hidden;
 }
 
 /* Then undo for containers inside section */
-.contact section .container {
+.com_contact section .container {
     max-width: revert;
     overflow-x: revert;
 }
