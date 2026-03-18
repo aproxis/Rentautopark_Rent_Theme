@@ -224,6 +224,9 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	margin: 0 auto;
 	padding: 24px 24px 48px;
 }
+@media (max-width: 480px) {
+	.cd-container { padding: 16px 12px 40px; }
+}
 .container { max-width: 100%; overflow-x: hidden; }
 
 /* Top section: Gallery + Specs */
@@ -307,6 +310,11 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	padding: 28px 28px 24px;
 	box-shadow: 0 4px 24px rgba(0,0,0,.05);
 	margin-bottom: 32px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+@media (max-width: 480px) {
+	.cd-booking-card { padding: 18px 16px 20px; border-radius: 14px; }
 }
 .cd-booking-title {
 	font-size: 1.4rem;
@@ -327,7 +335,7 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	gap: 24px;
 	margin-bottom: 20px;
 }
-@media (max-width: 700px) { .cd-steps-grid { grid-template-columns: 1fr; gap: 20px; } }
+@media (max-width: 860px) { .cd-steps-grid { grid-template-columns: 1fr; gap: 20px; } }
 
 /* Step header */
 .cd-step-header {
@@ -407,9 +415,12 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	background: #fff;
 	appearance: none;
 	-webkit-appearance: none;
+	-moz-appearance: none;
 	cursor: pointer;
 	transition: border-color .2s, box-shadow .2s;
 	box-sizing: border-box;
+	/* Prevent native arrow on iOS/Android */
+	background-image: none;
 }
 .cd-select-wrap select:focus {
 	outline: none;
@@ -423,11 +434,14 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	transform: translateY(-50%);
 	color: #9ca3af;
 	pointer-events: none;
+	/* Make sure it sits above the select */
+	z-index: 1;
 }
 
 /* Date input wrapper */
 .cd-date-wrap {
 	position: relative;
+	width: 100%;
 }
 .cd-date-wrap input {
 	width: 100%;
@@ -441,6 +455,7 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	cursor: pointer;
 	transition: border-color .2s, box-shadow .2s;
 	box-sizing: border-box;
+	min-width: 0;
 }
 .cd-date-wrap input:focus {
 	outline: none;
@@ -463,16 +478,18 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
 	display: flex;
 	align-items: center;
 	gap: 6px;
+	width: 100%;
+	min-width: 0;
 }
 .cd-time-row .cd-select-wrap { flex: 1; min-width: 0; }
 .cd-time-sep { font-size: 16px; font-weight: 700; color: #6b7280; flex-shrink: 0; }
 
 /* Divider between steps */
 .cd-steps-divider {
-	display: none; /* hidden on desktop, shown on mobile as horizontal rule */
+	display: none;
 }
-@media (max-width: 700px) {
-	.cd-steps-divider { display: block; height: 1px; background: #e5e7eb; margin: 4px 0; }
+@media (max-width: 860px) {
+	.cd-steps-divider { display: block; height: 1px; background: #e5e7eb; margin: 8px 0 4px; }
 }
 
 /* Submit row */
@@ -1154,9 +1171,9 @@ jQuery(function(){
 						</label>
 						<div class="cd-date-wrap">
 							<input type="text" name="pickupdate" id="pickupdate"
-							       size="10" autocomplete="off"
+							       autocomplete="off"
 							       onfocus="this.blur();" readonly
-							       placeholder="<?php echo Text::_('VRCHOOSEDATE') ?: 'Выберите'; ?>"/>
+							       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'dd/mm/yyyy':$t); ?>"/>
 							<i class="<?php echo VikRentCarIcons::i('calendar', 'vrc-caltrigger'); ?>"></i>
 						</div>
 					</div>
@@ -1232,9 +1249,9 @@ jQuery(function(){
 						</label>
 						<div class="cd-date-wrap">
 							<input type="text" name="releasedate" id="releasedate"
-							       size="10" autocomplete="off"
+							       autocomplete="off"
 							       onfocus="this.blur();" readonly
-							       placeholder="<?php echo Text::_('VRCHOOSEDATE') ?: 'Выберите'; ?>"/>
+							       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'dd/mm/yyyy':$t); ?>"/>
 							<i class="<?php echo VikRentCarIcons::i('calendar', 'vrc-caltrigger'); ?>"></i>
 						</div>
 					</div>
