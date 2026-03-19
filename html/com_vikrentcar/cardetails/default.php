@@ -510,90 +510,145 @@ try {
 	margin: 0 0 20px;
 }
 
-/* Step row — two columns */
-.cd-steps-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 24px;
-	margin-bottom: 20px;
-}
-@media (max-width: 860px) { .cd-steps-grid { grid-template-columns: 1fr; gap: 20px; } }
+/* ================================================================
+   BOOKING FORM — compact date+time card rows
+   ================================================================ */
 
-/* Step header */
-.cd-step-header {
+/* Remove old step grid */
+.cd-steps-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.cd-step-header { display: none; } /* no numbered headers in new layout */
+.cd-steps-divider { display: none; }
+.cd-step-fields { display: flex; flex-direction: column; gap: 10px; }
+.cd-field-label { display: none; } /* labels hidden — layout is self-explanatory */
+
+/* ── Date+time card row ─────────────────────────────────────── */
+/* Each row is a single rounded card: [date ──────── >] [time >] */
+.cd-datetime-row {
 	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-bottom: 14px;
-}
-.cd-step-badge {
-	width: 28px;
-	height: 28px;
-	background: #FE5001;
-	color: #fff;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 12px;
-	font-weight: 800;
-	flex-shrink: 0;
-}
-.cd-step-title {
-	font-size: 15px;
-	font-weight: 800;
-	color: #0a0a0a;
-}
-
-/* Field groups inside a step */
-.cd-step-fields { display: flex; flex-direction: column; gap: 12px; }
-
-/* Individual field */
-.cd-field { display: flex; flex-direction: column; gap: 5px; }
-.cd-field-label {
-	display: flex;
-	align-items: center;
-	gap: 5px;
-	font-size: 12px;
-	font-weight: 600;
-	color: #374151;
-}
-.cd-field-label svg { color: #FE5001; flex-shrink: 0; }
-
-/* Shared input / select appearance */
-.cd-input,
-.cd-select {
-	width: 100%;
-	padding: 11px 14px;
-	border: 2px solid #e5e7eb;
-	border-radius: 12px;
-	font-size: 13px;
-	font-weight: 500;
-	color: #0a0a0a;
+	align-items: stretch;
 	background: #fff;
+	border: 2px solid #e5e7eb;
+	border-radius: 14px;
+	overflow: hidden;
 	transition: border-color .2s, box-shadow .2s;
-	box-sizing: border-box;
 }
-.cd-input:focus,
-.cd-select:focus {
-	outline: none;
+.cd-datetime-row:focus-within {
 	border-color: #FE5001;
-	box-shadow: 0 0 0 3px rgba(254,80,1,.12);
+	box-shadow: 0 0 0 3px rgba(254,80,1,.10);
 }
-.cd-input::placeholder { color: #9ca3af; font-weight: 400; }
 
-/* Select wrapper for custom arrow */
-.cd-select-wrap {
+/* Date cell — takes most of the width */
+.cd-dt-date {
+	flex: 1;
+	min-width: 0;
 	position: relative;
 }
-.cd-select-wrap select {
+.cd-dt-date input {
 	width: 100%;
-	padding: 11px 36px 11px 14px;
-	border: 2px solid #e5e7eb;
-	border-radius: 12px;
-	font-size: 13px;
+	height: 100%;
+	padding: 14px 16px;
+	border: none;
+	outline: none;
+	background: transparent;
+	font-size: 15px;
 	font-weight: 500;
-	color: #0a0a0a;
+	color: #111827;
+	cursor: pointer;
+	box-sizing: border-box;
+	min-width: 0;
+}
+.cd-dt-date input::placeholder { color: #9ca3af; font-weight: 400; }
+
+/* Chevron divider between date and time */
+.cd-dt-sep {
+	display: flex;
+	align-items: center;
+	padding: 0 4px;
+	color: #9ca3af;
+	flex-shrink: 0;
+	font-size: 14px;
+	border-left: 1px solid #e5e7eb;
+	border-right: 1px solid #e5e7eb;
+}
+.cd-dt-sep svg { display: block; }
+
+/* Time cell — fixed narrow width */
+.cd-dt-time {
+	flex-shrink: 0;
+	width: 100px;
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+.cd-dt-time-inner {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	padding: 0 10px 0 12px;
+	gap: 0;
+}
+/* Hour select */
+.cd-dt-time-inner .cd-th {
+	flex: 1;
+	min-width: 0;
+	position: relative;
+}
+.cd-dt-time-inner .cd-th select,
+.cd-dt-time-inner .cd-tm select {
+	width: 100%;
+	border: none;
+	outline: none;
+	background: transparent;
+	font-size: 15px;
+	font-weight: 500;
+	color: #111827;
+	cursor: pointer;
+	padding: 14px 0;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	text-align: center;
+}
+.cd-dt-time-inner .cd-tsep {
+	font-size: 15px;
+	font-weight: 600;
+	color: #374151;
+	padding: 0 1px;
+	flex-shrink: 0;
+}
+.cd-dt-time-inner .cd-tm { flex: 1; min-width: 0; position: relative; }
+/* Chevron after time */
+.cd-dt-time-chevron {
+	flex-shrink: 0;
+	color: #9ca3af;
+	display: flex;
+	align-items: center;
+}
+
+/* ── Row label (Pickup / Return) ────────────────────────────── */
+.cd-row-label {
+	font-size: 11px;
+	font-weight: 700;
+	color: #9ca3af;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	margin-bottom: 4px;
+	padding-left: 2px;
+}
+
+/* ── Location select row ────────────────────────────────────── */
+.cd-location-row {
+	margin-top: 6px;
+}
+.cd-location-row .cd-select-wrap select {
+	width: 100%;
+	padding: 13px 36px 13px 16px;
+	border: 2px solid #e5e7eb;
+	border-radius: 14px;
+	font-size: 15px;
+	font-weight: 500;
+	color: #111827;
 	background: #fff;
 	appearance: none;
 	-webkit-appearance: none;
@@ -601,78 +656,23 @@ try {
 	cursor: pointer;
 	transition: border-color .2s, box-shadow .2s;
 	box-sizing: border-box;
-	/* Prevent native arrow on iOS/Android */
 	background-image: none;
 }
-.cd-select-wrap select:focus {
+.cd-location-row .cd-select-wrap select:focus {
 	outline: none;
 	border-color: #FE5001;
-	box-shadow: 0 0 0 3px rgba(254,80,1,.12);
+	box-shadow: 0 0 0 3px rgba(254,80,1,.10);
 }
-.cd-select-wrap .cd-arrow {
-	position: absolute;
-	right: 12px;
-	top: 50%;
-	transform: translateY(-50%);
-	color: #9ca3af;
-	pointer-events: none;
-	/* Make sure it sits above the select */
-	z-index: 1;
+.cd-location-row .cd-select-wrap { position: relative; }
+.cd-location-row .cd-select-wrap .cd-arrow {
+	position: absolute; right: 14px; top: 50%;
+	transform: translateY(-50%); color: #9ca3af;
+	pointer-events: none; z-index: 1;
 }
 
-/* Date input wrapper */
-.cd-date-wrap {
-	position: relative;
-	width: 100%;
-}
-.cd-date-wrap input {
-	width: 100%;
-	padding: 11px 36px 11px 14px;
-	border: 2px solid #e5e7eb;
-	border-radius: 12px;
-	font-size: 13px;
-	font-weight: 500;
-	color: #0a0a0a;
-	background: #fff;
-	cursor: pointer;
-	transition: border-color .2s, box-shadow .2s;
-	box-sizing: border-box;
-	min-width: 0;
-}
-.cd-date-wrap input:focus {
-	outline: none;
-	border-color: #FE5001;
-	box-shadow: 0 0 0 3px rgba(254,80,1,.12);
-}
-.cd-date-wrap .vrc-caltrigger {
-	position: absolute;
-	right: 12px;
-	top: 50%;
-	transform: translateY(-50%);
-	color: #9ca3af;
-	cursor: pointer;
-	font-size: 15px;
-	pointer-events: none;
-}
-
-/* Time row: H : M */
-.cd-time-row {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	width: 100%;
-	min-width: 0;
-}
-.cd-time-row .cd-select-wrap { flex: 1; min-width: 0; }
-.cd-time-sep { font-size: 16px; font-weight: 700; color: #6b7280; flex-shrink: 0; }
-
-/* Divider between steps */
-.cd-steps-divider {
-	display: none;
-}
-@media (max-width: 860px) {
-	.cd-steps-divider { display: block; height: 1px; background: #e5e7eb; margin: 8px 0 4px; }
-}
+/* Keep old classes working (date-wrap used by datepicker) */
+.cd-date-wrap { position: relative; width: 100%; }
+.cd-date-wrap .vrc-caltrigger { display: none; }
 
 /* Submit row */
 .cd-booking-submit-row {
@@ -1335,8 +1335,12 @@ jQuery(function(){
 ?>
 
 	<!-- ══════════════════════════════════════════════════
-	     BOOKING FORM — step layout
+	     BOOKING FORM — compact date+time rows
 	     ══════════════════════════════════════════════════ -->
+	<?php
+	// SVG chevron for the date/time separator
+	$_ico_chev_sm = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+	?>
 	<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar' . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')); ?>"
 	      method="get"
 	      onsubmit="return vrcValidateSearch();">
@@ -1350,168 +1354,107 @@ jQuery(function(){
 		<input type="hidden" name="Itemid" value="<?php echo $pitemid; ?>"/>
 		<?php endif; ?>
 
-		<div class="cd-steps-grid">
+		<?php
+		// Return place mirrors pickup — hidden field, synced by JS
+		// If forced dropoff location, just emit the first valid drop place
+		$_firstDropId = '';
+		if (is_array($places) && count($places) > 0) {
+			foreach ($places as $_pl) {
+				if (!$check_drop_locs || in_array($_pl['id'], $pladrop_ids)) {
+					$_firstDropId = $_pl['id'];
+					break;
+				}
+			}
+		}
+		?>
 
-			<!-- ── STEP 1: PICKUP ─────────────────────── -->
-			<div class="cd-step">
-				<div class="cd-step-header">
-					<div class="cd-step-badge">1</div>
-					<span class="cd-step-title"><?php echo Text::_('VRPICKUPCAR') ?: 'Получение'; ?></span>
+		<!-- ROW 1: Pickup date + time -->
+		<div class="cd-row-label"><?php echo Text::_('VRPICKUPCAR') ?: 'Получение'; ?></div>
+		<div class="cd-datetime-row">
+			<div class="cd-dt-date">
+				<div class="cd-date-wrap">
+					<input type="text" name="pickupdate" id="pickupdate"
+					       autocomplete="off" onfocus="this.blur();" readonly
+					       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'дд.мм.гггг':$t); ?>"/>
 				</div>
-				<div class="cd-step-fields">
-
-					<?php if (is_array($places) && count($places) > 0): ?>
-					<!-- Pickup location -->
-					<div class="cd-field">
-						<label class="cd-field-label" for="place">
-							<?php echo $ico_pin; ?>
-							<?php echo Text::_('VRPPLACE'); ?>
-						</label>
-						<div class="cd-select-wrap">
-							<select name="place" id="place"<?php echo $onchangeplaces; ?>>
-								<?php foreach ($places as $pla):
-									if ($check_pick_locs && !in_array($pla['id'], $plapick_ids)) { continue; }
-									if (!empty($pla['lat']) && !empty($pla['lng'])) { $coordsplaces[] = $pla; }
-								?>
-								<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
-								<?php endforeach; ?>
-							</select>
-							<?php echo $ico_chevron; ?>
-						</div>
+			</div>
+			<div class="cd-dt-sep"><?php echo $_ico_chev_sm; ?></div>
+			<?php if (!strlen($forced_pickup)): ?>
+			<div class="cd-dt-time">
+				<div class="cd-dt-time-inner">
+					<div class="cd-th" id="vrccomselph">
+						<select name="pickuph"><?php echo $hours; ?></select>
 					</div>
-					<?php endif; ?>
-
-					<!-- Pickup date -->
-					<div class="cd-field">
-						<label class="cd-field-label" for="pickupdate">
-							<?php echo $ico_cal; ?>
-							<?php echo Text::_('VRPICKUPCAR'); ?>
-						</label>
-						<div class="cd-date-wrap">
-							<input type="text" name="pickupdate" id="pickupdate"
-							       autocomplete="off"
-							       onfocus="this.blur();" readonly
-							       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'dd/mm/yyyy':$t); ?>"/>
-							<i class="<?php echo VikRentCarIcons::i('calendar', 'vrc-caltrigger'); ?>"></i>
-						</div>
+					<span class="cd-tsep">:</span>
+					<div class="cd-tm" id="vrccomselpm">
+						<select name="pickupm"><?php echo $minutes; ?></select>
 					</div>
-
-					<!-- Pickup time -->
-					<?php if (!strlen($forced_pickup)): ?>
-					<div class="cd-field">
-						<label class="cd-field-label">
-							<?php echo $ico_clock; ?>
-							<?php echo Text::_('VRALLE') ?: 'Время'; ?>
-						</label>
-						<div class="cd-time-row">
-							<div class="cd-select-wrap" id="vrccomselph">
-								<select name="pickuph">
-									<?php echo $hours; ?>
-								</select>
-								<?php echo $ico_chevron; ?>
-							</div>
-							<span class="cd-time-sep">:</span>
-							<div class="cd-select-wrap" id="vrccomselpm">
-								<select name="pickupm">
-									<?php echo $minutes; ?>
-								</select>
-								<?php echo $ico_chevron; ?>
-							</div>
-						</div>
-					</div>
-					<?php else:
-						$fp = (int)$forced_pickup; $fph = floor($fp / 3600); $fpm = floor(($fp - ($fph * 3600)) / 60);
-					?>
-					<input type="hidden" name="pickuph" value="<?php echo $fph; ?>"/>
-					<input type="hidden" name="pickupm" value="<?php echo $fpm; ?>"/>
-					<?php endif; ?>
-
-				</div><!-- /.cd-step-fields -->
-			</div><!-- /.cd-step (pickup) -->
-
-			<div class="cd-steps-divider"></div>
-
-			<!-- ── STEP 2: RETURN ─────────────────────── -->
-			<div class="cd-step">
-				<div class="cd-step-header">
-					<div class="cd-step-badge">2</div>
-					<span class="cd-step-title"><?php echo Text::_('VRRETURNCARORD') ?: 'Возврат'; ?></span>
+					<span class="cd-dt-time-chevron"><?php echo $_ico_chev_sm; ?></span>
 				</div>
-				<div class="cd-step-fields">
+			</div>
+			<?php else:
+				$fp = (int)$forced_pickup; $fph = floor($fp/3600); $fpm = floor(($fp-($fph*3600))/60);
+			?>
+			<input type="hidden" name="pickuph" value="<?php echo $fph; ?>"/>
+			<input type="hidden" name="pickupm" value="<?php echo $fpm; ?>"/>
+			<?php endif; ?>
+		</div>
 
-					<?php if (is_array($places) && count($places) > 0): ?>
-					<!-- Return location -->
-					<div class="cd-field">
-						<label class="cd-field-label" for="returnplace">
-							<?php echo $ico_pin; ?>
-							<?php echo Text::_('VRRETURNCARORD'); ?>
-						</label>
-						<div class="cd-select-wrap">
-							<select name="returnplace" id="returnplace"<?php echo $onchangeplacesdrop; ?>>
-								<?php foreach ($places as $pla):
-									if ($check_drop_locs && !in_array($pla['id'], $pladrop_ids)) { continue; }
-								?>
-								<option value="<?php echo $pla['id']; ?>" id="returnplace<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
-								<?php endforeach; ?>
-							</select>
-							<?php echo $ico_chevron; ?>
-						</div>
+		<!-- ROW 2: Return date + time -->
+		<div class="cd-row-label" style="margin-top:10px;"><?php echo Text::_('VRRETURNCAR') ?: 'Возврат'; ?></div>
+		<div class="cd-datetime-row">
+			<div class="cd-dt-date">
+				<div class="cd-date-wrap">
+					<input type="text" name="releasedate" id="releasedate"
+					       autocomplete="off" onfocus="this.blur();" readonly
+					       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'дд.мм.гггг':$t); ?>"/>
+				</div>
+			</div>
+			<div class="cd-dt-sep"><?php echo $_ico_chev_sm; ?></div>
+			<?php if (!strlen($forced_dropoff)): ?>
+			<div class="cd-dt-time">
+				<div class="cd-dt-time-inner">
+					<div class="cd-th" id="vrccomseldh">
+						<select name="releaseh"><?php echo $hours; ?></select>
 					</div>
-					<?php endif; ?>
+					<span class="cd-tsep">:</span>
+					<div class="cd-tm" id="vrccomseldm">
+						<select name="releasem"><?php echo $minutes; ?></select>
+					</div>
+					<span class="cd-dt-time-chevron"><?php echo $_ico_chev_sm; ?></span>
+				</div>
+			</div>
+			<?php else:
+				$fd = (int)$forced_dropoff; $fdh = floor($fd/3600); $fdm = floor(($fd-($fdh*3600))/60);
+			?>
+			<input type="hidden" name="releaseh" value="<?php echo $fdh; ?>"/>
+			<input type="hidden" name="releasem" value="<?php echo $fdm; ?>"/>
+			<?php endif; ?>
+		</div>
 
-					<!-- Return date -->
-					<div class="cd-field">
-						<label class="cd-field-label" for="releasedate">
-							<?php echo $ico_cal; ?>
-							<?php echo Text::_('VRRETURNCAR'); ?>
-						</label>
-						<div class="cd-date-wrap">
-							<input type="text" name="releasedate" id="releasedate"
-							       autocomplete="off"
-							       onfocus="this.blur();" readonly
-							       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'dd/mm/yyyy':$t); ?>"/>
-							<i class="<?php echo VikRentCarIcons::i('calendar', 'vrc-caltrigger'); ?>"></i>
-						</div>
-					</div>
-
-					<!-- Return time -->
-					<?php if (!strlen($forced_dropoff)): ?>
-					<div class="cd-field">
-						<label class="cd-field-label">
-							<?php echo $ico_clock; ?>
-							<?php echo Text::_('VRALLEDROP') ?: 'Время'; ?>
-						</label>
-						<div class="cd-time-row">
-							<div class="cd-select-wrap" id="vrccomseldh">
-								<select name="releaseh">
-									<?php echo $hours; ?>
-								</select>
-								<?php echo $ico_chevron; ?>
-							</div>
-							<span class="cd-time-sep">:</span>
-							<div class="cd-select-wrap" id="vrccomseldm">
-								<select name="releasem">
-									<?php echo $minutes; ?>
-								</select>
-								<?php echo $ico_chevron; ?>
-							</div>
-						</div>
-					</div>
-					<?php else:
-						$fd = (int)$forced_dropoff; $fdh = floor($fd / 3600); $fdm = floor(($fd - ($fdh * 3600)) / 60);
+		<!-- ROW 3: Pickup location (visible) + Return location (hidden, mirrors pickup) -->
+		<?php if (is_array($places) && count($places) > 0): ?>
+		<div class="cd-location-row" style="margin-top:10px;">
+			<div class="cd-row-label"><?php echo Text::_('VRPPLACE') ?: 'Место получения'; ?></div>
+			<div class="cd-select-wrap">
+				<select name="place" id="place"<?php echo $onchangeplaces; ?>>
+					<?php foreach ($places as $pla):
+						if ($check_pick_locs && !in_array($pla['id'], $plapick_ids)) { continue; }
+						if (!empty($pla['lat']) && !empty($pla['lng'])) { $coordsplaces[] = $pla; }
 					?>
-					<input type="hidden" name="releaseh" value="<?php echo $fdh; ?>"/>
-					<input type="hidden" name="releasem" value="<?php echo $fdm; ?>"/>
-					<?php endif; ?>
-
-				</div><!-- /.cd-step-fields -->
-			</div><!-- /.cd-step (return) -->
-
-		</div><!-- /.cd-steps-grid -->
+					<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
+					<?php endforeach; ?>
+				</select>
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow"><path d="m6 9 6 6 6-6"/></svg>
+			</div>
+		</div>
+		<!-- Return location hidden — mirrors pickup value via JS -->
+		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>"/>
+		<?php endif; ?>
 
 		<!-- Locations map link -->
 		<?php if (count($coordsplaces) > 0): ?>
-		<div class="vrclocationsbox">
+		<div class="vrclocationsbox" style="margin-top:8px;">
 			<div class="vrclocationsmapdiv">
 				<a href="<?php echo VikRentCar::externalRoute('index.php?option=com_vikrentcar&view=locationsmap&tmpl=component'); ?>"
 				   class="vrcmodalframe" target="_blank">
@@ -1523,7 +1466,7 @@ jQuery(function(){
 		<?php endif; ?>
 
 		<!-- Submit + shield -->
-		<div class="cd-booking-submit-row">
+		<div class="cd-booking-submit-row" style="margin-top:16px;">
 			<input type="submit" name="search"
 			       value="<?php echo Text::_('VRCBOOKTHISCAR'); ?>"
 			       class="btn vrcdetbooksubmit vrc-pref-color-btn"/>
@@ -1534,6 +1477,19 @@ jQuery(function(){
 		</div>
 
 	</form>
+
+	<script type="text/javascript">
+	/* Sync hidden returnplace to always mirror pickup place */
+	jQuery(function() {
+		jQuery('#place').on('change', function() {
+			jQuery('#returnplace').val(jQuery(this).val());
+			<?php if ($diffopentime): ?>
+			vrcSetLocOpenTime(jQuery(this).val(), 'pickup');
+			vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
+			<?php endif; ?>
+		});
+	});
+	</script>
 
 	<script type="text/javascript">
 	function vrcCleanNumber(snum) { if (snum.length > 1 && snum.substr(0,1) == '0') { return parseInt(snum.substr(1)); } return parseInt(snum); }
