@@ -191,12 +191,161 @@ if (is_array($busy) && count($busy) > 0) {
 }
 
 $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''));
+
+// ── Price tiers (day-range bands) ────────────────────────────────────────────
+// Table: #__vikrentcar_dispcost
+//   idcar   – links directly to the car
+//   days    – exact rental duration (1, 2, 3 … N rows)
+//   cost    – TOTAL price for that many days (not per-day!)
+//   idprice – price-rule group
+//
+// Fixed display ranges: 1-3 | 4-7 | 8-21 | 22-45 | 46-60
+// For each range we show the per-day rate of the LAST day available in that
+// range (= the cheapest/best advertised rate for that band).
+// If a range has no data at all it is skipped silently.
+$priceTiers    = array();
+$minRentalDays = 1;
+
+// The five fixed display ranges you want
+$_fixedRanges = array(
+	array('from' => 1,  'to' => 3),
+	array('from' => 4,  'to' => 7),
+	array('from' => 8,  'to' => 21),
+	array('from' => 22, 'to' => 45),
+	array('from' => 46, 'to' => 60),
+);
+
+try {
+	$_dbo = JFactory::getDbo();
+
+	// Load all rows for this car (first idprice group = default price rule)
+	$_dbo->setQuery(
+		"SELECT `days`, `cost`, `idprice`"
+		. " FROM `#__vikrentcar_dispcost`"
+		. " WHERE `idcar` = " . (int)$car['id']
+		. " AND `cost` > 0"
+		. " ORDER BY `idprice` ASC, `days` ASC"
+	);
+	$_rows = $_dbo->loadAssocList();
+
+	if (!empty($_rows)) {
+		// Keep only the first idprice group
+		$_firstIdprice = (int)$_rows[0]['idprice'];
+		$_rows = array_values(array_filter($_rows, function($r) use ($_firstIdprice) {
+			return (int)$r['idprice'] === $_firstIdprice;
+		}));
+
+		// Minimum rental = first day in the dataset
+		$minRentalDays = (int)$_rows[0]['days'];
+
+		// Build a lookup: day => per-day rate
+		$_rateByDay = array();
+		foreach ($_rows as $_row) {
+			$_d = (int)$_row['days'];
+			$_rateByDay[$_d] = round((float)$_row['cost'] / $_d, 2);
+		}
+		$_maxDay = max(array_keys($_rateByDay));
+
+		// Map each fixed range to its representative per-day rate
+		foreach ($_fixedRanges as $_range) {
+			$_from = $_range['from'];
+			$_to   = $_range['to'];
+
+			// Find the highest day we have data for within this range
+			$_bestDay = null;
+			for ($_d = min($_to, $_maxDay); $_d >= $_from; $_d--) {
+				if (isset($_rateByDay[$_d])) {
+					$_bestDay = $_d;
+					break;
+				}
+			}
+
+			// Skip range entirely if no data falls within it
+			if ($_bestDay === null) {
+				continue;
+			}
+
+			$priceTiers[] = array(
+				'from' => $_from,
+				'to'   => $_to,
+				'rate' => VikRentCar::numberFormat($_rateByDay[$_bestDay]),
+			);
+		}
+	}
+} catch (Exception $_e) {
+	$priceTiers = array();
+}
+// ────────────────────────────────────────────────────────────────────────────
 ?>
 
 <style>
 /* ================================================================
    AutoRent CarDetails v2 — Tailwind Step-Form Override
    ================================================================ */
+
+/* ================================================================
+   PRICE TIERS BLOCK
+   ================================================================ */
+.cd-price-tiers {
+	margin-bottom: 10px;
+	padding: 16px 18px;
+	background: #fff;
+	border: 1.5px solid #e5e7eb;
+	border-radius: 14px;
+}
+.cd-price-tiers-label {
+	font-size: 11px;
+	font-weight: 700;
+	color: #9ca3af;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+	margin-bottom: 10px;
+}
+.cd-price-tiers-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+.cd-price-tier {
+	display: flex;
+	align-items: baseline;
+	gap: 3px;
+	padding: 6px 12px;
+	background: #f9fafb;
+	border: 1.5px solid #f3f4f6;
+	border-radius: 8px;
+	transition: border-color .2s, background .2s;
+	white-space: nowrap;
+}
+.cd-price-tier:hover {
+	border-color: #FE5001;
+	background: #fff7f4;
+}
+.cd-price-tier-days {
+	font-size: 12px;
+	font-weight: 600;
+	color: #6b7280;
+}
+.cd-price-tier-cost {
+	font-size: 14px;
+	font-weight: 800;
+	color: #FE5001;
+}
+.cd-price-tier-cur {
+	font-size: 11px;
+	font-weight: 700;
+	color: #FE5001;
+}
+.cd-price-tier-per {
+	font-size: 11px;
+	color: #9ca3af;
+	font-weight: 500;
+}
+@media (max-width: 480px) {
+	.cd-price-tiers { padding: 12px 14px; }
+	.cd-price-tier { padding: 5px 10px; }
+	.cd-price-tier-cost { font-size: 13px; }
+}
 
 /* Breadcrumb */
 .cd-breadcrumb {
@@ -775,6 +924,46 @@ $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!emp
    3. BOOKING CARD — Step-by-step Tailwind layout
    ================================================================ */ ?>
 <div id="vrc-bookingpart-init"></div>
+
+<?php if (!empty($priceTiers)): ?>
+<div class="cd-price-tiers">
+	<div class="cd-price-tiers-label">
+		<?php echo Text::_('VRCPRICESBYDAY') ?: 'Цены по дням'; ?>
+		<?php if ($minRentalDays > 1): ?>
+			<span style="font-weight:500;text-transform:none;letter-spacing:0;color:#6b7280;font-size:11px;">
+				— <?php
+				$_mdLabel = Text::sprintf('VRCMINRENTALDAYS', $minRentalDays);
+				if ($_mdLabel === 'VRCMINRENTALDAYS') {
+					$_suffix = $minRentalDays === 1 ? 'день' : ($minRentalDays < 5 ? 'дня' : 'дней');
+					$_mdLabel = 'мин. ' . $minRentalDays . ' ' . $_suffix;
+				}
+				echo $_mdLabel;
+				?>
+			</span>
+		<?php endif; ?>
+	</div>
+	<div class="cd-price-tiers-grid">
+		<?php foreach ($priceTiers as $tier): ?>
+		<div class="cd-price-tier">
+			<span class="cd-price-tier-days">
+				<?php
+				if ((int)$tier['from'] === (int)$tier['to']) {
+					echo (int)$tier['from'];
+				} else {
+					echo (int)$tier['from'] . '–' . (int)$tier['to'];
+				}
+				echo ' ' . (Text::_('VRCDAYS') ?: 'дн');
+				?>
+			</span>
+			<span class="cd-price-tier-cur"><?php echo $currencysymb; ?></span>
+			<span class="cd-price-tier-cost"><?php echo $tier['rate']; ?></span>
+			<span class="cd-price-tier-per">/<?php echo Text::_('VRCPERDAY') ?: 'день'; ?></span>
+		</div>
+		<?php endforeach; ?>
+	</div>
+</div>
+<?php endif; ?>
+
 <div class="cd-booking-card">
 	<h3 class="cd-booking-title">
 		<?php echo Text::_('VRCSELECTPDDATES') ?: 'Забронировать'; ?>
