@@ -286,65 +286,98 @@ try {
 /* ================================================================
    PRICE TIERS BLOCK
    ================================================================ */
+/* ================================================================
+   PRICE TIERS — horizontal pill strip
+   ================================================================ */
+.cd-price-block { display: none !important; }
+
 .cd-price-tiers {
 	margin-bottom: 10px;
-	padding: 16px 18px;
-	background: #fff;
-	border: 1.5px solid #e5e7eb;
-	border-radius: 14px;
+	padding: 6px;
+	background: #ebebeb;
+	border-radius: 18px;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
 }
-.cd-price-tiers-label {
-	font-size: 11px;
-	font-weight: 700;
-	color: #9ca3af;
-	text-transform: uppercase;
-	letter-spacing: .06em;
-	margin-bottom: 10px;
-}
+.cd-price-tiers::-webkit-scrollbar { display: none; }
+
 .cd-price-tiers-grid {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
+	gap: 0;
+	min-width: max-content;
+	width: 100%;
 }
+
 .cd-price-tier {
 	display: flex;
-	align-items: baseline;
-	gap: 3px;
-	padding: 6px 12px;
-	background: #f9fafb;
-	border: 1.5px solid #f3f4f6;
-	border-radius: 8px;
-	transition: border-color .2s, background .2s;
+	flex-direction: column;
+	align-items: flex-start;
+	padding: 12px 22px;
+	background: transparent;
+	border-radius: 13px;
+	cursor: default;
+	transition: background .2s, box-shadow .2s;
+	position: relative;
+	flex: 1;
+	min-width: 110px;
 	white-space: nowrap;
 }
-.cd-price-tier:hover {
-	border-color: #FE5001;
-	background: #fff7f4;
+
+/* Vertical divider between cells */
+.cd-price-tier:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 20%;
+	height: 60%;
+	width: 1px;
+	background: #d1d5db;
+	border-radius: 1px;
 }
+
+/* Active highlighted tier */
+.cd-price-tier.is-active {
+	background: #fff;
+	box-shadow: 0 2px 12px rgba(0,0,0,.10);
+}
+.cd-price-tier.is-active::after { display: none; }
+.cd-price-tier.is-active-prev::after { display: none; }
+
 .cd-price-tier-days {
 	font-size: 12px;
-	font-weight: 600;
+	font-weight: 500;
 	color: #6b7280;
+	margin-bottom: 4px;
+	line-height: 1;
+}
+.cd-price-tier-value {
+	display: flex;
+	align-items: baseline;
+	gap: 2px;
 }
 .cd-price-tier-cost {
-	font-size: 14px;
+	font-size: 20px;
 	font-weight: 800;
-	color: #FE5001;
+	color: #111827;
+	line-height: 1;
 }
 .cd-price-tier-cur {
-	font-size: 11px;
+	font-size: 14px;
 	font-weight: 700;
-	color: #FE5001;
+	color: #111827;
 }
 .cd-price-tier-per {
-	font-size: 11px;
-	color: #9ca3af;
+	font-size: 13px;
+	color: #6b7280;
 	font-weight: 500;
 }
-@media (max-width: 480px) {
-	.cd-price-tiers { padding: 12px 14px; }
-	.cd-price-tier { padding: 5px 10px; }
-	.cd-price-tier-cost { font-size: 13px; }
+
+@media (max-width: 600px) {
+	.cd-price-tier { min-width: 90px; padding: 10px 14px; }
+	.cd-price-tier-cost { font-size: 17px; }
+	.cd-price-tier-cur { font-size: 13px; }
+	.cd-price-tier-days { font-size: 11px; }
 }
 
 /* Breadcrumb */
@@ -926,38 +959,34 @@ try {
 <div id="vrc-bookingpart-init"></div>
 
 <?php if (!empty($priceTiers)): ?>
-<div class="cd-price-tiers">
-	<div class="cd-price-tiers-label">
-		<?php echo Text::_('VRCPRICESBYDAY') ?: 'Цены по дням'; ?>
-		<?php if ($minRentalDays > 1): ?>
-			<span style="font-weight:500;text-transform:none;letter-spacing:0;color:#6b7280;font-size:11px;">
-				— <?php
-				$_mdLabel = Text::sprintf('VRCMINRENTALDAYS', $minRentalDays);
-				if ($_mdLabel === 'VRCMINRENTALDAYS') {
-					$_suffix = $minRentalDays === 1 ? 'день' : ($minRentalDays < 5 ? 'дня' : 'дней');
-					$_mdLabel = 'мин. ' . $minRentalDays . ' ' . $_suffix;
-				}
-				echo $_mdLabel;
-				?>
-			</span>
-		<?php endif; ?>
-	</div>
+<div class="cd-price-tiers" id="cd-price-tiers">
 	<div class="cd-price-tiers-grid">
-		<?php foreach ($priceTiers as $tier): ?>
-		<div class="cd-price-tier">
-			<span class="cd-price-tier-days">
-				<?php
-				if ((int)$tier['from'] === (int)$tier['to']) {
-					echo (int)$tier['from'];
-				} else {
-					echo (int)$tier['from'] . '–' . (int)$tier['to'];
-				}
-				echo ' ' . (Text::_('VRCDAYS') ?: 'дн');
-				?>
-			</span>
-			<span class="cd-price-tier-cur"><?php echo $currencysymb; ?></span>
-			<span class="cd-price-tier-cost"><?php echo $tier['rate']; ?></span>
-			<span class="cd-price-tier-per">/<?php echo Text::_('VRCPERDAY') ?: 'день'; ?></span>
+		<?php foreach ($priceTiers as $_ti => $tier):
+			// Day label: "1–3 дней" / "46+ дней" for open-ended last range
+			$_isLast   = ($_ti === count($priceTiers) - 1);
+			$_fromN    = (int)$tier['from'];
+			$_toN      = (int)$tier['to'];
+			// Day word: use singular/plural helpers
+			// "дн" short form — use VRCSEARCHDAY for 1, VRCSEARCHDAYS for many
+			$_dayWord  = $_toN === 1 ? (Text::_('VRCSEARCHDAY') ?: 'день') : (Text::_('VRCSEARCHDAYS') ?: 'дней');
+			if ($_fromN === $_toN) {
+				$_daysLabel = $_fromN . ' ' . $_dayWord;
+			} elseif ($_isLast && $_toN >= 45) {
+				$_daysLabel = '> ' . ($_fromN - 1) . ' ' . (Text::_('VRCSEARCHDAYS') ?: 'дней');
+			} else {
+				$_daysLabel = $_fromN . '–' . $_toN . ' ' . (Text::_('VRCSEARCHDAYS') ?: 'дней');
+			}
+		?>
+		<div class="cd-price-tier"
+		     data-from="<?php echo $_fromN; ?>"
+		     data-to="<?php echo $_toN; ?>"
+		     data-idx="<?php echo $_ti; ?>">
+			<span class="cd-price-tier-days"><?php echo $_daysLabel; ?></span>
+			<div class="cd-price-tier-value">
+				<span class="cd-price-tier-cost"><?php echo $tier['rate']; ?></span>
+				<span class="cd-price-tier-cur"> <?php echo $currencysymb; ?></span>
+				<span class="cd-price-tier-per">/<?php echo Text::_('VRCSEARCHDAY') ?: 'день'; ?></span>
+			</div>
 		</div>
 		<?php endforeach; ?>
 	</div>
@@ -966,7 +995,7 @@ try {
 
 <div class="cd-booking-card">
 	<h3 class="cd-booking-title">
-		<?php echo Text::_('VRCSELECTPDDATES') ?: 'Забронировать'; ?>
+		<?php echo Text::_('VRCBOOKTHISCAR') ?: 'Забронировать'; ?>
 	</h3>
 	<p class="cd-booking-subtitle">
 		<?php echo Text::_('VRCBOOKINGSUBTITLE') ?: ''; ?>
@@ -1870,6 +1899,111 @@ function cdSetImage(idx) {
 	if (thumb) thumb.classList.add('active');
 }
 </script>
+
+<?php if (!empty($priceTiers)): ?>
+<script type="text/javascript">
+/* ── Price tier active highlight ───────────────────────────────────────────
+   Watches #pickupdate and #releasedate (jQuery UI datepicker inputs).
+   When both have a date, calculates the rental duration in days, finds
+   which tier band it falls into, and adds .is-active to that cell.
+   Also adds .is-active-prev to the cell immediately before it so the
+   divider between them is hidden (matching the Figma design).
+   ──────────────────────────────────────────────────────────────────────── */
+(function($) {
+	// Tier data from PHP — each has from, to day counts
+	var tiers = <?php
+		$_jsRanges = array();
+		foreach ($priceTiers as $_t) {
+			$_jsRanges[] = array('from' => (int)$_t['from'], 'to' => (int)$_t['to']);
+		}
+		echo json_encode($_jsRanges);
+	?>;
+
+	function cdGetDaysBetween(pickupVal, releaseVal) {
+		if (!pickupVal || !releaseVal) return null;
+		// Parse dates — jQuery datepicker value format matches PHP $df
+		var d1 = $.datepicker.parseDate(<?php
+			if ($df === 'd/m/Y') echo "'dd/mm/yy'";
+			elseif ($df === 'm/d/Y') echo "'mm/dd/yy'";
+			else echo "'yy/mm/dd'";
+		?>, pickupVal);
+		var d2 = $.datepicker.parseDate(<?php
+			if ($df === 'd/m/Y') echo "'dd/mm/yy'";
+			elseif ($df === 'm/d/Y') echo "'mm/dd/yy'";
+			else echo "'yy/mm/dd'";
+		?>, releaseVal);
+		if (!d1 || !d2) return null;
+		var diff = Math.round((d2 - d1) / 86400000);
+		return diff > 0 ? diff : null;
+	}
+
+	function cdHighlightTier(days) {
+		var $cells  = $('#cd-price-tiers .cd-price-tier');
+		var $last   = null;
+
+		// Clear all states
+		$cells.removeClass('is-active is-active-prev');
+
+		if (!days) return;
+
+		// Find matching tier
+		var activeIdx = -1;
+		for (var i = 0; i < tiers.length; i++) {
+			if (days >= tiers[i].from && days <= tiers[i].to) {
+				activeIdx = i;
+				break;
+			}
+		}
+
+		// If beyond all ranges, activate last tier
+		if (activeIdx === -1 && days > 0) {
+			activeIdx = tiers.length - 1;
+		}
+
+		if (activeIdx >= 0) {
+			$cells.eq(activeIdx).addClass('is-active');
+			if (activeIdx > 0) {
+				$cells.eq(activeIdx - 1).addClass('is-active-prev');
+			}
+		}
+	}
+
+	function cdRecalc() {
+		var pickup  = $('#pickupdate').val();
+		var release = $('#releasedate').val();
+		cdHighlightTier(cdGetDaysBetween(pickup, release));
+	}
+
+	$(function() {
+		// Hook into jQuery UI datepicker onSelect via event delegation
+		// VRC already calls the datepicker — we piggyback with a mutation
+		// observer on the input values as the most reliable cross-version hook
+		var _lastPickup  = '';
+		var _lastRelease = '';
+
+		function cdPoll() {
+			var p = $('#pickupdate').val();
+			var r = $('#releasedate').val();
+			if (p !== _lastPickup || r !== _lastRelease) {
+				_lastPickup  = p;
+				_lastRelease = r;
+				cdRecalc();
+			}
+		}
+		// Poll every 300ms — lightweight, stops naturally when page unloads
+		setInterval(cdPoll, 300);
+
+		// Also listen for the calendar day-click that VRC uses for cal pickdays
+		$(document.body).on('click', '.vrc-cdetails-cal-pickday', function() {
+			setTimeout(cdRecalc, 400);
+		});
+
+		// Initial highlight if dates are already set (e.g. page reload with ?pickup=)
+		cdRecalc();
+	});
+})(jQuery);
+</script>
+<?php endif; ?>
 
 <?php
 VikRentCar::printTrackingCode(isset($this) ? $this : null);
