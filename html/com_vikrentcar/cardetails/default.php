@@ -922,7 +922,7 @@ try {
 	</div><!-- /.cd-desktop-meta -->
 
 	<!-- Mobile info: name, category, specs grid (mobile order 4) -->
-	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
+	<div class="cd-mobile-info-wrap" style="margin-top:16px;" style="display:none;">
 		<div class="cd-info">
 			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
 			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
@@ -1548,8 +1548,8 @@ jQuery(function(){
 
 	/* ── OOH + Optionals + Live Summary JS ───────────────────────── */
 	var cdOohFees = <?php echo json_encode($oohFees); ?>;
-	var cdCurrency = '<?php echo addslashes($currencysymb); ?>';
-	var cdRateByDay = <?php
+	var cdCurrency = '€';
+		var cdRateByDay = <?php
 		$_jsRbd = array();
 		foreach ($_rateByDay as $_d => $_r) { $_jsRbd[(int)$_d] = $_r; }
 		echo json_encode($_jsRbd);
@@ -1612,16 +1612,16 @@ jQuery(function(){
 				var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
 				var label;
 				if (f.type === 1) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTEN') ?: "Только получение"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
 				} else if (f.type === 2) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESELEVEN') ?: "Только возврат"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
 				} else {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTWELVE') ?: "Получение и возврат"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
 				}
 				var parts = [];
-				if (pickOoh) parts.push('+' + cdCurrency + cdFmt(f.pickcharge));
-				if (dropOoh) parts.push('+' + cdCurrency + cdFmt(f.dropcharge));
-				messages.push(label + ': ' + parts.join(', '));
+				if (pickOoh) parts.push(cdCurrency + cdFmt(f.pickcharge));
+				if (dropOoh) parts.push(cdCurrency + cdFmt(f.dropcharge));
+				messages.push(label + ': ' + parts.join(' + '));
 			}
 		}
 		var $w = jQuery('#cd-ooh-warning');
@@ -1700,9 +1700,9 @@ jQuery(function(){
 				var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
 				if (pickOoh || dropOoh) {
 					var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
-					if (f.type === 1) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTEN') ?: "Только получение"); ?>' + timeRange;
-					else if (f.type === 2) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESELEVEN') ?: "Только возврат"); ?>' + timeRange;
-					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTWELVE') ?: "Получение и возврат"); ?>' + timeRange;
+					if (f.type === 1) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
+					else if (f.type === 2) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
+					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
 					break;
 				}
 			}
@@ -1791,6 +1791,42 @@ jQuery(function(){
 }
 ?>
 </div><!-- /.cd-booking-card -->
+
+
+
+	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
+		<div class="cd-info">
+			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
+			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
+			<?php if (!empty($caratDefs)): ?>
+			<div class="cd-specs">
+				<?php foreach ($caratDefs as $cid => $carat):
+					$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
+					$label = Text::_($rawLabel) ?: $rawLabel;
+					$key = strtolower($label); $svg = $svgDefault;
+					foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
+				?>
+				<div class="cd-spec"><div class="cd-spec-icon"><?php echo $svg; ?></div><div class="cd-spec-text"><span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span></div></div>
+				<?php endforeach; ?>
+			</div>
+			<?php endif; ?>
+			<?php if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']): ?>
+			<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn"><i class="fas fa-envelope"></i> <?php echo Text::_('VRCCARREQINFOBTN'); ?></a>
+			<?php endif; ?>
+		</div>
+	
+
+	<!-- Description (mobile order 5) -->
+	<?php if (!empty($car['info'])): ?>
+	<div class="cd-description" style="margin-top:24px;">
+		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
+		<div class="cd-description-text"><?php echo $car['info']; ?></div>
+	</div>
+	<?php endif; ?>
+</div>
+
+
+
 </div><!-- /.cd-right -->
 
 </div><!-- /.cd-page-grid -->
