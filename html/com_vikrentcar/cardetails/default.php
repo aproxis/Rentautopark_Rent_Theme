@@ -387,6 +387,11 @@ try {
 	</div>
 	<?php endif; ?>
 
+	<!-- Mobile car name: shown between price tiers and booking form on mobile -->
+	<div class="cd-mobile-car-name">
+		<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?></h1>
+	</div>
+
 	<!-- Desktop meta: category, name, spec pills -->
 	<div class="cd-desktop-meta">
 		<?php if (!empty($categoryName)): ?><span class="cd-car-cat-desktop"><?php echo $categoryName; ?></span><?php endif; ?>
@@ -446,7 +451,7 @@ try {
 	<!-- Description (mobile order 5) -->
 	<?php if (!empty($car['info'])): ?>
 	<div class="cd-description" style="margin-top:24px;">
-		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
+		<h2><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h2>
 		<div class="cd-description-text"><?php echo $car['info']; ?></div>
 	</div>
 	<?php endif; ?>
@@ -916,7 +921,7 @@ jQuery(function(){
 					<div class="cd-th" id="vrccomselph">
 						<select name="pickuph"><?php echo $hours; ?></select>
 					</div>
-					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomselph select').trigger('chosen:open');"><?php echo $_ico_chev_sm; ?></span>
+					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomselph select').trigger('chosen:open'); jQuery('#vrccomselph select').focus();"><?php echo $_ico_chev_sm; ?></span>
 				</div>
 			</div>
 			<!-- Minutes fixed at 0 -->
@@ -943,7 +948,7 @@ jQuery(function(){
 					<div class="cd-th" id="vrccomseldh">
 						<select name="releaseh"><?php echo $hours; ?></select>
 					</div>
-					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomseldh select').trigger('chosen:open');"><?php echo $_ico_chev_sm; ?></span>
+					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomseldh select').trigger('chosen:open'); jQuery('#vrccomseldh select').focus();"><?php echo $_ico_chev_sm; ?></span>
 				</div>
 			</div>
 			<!-- Minutes fixed at 0 -->
@@ -969,7 +974,7 @@ jQuery(function(){
 					<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
 					<?php endforeach; ?>
 				</select>
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#place').trigger('chosen:open');"><path d="m6 9 6 6 6-6"/></svg>
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#place').trigger('chosen:open'); jQuery('#place').focus();"><path d="m6 9 6 6 6-6"/></svg>
 			</div>
 		</div>
 		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>"/>
@@ -1331,7 +1336,7 @@ jQuery(function(){
 	<!-- Description (mobile order 5) -->
 	<?php if (!empty($car['info'])): ?>
 	<div class="cd-description" style="margin-top:24px;">
-		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
+		<h2><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h2>
 		<div class="cd-description-text"><?php echo $car['info']; ?></div>
 	</div>
 	<?php endif; ?>
@@ -1445,6 +1450,15 @@ function cdSetImage(idx) {
 		if (activeIdx >= 0) {
 			$cells.eq(activeIdx).addClass('is-active');
 			if (activeIdx > 0) { $cells.eq(activeIdx - 1).addClass('is-active-prev'); }
+			// Scroll active tier into center on mobile
+			var wrap = document.getElementById('cd-price-tiers');
+			if (wrap) {
+				var el = $cells.eq(activeIdx).get(0);
+				if (el) {
+					var scrollTo = el.offsetLeft - (wrap.offsetWidth - el.offsetWidth) / 2;
+					wrap.scrollTo({ left: scrollTo, behavior: 'smooth' });
+				}
+			}
 		}
 	};
 })(jQuery);

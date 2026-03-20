@@ -126,11 +126,16 @@
 }
 .cd-main-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; cursor: zoom-in; }
 .cd-main-img:hover img { transform: scale(1.03); }
+@media (max-width: 860px) {
+	.cd-gallery-wrap { overflow: hidden; max-width: 100%; width: 100%; }
+}
 @media (max-width: 600px) {
 	.cd-gallery { flex-direction: column-reverse; }
-	.cd-thumbs { flex-direction: row; width: 100%; overflow-x: auto; }
+	.cd-thumbs { flex-direction: row; width: 100%; max-width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+	.cd-thumbs::-webkit-scrollbar { display: none; }
 	.cd-thumb { width: 70px; flex-shrink: 0; }
-	.cd-main-img { aspect-ratio: 16/9; }
+	.cd-main-img { aspect-ratio: 4/3; width: 100%; max-width: 100%; overflow: hidden; }
+	.cd-main-img img { width: 100%; height: 100%; object-fit: cover; max-width: 100%; }
 }
 
 /* ── Specs (mobile info panel) ─────────────────────────────────── */
@@ -575,6 +580,25 @@
 .ui-datepicker td a, .ui-datepicker td span { text-align: center !important; border-radius: 6px !important; transition: background .15s, color .15s !important; }
 .ui-datepicker td a:hover { background: #FE5001 !important; color: #fff !important; }
 .ui-datepicker .ui-datepicker-current-day a { background: #FE5001 !important; color: #fff !important; font-weight: 700 !important; }
+
+/* ── Mobile car name heading (between price tiers and booking form) ── */
+.cd-mobile-car-name {
+	display: none;
+	padding: 12px 0 0;
+}
+.cd-mobile-car-name .cd-car-name {
+	font-size: clamp(1.5rem, 5vw, 2rem);
+	font-weight: 800;
+	color: #0a0a0a;
+	margin: 0;
+	line-height: 1.15;
+}
+@media (max-width: 860px) {
+	.cd-mobile-car-name { display: block; order: 3; }
+}
+
+/* ── Hide category badge ──────────────────────────────────────── */
+.cd-car-cat { display: none !important; }
 
 /* Hide old VRC legacy wrappers */
 .vrc-cardetails-legend { display: none !important; }
