@@ -414,8 +414,8 @@ try {
 	.cd-gallery-wrap      { order: 1; }
 	.cd-price-tiers-wrap  { order: 2; } /* show strip between gallery and form on mobile */
 	.cd-desktop-meta      { order: 3; display: none !important; } /* desktop name/cat/pills hidden on mobile */
-	.cd-mobile-info-wrap  { order: 4; } /* specs + name */
-	.cd-description       { order: 5; }
+	.cd-left .cd-mobile-info-wrap  { order: 4; display: none !important; } /* hide mobile info panel when it's outside the form; shown in accordion below form */
+	.cd-left .cd-description       { order: 5; display: none !important; } /* hide description on mobile, shown in accordion below form */
 	.cd-avail-section     { order: 6; }
 	.cd-hourly-cal-wrap   { order: 7; }
 }
