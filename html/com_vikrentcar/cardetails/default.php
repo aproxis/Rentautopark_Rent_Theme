@@ -210,10 +210,12 @@ $minRentalDays = 1;
 $_fixedRanges = array(
 	array('from' => 1,  'to' => 3),
 	array('from' => 4,  'to' => 7),
-	array('from' => 8,  'to' => 21),
-	array('from' => 22, 'to' => 45),
-	array('from' => 46, 'to' => 60),
+	array('from' => 8,  'to' => 14),
+	array('from' => 15, 'to' => 21),
+	array('from' => 22, 'to' => 29),
+	array('from' => 30, 'to' => 60),
 );
+
 
 try {
 	$_dbo = JFactory::getDbo();
