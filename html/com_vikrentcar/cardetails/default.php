@@ -6,7 +6,7 @@
  *  - Mobile layout: Photos → Form → Specs → Description/Calendars
  *  - Time select: single hour select, minutes fixed at :00
  *  - Price strip + summary update on date select
- *  - OOH fee labels use VRCPVIEWOOHFEESFOUR/VRCPVIEWOOHFEESFIVE/VRCPVIEWOOHFEESNINE with real times
+ *  - OOH fee labels use VRCPVIEWOOHFEESTEN/ELEVEN/TWELVE with real times
  *  - Total uses VRTOTAL, fixed EUR symbol
  *  - No decimals in prices
  */
@@ -412,7 +412,7 @@ try {
 
 	/* Inside .cd-left, reorder children with explicit order values */
 	.cd-gallery-wrap      { order: 1; }
-	.cd-price-tiers-wrap  { order: 2; display: none; } /* hide strip on mobile — shown in booking card area */
+	.cd-price-tiers-wrap  { order: 2; } /* show strip between gallery and form on mobile */
 	.cd-desktop-meta      { order: 3; display: none !important; } /* desktop name/cat/pills hidden on mobile */
 	.cd-mobile-info-wrap  { order: 4; } /* specs + name */
 	.cd-description       { order: 5; }
@@ -482,9 +482,19 @@ try {
 }
 .cd-spec-pill svg { color: #FE5001; flex-shrink: 0; }
 
+/* mobile-info-wrap when placed inside .cd-right (after booking card) */
+.cd-right .cd-mobile-info-wrap {
+	display: none; /* hidden on desktop; shown on mobile via media query below */
+}
+@media (max-width: 860px) {
+	.cd-right .cd-mobile-info-wrap { display: block; }
+}
+
 /* Desktop name/cat */
 @media (min-width: 861px) {
 	.cd-info { display: none; }
+	/* Hide the mobile info/description block that lives outside .cd-left on desktop */
+	.cd-mobile-info-wrap { display: none !important; }
 	.cd-car-name-desktop {
 		font-size: clamp(1.6rem, 2.5vw, 2rem); font-weight: 800; color: #0a0a0a;
 		margin: 16px 0 4px; line-height: 1.15;
@@ -497,6 +507,8 @@ try {
 @media (max-width: 860px) {
 	.cd-car-name-desktop, .cd-car-cat-desktop, .cd-specs-below { display: none !important; }
 	.cd-info { display: flex; }
+	/* Mobile info wrap shown below the form (order handled by flex on page-grid) */
+	.cd-mobile-info-wrap { display: block; }
 }
 
 /* ================================================================
@@ -510,7 +522,7 @@ try {
 	box-shadow: 0 4px 24px rgba(0,0,0,.05);
 	margin-bottom: 32px;
 	box-sizing: border-box;
-	overflow: hidden;
+	/* overflow:hidden removed — clips native select dropdowns */
 }
 @media (max-width: 480px) { .cd-booking-card { padding: 18px 16px 20px; border-radius: 14px; } }
 .cd-booking-title { font-size: 1.4rem; font-weight: 800; color: #0a0a0a; margin: 0 0 16px; }
@@ -522,13 +534,18 @@ try {
 	background: #fff;
 	border: 2px solid #e5e7eb;
 	border-radius: 14px;
-	overflow: hidden;
+	/* NO overflow:hidden — it clips the native select dropdown */
 	transition: border-color .2s, box-shadow .2s;
+	position: relative;
 }
 .cd-datetime-row:focus-within {
 	border-color: #FE5001;
 	box-shadow: 0 0 0 3px rgba(254,80,1,.10);
 }
+/* Round left edge on date input, right edge on time cell */
+.cd-dt-date input { border-radius: 12px 0 0 12px; }
+.cd-dt-time { border-radius: 0 12px 12px 0; overflow: hidden; }
+
 .cd-dt-date { flex: 1; min-width: 0; position: relative; }
 .cd-dt-date input {
 	width: 100%; height: 100%;
@@ -543,39 +560,52 @@ try {
 	display: flex; align-items: center; padding: 0 4px; color: #9ca3af;
 	flex-shrink: 0; font-size: 14px;
 	border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb;
+	background: #fff;
 }
 .cd-dt-sep svg { display: block; }
 
 /* Single-select time cell */
 .cd-dt-time {
 	flex-shrink: 0;
-	width: 90px;
+	width: 100px;
 	position: relative;
 	display: flex;
 	align-items: center;
+	background: #fff;
+	overflow: visible; /* allow dropdown to escape */
 }
 .cd-dt-time-inner {
 	display: flex;
 	align-items: center;
 	width: 100%;
 	height: 100%;
-	padding: 0 8px 0 10px;
+	padding: 0 6px 0 4px;
 	gap: 0;
+	position: relative;
 }
 .cd-dt-time-inner .cd-th {
 	flex: 1;
 	min-width: 0;
 	position: relative;
 }
+/* The select is invisible but covers the whole time cell for interaction.
+   A custom label renders on top and we show the select value via JS.
+   Simpler approach: style the select itself to be clean and readable. */
 .cd-dt-time-inner .cd-th select {
 	width: 100%;
 	border: none; outline: none; background: transparent;
-	font-size: 15px; font-weight: 500; color: #111827;
-	cursor: pointer; padding: 14px 0;
+	font-size: 14px; font-weight: 600; color: #111827;
+	cursor: pointer; padding: 14px 2px;
 	appearance: none; -webkit-appearance: none; -moz-appearance: none;
+	-webkit-appearance: none;
 	text-align: center;
+	text-align-last: center;
+	/* Prevent browser from adding its own search/decoration */
+	-webkit-tap-highlight-color: transparent;
 }
-.cd-dt-time-chevron { flex-shrink: 0; color: #9ca3af; display: flex; align-items: center; }
+/* Hide the dropdown arrow in IE */
+.cd-dt-time-inner .cd-th select::-ms-expand { display: none; }
+.cd-dt-time-chevron { flex-shrink: 0; color: #9ca3af; display: flex; align-items: center; padding-right: 6px; }
 
 /* ── Row label ─────────────────────────────────────────────────── */
 .cd-row-label {
@@ -892,16 +922,35 @@ try {
 	</div><!-- /.cd-desktop-meta -->
 
 	<!-- Mobile info: name, category, specs grid (mobile order 4) -->
+	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
+		<div class="cd-info">
+			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
+			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
+			<?php if (!empty($caratDefs)): ?>
+			<div class="cd-specs">
+				<?php foreach ($caratDefs as $cid => $carat):
+					$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
+					$label = Text::_($rawLabel) ?: $rawLabel;
+					$key = strtolower($label); $svg = $svgDefault;
+					foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
+				?>
+				<div class="cd-spec"><div class="cd-spec-icon"><?php echo $svg; ?></div><div class="cd-spec-text"><span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span></div></div>
+				<?php endforeach; ?>
+			</div>
+			<?php endif; ?>
+			<?php if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']): ?>
+			<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn"><i class="fas fa-envelope"></i> <?php echo Text::_('VRCCARREQINFOBTN'); ?></a>
+			<?php endif; ?>
+		</div>
+	</div>
 
-	<!-- move under the form on mobile since the calendar is more relevant up top for mobile users -->
-	<!-- Description -->
+	<!-- Description (mobile order 5) -->
 	<?php if (!empty($car['info'])): ?>
 	<div class="cd-description" style="margin-top:24px;">
 		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
 		<div class="cd-description-text"><?php echo $car['info']; ?></div>
 	</div>
 	<?php endif; ?>
-
 
 	<!-- Availability calendars (mobile order 6) -->
 	<?php
@@ -1499,7 +1548,7 @@ jQuery(function(){
 
 	/* ── OOH + Optionals + Live Summary JS ───────────────────────── */
 	var cdOohFees = <?php echo json_encode($oohFees); ?>;
-	var cdCurrency = '€';
+	var cdCurrency = '<?php echo addslashes($currencysymb); ?>';
 	var cdRateByDay = <?php
 		$_jsRbd = array();
 		foreach ($_rateByDay as $_d => $_r) { $_jsRbd[(int)$_d] = $_r; }
@@ -1563,16 +1612,16 @@ jQuery(function(){
 				var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
 				var label;
 				if (f.type === 1) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTEN') ?: "Только получение"); ?>' + timeRange;
 				} else if (f.type === 2) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESELEVEN') ?: "Только возврат"); ?>' + timeRange;
 				} else {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTWELVE') ?: "Получение и возврат"); ?>' + timeRange;
 				}
 				var parts = [];
-				if (pickOoh) parts.push(cdCurrency + cdFmt(f.pickcharge));
-				if (dropOoh) parts.push(cdCurrency + cdFmt(f.dropcharge));
-				messages.push(label + ': ' + parts.join(' + '));
+				if (pickOoh) parts.push('+' + cdCurrency + cdFmt(f.pickcharge));
+				if (dropOoh) parts.push('+' + cdCurrency + cdFmt(f.dropcharge));
+				messages.push(label + ': ' + parts.join(', '));
 			}
 		}
 		var $w = jQuery('#cd-ooh-warning');
@@ -1651,9 +1700,9 @@ jQuery(function(){
 				var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
 				if (pickOoh || dropOoh) {
 					var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
-					if (f.type === 1) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
-					else if (f.type === 2) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
-					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
+					if (f.type === 1) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTEN') ?: "Только получение"); ?>' + timeRange;
+					else if (f.type === 2) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESELEVEN') ?: "Только возврат"); ?>' + timeRange;
+					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTWELVE') ?: "Получение и возврат"); ?>' + timeRange;
 					break;
 				}
 			}
@@ -1742,44 +1791,6 @@ jQuery(function(){
 }
 ?>
 </div><!-- /.cd-booking-card -->
-
-
-
-
-
-	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
-		<div class="cd-info">
-			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
-			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
-			<?php if (!empty($caratDefs)): ?>
-			<div class="cd-specs">
-				<?php foreach ($caratDefs as $cid => $carat):
-					$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
-					$label = Text::_($rawLabel) ?: $rawLabel;
-					$key = strtolower($label); $svg = $svgDefault;
-					foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
-				?>
-				<div class="cd-spec"><div class="cd-spec-icon"><?php echo $svg; ?></div><div class="cd-spec-text"><span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span></div></div>
-				<?php endforeach; ?>
-			</div>
-			<?php endif; ?>
-			<?php if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']): ?>
-			<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn"><i class="fas fa-envelope"></i> <?php echo Text::_('VRCCARREQINFOBTN'); ?></a>
-			<?php endif; ?>
-		</div>
-	
-
-	<!-- Description (mobile order 5) -->
-	<?php if (!empty($car['info'])): ?>
-	<div class="cd-description" style="margin-top:24px;">
-		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
-		<div class="cd-description-text"><?php echo $car['info']; ?></div>
-	</div>
-	<?php endif; ?>
-</div>
-
-
-
 </div><!-- /.cd-right -->
 
 </div><!-- /.cd-page-grid -->
