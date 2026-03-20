@@ -1582,11 +1582,11 @@ jQuery(function(){
 				var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
 				var label;
 				if (f.type === 1) {
-					label = '<?php echo addslashes(Text::_("VRCPVIEWOOHFEESFOUR") ?: "Только получение"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
 				} else if (f.type === 2) {
-					label = '<?php echo addslashes(Text::_("VRCPVIEWOOHFEESFIVE") ?: "Только возврат"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
 				} else {
-					label = '<?php echo addslashes(Text::_("VRCPVIEWOOHFEES") ?: "Получение и возврат"); ?> / <?php echo addslashes(Text::_('VRCMENUOOHFEES') ?: "Получение и возврат"); ?>' + timeRange;
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
 				}
 				var parts = [];
 				if (pickOoh) parts.push('+' + cdCurrency + cdFmt(f.pickcharge));
