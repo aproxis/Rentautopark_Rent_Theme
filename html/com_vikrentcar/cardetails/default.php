@@ -892,7 +892,16 @@ try {
 	</div><!-- /.cd-desktop-meta -->
 
 	<!-- Mobile info: name, category, specs grid (mobile order 4) -->
+
 	<!-- move under the form on mobile since the calendar is more relevant up top for mobile users -->
+	<!-- Description -->
+	<?php if (!empty($car['info'])): ?>
+	<div class="cd-description" style="margin-top:24px;">
+		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
+		<div class="cd-description-text"><?php echo $car['info']; ?></div>
+	</div>
+	<?php endif; ?>
+
 
 	<!-- Availability calendars (mobile order 6) -->
 	<?php
@@ -1758,7 +1767,7 @@ jQuery(function(){
 			<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn"><i class="fas fa-envelope"></i> <?php echo Text::_('VRCCARREQINFOBTN'); ?></a>
 			<?php endif; ?>
 		</div>
-	</div>
+	
 
 	<!-- Description (mobile order 5) -->
 	<?php if (!empty($car['info'])): ?>
@@ -1767,7 +1776,7 @@ jQuery(function(){
 		<div class="cd-description-text"><?php echo $car['info']; ?></div>
 	</div>
 	<?php endif; ?>
-
+</div>
 
 
 
