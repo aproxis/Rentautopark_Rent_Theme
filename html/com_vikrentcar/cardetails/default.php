@@ -6,8 +6,8 @@
  *  - Mobile layout: Photos → Form → Specs → Description/Calendars
  *  - Time select: single hour select, minutes fixed at :00
  *  - Price strip + summary update on date select
- *  - OOH fee labels use VRCPVIEWOOHFEESTEN/ELEVEN/TWELVE with real times
- *  - Total uses VRCINVCOLTOTAL, fixed EUR symbol
+ *  - OOH fee labels use VRCPVIEWOOHFEESFOUR/VRCPVIEWOOHFEESFIVE/VRCPVIEWOOHFEESNINE with real times
+ *  - Total uses VRTOTAL, fixed EUR symbol
  *  - No decimals in prices
  */
 
@@ -1486,7 +1486,7 @@ jQuery(function(){
 			<div class="cd-summary-title"><?php echo Text::_('VRPRICE') ?: 'Rezumat'; ?></div>
 			<div id="cd-summary-rows"></div>
 			<div class="cd-summary-total">
-				<span class="cd-summary-total-label"><?php echo Text::_('VRCINVCOLTOTAL') ?: 'Итого'; ?>:</span>
+				<span class="cd-summary-total-label"><?php echo Text::_('VRTOTAL') ?: 'Итого'; ?>:</span>
 				<span class="cd-summary-total-val" id="cd-summary-total"></span>
 			</div>
 		</div>
@@ -1670,9 +1670,9 @@ jQuery(function(){
 				var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
 				if (pickOoh || dropOoh) {
 					var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
-					if (f.type === 1) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESTEN') ?: "Только получение"); ?>' + timeRange;
-					else if (f.type === 2) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESELEVEN') ?: "Только возврат"); ?>' + timeRange;
-					else oohLabel = '<?php echo addslashes(Text::_('VRCMENUOOHFEES') ?: "Получение и возврат"); ?>' + timeRange;
+					if (f.type === 1) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
+					else if (f.type === 2) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
+					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
 					break;
 				}
 			}
