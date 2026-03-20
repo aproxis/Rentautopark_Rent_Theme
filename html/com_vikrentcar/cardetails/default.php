@@ -38,6 +38,7 @@ if (VikRentCar::loadJquery()) {
 	JHtml::_('jquery.framework', true, true);
 }
 $document->addStyleSheet(VRC_SITE_URI . 'resources/jquery.fancybox.css');
+$document->addStyleSheet(JURI::root() . 'templates/rent/css/cardetails.css');
 JHtml::_('script', VRC_SITE_URI . 'resources/jquery.fancybox.js');
 
 $navdecl = '
@@ -311,614 +312,6 @@ try {
 }
 ?>
 
-<style>
-/* ================================================================
-   AutoRent CarDetails v3
-   ================================================================ */
-
-.cd-price-block { display: none !important; }
-
-/* ── Price tiers strip ─────────────────────────────────────────── */
-.cd-price-tiers {
-	margin-bottom: 10px;
-	padding: 6px;
-	background: #ebebeb;
-	border-radius: 18px;
-	overflow-x: auto;
-	-webkit-overflow-scrolling: touch;
-	scrollbar-width: none;
-}
-.cd-price-tiers::-webkit-scrollbar { display: none; }
-.cd-price-tiers-grid {
-	display: flex;
-	gap: 0;
-	min-width: max-content;
-	width: 100%;
-}
-.cd-price-tier {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	padding: 12px 22px;
-	background: transparent;
-	border-radius: 13px;
-	cursor: default;
-	transition: background .2s, box-shadow .2s;
-	position: relative;
-	flex: 1;
-	min-width: 110px;
-	white-space: nowrap;
-}
-.cd-price-tier:not(:last-child)::after {
-	content: '';
-	position: absolute;
-	right: 0; top: 20%; height: 60%; width: 1px;
-	background: #d1d5db; border-radius: 1px;
-}
-.cd-price-tier.is-active {
-	background: #fff;
-	box-shadow: 0 2px 12px rgba(0,0,0,.10);
-}
-.cd-price-tier.is-active::after { display: none; }
-.cd-price-tier.is-active-prev::after { display: none; }
-.cd-price-tier-days { font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; line-height: 1; }
-.cd-price-tier-value { display: flex; align-items: baseline; gap: 2px; }
-.cd-price-tier-cost { font-size: 20px; font-weight: 800; color: #111827; line-height: 1; }
-.cd-price-tier-cur { font-size: 14px; font-weight: 700; color: #111827; }
-.cd-price-tier-per { font-size: 13px; color: #6b7280; font-weight: 500; }
-@media (max-width: 600px) {
-	.cd-price-tier { min-width: 90px; padding: 10px 14px; }
-	.cd-price-tier-cost { font-size: 17px; }
-	.cd-price-tier-cur { font-size: 13px; }
-	.cd-price-tier-days { font-size: 11px; }
-}
-
-/* ── Breadcrumb ────────────────────────────────────────────────── */
-.cd-breadcrumb { background: #f9fafb; border-bottom: 1px solid #e5e7eb; padding: 14px 15px; }
-.cd-breadcrumb-inner { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b7280; max-width: 1200px; margin: 0 auto; }
-.cd-breadcrumb-inner a { color: #6b7280; text-decoration: none; transition: color .2s; }
-.cd-breadcrumb-inner a:hover { color: #FE5001; }
-.cd-breadcrumb-inner .cd-bc-sep { color: #d1d5db; }
-.cd-breadcrumb-inner .cd-bc-current { color: #0a0a0a; font-weight: 600; }
-
-/* ── Main container ───────────────────────────────────────────── */
-.cd-container { max-width: 1200px; margin: 0 auto; padding: 24px 24px 48px; }
-@media (max-width: 480px) { .cd-container { padding: 16px 12px 40px; } }
-.container { max-width: 100%; overflow-x: hidden; }
-
-/* ================================================================
-   DESKTOP: two-column grid
-   MOBILE: single column — gallery / booking card / specs / desc
-   ================================================================ */
-.cd-page-grid {
-	display: grid;
-	grid-template-columns: 1fr 420px;
-	gap: 32px;
-	align-items: start;
-}
-@media (max-width: 1024px) { .cd-page-grid { grid-template-columns: 1fr 360px; gap: 24px; } }
-@media (max-width: 860px)  { .cd-page-grid { grid-template-columns: 1fr; gap: 0; } }
-
-.cd-left { display: flex; flex-direction: column; gap: 0; }
-
-.cd-right { position: sticky; top: 20px; }
-@media (max-width: 860px) { .cd-right { position: static; margin-top: 16px; } }
-
-/* On mobile reorder: gallery (1) → booking card (2) → specs/info (3) → desc/calendars (4) */
-@media (max-width: 860px) {
-	.cd-page-grid { display: flex; flex-direction: column; }
-	.cd-left { order: 1; }
-	.cd-right { order: 2; }
-
-	/* Inside .cd-left, reorder children with explicit order values */
-	.cd-gallery-wrap      { order: 1; }
-	.cd-price-tiers-wrap  { order: 2; } /* show strip between gallery and form on mobile */
-	.cd-desktop-meta      { order: 3; display: none !important; } /* desktop name/cat/pills hidden on mobile */
-	.cd-left .cd-mobile-info-wrap  { order: 4; display: none !important; } /* hide mobile info panel when it's outside the form; shown in accordion below form */
-	.cd-left .cd-description       { order: 5; display: none !important; } /* hide description on mobile, shown in accordion below form */
-	.cd-avail-section     { order: 6; }
-	.cd-hourly-cal-wrap   { order: 7; }
-}
-
-/* ── Gallery ───────────────────────────────────────────────────── */
-.cd-gallery { display: flex; gap: 10px; align-items: stretch; }
-.cd-thumbs { display: flex; flex-direction: column; gap: 8px; width: 90px; flex-shrink: 0; }
-.cd-thumb {
-	position: relative; aspect-ratio: 16/10; border-radius: 8px; overflow: hidden;
-	border: 2px solid transparent; cursor: pointer; transition: border-color .2s, transform .2s;
-}
-.cd-thumb:hover { border-color: #d1d5db; }
-.cd-thumb.active { border-color: #FE5001; transform: scale(1.05); }
-.cd-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cd-thumb-more {
-	position: absolute; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(2px);
-	display: flex; align-items: center; justify-content: center;
-	color: #fff; font-weight: 700; font-size: 18px;
-}
-.cd-main-img {
-	flex: 1; position: relative; border-radius: 16px; overflow: hidden;
-	background: #f3f4f6; aspect-ratio: 16/10;
-}
-.cd-main-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; cursor: zoom-in; }
-.cd-main-img:hover img { transform: scale(1.03); }
-@media (max-width: 600px) {
-	.cd-gallery { flex-direction: column-reverse; }
-	.cd-thumbs { flex-direction: row; width: 100%; overflow-x: auto; }
-	.cd-thumb { width: 70px; flex-shrink: 0; }
-	.cd-main-img { aspect-ratio: 16/9; }
-}
-
-/* ── Specs (mobile info panel) ─────────────────────────────────── */
-.cd-info { display: flex; flex-direction: column; gap: 16px; }
-.cd-car-name { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 800; color: #0a0a0a; margin: 0; line-height: 1.15; }
-.cd-car-cat {
-	display: inline-block; padding: 4px 12px; background: #f3f4f6; border-radius: 20px;
-	font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .04em;
-}
-.cd-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.cd-spec { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f9fafb; border-radius: 10px; }
-.cd-spec-icon { width: 22px; height: 22px; flex-shrink: 0; color: #FE5001; display: flex; align-items: center; justify-content: center; }
-.cd-spec-icon svg { color: #FE5001; }
-.cd-spec-text { display: flex; flex-direction: column; }
-.cd-spec-label { font-size: 11px; color: #9ca3af; }
-.cd-spec-value { font-size: 13px; font-weight: 600; color: #0a0a0a; }
-.cd-reqinfo-btn {
-	display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-	padding: 12px 24px; background: #fff; color: #374151; border: 2px solid #e5e7eb;
-	border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
-	transition: border-color .2s, color .2s; text-decoration: none; width: 100%; text-align: center;
-}
-.cd-reqinfo-btn:hover { border-color: #FE5001; color: #FE5001; }
-
-/* ── Desktop specs strip (pills below gallery) ─────────────────── */
-.cd-specs-below {
-	display: flex; flex-wrap: wrap; gap: 8px;
-	padding: 16px 0; border-bottom: 1px solid #f3f4f6; margin-bottom: 16px;
-}
-.cd-spec-pill {
-	display: flex; align-items: center; gap: 6px;
-	padding: 6px 12px; background: #f3f4f6; border-radius: 20px;
-	font-size: 13px; font-weight: 600; color: #374151;
-}
-.cd-spec-pill svg { color: #FE5001; flex-shrink: 0; }
-
-/* mobile-info-wrap when placed inside .cd-right (after booking card) */
-.cd-right .cd-mobile-info-wrap {
-	display: none; /* hidden on desktop; shown on mobile via media query below */
-}
-@media (max-width: 860px) {
-	.cd-right .cd-mobile-info-wrap { display: block; }
-}
-
-/* Desktop name/cat */
-@media (min-width: 861px) {
-	.cd-info { display: none; }
-	/* Hide the mobile info/description block that lives outside .cd-left on desktop */
-	.cd-mobile-info-wrap { display: none !important; }
-	.cd-car-name-desktop {
-		font-size: clamp(1.6rem, 2.5vw, 2rem); font-weight: 800; color: #0a0a0a;
-		margin: 16px 0 4px; line-height: 1.15;
-	}
-	.cd-car-cat-desktop {
-		display: inline-block; padding: 3px 10px; background: #f3f4f6; border-radius: 20px;
-		font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px;
-	}
-}
-@media (max-width: 860px) {
-	.cd-car-name-desktop, .cd-car-cat-desktop, .cd-specs-below { display: none !important; }
-	.cd-info { display: flex; }
-	/* Mobile info wrap shown below the form (order handled by flex on page-grid) */
-	.cd-mobile-info-wrap { display: block; }
-}
-
-/* ================================================================
-   BOOKING CARD
-   ================================================================ */
-.cd-booking-card {
-	background: #f9fafb;
-	border: 1.5px solid #e5e7eb;
-	border-radius: 20px;
-	padding: 28px 28px 24px;
-	box-shadow: 0 4px 24px rgba(0,0,0,.05);
-	margin-bottom: 32px;
-	box-sizing: border-box;
-	/* overflow:hidden removed — clips native select dropdowns */
-}
-@media (max-width: 480px) { .cd-booking-card { padding: 18px 16px 20px; border-radius: 14px; } }
-.cd-booking-title { font-size: 1.4rem; font-weight: 800; color: #0a0a0a; margin: 0 0 16px; }
-
-/* ── Date+time card rows ───────────────────────────────────────── */
-.cd-datetime-row {
-	display: flex;
-	align-items: stretch;
-	background: #fff;
-	border: 2px solid #e5e7eb;
-	border-radius: 14px;
-	/* NO overflow:hidden — it clips the native select dropdown */
-	transition: border-color .2s, box-shadow .2s;
-	position: relative;
-}
-.cd-datetime-row:focus-within {
-	border-color: #FE5001;
-	box-shadow: 0 0 0 3px rgba(254,80,1,.10);
-}
-/* Round left edge on date input, right edge on time cell */
-.cd-dt-date input { border-radius: 12px 0 0 12px; }
-.cd-dt-time { border-radius: 0 12px 12px 0; overflow: hidden; }
-
-.cd-dt-date { flex: 1; min-width: 0; position: relative; }
-.cd-dt-date input {
-	width: 100%; height: 100%;
-	padding: 14px 16px;
-	border: none; outline: none; background: transparent;
-	font-size: 15px; font-weight: 500; color: #111827;
-	cursor: pointer; box-sizing: border-box; min-width: 0;
-}
-.cd-dt-date input::placeholder { color: #9ca3af; font-weight: 400; }
-
-.cd-dt-sep {
-	display: flex; align-items: center; padding: 0 4px; color: #9ca3af;
-	flex-shrink: 0; font-size: 14px;
-	border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb;
-	background: #fff;
-}
-.cd-dt-sep svg { display: block; }
-
-/* Single-select time cell */
-.cd-dt-time {
-	flex-shrink: 0;
-	width: 100px;
-	position: relative;
-	display: flex;
-	align-items: center;
-	background: #fff;
-	overflow: visible; /* allow dropdown to escape */
-}
-.cd-dt-time-inner {
-	display: flex;
-	align-items: center;
-	width: 100%;
-	height: 100%;
-	padding: 0 6px 0 4px;
-	gap: 0;
-	position: relative;
-}
-.cd-dt-time-inner .cd-th {
-	flex: 1;
-	min-width: 0;
-	position: relative;
-}
-/* The select is invisible but covers the whole time cell for interaction.
-   A custom label renders on top and we show the select value via JS.
-   Simpler approach: style the select itself to be clean and readable. */
-.cd-dt-time-inner .cd-th select {
-	width: 100%;
-	border: none; outline: none; background: transparent;
-	font-size: 14px; font-weight: 600; color: #111827;
-	cursor: pointer; padding: 14px 2px;
-	appearance: none; -webkit-appearance: none; -moz-appearance: none;
-	-webkit-appearance: none;
-	text-align: center;
-	text-align-last: center;
-	/* Prevent browser from adding its own search/decoration */
-	-webkit-tap-highlight-color: transparent;
-}
-/* Hide the dropdown arrow in IE */
-.cd-dt-time-inner .cd-th select::-ms-expand { display: none; }
-.cd-dt-time-chevron { flex-shrink: 0; color: #9ca3af; display: flex; align-items: center; padding-right: 6px; }
-
-/* ── Row label ─────────────────────────────────────────────────── */
-.cd-row-label {
-	font-size: 11px; font-weight: 700; color: #9ca3af;
-	text-transform: uppercase; letter-spacing: .05em;
-	margin-bottom: 4px; padding-left: 2px;
-}
-
-/* ── Location select ───────────────────────────────────────────── */
-.cd-location-row { margin-top: 6px; }
-.cd-location-row .cd-select-wrap select {
-	width: 100%;
-	padding: 13px 36px 13px 16px;
-	border: 2px solid #e5e7eb; border-radius: 14px;
-	font-size: 15px; font-weight: 500; color: #111827; background: #fff;
-	appearance: none; -webkit-appearance: none; -moz-appearance: none;
-	cursor: pointer; transition: border-color .2s, box-shadow .2s;
-	box-sizing: border-box;
-}
-.cd-location-row .cd-select-wrap select:focus {
-	outline: none; border-color: #FE5001; box-shadow: 0 0 0 3px rgba(254,80,1,.10);
-}
-.cd-location-row .cd-select-wrap { position: relative; }
-.cd-location-row .cd-select-wrap .cd-arrow {
-	position: absolute; right: 14px; top: 50%;
-	transform: translateY(-50%); color: #9ca3af; pointer-events: none; z-index: 1;
-}
-
-/* ── OOH warning ───────────────────────────────────────────────── */
-.cd-ooh-warning {
-	display: none;
-	align-items: flex-start; gap: 10px;
-	padding: 10px 14px;
-	background: #fff7ed; border: 1.5px solid #fed7aa; border-radius: 10px;
-	margin-top: 8px; font-size: 12px; color: #9a3412; line-height: 1.4;
-}
-.cd-ooh-warning.is-visible { display: flex; }
-.cd-ooh-warning svg { flex-shrink: 0; margin-top: 1px; color: #FE5001; }
-
-/* ── Optionals ─────────────────────────────────────────────────── */
-.cd-optionals-section { margin-top: 16px; }
-.cd-optionals-title {
-	font-size: 11px; font-weight: 700; color: #9ca3af;
-	text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px;
-}
-.cd-optional-row {
-	display: flex; align-items: center; gap: 10px;
-	padding: 10px 0; border-bottom: 1px solid #f3f4f6; cursor: pointer;
-}
-.cd-optional-row:last-child { border-bottom: none; }
-.cd-optional-check {
-	width: 20px; height: 20px; border: 2px solid #e5e7eb; border-radius: 6px;
-	display: flex; align-items: center; justify-content: center;
-	flex-shrink: 0; transition: background .15s, border-color .15s;
-}
-.cd-optional-row.is-checked .cd-optional-check { background: #FE5001; border-color: #FE5001; }
-.cd-optional-row.is-checked .cd-optional-check svg { display: block; }
-.cd-optional-check svg { display: none; color: #fff; }
-.cd-optional-name { flex: 1; font-size: 13px; font-weight: 500; color: #111827; }
-.cd-optional-price { font-size: 13px; font-weight: 700; color: #FE5001; white-space: nowrap; }
-
-/* ── Live summary ──────────────────────────────────────────────── */
-.cd-summary-section {
-	margin-top: 16px; padding: 14px 16px;
-	background: #f9fafb; border-radius: 12px; border: 1.5px solid #e5e7eb;
-	display: none;
-}
-.cd-summary-section.is-visible { display: block; }
-.cd-summary-title { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 10px; }
-.cd-summary-row {
-	display: flex; justify-content: space-between; align-items: center;
-	font-size: 13px; color: #6b7280; padding: 3px 0;
-}
-.cd-summary-row-val { font-weight: 600; color: #111827; }
-.cd-summary-total {
-	display: flex; justify-content: space-between; align-items: center;
-	margin-top: 10px; padding-top: 10px; border-top: 1.5px solid #e5e7eb;
-}
-.cd-summary-total-label { font-size: 14px; font-weight: 700; color: #111827; }
-.cd-summary-total-val { font-size: 22px; font-weight: 900; color: #FE5001; }
-
-/* ── Submit row ────────────────────────────────────────────────── */
-.cd-booking-submit-row {
-	display: flex; flex-direction: column; align-items: center; gap: 10px;
-	padding-top: 8px; border-top: 1px solid #e5e7eb; margin-top: 16px;
-}
-.cd-booking-submit-row .vrcdetbooksubmit {
-	display: inline-flex; align-items: center; justify-content: center;
-	width: 100%; max-width: 480px;
-	padding: 15px 32px;
-	background: #FE5001 !important; color: #fff !important;
-	border: none; border-radius: 14px;
-	font-size: 15px; font-weight: 800; cursor: pointer;
-	transition: background .2s, box-shadow .2s, transform .1s;
-	box-shadow: 0 4px 20px rgba(254,80,1,.28); letter-spacing: .01em;
-}
-.cd-booking-submit-row .vrcdetbooksubmit:hover {
-	background: #E54801 !important;
-	box-shadow: 0 6px 28px rgba(254,80,1,.38);
-	transform: translateY(-1px);
-}
-.cd-booking-submit-row .vrcdetbooksubmit:active { transform: translateY(0); }
-.cd-shield-info {
-	display: flex; align-items: center; gap: 8px;
-	font-size: 12px; color: #6b7280; justify-content: center;
-}
-.cd-shield-info svg { color: #FE5001; flex-shrink: 0; }
-
-/* ── Description ───────────────────────────────────────────────── */
-.cd-description { margin-bottom: 32px; }
-.cd-description h2 { font-size: 1.5rem; font-weight: 800; color: #0a0a0a; margin: 0 0 16px; }
-.cd-description-text { font-size: 14px; line-height: 1.7; color: #4b5563; }
-.cd-description-text p { margin: 0 0 12px; }
-.cd-description-text img { max-width: 100%; height: auto; border-radius: 8px; }
-
-/* ── Calendars ─────────────────────────────────────────────────── */
-.cd-avail-section { margin-bottom: 32px; }
-.cd-avail-section h2 { font-size: 1.5rem; font-weight: 800; color: #0a0a0a; margin: 0 0 16px; }
-.cd-legend-bar {
-	display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
-	margin-bottom: 16px; padding: 12px 16px;
-	background: #f9fafb; border-radius: 12px; border: 1px solid #f3f4f6;
-}
-.cd-legend-bar .vrcselectm {
-	padding: 8px 32px 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px;
-	font-size: 13px; font-weight: 600; color: #0a0a0a; background: #fff;
-	appearance: none; -webkit-appearance: none;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
-	background-repeat: no-repeat; background-position: right 10px center; cursor: pointer;
-}
-.cd-legend-items { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.cd-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6b7280; }
-.cd-leg-dot { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
-.cd-leg-free { background: #22c55e; }
-.cd-leg-warn { background: #f59e0b; }
-.cd-leg-busy { background: #ef4444; }
-.cd-cals-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-@media (max-width: 900px) { .cd-cals-grid { grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 600px) { .cd-cals-grid { grid-template-columns: 1fr; } }
-.cd-cals-grid .vrccaldivcont {
-	background: #fff; border: 1.5px solid #f3f4f6; border-radius: 12px;
-	padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.04);
-}
-.cd-cals-grid .vrccal { width: 100%; border-collapse: collapse; font-size: 12px; }
-.cd-cals-grid .vrccal td { padding: 6px 2px; text-align: center; border-radius: 4px; }
-.cd-cals-grid .vrccal tr:first-child td { font-size: 13px; font-weight: 700; color: #0a0a0a; padding-bottom: 10px; border-bottom: 1px solid #f3f4f6; }
-.cd-cals-grid .vrccaldays td { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; padding: 8px 2px 4px; }
-.cd-cals-grid .vrctdfree { color: #0a0a0a; background: #f0fdf4; }
-.cd-cals-grid .vrctdwarning { color: #92400e; background: #fef3c7; }
-.cd-cals-grid .vrctdbusy { color: #991b1b; background: #fee2e2; }
-.cd-cals-grid .vrctdbusy.vrctdbusyforcheckin { background: linear-gradient(135deg,#fef3c7 50%,#fee2e2 50%); }
-.cd-cals-grid .vrc-cdetails-cal-pickday { cursor: pointer; text-decoration: underline; transition: color .15s; }
-.cd-cals-grid .vrc-cdetails-cal-pickday:hover { color: #FE5001; }
-.cd-hourly-cal { margin-top: 20px; overflow-x: auto; }
-.cd-hourly-cal h4 { font-size: 1rem; font-weight: 700; color: #0a0a0a; margin: 0 0 12px; }
-
-/* ── Request info modal ────────────────────────────────────────── */
-#vrcdialog-overlay {
-	position: fixed; inset: 0; background: rgba(0,0,0,.5);
-	backdrop-filter: blur(4px); z-index: 9999;
-	display: flex; align-items: center; justify-content: center;
-}
-.vrcdialog-inner.vrcdialog-reqinfo {
-	background: #fff; border-radius: 16px; padding: 32px; max-width: 500px;
-	width: 90%; max-height: 90vh; overflow-y: auto;
-	box-shadow: 0 20px 60px rgba(0,0,0,.2); position: relative;
-}
-.vrcdialog-inner h3 { font-size: 1.25rem; font-weight: 800; color: #0a0a0a; margin: 0 0 20px; }
-.vrcdialog-reqinfo-formcont { display: flex; flex-direction: column; gap: 14px; }
-.vrcdialog-reqinfo-formentry { display: flex; flex-direction: column; gap: 4px; }
-.vrcdialog-reqinfo-formentry label { font-size: 13px; font-weight: 600; color: #374151; }
-.vrcdialog-reqinfo-formentry input[type="text"],
-.vrcdialog-reqinfo-formentry textarea {
-	padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 10px;
-	font-size: 14px; color: #0a0a0a; transition: border-color .2s, box-shadow .2s; font-family: inherit;
-}
-.vrcdialog-reqinfo-formentry input[type="text"]:focus,
-.vrcdialog-reqinfo-formentry textarea:focus {
-	outline: none; border-color: #FE5001; box-shadow: 0 0 0 3px rgba(254,80,1,.12);
-}
-.vrcdialog-reqinfo-formentry textarea { min-height: 100px; resize: vertical; }
-.vrcdialog-reqinfo-formentry-ckbox { flex-direction: row !important; align-items: center; gap: 8px !important; }
-.vrcdialog-reqinfo-formentry-ckbox input[type="checkbox"] { width: 18px; height: 18px; accent-color: #FE5001; }
-.vrcdialog-reqinfo-formentry-ckbox label, .vrcdialog-reqinfo-formentry-ckbox a { font-size: 13px; color: #374151; }
-.vrcdialog-reqinfo-formentry-ckbox a { color: #FE5001; text-decoration: underline; }
-.vrcdialog-reqinfo-formsubmit { padding-top: 6px; }
-.vrcdialog-reqinfo-formsubmit button {
-	width: 100%; padding: 12px; background: #FE5001 !important; color: #fff !important;
-	border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .2s;
-}
-.vrcdialog-reqinfo-formsubmit button:hover { background: #E54801 !important; }
-
-/* jQuery UI overrides */
-.ui-datepicker { border-radius: 12px !important; border: 2px solid #e5e7eb !important; box-shadow: 0 8px 30px rgba(0,0,0,.1) !important; padding: 12px !important; font-family: inherit !important; }
-.ui-datepicker-header { background: none !important; border: none !important; border-bottom: 1px solid #f3f4f6 !important; padding-bottom: 10px !important; margin-bottom: 8px !important; }
-.ui-datepicker .ui-datepicker-title { font-weight: 700 !important; color: #0a0a0a !important; }
-.ui-datepicker td a, .ui-datepicker td span { text-align: center !important; border-radius: 6px !important; transition: background .15s, color .15s !important; }
-.ui-datepicker td a:hover { background: #FE5001 !important; color: #fff !important; }
-.ui-datepicker .ui-datepicker-current-day a { background: #FE5001 !important; color: #fff !important; font-weight: 700 !important; }
-
-/* Hide old VRC legacy wrappers */
-.vrc-cardetails-legend { display: none !important; }
-.vrc-avcals-container { display: none !important; }
-.vrc-cardetails-book-wrap > h4 { display: none !important; }
-.cd-disabled-rent { text-align: center; padding: 40px 20px; color: #6b7280; font-size: 14px; }
-
-/* ================================================================
-   Chosen.js time-select override — .cd-dt-time context
-   ================================================================ */
-
-/* Container fills the cell */
-.cd-dt-time .chosen-container {
-	width: 100% !important;
-	height: 100%;
-	font-size: 15px;
-}
-
-/* The "button" row — transparent, no border, centered */
-.cd-dt-time .chosen-container-single .chosen-single {
-	background: transparent !important;
-	border: none !important;
-	box-shadow: none !important;
-	border-radius: 0 !important;
-	height: 100%;
-	min-height: 48px;
-	display: flex !important;
-	align-items: center;
-	justify-content: center;
-	padding: 0 22px 0 6px !important;
-	font-size: 15px !important;
-	font-weight: 600 !important;
-	color: #111827 !important;
-	text-transform: none !important;
-	letter-spacing: 0 !important;
-}
-
-/* Prevent "09:00" splitting into two lines */
-.cd-dt-time .chosen-container-single .chosen-single span {
-	overflow: hidden !important;
-	white-space: nowrap !important;
-	text-overflow: clip !important;
-	font-size: 15px !important;
-	font-weight: 600 !important;
-	color: #111827 !important;
-	text-align: center !important;
-	margin-right: 0 !important;
-	line-height: 1 !important;
-}
-
-/* Chevron area */
-.cd-dt-time .chosen-container-single .chosen-single > div {
-	width: 18px !important;
-	right: 4px !important;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.cd-dt-time .chosen-container-single .chosen-single > div b {
-	background: none !important;
-	border: none !important;
-}
-.cd-dt-time .chosen-container-single .chosen-single > div b::before {
-	content: '\25BE';
-	font-size: 12px;
-	color: #9ca3af;
-	font-style: normal;
-}
-.cd-dt-time .chosen-container-active .chosen-single > div b::before {
-	content: '\25B4';
-}
-
-/* ── Dropdown panel ─────────────────────────────────────────────── */
-.cd-dt-time .chosen-drop {
-	border-radius: 10px !important;
-	border: 2px solid #e5e7eb !important;
-	box-shadow: 0 8px 28px rgba(0,0,0,.12) !important;
-	overflow: hidden !important;
-	min-width: 90px !important;
-	left: auto !important;
-	right: 0 !important;
-}
-
-/* Hide the search bar — unnecessary for a short list */
-.cd-dt-time .chosen-search {
-	display: none !important;
-}
-
-/* Results list */
-.cd-dt-time .chosen-results {
-	font-size: 15px !important;
-	padding: 4px 0 !important;
-	margin: 0 !important;
-}
-.cd-dt-time .chosen-results li {
-	font-size: 15px !important;
-	font-weight: 500 !important;
-	color: #374151 !important;
-	padding: 8px 14px !important;
-	white-space: nowrap !important;
-	text-align: center !important;
-	line-height: 1.4 !important;
-}
-.cd-dt-time .chosen-results li.highlighted {
-	background: #FE5001 !important;
-	color: #fff !important;
-}
-.cd-dt-time .chosen-results li.result-selected {
-	font-weight: 700 !important;
-	color: #FE5001 !important;
-	background: #fff7f5 !important;
-}
-</style>
-
 <?php /* Breadcrumb */ ?>
 <div class="cd-breadcrumb">
 	<div class="cd-breadcrumb-inner">
@@ -1164,7 +557,7 @@ try {
 	<h3 class="cd-booking-title"><?php echo Text::_('VRCBOOKTHISCAR') ?: 'Забронировать'; ?></h3>
 
 <?php
-$_ico_chev_sm = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+$_ico_chev_sm = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow"><path d="m6 9 6 6 6-6"></path></svg>';
 
 if (VikRentCar::allowRent()) {
 	$dbo = JFactory::getDbo();
@@ -1295,7 +688,7 @@ function vrcSetLocOpenTime(loc, where) {
 
 	// Build hours-only select (minutes will be hidden input = 0)
 	$hours = "";
-	$pickhdeftime = isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['defaulttime']) ? ((int)$places[$indvrcplace]['defaulttime'] / 3600) : '';
+	$pickhdeftime = isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['defaulttime']) ? ((int)$places[$indvrcplace]['defaulttime'] / 3600) : 12;
 	if (!($i < $j)) {
 		while (intval($i) != (int)$j) {
 			$sayi = $i < 10 ? "0".$i : $i;
@@ -1510,21 +903,20 @@ jQuery(function(){
 		?>
 
 		<!-- Pickup row -->
-		<div class="cd-row-label"><?php echo Text::_('VRPICKUPCAR') ?: 'Получение'; ?></div>
 		<div class="cd-datetime-row">
 			<div class="cd-dt-date">
 				<input type="text" name="pickupdate" id="pickupdate"
 				       autocomplete="off" onfocus="this.blur();" readonly
 				       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'дд.мм.гггг':$t); ?>"/>
 			</div>
-			<div class="cd-dt-sep"><?php echo $_ico_chev_sm; ?></div>
+			<div class="cd-dt-sep" onclick="jQuery('#pickupdate').focus();"><?php echo $_ico_chev_sm; ?></div>
 			<?php if (!strlen($forced_pickup)): ?>
 			<div class="cd-dt-time">
 				<div class="cd-dt-time-inner">
 					<div class="cd-th" id="vrccomselph">
 						<select name="pickuph"><?php echo $hours; ?></select>
 					</div>
-					<span class="cd-dt-time-chevron"><?php echo $_ico_chev_sm; ?></span>
+					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomselph .chosen-single').trigger('mousedown');"><?php echo $_ico_chev_sm; ?></span>
 				</div>
 			</div>
 			<!-- Minutes fixed at 0 -->
@@ -1538,21 +930,20 @@ jQuery(function(){
 		</div>
 
 		<!-- Return row -->
-		<div class="cd-row-label" style="margin-top:10px;"><?php echo Text::_('VRRETURNCAR') ?: 'Возврат'; ?></div>
-		<div class="cd-datetime-row">
+		<div class="cd-datetime-row" style="margin-top:8px;">
 			<div class="cd-dt-date">
 				<input type="text" name="releasedate" id="releasedate"
 				       autocomplete="off" onfocus="this.blur();" readonly
 				       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'дд.мм.гггг':$t); ?>"/>
 			</div>
-			<div class="cd-dt-sep"><?php echo $_ico_chev_sm; ?></div>
+			<div class="cd-dt-sep" onclick="jQuery('#releasedate').focus();"><?php echo $_ico_chev_sm; ?></div>
 			<?php if (!strlen($forced_dropoff)): ?>
 			<div class="cd-dt-time">
 				<div class="cd-dt-time-inner">
 					<div class="cd-th" id="vrccomseldh">
 						<select name="releaseh"><?php echo $hours; ?></select>
 					</div>
-					<span class="cd-dt-time-chevron"><?php echo $_ico_chev_sm; ?></span>
+					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomseldh .chosen-single').trigger('mousedown');"><?php echo $_ico_chev_sm; ?></span>
 				</div>
 			</div>
 			<!-- Minutes fixed at 0 -->
@@ -1578,7 +969,7 @@ jQuery(function(){
 					<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
 					<?php endforeach; ?>
 				</select>
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow"><path d="m6 9 6 6 6-6"/></svg>
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="var $c=jQuery('#place').next('.chosen-container');if($c.length){$c.find('.chosen-single').trigger('mousedown');}else{jQuery('#place').focus();}"><path d="m6 9 6 6 6-6"/></svg>
 			</div>
 		</div>
 		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>"/>
@@ -1888,6 +1279,21 @@ jQuery(function(){
 				});
 			}
 		});
+		// Default pickup = tomorrow; sync Chosen time selects to show 12:00
+		(function() {
+			if (!jQuery('#pickupdate').val()) {
+				var defPickup = new Date();
+				defPickup.setDate(defPickup.getDate() + Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>));
+				jQuery('#pickupdate').datepicker('setDate', defPickup);
+				var defDrop = new Date(defPickup.getTime());
+				defDrop.setDate(defDrop.getDate() + <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>);
+				jQuery('#releasedate').datepicker('setDate', defDrop);
+				if (typeof vrcSetMinDropoffDate !== 'undefined') { vrcSetMinDropoffDate(); }
+				setTimeout(cdUpdateSummary, 200);
+			}
+			jQuery('#vrccomselph select').val(12).trigger('chosen:updated');
+			jQuery('#vrccomseldh select').val(12).trigger('chosen:updated');
+		})();
 	});
 	</script>
 
