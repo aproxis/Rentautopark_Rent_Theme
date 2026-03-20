@@ -892,35 +892,7 @@ try {
 	</div><!-- /.cd-desktop-meta -->
 
 	<!-- Mobile info: name, category, specs grid (mobile order 4) -->
-	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
-		<div class="cd-info">
-			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
-			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
-			<?php if (!empty($caratDefs)): ?>
-			<div class="cd-specs">
-				<?php foreach ($caratDefs as $cid => $carat):
-					$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
-					$label = Text::_($rawLabel) ?: $rawLabel;
-					$key = strtolower($label); $svg = $svgDefault;
-					foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
-				?>
-				<div class="cd-spec"><div class="cd-spec-icon"><?php echo $svg; ?></div><div class="cd-spec-text"><span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span></div></div>
-				<?php endforeach; ?>
-			</div>
-			<?php endif; ?>
-			<?php if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']): ?>
-			<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn"><i class="fas fa-envelope"></i> <?php echo Text::_('VRCCARREQINFOBTN'); ?></a>
-			<?php endif; ?>
-		</div>
-	</div>
-
-	<!-- Description (mobile order 5) -->
-	<?php if (!empty($car['info'])): ?>
-	<div class="cd-description" style="margin-top:24px;">
-		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
-		<div class="cd-description-text"><?php echo $car['info']; ?></div>
-	</div>
-	<?php endif; ?>
+	<!-- move under the form on mobile since the calendar is more relevant up top for mobile users -->
 
 	<!-- Availability calendars (mobile order 6) -->
 	<?php
@@ -1589,9 +1561,9 @@ jQuery(function(){
 					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
 				}
 				var parts = [];
-				if (pickOoh) parts.push('+' + cdCurrency + cdFmt(f.pickcharge));
-				if (dropOoh) parts.push('+' + cdCurrency + cdFmt(f.dropcharge));
-				messages.push(label + ': ' + parts.join(', '));
+				if (pickOoh) parts.push(cdCurrency + cdFmt(f.pickcharge));
+				if (dropOoh) parts.push(cdCurrency + cdFmt(f.dropcharge));
+				messages.push(label + ': ' + parts.join(' + '));
 			}
 		}
 		var $w = jQuery('#cd-ooh-warning');
@@ -1761,6 +1733,44 @@ jQuery(function(){
 }
 ?>
 </div><!-- /.cd-booking-card -->
+
+
+
+
+
+	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
+		<div class="cd-info">
+			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
+			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
+			<?php if (!empty($caratDefs)): ?>
+			<div class="cd-specs">
+				<?php foreach ($caratDefs as $cid => $carat):
+					$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
+					$label = Text::_($rawLabel) ?: $rawLabel;
+					$key = strtolower($label); $svg = $svgDefault;
+					foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
+				?>
+				<div class="cd-spec"><div class="cd-spec-icon"><?php echo $svg; ?></div><div class="cd-spec-text"><span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span></div></div>
+				<?php endforeach; ?>
+			</div>
+			<?php endif; ?>
+			<?php if (isset($car_params['reqinfo']) && (bool)$car_params['reqinfo']): ?>
+			<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn"><i class="fas fa-envelope"></i> <?php echo Text::_('VRCCARREQINFOBTN'); ?></a>
+			<?php endif; ?>
+		</div>
+	</div>
+
+	<!-- Description (mobile order 5) -->
+	<?php if (!empty($car['info'])): ?>
+	<div class="cd-description" style="margin-top:24px;">
+		<h2><?php echo Text::_('VRCDESCRIPTION') ?: 'Описание'; ?></h2>
+		<div class="cd-description-text"><?php echo $car['info']; ?></div>
+	</div>
+	<?php endif; ?>
+
+
+
+
 </div><!-- /.cd-right -->
 
 </div><!-- /.cd-page-grid -->
