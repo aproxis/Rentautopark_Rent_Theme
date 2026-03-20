@@ -811,6 +811,112 @@ try {
 .vrc-avcals-container { display: none !important; }
 .vrc-cardetails-book-wrap > h4 { display: none !important; }
 .cd-disabled-rent { text-align: center; padding: 40px 20px; color: #6b7280; font-size: 14px; }
+
+/* ================================================================
+   Chosen.js time-select override — .cd-dt-time context
+   ================================================================ */
+
+/* Container fills the cell */
+.cd-dt-time .chosen-container {
+	width: 100% !important;
+	height: 100%;
+	font-size: 15px;
+}
+
+/* The "button" row — transparent, no border, centered */
+.cd-dt-time .chosen-container-single .chosen-single {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	border-radius: 0 !important;
+	height: 100%;
+	min-height: 48px;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	padding: 0 22px 0 6px !important;
+	font-size: 15px !important;
+	font-weight: 600 !important;
+	color: #111827 !important;
+	text-transform: none !important;
+	letter-spacing: 0 !important;
+}
+
+/* Prevent "09:00" splitting into two lines */
+.cd-dt-time .chosen-container-single .chosen-single span {
+	overflow: hidden !important;
+	white-space: nowrap !important;
+	text-overflow: clip !important;
+	font-size: 15px !important;
+	font-weight: 600 !important;
+	color: #111827 !important;
+	text-align: center !important;
+	margin-right: 0 !important;
+	line-height: 1 !important;
+}
+
+/* Chevron area */
+.cd-dt-time .chosen-container-single .chosen-single > div {
+	width: 18px !important;
+	right: 4px !important;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.cd-dt-time .chosen-container-single .chosen-single > div b {
+	background: none !important;
+	border: none !important;
+}
+.cd-dt-time .chosen-container-single .chosen-single > div b::before {
+	content: '\25BE';
+	font-size: 12px;
+	color: #9ca3af;
+	font-style: normal;
+}
+.cd-dt-time .chosen-container-active .chosen-single > div b::before {
+	content: '\25B4';
+}
+
+/* ── Dropdown panel ─────────────────────────────────────────────── */
+.cd-dt-time .chosen-drop {
+	border-radius: 10px !important;
+	border: 2px solid #e5e7eb !important;
+	box-shadow: 0 8px 28px rgba(0,0,0,.12) !important;
+	overflow: hidden !important;
+	min-width: 90px !important;
+	left: auto !important;
+	right: 0 !important;
+}
+
+/* Hide the search bar — unnecessary for a short list */
+.cd-dt-time .chosen-search {
+	display: none !important;
+}
+
+/* Results list */
+.cd-dt-time .chosen-results {
+	font-size: 15px !important;
+	padding: 4px 0 !important;
+	margin: 0 !important;
+}
+.cd-dt-time .chosen-results li {
+	font-size: 15px !important;
+	font-weight: 500 !important;
+	color: #374151 !important;
+	padding: 8px 14px !important;
+	white-space: nowrap !important;
+	text-align: center !important;
+	line-height: 1.4 !important;
+}
+.cd-dt-time .chosen-results li.highlighted {
+	background: #FE5001 !important;
+	color: #fff !important;
+}
+.cd-dt-time .chosen-results li.result-selected {
+	font-weight: 700 !important;
+	color: #FE5001 !important;
+	background: #fff7f5 !important;
+}
 </style>
 
 <?php /* Breadcrumb */ ?>
