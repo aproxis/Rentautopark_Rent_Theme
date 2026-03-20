@@ -240,7 +240,7 @@
 .cd-dt-sep {
 	display: flex; align-items: center; padding: 0 6px; color: #9ca3af;
 	flex-shrink: 0;
-	border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb;
+	border-right: 1px solid #e5e7eb;
 	background: #fff;
 	cursor: pointer;
 	transition: color .15s;
@@ -618,25 +618,9 @@
 	margin-right: 0 !important;
 	line-height: 1 !important;
 }
+/* Hide Chosen's built-in arrow in time context — we use .cd-dt-time-chevron */
 .cd-dt-time .chosen-container-single .chosen-single > div {
-	width: 18px !important;
-	right: 4px !important;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.cd-dt-time .chosen-container-single .chosen-single > div b {
-	background: none !important;
-	border: none !important;
-}
-.cd-dt-time .chosen-container-single .chosen-single > div b::before {
-	content: '\25BE';
-	font-size: 12px;
-	color: #9ca3af;
-	font-style: normal;
-}
-.cd-dt-time .chosen-container-active .chosen-single > div b::before {
-	content: '\25B4';
+	display: none !important;
 }
 .cd-dt-time .chosen-drop {
 	border-radius: 10px !important;

@@ -916,7 +916,7 @@ jQuery(function(){
 					<div class="cd-th" id="vrccomselph">
 						<select name="pickuph"><?php echo $hours; ?></select>
 					</div>
-					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomselph .chosen-single').trigger('mousedown');"><?php echo $_ico_chev_sm; ?></span>
+					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomselph select').trigger('chosen:open');"><?php echo $_ico_chev_sm; ?></span>
 				</div>
 			</div>
 			<!-- Minutes fixed at 0 -->
@@ -943,7 +943,7 @@ jQuery(function(){
 					<div class="cd-th" id="vrccomseldh">
 						<select name="releaseh"><?php echo $hours; ?></select>
 					</div>
-					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomseldh .chosen-single').trigger('mousedown');"><?php echo $_ico_chev_sm; ?></span>
+					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomseldh select').trigger('chosen:open');"><?php echo $_ico_chev_sm; ?></span>
 				</div>
 			</div>
 			<!-- Minutes fixed at 0 -->
@@ -969,7 +969,7 @@ jQuery(function(){
 					<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
 					<?php endforeach; ?>
 				</select>
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="var $c=jQuery('#place').next('.chosen-container');if($c.length){$c.find('.chosen-single').trigger('mousedown');}else{jQuery('#place').focus();}"><path d="m6 9 6 6 6-6"/></svg>
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#place').trigger('chosen:open');"><path d="m6 9 6 6 6-6"/></svg>
 			</div>
 		</div>
 		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>"/>
@@ -1108,12 +1108,12 @@ jQuery(function(){
 			if (pickOoh || dropOoh) {
 				var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
 				var label;
-				if (f.type === 1) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
-				} else if (f.type === 2) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
-				} else {
+				if (pickOoh && dropOoh) {
 					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
+				} else if (pickOoh) {
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
+				} else {
+					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
 				}
 				var parts = [];
 				if (pickOoh) parts.push(cdCurrency + cdFmt(f.pickcharge));
@@ -1197,9 +1197,9 @@ jQuery(function(){
 				var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
 				if (pickOoh || dropOoh) {
 					var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
-					if (f.type === 1) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
-					else if (f.type === 2) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
-					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
+					if (pickOoh && dropOoh) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
+					else if (pickOoh) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
+					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
 					break;
 				}
 			}
