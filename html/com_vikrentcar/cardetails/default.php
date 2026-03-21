@@ -378,13 +378,12 @@ try {
 
 	<!-- Mobile car name: shown between price tiers and booking form on mobile -->
 	<div class="cd-mobile-car-name">
-		<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?></h1>
+		<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
 	</div>
 
 	<!-- Desktop meta: category, name, spec pills -->
 	<div class="cd-desktop-meta">
-		<?php if (!empty($categoryName)): ?><span class="cd-car-cat-desktop"><?php echo $categoryName; ?></span><?php endif; ?>
-		<h1 class="cd-car-name-desktop"><?php echo $car['name']; ?></h1>
+		<h1 class="cd-car-name-desktop"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
 		<?php
 		$svgIcons = array(
 			'automat'=>'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>',
@@ -440,7 +439,6 @@ try {
 	<!-- Description (mobile order 5) -->
 	<?php if (!empty($car['info'])): ?>
 	<div class="cd-description" style="margin-top:24px;">
-		<h2><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h2>
 		<div class="cd-description-text"><?php echo $car['info']; ?></div>
 	</div>
 	<?php endif; ?>
@@ -1325,7 +1323,6 @@ jQuery(function(){
 	<!-- Description (mobile order 5) -->
 	<?php if (!empty($car['info'])): ?>
 	<div class="cd-description" style="margin-top:24px;">
-		<h2><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h2>
 		<div class="cd-description-text"><?php echo $car['info']; ?></div>
 	</div>
 	<?php endif; ?>
