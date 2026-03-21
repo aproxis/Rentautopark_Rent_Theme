@@ -312,17 +312,6 @@ try {
 }
 ?>
 
-<?php /* Breadcrumb */ ?>
-<div class="cd-breadcrumb">
-	<div class="cd-breadcrumb-inner">
-		<a href="<?php echo JURI::root(); ?>"><?php echo Text::_('VRCBCHOME') ?: 'Acasă'; ?></a>
-		<span class="cd-bc-sep">/</span>
-		<a href="<?php echo $carslistUrl; ?>"><?php echo Text::_('VRCBCCARS') ?: 'Automobile'; ?></a>
-		<span class="cd-bc-sep">/</span>
-		<span class="cd-bc-current"><?php echo $car['name']; ?></span>
-	</div>
-</div>
-
 <div class="cd-container">
 <div id="vrc-bookingpart-init"></div>
 <div class="cd-page-grid">
@@ -429,7 +418,7 @@ try {
 	<div class="cd-mobile-info-wrap" style="margin-top:16px;" style="display:none;">
 		<div class="cd-info">
 			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
-			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
+			<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
 			<?php if (!empty($caratDefs)): ?>
 			<div class="cd-specs">
 				<?php foreach ($caratDefs as $cid => $carat):
@@ -1314,7 +1303,7 @@ jQuery(function(){
 	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
 		<div class="cd-info">
 			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
-			<h1 class="cd-car-name"><?php echo $car['name']; ?></h1>
+			<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
 			<?php if (!empty($caratDefs)): ?>
 			<div class="cd-specs">
 				<?php foreach ($caratDefs as $cid => $carat):

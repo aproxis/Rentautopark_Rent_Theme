@@ -581,6 +581,15 @@
 .ui-datepicker td a:hover { background: #FE5001 !important; color: #fff !important; }
 .ui-datepicker .ui-datepicker-current-day a { background: #FE5001 !important; color: #fff !important; font-weight: 700 !important; }
 
+/* ── Price tiers wrap: constrain on small screens ───────────────── */
+@media (max-width: 768px) {
+	.cd-price-tiers-wrap {
+		max-width: 100vw;
+		overflow-x: scroll;
+		box-sizing: border-box;
+	}
+}
+
 /* ── Mobile car name heading (between price tiers and booking form) ── */
 .cd-mobile-car-name {
 	display: none;
