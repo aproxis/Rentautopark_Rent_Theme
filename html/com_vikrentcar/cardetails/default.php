@@ -873,8 +873,12 @@ jQuery(function(){
 	      method="get"
 	      onsubmit="return vrcValidateSearch();">
 		<input type="hidden" name="option" value="com_vikrentcar"/>
-		<input type="hidden" name="task" value="search"/>
-		<input type="hidden" name="cardetail" value="<?php echo $car['id']; ?>"/>
+		<input type="hidden" name="task" value="oconfirm"/>
+		<input type="hidden" name="carid"   value="<?php echo $car['id']; ?>"/>
+		<input type="hidden" name="priceid" id="vrc-priceid" value="<?php echo (int)$_firstIdprice; ?>"/>
+		<input type="hidden" name="pickup"  id="vrc-pickup"  value=""/>
+		<input type="hidden" name="release" id="vrc-release" value=""/>
+		<input type="hidden" name="days"    id="vrc-days"    value=""/>
 		<?php if (VikRequest::getString('tmpl','','request') == 'component'): ?>
 		<input type="hidden" name="tmpl" value="component"/>
 		<?php endif; ?>
@@ -1234,14 +1238,44 @@ jQuery(function(){
 
 	<script type="text/javascript">
 	function vrcCleanNumber(snum) { if (snum.length > 1 && snum.substr(0,1) == '0') { return parseInt(snum.substr(1)); } return parseInt(snum); }
+
+	/* Convert date string + hour → unix timestamp (seconds) */
+	function vrcDateToUnixTs(dateStr, hour) {
+		if (!dateStr) return 0;
+		var p = dateStr.split('/');
+		var y, m, d;
+		<?php if ($df === 'd/m/Y'): ?>
+		d = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; y = parseInt(p[2], 10);
+		<?php elseif ($df === 'm/d/Y'): ?>
+		m = parseInt(p[0], 10) - 1; d = parseInt(p[1], 10); y = parseInt(p[2], 10);
+		<?php else: ?>
+		y = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; d = parseInt(p[2], 10);
+		<?php endif; ?>
+		return Math.floor(new Date(y, m, d, parseInt(hour, 10) || 0, 0, 0).getTime() / 1000);
+	}
+
 	function vrcValidateSearch() {
-		if (typeof jQuery === 'undefined' || typeof vrc_wopening_pick === 'undefined') return true;
-		if (vrc_mopening_pick !== null) {
-			var pickh = jQuery('#vrccomselph').find('select').val();
-			if (!pickh) return true;
-			pickh = vrcCleanNumber(pickh);
-			// minutes are always 0 so no minute validation needed
+		var pickDate = jQuery('#pickupdate').val();
+		var relDate  = jQuery('#releasedate').val();
+		if (!pickDate || !relDate) {
+			return false;
 		}
+
+		var pickH = parseInt(jQuery('#vrccomselph select').val(), 10) || 0;
+		var relH  = parseInt(jQuery('#vrccomseldh select').val(), 10) || 0;
+
+		var pickTs = vrcDateToUnixTs(pickDate, pickH);
+		var relTs  = vrcDateToUnixTs(relDate, relH);
+
+		if (!pickTs || !relTs || relTs <= pickTs) {
+			return false;
+		}
+
+		var days = Math.round((relTs - pickTs) / 86400);
+		jQuery('#vrc-pickup').val(pickTs);
+		jQuery('#vrc-release').val(relTs);
+		jQuery('#vrc-days').val(days);
+
 		return true;
 	}
 	jQuery(document).ready(function() {
