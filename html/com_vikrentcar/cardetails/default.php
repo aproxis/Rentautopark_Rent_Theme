@@ -40,6 +40,7 @@ if (VikRentCar::loadJquery()) {
 $document->addStyleSheet(VRC_SITE_URI . 'resources/jquery.fancybox.css');
 $document->addStyleSheet(JURI::root() . 'templates/rent/css/cardetails.css');
 JHtml::_('script', VRC_SITE_URI . 'resources/jquery.fancybox.js');
+$document->addScript(JURI::root() . 'templates/rent/js/booking-modal.js');
 
 $navdecl = '
 jQuery.noConflict();
@@ -1014,11 +1015,27 @@ jQuery(function(){
 			</div>
 		</div>
 
+		<!-- Coupon code field (applied when opening the modal) -->
+		<?php if (VikRentCar::couponsEnabled()): ?>
+		<div class="cd-coupon-row">
+			<div class="cd-coupon-inner">
+				<input type="text" id="vrc-coupon-code" name="_couponcode"
+				       placeholder="<?php echo Text::_('VRCHAVEACOUPON') ?: 'Cod promoțional'; ?>"
+				       autocomplete="off" class="cd-coupon-input"/>
+				<button type="button" id="vrc-coupon-apply" class="cd-coupon-btn">
+					<?php echo Text::_('VRCSUBMITCOUPON') ?: 'Aplică'; ?>
+				</button>
+			</div>
+		</div>
+		<?php endif; ?>
+
 		<!-- Submit -->
 		<div class="cd-booking-submit-row">
-			<input type="submit" name="search"
-			       value="<?php echo Text::_('VRCBOOKTHISCAR'); ?>"
-			       class="btn vrcdetbooksubmit vrc-pref-color-btn"/>
+			<button type="button"
+			        onclick="return vrcOpenBookingModal();"
+			        class="btn vrcdetbooksubmit vrc-pref-color-btn">
+				<?php echo Text::_('VRCBOOKTHISCAR'); ?>
+			</button>
 			<div class="cd-shield-info">
 				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
 				<span><?php echo Text::_('VRCSHIELDINFO') ?: 'Anulare gratuită • Suport 24/7 • Mașini asigurate'; ?></span>
@@ -1484,5 +1501,39 @@ function cdSetImage(idx) {
 })(jQuery);
 </script>
 <?php endif; ?>
+
+<?php
+// ── Booking modal overlay ────────────────────────────────────────────────────
+// Build the base oconfirm URL — booking-modal.js will append all booking params
+$_oconfirmUrl = JRoute::_(
+	'index.php?option=com_vikrentcar&task=oconfirm' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''),
+	false
+);
+?>
+<!-- ═══ Booking Modal Overlay ═══ -->
+<div id="vrc-booking-modal-overlay"
+     data-oconfirm-url="<?php echo htmlspecialchars($_oconfirmUrl); ?>">
+	<div id="vrc-booking-modal">
+		<button id="vrc-booking-modal-close" type="button" aria-label="Închide">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+			     fill="none" stroke="currentColor" stroke-width="2.5"
+			     stroke-linecap="round" stroke-linejoin="round">
+				<line x1="18" y1="6" x2="6" y2="18"/>
+				<line x1="6" y1="6" x2="18" y2="18"/>
+			</svg>
+		</button>
+		<div class="vrc-booking-modal-loading" id="vrc-booking-modal-loading">
+			<div class="vrc-booking-modal-spinner"></div>
+			<span><?php echo Text::_('VRC_LOADING_BOOKING') ?: 'Se încarcă...'; ?></span>
+		</div>
+		<iframe id="vrc-booking-modal-iframe"
+		        src="about:blank"
+		        frameborder="0"
+		        scrolling="auto"
+		        onload="document.getElementById('vrc-booking-modal-loading').style.display='none';"
+		        title="<?php echo Text::_('VRCBOOKTHISCAR'); ?>">
+		</iframe>
+	</div>
+</div>
 
 <?php VikRentCar::printTrackingCode(isset($this) ? $this : null); ?>
