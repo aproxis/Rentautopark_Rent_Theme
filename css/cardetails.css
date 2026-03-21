@@ -131,7 +131,7 @@
 }
 @media (max-width: 600px) {
 	.cd-gallery { flex-direction: column-reverse; }
-	.cd-thumbs { flex-direction: row; width: 100%; max-width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+	.cd-thumbs { flex-direction: row; width: 100%; max-width: 93vw; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 	.cd-thumbs::-webkit-scrollbar { display: none; }
 	.cd-thumb { width: 70px; flex-shrink: 0; }
 	.cd-main-img { aspect-ratio: 4/3; width: 100%; max-width: 100%; overflow: hidden; }
@@ -584,7 +584,7 @@
 /* ── Price tiers wrap: constrain on small screens ───────────────── */
 @media (max-width: 768px) {
 	.cd-price-tiers-wrap {
-		max-width: 100vw;
+		max-width: 93vw;
 		overflow-x: scroll;
 		box-sizing: border-box;
 	}
