@@ -82,16 +82,16 @@
 	gap: 32px;
 	align-items: start;
 }
-@media (max-width: 1024px) { .cd-page-grid { grid-template-columns: 1fr 360px; gap: 24px; } }
-@media (max-width: 860px)  { .cd-page-grid { grid-template-columns: 1fr; gap: 0; } }
+@media (max-width: 1024px) { .cd-page-grid { grid-template-columns: 1fr 264px; gap: 24px; } }
+@media (max-width: 920px)  { .cd-page-grid { grid-template-columns: 1fr; gap: 0; } }
 
 .cd-left { display: flex; flex-direction: column; gap: 0; }
 
 .cd-right { position: sticky; top: 20px; }
-@media (max-width: 860px) { .cd-right { position: static; margin-top: 16px; } }
+@media (max-width: 920px) { .cd-right { position: static; margin-top: 16px; } }
 
 /* On mobile reorder: gallery (1) → booking card (2) → specs/info (3) → desc/calendars (4) */
-@media (max-width: 860px) {
+@media (max-width: 920px) {
 	.cd-page-grid { display: flex; flex-direction: column; }
 	.cd-left { order: 1; }
 	.cd-right { order: 2; }
@@ -127,7 +127,7 @@
 }
 .cd-main-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; cursor: zoom-in; }
 .cd-main-img:hover img { transform: scale(1.03); }
-@media (max-width: 860px) {
+@media (max-width: 920px) {
 	.cd-gallery-wrap { overflow: hidden; max-width: 100%; width: 100%; }
 }
 @media (max-width: 600px) {
@@ -177,12 +177,12 @@
 .cd-right .cd-mobile-info-wrap {
 	display: none;
 }
-@media (max-width: 860px) {
+@media (max-width: 920px) {
 	.cd-right .cd-mobile-info-wrap { display: block; }
 }
 
 /* Desktop name/cat */
-@media (min-width: 861px) {
+@media (min-width: 921px) {
 	.cd-info { display: none; }
 	.cd-mobile-info-wrap { display: none !important; }
 	.cd-car-name-desktop {
@@ -194,7 +194,7 @@
 		font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px;
 	}
 }
-@media (max-width: 860px) {
+@media (max-width: 920px) {
 	.cd-car-name-desktop, .cd-car-cat-desktop, .cd-specs-below { display: none !important; }
 	.cd-info { display: flex; }
 	.cd-mobile-info-wrap { display: block; }
@@ -603,7 +603,7 @@
 	margin: 0;
 	line-height: 1.15;
 }
-@media (max-width: 860px) {
+@media (max-width: 920px) {
 	.cd-mobile-car-name { display: block; }
 }
 
