@@ -378,7 +378,7 @@ try {
 
 	<!-- Mobile car name: shown between price tiers and booking form on mobile -->
 	<div class="cd-mobile-car-name">
-		<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
+		<h2 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?></h2>
 	</div>
 
 	<!-- Desktop meta: category, name, spec pills -->
