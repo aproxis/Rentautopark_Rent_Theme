@@ -97,10 +97,11 @@
 	.cd-right { order: 2; }
 
 	.cd-gallery-wrap      { order: 1; }
-	.cd-price-tiers-wrap  { order: 2; }
-	.cd-desktop-meta      { order: 3; display: none !important; }
-	.cd-left .cd-mobile-info-wrap  { order: 4; display: none !important; }
-	.cd-left .cd-description       { order: 5; display: none !important; }
+	.cd-mobile-car-name	  { order: 2; }
+	.cd-price-tiers-wrap  { order: 3; }
+	.cd-desktop-meta      { display: none !important; }
+	.cd-left .cd-mobile-info-wrap  { display: none !important; }
+	.cd-left .cd-description       { display: none !important; }
 	.cd-avail-section     { order: 6; }
 	.cd-hourly-cal-wrap   { order: 7; }
 }
@@ -603,7 +604,7 @@
 	line-height: 1.15;
 }
 @media (max-width: 860px) {
-	.cd-mobile-car-name { display: block; order: 3; }
+	.cd-mobile-car-name { display: block; }
 }
 
 /* ── Hide category badge ──────────────────────────────────────── */
