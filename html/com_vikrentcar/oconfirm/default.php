@@ -190,7 +190,7 @@ $droploc = VikRentCar::getPlaceInfo($returnplace,  $vrc_tn);
 		</div>
 	</div>
 
-	<?php if (!empty($car['img'])): ?>
+	<?php if (!empty($car['img']) && !$isModal): ?>
 	<div class="vrc-summary-car-img">
 		<img src="<?php echo VRC_ADMIN_URI; ?>resources/<?php echo $car['img']; ?>"/>
 	</div>

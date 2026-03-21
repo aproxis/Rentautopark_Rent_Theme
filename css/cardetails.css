@@ -757,7 +757,7 @@
 	padding: 16px;
 	box-sizing: border-box;
 }
-#vrc-booking-modal-overlay.is-open {
+#vrc-booking-modal-overlay.is-active {
 	display: flex;
 }
 
