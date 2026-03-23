@@ -41,11 +41,6 @@ defined('_JEXEC') or die;
 <!-- //META FOR IOS & HANDHELD -->
 
 <?php
-// SYSTEM CSS
-$this->addStyleSheet(JURI::base(true) . '/templates/system/css/system.css');
-?>
-
-<?php
 // T3 BASE HEAD
 $this->addHead();
 ?>
