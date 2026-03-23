@@ -57,6 +57,18 @@ if (is_file(T3_TEMPLATE_PATH . '/css/custom.css')) {
 }
 ?>
 
+<?php
+// EXTRAS CSS — loaded unconditionally (not via T3 theme_extras params)
+$_extras = array(
+	'extras/system-alerts.css',
+);
+foreach ($_extras as $_extra) {
+	if (is_file(T3_TEMPLATE_PATH . '/css/' . $_extra)) {
+		$this->addStyleSheet(T3_TEMPLATE_URL . '/css/' . $_extra);
+	}
+}
+?>
+
 <!-- Le HTML5 shim and media query for IE8 support -->
 <!--[if lt IE 9]>
 <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
