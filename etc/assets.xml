@@ -5,6 +5,7 @@
     <file>js/jquery.cookie.js</file>
 		<file>js/owl-carousel/owl.carousel.js</file>
 		<file>js/script.js</file>
+		<file>js/system-alerts.js</file>
 	</scripts>
 	
   <stylesheets>

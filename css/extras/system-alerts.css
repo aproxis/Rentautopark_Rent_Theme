@@ -1,15 +1,35 @@
 /* ════════════════════════════════════════════════════════════════════
-   System alert messages — brand-styled, centered
+   System alert messages — fixed below header, bounce-in / fade-out
    Covers both Joomla 5 <joomla-alert> web component and
    Bootstrap .alert (noscript / classic fallback)
    ════════════════════════════════════════════════════════════════════ */
 
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes vrcBounceIn {
+  0%   { opacity: 0; transform: translateY(-28px); }
+  55%  { opacity: 1; transform: translateY(6px);  }
+  75%  { transform: translateY(-4px); }
+  90%  { transform: translateY(2px);  }
+  100% { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes vrcFadeOut {
+  0%   { opacity: 1; transform: translateY(0);    }
+  100% { opacity: 0; transform: translateY(-18px); }
+}
+
+/* ── Container — fixed, just below header ────────────────────── */
 #system-message-container {
+  position: fixed;
+  top: 70px;          /* fallback; overridden by system-alerts.js */
+  left: 0;
+  right: 0;
+  z-index: 9000;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 15px 4px;
-  width: 100%;
+  padding: 12px 15px 0;
+  pointer-events: none;   /* let clicks pass through the empty space */
   box-sizing: border-box;
 }
 
@@ -17,6 +37,7 @@
 joomla-alert {
   display: block;
   position: relative;
+  pointer-events: all;
   width: 100%;
   max-width: 620px;
   padding: 14px 44px 14px 18px;
@@ -28,24 +49,30 @@ joomla-alert {
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
-  box-shadow: 0 2px 14px rgba(254,80,1,.10);
+  box-shadow: 0 4px 20px rgba(0,0,0,.13);
   box-sizing: border-box;
+  animation: vrcBounceIn 0.45s cubic-bezier(.36,.07,.19,.97) both;
 }
+joomla-alert.vrc-hiding {
+  animation: vrcFadeOut 0.35s ease forwards !important;
+  pointer-events: none;
+}
+
 joomla-alert[type="success"] {
   border-color: #22c55e !important;
   background: #f0fdf4 !important;
-  box-shadow: 0 2px 14px rgba(34,197,94,.10);
+  box-shadow: 0 4px 20px rgba(34,197,94,.15);
 }
 joomla-alert[type="warning"] {
   border-color: #f59e0b !important;
   background: #fffbeb !important;
-  box-shadow: 0 2px 14px rgba(245,158,11,.10);
+  box-shadow: 0 4px 20px rgba(245,158,11,.15);
 }
 joomla-alert[type="danger"],
 joomla-alert[type="error"] {
   border-color: #ef4444 !important;
   background: #fef2f2 !important;
-  box-shadow: 0 2px 14px rgba(239,68,68,.10);
+  box-shadow: 0 4px 20px rgba(239,68,68,.15);
 }
 joomla-alert .alert-heading {
   display: none !important;
@@ -78,6 +105,7 @@ joomla-alert .joomla-alert--close:hover {
 
 /* ── Bootstrap .alert (noscript / classic fallback) ─────────── */
 #system-message-container .alert {
+  pointer-events: all;
   width: 100%;
   max-width: 620px;
   padding: 14px 18px;
@@ -88,24 +116,29 @@ joomla-alert .joomla-alert--close:hover {
   color: #1a1a1a !important;
   font-size: 14px;
   font-weight: 500;
-  box-shadow: 0 2px 14px rgba(254,80,1,.10);
+  box-shadow: 0 4px 20px rgba(0,0,0,.13);
   box-sizing: border-box;
+  animation: vrcBounceIn 0.45s cubic-bezier(.36,.07,.19,.97) both;
+}
+#system-message-container .alert.vrc-hiding {
+  animation: vrcFadeOut 0.35s ease forwards !important;
+  pointer-events: none;
 }
 #system-message-container .alert.alert-success {
   border-color: #22c55e !important;
   background: #f0fdf4 !important;
   color: #14532d !important;
-  box-shadow: 0 2px 14px rgba(34,197,94,.10);
+  box-shadow: 0 4px 20px rgba(34,197,94,.15);
 }
 #system-message-container .alert.alert-warning {
   border-color: #f59e0b !important;
   background: #fffbeb !important;
   color: #78350f !important;
-  box-shadow: 0 2px 14px rgba(245,158,11,.10);
+  box-shadow: 0 4px 20px rgba(245,158,11,.15);
 }
 #system-message-container .alert.alert-danger {
   border-color: #ef4444 !important;
   background: #fef2f2 !important;
   color: #7f1d1d !important;
-  box-shadow: 0 2px 14px rgba(239,68,68,.10);
+  box-shadow: 0 4px 20px rgba(239,68,68,.15);
 }
