@@ -527,7 +527,27 @@ document.addEventListener('keydown', function(e) {
 		form.addEventListener('submit', function () {
 			var returnField = form.querySelector('input[name="return"]');
 			if (returnField) {
-				returnField.value = btoa(unescape(encodeURIComponent(window.location.href)));
+				// Get current URL and preserve language context
+				var currentUrl = window.location.href;
+				var currentPath = window.location.pathname;
+				
+				// Extract language from URL path (e.g., /ru/, /en/, /ro/)
+				var langMatch = currentPath.match(/^\/(ru|en|ro)(\/|$)/);
+				var currentLang = langMatch ? langMatch[1] : '';
+				
+				// If we're on a language-specific page, ensure the return URL includes the language
+				if (currentLang && !currentUrl.includes('/' + currentLang + '/')) {
+					// Add language prefix to the return URL
+					var baseUrl = window.location.origin;
+					var pathWithoutLang = currentPath.replace(/^\/(ru|en|ro)\//, '/');
+					var returnUrl = baseUrl + '/' + currentLang + pathWithoutLang + window.location.search + window.location.hash;
+				} else {
+					// Use current URL as is
+					var returnUrl = currentUrl;
+				}
+				
+				// Encode the return URL
+				returnField.value = btoa(unescape(encodeURIComponent(returnUrl)));
 			}
 		});
 	}
