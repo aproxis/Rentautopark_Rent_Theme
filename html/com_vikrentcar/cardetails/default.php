@@ -993,6 +993,18 @@ jQuery(function(){
 				$_optPriceLabel = $currencysymb . $_optCostDisplay . ($_optPerDay ? '/'.( Text::_('VRCSEARCHDAY') ?: 'день') : '');
 				$_optId = (int)$_opt['id'];
 			?>
+			<?php if ((int)$_opt['hmany'] === 1): ?>
+			<div class="cd-optional-row cd-optional-qty-row" id="cd-opt-row-<?php echo $_optId; ?>">
+				<span class="cd-optional-name"><?php echo htmlspecialchars($_opt['name']); ?></span>
+				<span class="cd-optional-price">+<?php echo $_optPriceLabel; ?></span>
+				<div class="cd-optional-qty-ctrl">
+					<button type="button" class="cd-qty-btn cd-qty-minus" onclick="cdSetOptionalQty(<?php echo $_optId; ?>, -1)">&#8722;</button>
+					<span class="cd-qty-val" id="cd-opt-qty-<?php echo $_optId; ?>">0</span>
+					<button type="button" class="cd-qty-btn cd-qty-plus" onclick="cdSetOptionalQty(<?php echo $_optId; ?>, 1)">&#43;</button>
+				</div>
+				<input type="hidden" name="optid<?php echo $_optId; ?>" id="cd-opt-input-<?php echo $_optId; ?>" value="0"/>
+			</div>
+			<?php else: ?>
 			<div class="cd-optional-row" id="cd-opt-row-<?php echo $_optId; ?>" onclick="cdToggleOptional(<?php echo $_optId; ?>, <?php echo $_optBaseCost; ?>, <?php echo (int)$_optPerDay; ?>, <?php echo $_optMax; ?>)">
 				<div class="cd-optional-check" id="cd-opt-check-<?php echo $_optId; ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1001,6 +1013,7 @@ jQuery(function(){
 				<span class="cd-optional-price">+<?php echo $_optPriceLabel; ?></span>
 				<input type="hidden" name="optid<?php echo $_optId; ?>" id="cd-opt-input-<?php echo $_optId; ?>" value="0"/>
 			</div>
+			<?php endif; ?>
 			<?php endforeach; ?>
 		</div>
 		<?php endif; ?>
@@ -1052,6 +1065,7 @@ jQuery(function(){
 	jQuery(function() {
 		jQuery('#place').on('change', function() {
 			jQuery('#returnplace').val(jQuery(this).val());
+			cdUpdateSummary();
 			<?php if ($diffopentime): ?>
 			vrcSetLocOpenTime(jQuery(this).val(), 'pickup');
 			vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
@@ -1069,6 +1083,11 @@ jQuery(function(){
 		echo json_encode($_pm);
 	?>;
 	var cdCouponAjaxUrl = '<?php echo rtrim(JURI::root(), '/'); ?>/templates/rent/php/coupon-ajax.php';
+	var cdDescPrefix   = '<?php echo addslashes(Text::_('VRCSUMDESC_PREFIX')); ?>';
+	var cdDescCarInfix = '<?php echo addslashes(Text::_('VRCSUMDESC_CAR_INFIX')); ?>';
+	var cdDescLocInfix = '<?php echo addslashes(Text::_('VRCSUMDESC_LOC_INFIX')); ?>';
+	var cdDescDayWord  = '<?php echo addslashes(Text::_('VRCSEARCHDAY')); ?>';
+	var cdDescDaysWord = '<?php echo addslashes(Text::_('VRCSEARCHDAYS')); ?>';
 		var cdRateByDay = <?php
 		$_jsRbd = array();
 		foreach ($_rateByDay as $_d => $_r) { $_jsRbd[(int)$_d] = $_r; }
@@ -1076,7 +1095,7 @@ jQuery(function(){
 	?>;
 	var cdOptionals = {};
 	<?php foreach ($carOptionals as $_opt): ?>
-	cdOptionals[<?php echo (int)$_opt['id']; ?>] = {perday: <?php echo (int)$_opt['perday']; ?>, cost: <?php echo (float)$_opt['cost']; ?>, max: <?php echo (!empty($_opt['maxprice'])?(float)$_opt['maxprice']:0); ?>, checked: false};
+	cdOptionals[<?php echo (int)$_opt['id']; ?>] = {perday: <?php echo (int)$_opt['perday']; ?>, cost: <?php echo (float)$_opt['cost']; ?>, max: <?php echo (!empty($_opt['maxprice'])?(float)$_opt['maxprice']:0); ?>, checked: false, hmany: <?php echo (int)$_opt['hmany']; ?>, qty: 0};
 	<?php endforeach; ?>
 
 	/* Format integer (no decimals) */
@@ -1183,6 +1202,19 @@ jQuery(function(){
 		cdUpdateSummary();
 	}
 
+	function cdSetOptionalQty(id, delta) {
+		if (!cdOptionals[id]) return;
+		var newQty = (cdOptionals[id].qty || 0) + delta;
+		if (newQty < 0) newQty = 0;
+		cdOptionals[id].qty = newQty;
+		cdOptionals[id].checked = (newQty > 0);
+		jQuery('#cd-opt-input-' + id).val(newQty);
+		jQuery('#cd-opt-qty-' + id).text(newQty);
+		var $row = jQuery('#cd-opt-row-' + id);
+		if (newQty > 0) { $row.addClass('is-checked'); } else { $row.removeClass('is-checked'); }
+		cdUpdateSummary();
+	}
+
 	function cdUpdateSummary() {
 		var days = cdGetDays();
 		var $sum = jQuery('#cd-summary');
@@ -1191,13 +1223,13 @@ jQuery(function(){
 		var rate = cdGetRate(days);
 		if (!rate) { $sum.removeClass('is-visible'); return; }
 
-		// Description sentence
-		var _dw2 = days === 1 ? 'zi' : 'zile';
+		// Description sentence (i18n via cdDesc* vars)
+		var _dw2 = days === 1 ? cdDescDayWord : cdDescDaysWord;
 		var _locId = jQuery('#place').val() || '';
 		var _locName = (_locId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_locId]) ? cdPlacesMap[_locId] : '';
-		var _desc = 'Vei \u00EEnchiria pentru o perioad\u0103 de <strong>' + days + '\u00A0' + _dw2 + '</strong>';
-		if (typeof cdCarName !== 'undefined' && cdCarName) { _desc += ' un <strong>' + cdCarName + '</strong>'; }
-		if (_locName) { _desc += ', cu ridicare de la <strong>' + _locName + '</strong>'; }
+		var _desc = cdDescPrefix + ' <strong>' + days + '\u00A0' + _dw2 + '</strong>';
+		if (typeof cdCarName !== 'undefined' && cdCarName) { _desc += cdDescCarInfix + '<strong>' + cdCarName + '</strong>'; }
+		if (_locName) { _desc += cdDescLocInfix + '<strong>' + _locName + '</strong>'; }
 		_desc += '.';
 		jQuery('#cd-summary-desc').html(_desc);
 
@@ -1209,12 +1241,14 @@ jQuery(function(){
 		var optTotal = 0;
 		for (var id in cdOptionals) {
 			var o = cdOptionals[id];
-			if (!o.checked) continue;
-			var oc = o.perday ? o.cost * days : o.cost;
+			var qty = (o.hmany === 1) ? (o.qty || 0) : (o.checked ? 1 : 0);
+			if (!qty) continue;
+			var oc = o.perday ? o.cost * days * qty : o.cost * qty;
 			if (o.max > 0 && oc > o.max) oc = o.max;
 			optTotal += oc;
 			var name = jQuery('#cd-opt-row-' + id + ' .cd-optional-name').text();
-			rows += '<div class="cd-summary-row"><span>' + name + '</span>'
+			var qtyLabel = (o.hmany === 1 && qty > 1) ? ' \u00d7 ' + qty : '';
+			rows += '<div class="cd-summary-row"><span>' + name + qtyLabel + '</span>'
 				+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oc) + '</span></div>';
 		}
 

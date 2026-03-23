@@ -898,3 +898,43 @@ body.vrc-modal-open {
 		padding: 8px;
 	}
 }
+
+/* ── Quantity stepper for hmany=1 optionals ─────────────────────────────── */
+.cd-optional-qty-row {
+	cursor: default;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.cd-optional-qty-row .cd-optional-name { flex: 1; }
+.cd-optional-qty-row .cd-optional-price { flex-shrink: 0; }
+.cd-optional-qty-ctrl {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-shrink: 0;
+}
+.cd-qty-btn {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: 1.5px solid #d1d5db;
+	background: #fff;
+	cursor: pointer;
+	font-size: 16px;
+	line-height: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #374151;
+	transition: background 0.15s, border-color 0.15s;
+	padding: 0;
+}
+.cd-qty-btn:hover { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+.cd-qty-val {
+	min-width: 22px;
+	text-align: center;
+	font-size: 15px;
+	font-weight: 600;
+	color: #374151;
+}
