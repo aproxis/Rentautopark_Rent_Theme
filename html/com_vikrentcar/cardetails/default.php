@@ -1007,6 +1007,7 @@ jQuery(function(){
 
 		<!-- Live summary -->
 		<div class="cd-summary-section" id="cd-summary">
+			<div class="cd-summary-desc" id="cd-summary-desc"></div>
 			<div class="cd-summary-title"><?php echo Text::_('VRPRICE') ?: 'Rezumat'; ?></div>
 			<div id="cd-summary-rows"></div>
 			<div class="cd-summary-total">
@@ -1022,10 +1023,12 @@ jQuery(function(){
 				<input type="text" id="vrc-coupon-code" name="_couponcode"
 				       placeholder="<?php echo Text::_('VRCHAVEACOUPON') ?: 'Cod promoțional'; ?>"
 				       autocomplete="off" class="cd-coupon-input"/>
-				<button type="button" id="vrc-coupon-apply" class="cd-coupon-btn">
+					<button type="button" id="vrc-coupon-apply" class="cd-coupon-btn"
+				        data-original-text="<?php echo htmlspecialchars(Text::_('VRCSUBMITCOUPON') ?: 'Aplică'); ?>">
 					<?php echo Text::_('VRCSUBMITCOUPON') ?: 'Aplică'; ?>
 				</button>
 			</div>
+			<div id="vrc-coupon-feedback" class="cd-coupon-feedback"></div>
 		</div>
 		<?php endif; ?>
 
@@ -1059,6 +1062,13 @@ jQuery(function(){
 	/* ── OOH + Optionals + Live Summary JS ───────────────────────── */
 	var cdOohFees = <?php echo json_encode($oohFees); ?>;
 	var cdCurrency = '€';
+	var cdCarName = '<?php echo addslashes($car['name']); ?>';
+	var cdPlacesMap = <?php
+		$_pm = array();
+		if (is_array($places)) { foreach ($places as $_p) { $_pm[(int)$_p['id']] = $_p['name']; } }
+		echo json_encode($_pm);
+	?>;
+	var cdCouponAjaxUrl = '<?php echo rtrim(JURI::root(), '/'); ?>/templates/rent/php/coupon-ajax.php';
 		var cdRateByDay = <?php
 		$_jsRbd = array();
 		foreach ($_rateByDay as $_d => $_r) { $_jsRbd[(int)$_d] = $_r; }
@@ -1181,6 +1191,16 @@ jQuery(function(){
 		var rate = cdGetRate(days);
 		if (!rate) { $sum.removeClass('is-visible'); return; }
 
+		// Description sentence
+		var _dw2 = days === 1 ? 'zi' : 'zile';
+		var _locId = jQuery('#place').val() || '';
+		var _locName = (_locId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_locId]) ? cdPlacesMap[_locId] : '';
+		var _desc = 'Vei \u00EEnchiria pentru o perioad\u0103 de <strong>' + days + '\u00A0' + _dw2 + '</strong>';
+		if (typeof cdCarName !== 'undefined' && cdCarName) { _desc += ' un <strong>' + cdCarName + '</strong>'; }
+		if (_locName) { _desc += ', cu ridicare de la <strong>' + _locName + '</strong>'; }
+		_desc += '.';
+		jQuery('#cd-summary-desc').html(_desc);
+
 		var baseTotal = rate * days;
 		var dayWord = '<?php echo addslashes(Text::_("VRCSEARCHDAYS") ?: "дней"); ?>';
 		var rows = '<div class="cd-summary-row"><span><?php echo addslashes(Text::_("VRPRICE") ?: "Preț de bază"); ?></span>'
@@ -1220,7 +1240,23 @@ jQuery(function(){
 				+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oohTotal) + '</span></div>';
 		}
 
-		var total = baseTotal + optTotal + oohTotal;
+		// Coupon discount row
+		var couponDiscount = 0;
+		if (window.vrcActiveCoupon) {
+			var _ac = window.vrcActiveCoupon;
+			var _subtotal = baseTotal + optTotal + oohTotal;
+			if (_ac.type === 1) {
+				couponDiscount = Math.round(_subtotal * parseFloat(_ac.value) / 100);
+			} else {
+				couponDiscount = Math.min(parseFloat(_ac.value), _subtotal);
+			}
+			if (couponDiscount > 0) {
+				rows += '<div class="cd-summary-row cd-summary-row-discount"><span>' + (_ac.label || 'Reducere') + '</span>'
+					+ '<span class="cd-summary-row-val cd-discount-val">\u2212' + cdCurrency + cdFmt(couponDiscount) + '</span></div>';
+			}
+		}
+
+		var total = baseTotal + optTotal + oohTotal - couponDiscount;
 		jQuery('#cd-summary-rows').html(rows);
 		jQuery('#cd-summary-total').text(cdCurrency + cdFmt(total));
 		$sum.addClass('is-visible');

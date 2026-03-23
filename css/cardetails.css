@@ -692,15 +692,46 @@
 	background: #fff7f5 !important;
 }
 
+/* ── Summary title hidden ──────────────────────────────────────── */
+.cd-summary-title { display: none !important; }
+
+/* ── Summary description sentence ─────────────────────────────── */
+.cd-summary-desc {
+	font-size: 13px;
+	line-height: 1.6;
+	color: #6b7280;
+	padding-bottom: 12px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #e5e7eb;
+}
+.cd-summary-desc:empty { display: none; }
+.cd-summary-desc strong { font-weight: 700; color: #111827; }
+
+/* ── Discount row value ────────────────────────────────────────── */
+.cd-discount-val { color: #16a34a !important; }
+
 /* ================================================================
    COUPON ROW (inside booking card)
    ================================================================ */
 .cd-coupon-row {
 	display: flex;
-	align-items: center;
-	gap: 8px;
+	flex-direction: column;
+	gap: 6px;
 	margin-top: 10px;
 }
+.cd-coupon-inner {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.cd-coupon-feedback {
+	font-size: 12px;
+	font-weight: 600;
+	min-height: 0;
+	line-height: 1.4;
+}
+.cd-coupon-feedback-ok  { color: #16a34a; }
+.cd-coupon-feedback-error { color: #dc2626; }
 .cd-coupon-input {
 	flex: 1;
 	min-width: 0;

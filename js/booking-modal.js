@@ -124,20 +124,64 @@
 			}
 		});
 
-		// Coupon "Apply" button (optional): re-open modal with the coupon so
-		// the server can validate it immediately on iframe load.
+		// Coupon "Apply" button — validate server-side, update price dynamically
 		$(document).on('click', '#vrc-coupon-apply', function (e) {
 			e.preventDefault();
-			var code = $('#vrc-coupon-code').val().trim();
-			if (!code) { return; }
-			// If modal is already open, reload iframe with coupon param
-			var $iframe = $('#vrc-booking-modal-iframe');
-			if ($iframe.attr('src') && $iframe.attr('src') !== 'about:blank') {
-				var src = $iframe.attr('src');
-				// Remove existing couponcode param and add new one
-				src = src.replace(/[?&]couponcode=[^&]*/g, '');
-				var sep2 = src.indexOf('?') >= 0 ? '&' : '?';
-				$iframe.attr('src', src + sep2 + 'couponcode=' + encodeURIComponent(code));
+			var code     = $('#vrc-coupon-code').val().trim();
+			var $btn     = $(this);
+			var $feedback = $('#vrc-coupon-feedback');
+
+			// If empty: reset active coupon
+			if (!code) {
+				window.vrcActiveCoupon = null;
+				$feedback.html('');
+				if (typeof cdUpdateSummary === 'function') { cdUpdateSummary(); }
+				return;
+			}
+
+			// AJAX URL is emitted by cardetails PHP as cdCouponAjaxUrl
+			var ajaxUrl = (typeof cdCouponAjaxUrl !== 'undefined') ? cdCouponAjaxUrl : '';
+			if (!ajaxUrl) {
+				console.warn('booking-modal: cdCouponAjaxUrl not defined');
+				return;
+			}
+
+			var days         = (typeof cdGetDays === 'function') ? (cdGetDays() || 0) : 0;
+			var carid        = $('input[name="carid"]').val() || 0;
+			var originalText = $btn.data('original-text') || 'Aplică';
+
+			$btn.prop('disabled', true).text('…');
+			$feedback.html('');
+
+			$.ajax({
+				type: 'POST',
+				url: ajaxUrl,
+				data: { couponcode: code, carid: carid, days: days },
+				dataType: 'json',
+				timeout: 8000
+			}).done(function (res) {
+				if (res && res.valid) {
+					window.vrcActiveCoupon = { type: res.type, value: res.value, label: res.label };
+					$feedback.html('<span class="cd-coupon-feedback-ok">\u2713 ' + (res.label || 'Reducere aplicată') + '</span>');
+				} else {
+					window.vrcActiveCoupon = null;
+					$feedback.html('<span class="cd-coupon-feedback-error">\u2715 ' + (res && res.error ? res.error : 'Cod invalid') + '</span>');
+				}
+				if (typeof cdUpdateSummary === 'function') { cdUpdateSummary(); }
+			}).fail(function () {
+				window.vrcActiveCoupon = null;
+				$feedback.html('<span class="cd-coupon-feedback-error">\u2715 Eroare de rețea. Încercați din nou.</span>');
+			}).always(function () {
+				$btn.prop('disabled', false).text(originalText);
+			});
+		});
+
+		// Reset coupon discount when the code field is cleared manually
+		$(document).on('input', '#vrc-coupon-code', function () {
+			if (!$(this).val().trim() && window.vrcActiveCoupon) {
+				window.vrcActiveCoupon = null;
+				$('#vrc-coupon-feedback').html('');
+				if (typeof cdUpdateSummary === 'function') { cdUpdateSummary(); }
 			}
 		});
 	});
