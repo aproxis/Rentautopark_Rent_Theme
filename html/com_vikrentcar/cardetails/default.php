@@ -360,7 +360,7 @@ try {
 					$_fromN = (int)$tier['from']; $_toN = (int)$tier['to'];
 					$_dw = Text::_('VRCSEARCHDAYS') ?: 'дней';
 					if ($_fromN === $_toN) { $_dl = $_fromN . ' ' . $_dw; }
-					elseif ($_isLast && $_toN >= 45) { $_dl = '> ' . ($_fromN - 1) . ' ' . $_dw; }
+					// elseif ($_isLast && $_toN >= 45) { $_dl = '> ' . ($_fromN - 1) . ' ' . $_dw; }
 					else { $_dl = $_fromN . '–' . $_toN . ' ' . $_dw; }
 				?>
 				<div class="cd-price-tier" data-from="<?php echo $_fromN; ?>" data-to="<?php echo $_toN; ?>" data-idx="<?php echo $_ti; ?>">
