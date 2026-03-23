@@ -521,37 +521,47 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Override login return URL with current page on submit (preserves language prefix)
-(function () {
-	var form = document.getElementById('login-form');
-	if (form) {
-		form.addEventListener('submit', function () {
-			var returnField = form.querySelector('input[name="return"]');
-			if (returnField) {
-				// Get current URL and preserve language context
-				var currentUrl = window.location.href;
-				var currentPath = window.location.pathname;
+// (function () {
+// 	var form = document.getElementById('login-form');
+// 	if (form) {
+// 		form.addEventListener('submit', function () {
+// 			var returnField = form.querySelector('input[name="return"]');
+// 			if (returnField) {
+// 				// Get current URL and preserve language context
+// 				var currentUrl = window.location.href;
+// 				var currentPath = window.location.pathname;
 				
-				// Extract language from URL path (e.g., /ru/, /en/, /ro/)
-				var langMatch = currentPath.match(/^\/(ru|en|ro)(\/|$)/);
-				var currentLang = langMatch ? langMatch[1] : '';
+// 				// Extract language from URL path (e.g., /ru/, /en/, /ro/)
+// 				var langMatch = currentPath.match(/^\/(ru|en|ro)(\/|$)/);
+// 				var currentLang = langMatch ? langMatch[1] : '';
 				
-				// If we're on a language-specific page, ensure the return URL includes the language
-				if (currentLang && !currentUrl.includes('/' + currentLang + '/')) {
-					// Add language prefix to the return URL
-					var baseUrl = window.location.origin;
-					var pathWithoutLang = currentPath.replace(/^\/(ru|en|ro)\//, '/');
-					var returnUrl = baseUrl + '/' + currentLang + pathWithoutLang + window.location.search + window.location.hash;
-				} else {
-					// Use current URL as is
-					var returnUrl = currentUrl;
-				}
+// 				// If we're on a language-specific page, ensure the return URL includes the language
+// 				if (currentLang && !currentUrl.includes('/' + currentLang + '/')) {
+// 					// Add language prefix to the return URL
+// 					var baseUrl = window.location.origin;
+// 					var pathWithoutLang = currentPath.replace(/^\/(ru|en|ro)\//, '/');
+// 					var returnUrl = baseUrl + '/' + currentLang + pathWithoutLang + window.location.search + window.location.hash;
+// 				} else {
+// 					// Use current URL as is
+// 					var returnUrl = currentUrl;
+// 				}
 				
-				// Encode the return URL
-				returnField.value = btoa(unescape(encodeURIComponent(returnUrl)));
-			}
-		});
-	}
-})();
+// 				// Encode the return URL
+// 				returnField.value = btoa(unescape(encodeURIComponent(returnUrl)));
+// 			}
+// 		});
+// 	}
+// })();
+
+(function() {
+		var form = document.getElementById('login-form');
+		if (form) {
+			form.addEventListener('submit', function () {
+				var returnField = form.querySelector('input[name="return"]');
+				returnField.value = btoa(window.location.href);
+			});
+		}
+	})();
 
 // Password toggle
 function arTogglePw(btn) {
@@ -582,7 +592,7 @@ function arTogglePw(btn) {
 					</div>
 				<?php endif; ?>
 				<div class="logout-button">
-					<input type="submit" name="Submit" class="button btn" value="<?php echo Text::_('JLOGOUT'); ?>" />
+					<input type="submit" name="<?php echo Text::_('JLOGOUT'); ?>" class="button btn" value="<?php echo Text::_('JLOGOUT'); ?>" />
 				</div>
 
 				<input type="hidden" name="option" value="com_users" />
