@@ -520,6 +520,19 @@ document.addEventListener('keydown', function(e) {
 	if (e.key === 'Escape') closeAuthModal();
 });
 
+// Override login return URL with current page on submit (preserves language prefix)
+(function () {
+	var form = document.getElementById('login-form');
+	if (form) {
+		form.addEventListener('submit', function () {
+			var returnField = form.querySelector('input[name="return"]');
+			if (returnField) {
+				returnField.value = btoa(unescape(encodeURIComponent(window.location.href)));
+			}
+		});
+	}
+})();
+
 // Password toggle
 function arTogglePw(btn) {
 	var input = btn.parentElement.querySelector('input');
