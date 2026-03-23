@@ -22,7 +22,11 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
+
+// Always redirect back to the current page — preserves language prefix (/ru, /ro, /en)
+$return = base64_encode(Uri::current());
 
 if (version_compare(JVERSION, 4, 'ge')) {
 	$app = Factory::getApplication();
