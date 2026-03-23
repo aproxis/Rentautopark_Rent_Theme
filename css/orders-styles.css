@@ -646,3 +646,7 @@
         transform: none;
     }
 }
+
+.container {
+        max-width: 100%;
+    }
