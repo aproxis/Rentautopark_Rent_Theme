@@ -1338,7 +1338,7 @@ jQuery(function(){
 		<?php else: ?>
 		y = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; d = parseInt(p[2], 10);
 		<?php endif; ?>
-		return Math.floor(new Date(y, m, d, parseInt(hour, 10) || 0, 0, 0).getTime() / 1000);
+		return Math.floor(Date.UTC(y, m, d, parseInt(hour, 10) || 0, 0, 0) / 1000);
 	}
 
 	function vrcValidateSearch() {
