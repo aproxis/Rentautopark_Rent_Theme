@@ -724,8 +724,8 @@
 	}
 }
 
-/* Order Details - Table Layout */
-.order-card.order-details-table {
+/* Order Details - Flexbox Layout */
+.order-card.order-details-flex {
     margin-bottom: 24px;
 }
 
@@ -733,51 +733,54 @@
     padding: 16px;
 }
 
-.order-details-table-wrapper {
+.order-details-flex-container {
+    display: flex;
+    gap: 16px;
     margin-bottom: 16px;
 }
 
-.order-details-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.order-details-table th,
-.order-details-table td {
+.order-detail-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #e9ecef;
-    vertical-align: middle;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+    min-width: 200px;
 }
 
-.order-details-table th {
-    background: #f8f9fa;
+.order-detail-item:hover {
+    background: #fff;
+    border-color: #dee2e6;
+    transform: translateY(-1px);
+}
+
+.order-detail-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
     font-weight: 600;
     color: #495057;
-    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-top: 1px solid #e9ecef;
 }
 
-.order-details-table td {
-    font-size: 14px;
-    color: #212529;
-    font-weight: 500;
-}
-
-.order-details-table tbody tr:hover {
-    background: #f8f9fa;
+.order-detail-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0.8;
 }
 
 .order-detail-value {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     color: #212529;
+    line-height: 1.2;
 }
 
 .order-details-actions {
@@ -816,74 +819,30 @@
 
 /* Responsive Design - Stack on Mobile */
 @media (max-width: 768px) {
-    .order-details-table {
-        border: 1px solid #e9ecef;
+    .order-details-flex-container {
+        flex-direction: column;
+        gap: 12px;
     }
     
-    .order-details-table th,
-    .order-details-table td {
-        display: block;
-        width: 100%;
-        padding: 10px 12px;
-        border-bottom: 1px solid #e9ecef;
+    .order-detail-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-width: auto;
     }
     
-    .order-details-table th {
-        background: #f8f9fa;
+    .order-detail-label {
+        flex-direction: row;
+        gap: 8px;
         font-size: 12px;
-        color: #6c757d;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-top: none;
+        min-width: 120px;
     }
     
-    .order-details-table td {
+    .order-detail-value {
         font-size: 14px;
-        color: #212529;
-        font-weight: 500;
-        background: #fff;
-    }
-    
-    /* Create visual separation between rows on mobile */
-    .order-details-table tbody tr {
-        border-bottom: 2px solid #e9ecef;
-        margin-bottom: 8px;
-    }
-    
-    .order-details-table tbody tr:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
-    
-    /* Add some spacing between label and value on mobile */
-    .order-details-table td {
-        position: relative;
-        padding-left: 120px;
-    }
-    
-    .order-details-table th {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 110px;
-        padding: 10px 12px;
-        border-right: 1px solid #e9ecef;
-        border-bottom: none;
-        background: #f8f9fa;
-        font-size: 12px;
-        color: #6c757d;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        z-index: 1;
-    }
-    
-    /* Position each header relative to its row */
-    .order-details-table tbody tr {
-        position: relative;
-        min-height: 50px;
+        text-align: right;
+        flex: 1;
     }
     
     .order-details-actions {
@@ -893,13 +852,12 @@
 }
 
 @media (max-width: 480px) {
-    .order-details-table th {
-        width: 100px;
+    .order-detail-label {
         font-size: 11px;
+        min-width: 100px;
     }
     
-    .order-details-table td {
-        padding-left: 110px;
+    .order-detail-value {
         font-size: 13px;
     }
     
