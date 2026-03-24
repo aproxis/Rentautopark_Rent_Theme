@@ -471,7 +471,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 							if (is_array($tar)) {
 								?>
 								<div class="order-pricing-item">
-									<div class="order-pricing-name"><?php echo $prname; ?></div>
+									<div class="order-pricing-name"><?php echo JText::sprintf('VRCCARRENTALDAYS', $ord['days']); ?></div>
 									<div class="order-pricing-price">
 										<span class="order-currency"><?php echo $currencysymb; ?></span>
 										<span class="order-price"><?php echo VikRentCar::numberFormat(($is_cust_cost ? $tar['cost'] : VikRentCar::sayCostPlusIva($tar['cost'], $tar['idprice'], $ord))); ?></span>
