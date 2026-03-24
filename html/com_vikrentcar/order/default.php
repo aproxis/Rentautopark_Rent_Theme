@@ -304,7 +304,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 									?>
 									
 									- 
-									
+									<span style="wrap: no-wrap;">
 									<?php 
 										$weekday_var = '';
 										switch($info_to['wday']) {
@@ -318,6 +318,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										}
 										echo JText::_($weekday_var) . ' ' . date($df . ' ' . $nowtf, $ord['consegna']); 
 									?></span>
+									</span>
 								</div>
 
 								<div class="order-car-detail">
