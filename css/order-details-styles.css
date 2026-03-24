@@ -1,0 +1,638 @@
+/* Order Details Page Styles - AutoRent Figma Design v1 */
+
+/* Base Styles */
+.order-details-page {
+	padding: 24px;
+	background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+	min-height: 100vh;
+}
+
+.order-details-container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* Print Button */
+.order-details-print {
+	margin-bottom: 24px;
+	text-align: right;
+}
+
+.order-print-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: #007bff;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+	border: none;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.order-print-btn:hover {
+	background: #0056b3;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Status Header */
+.order-status-header {
+	margin-bottom: 24px;
+}
+
+.order-status-card {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 20px;
+	border-radius: 12px;
+	background: white;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	border: 1px solid #e9ecef;
+	transition: all 0.3s ease;
+}
+
+.order-status-card.confirmed {
+	border-left: 4px solid #28a745;
+}
+
+.order-status-card.standby {
+	border-left: 4px solid #ffc107;
+}
+
+.order-status-card.cancelled {
+	border-left: 4px solid #dc3545;
+}
+
+.order-status-icon {
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 12px;
+	background: rgba(0, 0, 0, 0.05);
+	flex-shrink: 0;
+}
+
+.order-status-card.confirmed .order-status-icon {
+	background: rgba(40, 167, 69, 0.1);
+	color: #28a745;
+}
+
+.order-status-card.standby .order-status-icon {
+	background: rgba(255, 193, 7, 0.1);
+	color: #ffc107;
+}
+
+.order-status-card.cancelled .order-status-icon {
+	background: rgba(220, 53, 69, 0.1);
+	color: #dc3545;
+}
+
+.order-status-icon svg {
+	width: 24px;
+	height: 24px;
+}
+
+.order-status-content {
+	flex: 1;
+}
+
+.order-status-title {
+	margin: 0 0 4px 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: #212529;
+}
+
+.order-status-subtitle {
+	margin: 0;
+	font-size: 14px;
+	color: #6c757d;
+}
+
+/* Grid Layout */
+.order-details-grid {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 24px;
+}
+
+/* Left Column */
+.order-details-left {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* Order Cards */
+.order-card {
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	border: 1px solid #e9ecef;
+	overflow: hidden;
+	transition: all 0.3s ease;
+}
+
+.order-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Headers */
+.order-car-header,
+.order-card-header {
+	padding: 16px 20px;
+	border-bottom: 1px solid #e9ecef;
+	background: #f8f9fa;
+}
+
+.order-car-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.order-card-header h3 {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+	color: #212529;
+}
+
+/* Car Information */
+.order-car-content {
+	padding: 20px;
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 20px;
+}
+
+.order-car-image {
+	text-align: center;
+}
+
+.order-car-image img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.order-car-info h4 {
+	margin: 0 0 12px 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: #212529;
+}
+
+.order-car-details {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.order-car-detail {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+}
+
+.order-car-detail-icon {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+/* Actions */
+.order-car-actions {
+	display: flex;
+	gap: 8px;
+}
+
+.order-car-action-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	background: #007bff;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.order-car-action-btn:hover {
+	background: #0056b3;
+	transform: translateY(-1px);
+}
+
+/* Details Content */
+.order-details-content {
+	padding: 20px;
+}
+
+.order-detail-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 0;
+	border-bottom: 1px solid #f1f3f4;
+}
+
+.order-detail-row:last-child {
+	border-bottom: none;
+}
+
+.order-detail-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+	color: #495057;
+}
+
+.order-detail-icon {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+.order-detail-value {
+	color: #212529;
+	font-weight: 600;
+}
+
+/* Customer Content */
+.order-customer-content {
+	padding: 20px;
+}
+
+.order-customer-details {
+	background: #f8f9fa;
+	padding: 16px;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+	margin-bottom: 16px;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.order-docs-upload {
+	display: flex;
+	justify-content: center;
+}
+
+.order-docs-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: #28a745;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.order-docs-btn:hover {
+	background: #218838;
+	transform: translateY(-1px);
+}
+
+.order-docs-btn.uploaded {
+	background: #17a2b8;
+}
+
+.order-docs-btn.uploaded:hover {
+	background: #138496;
+}
+
+/* Right Column */
+.order-details-right {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* Pricing Content */
+.order-pricing-content {
+	padding: 20px;
+}
+
+.order-pricing-list {
+	margin-bottom: 16px;
+}
+
+.order-pricing-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 0;
+	border-bottom: 1px solid #f1f3f4;
+}
+
+.order-pricing-item:last-child {
+	border-bottom: none;
+}
+
+.order-pricing-item.discount {
+	color: #dc3545;
+}
+
+.order-pricing-item.total {
+	background: #f8f9fa;
+	padding: 12px;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+	font-weight: 700;
+	font-size: 16px;
+}
+
+.order-pricing-item.paid {
+	color: #28a745;
+	font-weight: 600;
+}
+
+.order-pricing-item.remaining {
+	background: #fff3cd;
+	padding: 12px;
+	border-radius: 8px;
+	border: 1px solid #ffeaa7;
+	font-weight: 600;
+}
+
+.order-pricing-name {
+	color: #495057;
+	font-size: 14px;
+}
+
+.order-pricing-price {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-weight: 600;
+}
+
+.order-currency {
+	color: #6c757d;
+	font-size: 12px;
+}
+
+.order-price {
+	font-size: 16px;
+}
+
+/* Payment Content */
+.order-payment-content {
+	padding: 20px;
+}
+
+.order-payment-changes {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	background: #e9ecef;
+	border-radius: 8px;
+	margin-bottom: 16px;
+}
+
+.order-payment-change-label {
+	font-weight: 500;
+	color: #495057;
+}
+
+.order-payment-change-amount {
+	font-weight: 700;
+	font-size: 16px;
+}
+
+.order-payment-note {
+	padding: 16px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+/* Documents */
+.order-documents-content {
+	padding: 20px;
+	display: flex;
+	justify-content: center;
+}
+
+.order-document-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: #6c757d;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.order-document-btn:hover {
+	background: #5a6268;
+	transform: translateY(-1px);
+}
+
+/* Cancellation */
+.order-cancellation-content {
+	padding: 20px;
+}
+
+.order-cancellation-text {
+	margin-bottom: 16px;
+	color: #495057;
+	line-height: 1.5;
+}
+
+.order-cancellation-actions {
+	margin-bottom: 16px;
+}
+
+.order-cancellation-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: #dc3545;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.order-cancellation-btn:hover {
+	background: #c82333;
+	transform: translateY(-1px);
+}
+
+.order-cancellation-form {
+	padding: 16px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+}
+
+.order-cancellation-form-group {
+	margin-bottom: 16px;
+}
+
+.order-cancellation-form-group label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 500;
+	color: #495057;
+	font-size: 14px;
+}
+
+.order-cancellation-form-group input,
+.order-cancellation-form-group textarea {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #ced4da;
+	border-radius: 8px;
+	font-size: 14px;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.order-cancellation-form-group input:focus,
+.order-cancellation-form-group textarea:focus {
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.order-cancellation-form-actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.order-cancellation-submit {
+	padding: 10px 16px;
+	background: #007bff;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.order-cancellation-submit:hover {
+	background: #0056b3;
+	transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+	.order-details-grid {
+		grid-template-columns: 1fr;
+	}
+	
+	.order-car-content {
+		grid-template-columns: 1fr;
+	}
+	
+	.order-car-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+}
+
+@media (max-width: 768px) {
+	.order-details-page {
+		padding: 16px;
+	}
+	
+	.order-status-card {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+	
+	.order-status-icon {
+		align-self: center;
+	}
+	
+	.order-pricing-item {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 4px;
+	}
+	
+	.order-pricing-price {
+		align-self: flex-end;
+	}
+}
+
+@media (max-width: 480px) {
+	.order-details-page {
+		padding: 12px;
+	}
+	
+	.order-status-card {
+		padding: 16px;
+	}
+	
+	.order-status-title {
+		font-size: 18px;
+	}
+	
+	.order-car-info h4 {
+		font-size: 18px;
+	}
+	
+	.order-pricing-item.total,
+	.order-pricing-item.remaining {
+		font-size: 14px;
+	}
+}
+
+/* Print Styles */
+@media print {
+	.order-details-print,
+	.order-car-actions,
+	.order-docs-upload,
+	.order-cancellation-content {
+		display: none !important;
+	}
+	
+	.order-card {
+		box-shadow: none !important;
+		border: 1px solid #000 !important;
+	}
+	
+	.order-status-card {
+		box-shadow: none !important;
+		border: 2px solid #000 !important;
+	}
+}
