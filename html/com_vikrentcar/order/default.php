@@ -289,7 +289,19 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										<line x1="8" y1="2" x2="8" y2="6"></line>
 										<line x1="3" y1="10" x2="21" y2="10"></line>
 									</svg>
-									<span><?php echo JText::_('VRWEEKDAY' . $info_from['wday']) . ' ' . date($df . ' ' . $nowtf, $ord['ritiro']); ?></span>
+									<span><?php 
+										$weekday_var = '';
+										switch($info_from['wday']) {
+											case 0: $weekday_var = 'VRSUN'; break;
+											case 1: $weekday_var = 'VRMON'; break;
+											case 2: $weekday_var = 'VRTUE'; break;
+											case 3: $weekday_var = 'VRWED'; break;
+											case 4: $weekday_var = 'VRTHU'; break;
+											case 5: $weekday_var = 'VRFRI'; break;
+											case 6: $weekday_var = 'VRSAT'; break;
+										}
+										echo JText::_($weekday_var) . ' ' . date($df . ' ' . $nowtf, $ord['ritiro']); 
+									?></span>
 								</div>
 								<div class="order-car-detail">
 									<svg class="order-car-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -305,7 +317,19 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										<line x1="8" y1="2" x2="8" y2="6"></line>
 										<line x1="3" y1="10" x2="21" y2="10"></line>
 									</svg>
-									<span><?php echo JText::_('VRWEEKDAY' . $info_to['wday']) . ' ' . date($df . ' ' . $nowtf, $ord['consegna']); ?></span>
+									<span><?php 
+										$weekday_var = '';
+										switch($info_to['wday']) {
+											case 0: $weekday_var = 'VRSUN'; break;
+											case 1: $weekday_var = 'VRMON'; break;
+											case 2: $weekday_var = 'VRTUE'; break;
+											case 3: $weekday_var = 'VRWED'; break;
+											case 4: $weekday_var = 'VRTHU'; break;
+											case 5: $weekday_var = 'VRFRI'; break;
+											case 6: $weekday_var = 'VRSAT'; break;
+										}
+										echo JText::_($weekday_var) . ' ' . date($df . ' ' . $nowtf, $ord['consegna']); 
+									?></span>
 								</div>
 							</div>
 						</div>
@@ -313,57 +337,61 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 				</div>
 
 				<!-- Order Details -->
-				<div class="order-card order-details-compact">
+				<div class="order-card order-details-table">
 					<div class="order-card-header">
 						<h3><?php echo JText::_('VRCORDERDETAILS') ?: 'Order Details'; ?></h3>
 					</div>
 					<div class="order-details-content">
-						<div class="order-details-line">
-							<div class="order-details-info">
-								<div class="order-detail-item">
+						<div class="order-details-table-grid">
+							<div class="order-detail-row">
+								<div class="order-detail-label">
 									<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 										<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
 										<polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
 										<line x1="12" y1="22.08" x2="12" y2="12"></line>
 									</svg>
-									<span class="order-detail-label"><?php echo JText::_('VRORDEREDON') ?: 'Order Date'; ?>:</span>
-									<span class="order-detail-value"><?php echo date($df.' '.$nowtf, $ord['ts']); ?></span>
+									<span><?php echo JText::_('VRORDEREDON') ?: 'Order Date'; ?></span>
 								</div>
-								
-								<?php if ($ord['status'] == 'confirmed') { ?>
-								<div class="order-detail-item">
-									<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-									</svg>
-									<span class="order-detail-label"><?php echo JText::_('VRCORDERNUMBER') ?: 'Order #'; ?>:</span>
-									<span class="order-detail-value"><?php echo $ord['id']; ?></span>
-								</div>
-								
-								<div class="order-detail-item">
-									<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-									</svg>
-									<span class="order-detail-label"><?php echo JText::_('VRCCONFIRMATIONNUMBER') ?: 'Confirmation'; ?>:</span>
-									<span class="order-detail-value"><?php echo $ord['sid'] . '-' . $ord['ts']; ?></span>
-								</div>
-								<?php } ?>
+								<div class="order-detail-value"><?php echo date($df.' '.$nowtf, $ord['ts']); ?></div>
 							</div>
 							
-							<?php if ($ord['status'] == 'confirmed' && is_file(VRC_SITE_PATH . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "pdfs" . DIRECTORY_SEPARATOR . $ord['id'] . '_' . $ord['ts'] . '.pdf')) { ?>
-							<div class="order-details-actions">
-								<a href="<?php echo VRC_SITE_URI; ?>resources/pdfs/<?php echo $ord['id'].'_'.$ord['ts']; ?>.pdf" target="_blank" class="order-pdf-btn">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-										<polyline points="14,2 14,8 20,8"></polyline>
-										<line x1="16" y1="13" x2="8" y2="13"></line>
-										<line x1="16" y1="17" x2="8" y2="17"></line>
-										<polyline points="10,9 9,9 8,9"></polyline>
+							<?php if ($ord['status'] == 'confirmed') { ?>
+							<div class="order-detail-row">
+								<div class="order-detail-label">
+									<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
 									</svg>
-									<span><?php echo JText::_('VRCDOWNLOADPDF'); ?></span>
-								</a>
+									<span><?php echo JText::_('VRCORDERNUMBER') ?: 'Order #'; ?></span>
+								</div>
+								<div class="order-detail-value"><?php echo $ord['id']; ?></div>
+							</div>
+							
+							<div class="order-detail-row">
+								<div class="order-detail-label">
+									<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+									</svg>
+									<span><?php echo JText::_('VRCCONFIRMATIONNUMBER') ?: 'Confirmation'; ?></span>
+								</div>
+								<div class="order-detail-value"><?php echo $ord['sid'] . '-' . $ord['ts']; ?></div>
 							</div>
 							<?php } ?>
 						</div>
+						
+						<?php if ($ord['status'] == 'confirmed' && is_file(VRC_SITE_PATH . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "pdfs" . DIRECTORY_SEPARATOR . $ord['id'] . '_' . $ord['ts'] . '.pdf')) { ?>
+						<div class="order-details-actions">
+							<a href="<?php echo VRC_SITE_URI; ?>resources/pdfs/<?php echo $ord['id'].'_'.$ord['ts']; ?>.pdf" target="_blank" class="order-pdf-btn">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+									<polyline points="14,2 14,8 20,8"></polyline>
+									<line x1="16" y1="13" x2="8" y2="13"></line>
+									<line x1="16" y1="17" x2="8" y2="17"></line>
+									<polyline points="10,9 9,9 8,9"></polyline>
+								</svg>
+								<span><?php echo JText::_('VRCDOWNLOADPDF'); ?></span>
+							</a>
+						</div>
+						<?php } ?>
 					</div>
 				</div>
 

@@ -723,3 +723,126 @@
 		border: 2px solid #000 !important;
 	}
 }
+
+/* Order Details - Table Layout */
+.order-card.order-details-table {
+    margin-bottom: 24px;
+}
+
+.order-details-content {
+    padding: 16px;
+}
+
+.order-details-table-grid {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.order-detail-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.order-detail-row:hover {
+    background: #fff;
+    border-color: #dee2e6;
+    transform: translateY(-1px);
+}
+
+.order-detail-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.order-detail-label svg {
+    width: 16px;
+    height: 16px;
+    color: #6c757d;
+    flex-shrink: 0;
+}
+
+.order-detail-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #212529;
+    padding-left: 4px;
+}
+
+.order-details-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 12px;
+    border-top: 1px solid #e9ecef;
+}
+
+.order-pdf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #0056b3;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.order-pdf-btn:hover {
+    background: #0056b3;
+    border-color: #004085;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.order-pdf-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .order-detail-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .order-detail-label {
+        font-size: 13px;
+    }
+    
+    .order-detail-value {
+        font-size: 13px;
+        padding-left: 24px;
+    }
+    
+    .order-details-actions {
+        justify-content: center;
+        padding-top: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .order-detail-row {
+        padding: 10px;
+    }
+    
+    .order-pdf-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
