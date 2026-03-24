@@ -205,7 +205,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 				</div>
 				<div class="order-status-content">
 					<h2 class="order-status-title"><?php echo JText::_('VRC_YOURCONF_ORDER_AT') ?: 'Your order is confirmed'; ?></h2>
-					<p class="order-status-subtitle"><?php echo JText::_('VRC_YOURCONF_ORDER_AT_SUBTITLE') ?: 'Your reservation is confirmed and ready for pickup'; ?></p>
 				</div>
 			</div>
 			<?php } elseif ($ord['status'] == 'standby') { ?>
@@ -225,7 +224,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 				</div>
 				<div class="order-status-content">
 					<h2 class="order-status-title"><?php echo JText::_('VRC_YOURORDER_PENDING') ?: 'Order Pending'; ?></h2>
-					<p class="order-status-subtitle"><?php echo JText::_('VRC_YOURORDER_PENDING_SUBTITLE') ?: 'Your reservation is pending confirmation'; ?></p>
 				</div>
 			</div>
 			<?php } else { ?>
@@ -239,7 +237,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 				</div>
 				<div class="order-status-content">
 					<h2 class="order-status-title"><?php echo JText::_('VRC_YOURORDER_CANCELLED') ?: 'Order Cancelled'; ?></h2>
-					<p class="order-status-subtitle"><?php echo JText::_('VRC_YOURORDER_CANCELLED_SUBTITLE') ?: 'This reservation has been cancelled'; ?></p>
 				</div>
 			</div>
 			<?php } ?>
@@ -430,6 +427,39 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 					<div class="order-card-header">
 						<h3><?php echo JText::_('VRCORDERPRICING') ?: 'Pricing Summary'; ?></h3>
 					</div>
+					<?php if ($ord['status'] == 'confirmed') { ?>
+					<div class="order-status-notice confirmed">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+							<polyline points="22 4 12 14.01 9 11.01"></polyline>
+						</svg>
+						<span><?php echo JText::_('VRC_YOURCONF_ORDER_AT_SUBTITLE') ?: 'Your reservation is confirmed and ready for pickup'; ?></span>
+					</div>
+					<?php } elseif ($ord['status'] == 'standby') { ?>
+					<div class="order-status-notice standby">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M12 2v4"></path>
+							<path d="m4.93 4.93 2.83 2.83"></path>
+							<path d="M2 12h4"></path>
+							<path d="m4.93 19.07 2.83-2.83"></path>
+							<path d="M12 22v-4"></path>
+							<path d="m19.07 19.07-2.83-2.83"></path>
+							<path d="M22 12h-4"></path>
+							<path d="m19.07 4.93-2.83 2.83"></path>
+							<circle cx="12" cy="12" r="3"></circle>
+						</svg>
+						<span><?php echo JText::_('VRC_YOURORDER_PENDING_SUBTITLE') ?: 'Your reservation is pending confirmation'; ?></span>
+					</div>
+					<?php } else { ?>
+					<div class="order-status-notice cancelled">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="12" cy="12" r="10"></circle>
+							<line x1="15" y1="9" x2="9" y2="15"></line>
+							<line x1="9" y1="9" x2="15" y2="15"></line>
+						</svg>
+						<span><?php echo JText::_('VRC_YOURORDER_CANCELLED_SUBTITLE') ?: 'This reservation has been cancelled'; ?></span>
+					</div>
+					<?php } ?>
 					<div class="order-pricing-content">
 						<div class="order-pricing-list">
 							<?php 

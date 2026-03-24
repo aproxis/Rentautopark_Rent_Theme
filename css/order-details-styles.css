@@ -167,6 +167,42 @@
 	color: #212529;
 }
 
+/* Status Notice in Pricing Card */
+.order-status-notice {
+	padding: 12px 16px;
+	border-bottom: 1px solid #e9ecef;
+	background: rgba(0, 0, 0, 0.02);
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.order-status-notice.confirmed {
+	background: rgba(40, 167, 69, 0.1);
+	border-bottom-color: rgba(40, 167, 69, 0.3);
+}
+
+.order-status-notice.standby {
+	background: rgba(255, 193, 7, 0.1);
+	border-bottom-color: rgba(255, 193, 7, 0.3);
+}
+
+.order-status-notice.cancelled {
+	background: rgba(220, 53, 69, 0.1);
+	border-bottom-color: rgba(220, 53, 69, 0.3);
+}
+
+.order-status-notice svg {
+	flex-shrink: 0;
+	opacity: 0.8;
+}
+
+.order-status-notice span {
+	font-size: 14px;
+	color: #495057;
+	font-weight: 500;
+}
+
 /* Car Information */
 .order-car-content {
 	padding: 20px;
