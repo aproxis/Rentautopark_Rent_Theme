@@ -289,7 +289,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										<line x1="8" y1="2" x2="8" y2="6"></line>
 										<line x1="3" y1="10" x2="21" y2="10"></line>
 									</svg>
-									<span><?php echo $wdays_map[$info_from['wday']] . ' ' . date($df . ' ' . $nowtf, $ord['ritiro']); ?></span>
+									<span><?php echo JText::_('VRWEEKDAY' . $info_from['wday']) . ' ' . date($df . ' ' . $nowtf, $ord['ritiro']); ?></span>
 								</div>
 								<div class="order-car-detail">
 									<svg class="order-car-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -305,7 +305,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										<line x1="8" y1="2" x2="8" y2="6"></line>
 										<line x1="3" y1="10" x2="21" y2="10"></line>
 									</svg>
-									<span><?php echo $wdays_map[$info_to['wday']] . ' ' . date($df . ' ' . $nowtf, $ord['consegna']); ?></span>
+									<span><?php echo JText::_('VRWEEKDAY' . $info_to['wday']) . ' ' . date($df . ' ' . $nowtf, $ord['consegna']); ?></span>
 								</div>
 							</div>
 						</div>
