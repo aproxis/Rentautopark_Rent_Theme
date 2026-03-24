@@ -303,7 +303,8 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										echo JText::_($weekday_var) . ' ' . date($df . ' ' . $nowtf, $ord['ritiro']); 
 									?>
 									
-									- 
+									&ndash;
+									
 									<span style="wrap: no-wrap;">
 									<?php 
 										$weekday_var = '';
