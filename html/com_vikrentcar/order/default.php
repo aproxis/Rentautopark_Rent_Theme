@@ -304,8 +304,8 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 									?>
 									
 									&ndash;
-									
-									<span style="wrap: no-wrap;">
+
+									<span style="white-space: nowrap;">
 									<?php 
 										$weekday_var = '';
 										switch($info_to['wday']) {
