@@ -296,60 +296,12 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 					</div>
 				</div>
 
-				<!-- Pickup & Return Details -->
+				<!-- Order Details -->
 				<div class="order-card">
 					<div class="order-card-header">
-						<h3><?php echo JText::_('VRCORDERDETAILS') ?: 'Reservation Details'; ?></h3>
+						<h3><?php echo JText::_('VRCORDERDETAILS') ?: 'Order Details'; ?></h3>
 					</div>
 					<div class="order-details-content">
-						<div class="order-detail-row">
-							<div class="order-detail-label">
-								<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M21 10c0 6-9 13-9 13s-9-7-9-13a9 9 0 1 1 18 0z"></path>
-									<polyline points="12 2 12 12 16 16"></polyline>
-								</svg>
-								<span><?php echo JText::_('VRRITIROCAR') ?: 'Pickup Location'; ?></span>
-							</div>
-							<div class="order-detail-value"><?php echo VikRentCar::getPlaceName($ord['idplace'], $vrc_tn); ?></div>
-						</div>
-						
-						<div class="order-detail-row">
-							<div class="order-detail-label">
-								<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M21 10c0 6-9 13-9 13s-9-7-9-13a9 9 0 1 1 18 0z"></path>
-									<polyline points="12 2 12 12 16 16"></polyline>
-								</svg>
-								<span><?php echo JText::_('VRRETURNCARORD') ?: 'Return Location'; ?></span>
-							</div>
-							<div class="order-detail-value"><?php echo VikRentCar::getPlaceName($ord['idreturnplace'], $vrc_tn); ?></div>
-						</div>
-						
-						<div class="order-detail-row">
-							<div class="order-detail-label">
-								<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-									<line x1="16" y1="2" x2="16" y2="6"></line>
-									<line x1="8" y1="2" x2="8" y2="6"></line>
-									<line x1="3" y1="10" x2="21" y2="10"></line>
-								</svg>
-								<span><?php echo JText::_('VRDAL') ?: 'Pickup Date'; ?></span>
-							</div>
-							<div class="order-detail-value"><?php echo $wdays_map[$info_from['wday']] . ' ' . date($df . ' ' . $nowtf, $ord['ritiro']); ?></div>
-						</div>
-						
-						<div class="order-detail-row">
-							<div class="order-detail-label">
-								<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-									<line x1="16" y1="2" x2="16" y2="6"></line>
-									<line x1="8" y1="2" x2="8" y2="6"></line>
-									<line x1="3" y1="10" x2="21" y2="10"></line>
-								</svg>
-								<span><?php echo JText::_('VRAL') ?: 'Return Date'; ?></span>
-							</div>
-							<div class="order-detail-value"><?php echo $wdays_map[$info_to['wday']] . ' ' . date($df . ' ' . $nowtf, $ord['consegna']); ?></div>
-						</div>
-						
 						<div class="order-detail-row">
 							<div class="order-detail-label">
 								<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -357,7 +309,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 									<polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
 									<line x1="12" y1="22.08" x2="12" y2="12"></line>
 								</svg>
-								<span><?php echo JText::_('VRORDEREDON') ?: 'Ordered On'; ?></span>
+								<span><?php echo JText::_('VRORDEREDON') ?: 'Order Date'; ?></span>
 							</div>
 							<div class="order-detail-value"><?php echo date($df.' '.$nowtf, $ord['ts']); ?></div>
 						</div>
@@ -382,6 +334,29 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 							</div>
 							<div class="order-detail-value"><?php echo $ord['sid'] . '-' . $ord['ts']; ?></div>
 						</div>
+						<?php } ?>
+						
+						<!-- PDF Download -->
+						<?php if ($ord['status'] == 'confirmed') { ?>
+						<?php if (is_file(VRC_SITE_PATH . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "pdfs" . DIRECTORY_SEPARATOR . $ord['id'] . '_' . $ord['ts'] . '.pdf')) { ?>
+						<div class="order-detail-row">
+							<div class="order-detail-label">
+								<svg class="order-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+									<polyline points="14,2 14,8 20,8"></polyline>
+									<line x1="16" y1="13" x2="8" y2="13"></line>
+									<line x1="16" y1="17" x2="8" y2="17"></line>
+									<polyline points="10,9 9,9 8,9"></polyline>
+								</svg>
+								<span><?php echo JText::_('VRCDOWNLOADPDF'); ?></span>
+							</div>
+							<div class="order-detail-value">
+								<a href="<?php echo VRC_SITE_URI; ?>resources/pdfs/<?php echo $ord['id'].'_'.$ord['ts']; ?>.pdf" target="_blank" class="order-document-btn">
+									<span><?php echo JText::_('VRCDOWNLOADPDF'); ?></span>
+								</a>
+							</div>
+						</div>
+						<?php } ?>
 						<?php } ?>
 					</div>
 				</div>
