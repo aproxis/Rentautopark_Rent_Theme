@@ -8,7 +8,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 
 // ── Load VikRentCar helper unconditionally ─────────────────────────────────
-$_vikHelper = JPATH_SITE . '/components/com_vikrentcar/helpers/vikrentcar.php';
+$_vikHelper = Uri::root() . 'components/com_vikrentcar/helpers/vikrentcar.php';
 if (file_exists($_vikHelper)) {
     require_once $_vikHelper;
 }
@@ -22,7 +22,7 @@ $document->addStyleSheet(Uri::root() . 'templates/rent/css/orders-styles.css');
 // ── Fetch VikRentCar orders directly from DB ──────────────────────────────
 $orders = [];
 if ($currentUser && $user->id > 0) {
-    $vikPath = JPATH_SITE . '/components/com_vikrentcar';
+    $vikPath = Uri::root() . 'components/com_vikrentcar';
     if (is_dir($vikPath)) {
         $helperFile = $vikPath . '/helpers/vikrentcar.php';
         if (file_exists($helperFile)) {
