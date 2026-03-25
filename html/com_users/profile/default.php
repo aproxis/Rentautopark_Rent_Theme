@@ -7,7 +7,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 
-// ── Load VikRentCar helper using FILESYSTEM path ──────────────────────────
+// ── Load VikRentCar helper ────────────────────────────────────────────────
 $_vikHelper = JPATH_ROOT . '/components/com_vikrentcar/helpers/vikrentcar.php';
 if (file_exists($_vikHelper)) {
     require_once $_vikHelper;
@@ -20,26 +20,49 @@ $document->addStyleSheet(Uri::root() . 'templates/rent/css/profile-styles.css');
 $document->addStyleSheet(Uri::root() . 'templates/rent/css/orders-styles.css');
 
 // ── Fetch VikRentCar orders directly from DB ──────────────────────────────
+// FIX: VikRentCar uses 'custid' for the Joomla user ID and 'custmail' for email.
+// We use a two-step approach: first detect which columns actually exist, then query.
 $orders = [];
 if ($currentUser && $user->id > 0) {
     $vikPath = JPATH_ROOT . '/components/com_vikrentcar';
     if (is_dir($vikPath)) {
         try {
-            $db    = Factory::getDbo();
+            $db = Factory::getDbo();
+
+            // ── Step 1: detect the correct user-ID column name ────────────
+            // VRC < 1.14 uses 'iduser', VRC >= 1.14 uses 'custid'
+            $userIdCol  = 'iduser';   // default (older versions)
+            $emailCol   = 'custmail'; // default
+
+            $columns = $db->getTableColumns('#__vikrentcar_orders', false);
+            if (isset($columns['custid'])) {
+                $userIdCol = 'custid';
+            }
+            if (isset($columns['customer_email'])) {
+                $emailCol = 'customer_email';
+            } elseif (isset($columns['email'])) {
+                $emailCol = 'email';
+            }
+
+            // ── Step 2: query orders matching this user ───────────────────
             $query = $db->getQuery(true)
                 ->select('*')
                 ->from($db->quoteName('#__vikrentcar_orders'))
                 ->where(
                     '(' .
-                    $db->quoteName('iduser') . ' = ' . (int)$user->id .
+                    $db->quoteName($userIdCol) . ' = ' . (int)$user->id .
                     ' OR ' .
-                    $db->quoteName('custmail') . ' = ' . $db->quote($user->email) .
+                    $db->quoteName($emailCol)  . ' = ' . $db->quote($user->email) .
                     ')'
                 )
                 ->order($db->quoteName('ts') . ' DESC');
+
             $db->setQuery($query);
             $orders = $db->loadAssocList() ?: [];
+
         } catch (\Exception $e) {
+            // Capture error for debug display below
+            $ordersError = $e->getMessage();
             $orders = [];
         }
     }
@@ -128,53 +151,85 @@ if (class_exists('VikRentCar')) {
                 </div>
 
                 <?php
+                // ── FIX: Try to include the userorders template override ──
+                // Pass variables the template expects BEFORE including it.
+                // The template guards with isset() so these take full priority.
                 $vikOrdersTmplPath = JPATH_THEMES . '/rent/html/com_vikrentcar/userorders/default.php';
+
                 if (file_exists($vikOrdersTmplPath)) {
-                    // Set ALL variables the template needs BEFORE including it.
-                    // The template uses isset() guards so these take priority over $this->*.
-                    $rows        = $orders;  // ← orders fetched from DB above
-                    $islogged    = 1;        // ← user is confirmed logged in
-                    $searchorder = 0;        // ← hide search form in profile context
-                    $pagelinks   = '';       // ← no pagination needed here
-                    // $df and $nowtf are already set above — template will reuse them
+                    // These must be set in THIS scope — include() shares scope.
+                    $rows        = $orders;  // orders array from DB query above
+                    $islogged    = 1;        // user is confirmed logged in
+                    $searchorder = 0;        // hide search box in profile context
+                    $pagelinks   = '';       // no pagination in profile view
+                    // $df and $nowtf already set above — template reuses them
+
+                    // FIX: The included template wraps output in .orders-page > .orders-container
+                    // which adds extra nesting. We suppress that with a CSS override below,
+                    // OR we render only the inner orders list directly here.
                     include $vikOrdersTmplPath;
+
                 } else {
-                    // ── Fallback inline render if template file is missing ──
+                    // ── Inline fallback render ────────────────────────────
                     if (!empty($orders)): ?>
                     <div class="orders-list">
+                        <div class="orders-list-header">
+                            <h2><?php echo Text::_('VRCYOURRESERVATIONS') ?: 'Rezervările dvs.'; ?></h2>
+                            <span class="orders-count"><?php echo count($orders); ?> <?php echo Text::_('VRCRESERVATIONS') ?: 'rezervări'; ?></span>
+                        </div>
                         <div class="orders-grid">
                             <?php foreach ($orders as $ord): ?>
                             <div class="order-card">
                                 <div class="order-card-header">
                                     <div class="order-date">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
                                         <span><?php echo date($df . ' ' . $nowtf, $ord['ts']); ?></span>
                                     </div>
                                     <div class="order-status">
                                         <?php
-                                        $badge = match($ord['status']) {
-                                            'confirmed' => '<span class="order-status-badge confirmed">' . Text::_('VRCCONFIRMED') . '</span>',
-                                            'standby'   => '<span class="order-status-badge standby">'   . Text::_('VRCSTANDBY')   . '</span>',
-                                            'cancelled' => '<span class="order-status-badge cancelled">' . Text::_('VRCCANCELLED') . '</span>',
-                                            default     => '<span class="order-status-badge">' . htmlspecialchars($ord['status']) . '</span>',
-                                        };
-                                        echo $badge;
+                                        $statusMap = [
+                                            'confirmed' => ['class' => 'confirmed', 'key' => 'VRCONFIRMED'],
+                                            'standby'   => ['class' => 'standby',   'key' => 'VRSTANDBY'],
+                                            'cancelled' => ['class' => 'cancelled', 'key' => 'VRCANCELLED'],
+                                        ];
+                                        $s = $statusMap[$ord['status']] ?? null;
+                                        if ($s) {
+                                            echo '<span class="order-status-badge ' . $s['class'] . '">' . Text::_($s['key']) . '</span>';
+                                        } else {
+                                            echo '<span class="order-status-badge">' . htmlspecialchars($ord['status']) . '</span>';
+                                        }
                                         ?>
                                     </div>
                                 </div>
                                 <div class="order-card-body">
-                                    <div class="order-detail-item">
-                                        <span class="order-detail-label"><?php echo Text::_('VRPICKUP'); ?></span>
-                                        <span class="order-detail-value"><?php echo date($df . ' ' . $nowtf, $ord['ritiro']); ?></span>
+                                    <div class="order-details">
+                                        <div class="order-detail-item">
+                                            <div class="order-detail-content">
+                                                <span class="order-detail-label"><?php echo Text::_('VRPICKUP') ?: 'Ridicare'; ?></span>
+                                                <span class="order-detail-value"><?php echo date($df . ' ' . $nowtf, $ord['ritiro']); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="order-detail-item">
+                                            <div class="order-detail-content">
+                                                <span class="order-detail-label"><?php echo Text::_('VRRETURN') ?: 'Predare'; ?></span>
+                                                <span class="order-detail-value"><?php echo date($df . ' ' . $nowtf, $ord['consegna']); ?></span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="order-detail-item">
-                                        <span class="order-detail-label"><?php echo Text::_('VRRETURN'); ?></span>
-                                        <span class="order-detail-value"><?php echo date($df . ' ' . $nowtf, $ord['consegna']); ?></span>
+                                    <div class="order-actions">
+                                        <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=order&sid=' . $ord['sid'] . '&ts=' . $ord['ts']); ?>" class="order-view-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                            <span><?php echo Text::_('VRCVIEWORDER') ?: 'Vezi detalii'; ?></span>
+                                        </a>
                                     </div>
-                                </div>
-                                <div class="order-actions">
-                                    <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=order&sid=' . $ord['sid'] . '&ts=' . $ord['ts']); ?>" class="order-view-btn">
-                                        <span><?php echo Text::_('VRCVIEWORDER') ?: 'Vezi detalii'; ?></span>
-                                    </a>
                                 </div>
                             </div>
                             <?php endforeach; ?>
@@ -182,10 +237,30 @@ if (class_exists('VikRentCar')) {
                     </div>
                     <?php else: ?>
                     <div class="orders-empty">
-                        <h3><?php echo Text::_('VRCNOUSERRESFOUND') ?: 'Nicio rezervare găsită'; ?></h3>
-                        <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=carslist'); ?>" class="orders-empty-btn">
-                            <?php echo Text::_('VRCBOOKACAR') ?: 'Rezervați o mașină'; ?>
-                        </a>
+                        <div class="orders-empty-card">
+                            <div class="orders-empty-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                            </div>
+                            <div class="orders-empty-content">
+                                <h3><?php echo Text::_('VRCNOUSERRESFOUND') ?: 'Nicio rezervare găsită'; ?></h3>
+                                <p><?php echo Text::_('VRCNOUSERRESFOUND_SUBTITLE') ?: 'Momentan nu aveți nicio rezervare.'; ?></p>
+                                <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=carslist'); ?>" class="orders-empty-btn">
+                                    <span><?php echo Text::_('VRCBOOKACAR') ?: 'Rezervați o mașină'; ?></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php
+                    // ── Debug: show DB error or column detection (remove in production) ──
+                    if (defined('JDEBUG') && JDEBUG && isset($ordersError)): ?>
+                    <div style="background:#fff3cd;border:1px solid #ffc107;padding:12px;border-radius:8px;margin-top:16px;font-family:monospace;font-size:12px;">
+                        <strong>VRC Orders Debug:</strong> <?php echo htmlspecialchars($ordersError); ?>
                     </div>
                     <?php endif;
                 }
@@ -236,3 +311,21 @@ if (class_exists('VikRentCar')) {
     <?php endif; ?>
 
 </div><!-- /.profile-page -->
+
+<style>
+/*
+ * FIX: When userorders/default.php is included inside the profile,
+ * its .orders-page wrapper adds unwanted padding/margin.
+ * These rules neutralise that extra nesting.
+ */
+.orders-section .orders-page {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+}
+.orders-section .orders-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+}
+</style>
