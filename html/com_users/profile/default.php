@@ -19,9 +19,18 @@ $document    = Factory::getDocument();
 $document->addStyleSheet(Uri::root() . 'templates/rent/css/profile-styles.css');
 $document->addStyleSheet(Uri::root() . 'templates/rent/css/orders-styles.css');
 
-// ── Fetch VikRentCar orders directly from DB ──────────────────────────────
-// FIX: VikRentCar uses 'custid' for the Joomla user ID and 'custmail' for email.
-// We use a two-step approach: first detect which columns actually exist, then query.
+// ── Fetch VikRentCar orders ───────────────────────────────────────────────
+//
+// Confirmed DB structure from mb1ii_vikrentcar_orders:
+//   ujid      INT   — Joomla user ID (0 = guest order, no user account linked)
+//   custmail  VARCHAR — customer email (empty '' for many guest orders)
+//   custdata  TEXT  — free-text blob, e.g. "e-Mail: user@example.com\nTelefon: ..."
+//
+// Match strategy — OR across all three so we catch every possible link:
+//   1. ujid = $user->id                  registered orders linked to this account
+//   2. custmail = $user->email           email captured at checkout
+//   3. custdata LIKE '%user@email%'      guest order with email only in the text blob
+//
 $orders = [];
 if ($currentUser && $user->id > 0) {
     $vikPath = JPATH_ROOT . '/components/com_vikrentcar';
@@ -29,31 +38,20 @@ if ($currentUser && $user->id > 0) {
         try {
             $db = Factory::getDbo();
 
-            // ── Step 1: detect the correct user-ID column name ────────────
-            // VRC < 1.14 uses 'iduser', VRC >= 1.14 uses 'custid'
-            $userIdCol  = 'iduser';   // default (older versions)
-            $emailCol   = 'custmail'; // default
-
-            $columns = $db->getTableColumns('#__vikrentcar_orders', false);
-            if (isset($columns['custid'])) {
-                $userIdCol = 'custid';
-            }
-            if (isset($columns['customer_email'])) {
-                $emailCol = 'customer_email';
-            } elseif (isset($columns['email'])) {
-                $emailCol = 'email';
-            }
-
-            // ── Step 2: query orders matching this user ───────────────────
             $query = $db->getQuery(true)
                 ->select('*')
                 ->from($db->quoteName('#__vikrentcar_orders'))
                 ->where(
-                    '(' .
-                    $db->quoteName($userIdCol) . ' = ' . (int)$user->id .
-                    ' OR ' .
-                    $db->quoteName($emailCol)  . ' = ' . $db->quote($user->email) .
-                    ')'
+                    '('
+                    // 1. ujid — the correct column name (NOT iduser / custid)
+                    . $db->quoteName('ujid') . ' = ' . (int)$user->id
+                    // 2. custmail column has the email
+                    . ' OR (' . $db->quoteName('custmail') . ' != ' . $db->quote('')
+                        . ' AND ' . $db->quoteName('custmail') . ' = ' . $db->quote($user->email) . ')'
+                    // 3. email is buried inside the custdata text blob
+                    . ' OR ' . $db->quoteName('custdata') . ' LIKE '
+                        . $db->quote('%' . $db->escape($user->email, true) . '%')
+                    . ')'
                 )
                 ->order($db->quoteName('ts') . ' DESC');
 
@@ -61,7 +59,6 @@ if ($currentUser && $user->id > 0) {
             $orders = $db->loadAssocList() ?: [];
 
         } catch (\Exception $e) {
-            // Capture error for debug display below
             $ordersError = $e->getMessage();
             $orders = [];
         }
@@ -151,26 +148,18 @@ if (class_exists('VikRentCar')) {
                 </div>
 
                 <?php
-                // ── FIX: Try to include the userorders template override ──
-                // Pass variables the template expects BEFORE including it.
-                // The template guards with isset() so these take full priority.
                 $vikOrdersTmplPath = JPATH_THEMES . '/rent/html/com_vikrentcar/userorders/default.php';
 
                 if (file_exists($vikOrdersTmplPath)) {
-                    // These must be set in THIS scope — include() shares scope.
-                    $rows        = $orders;  // orders array from DB query above
-                    $islogged    = 1;        // user is confirmed logged in
-                    $searchorder = 0;        // hide search box in profile context
-                    $pagelinks   = '';       // no pagination in profile view
-                    // $df and $nowtf already set above — template reuses them
-
-                    // FIX: The included template wraps output in .orders-page > .orders-container
-                    // which adds extra nesting. We suppress that with a CSS override below,
-                    // OR we render only the inner orders list directly here.
+                    // Variables set here take priority over $this->* guards in the template
+                    $rows        = $orders;
+                    $islogged    = 1;
+                    $searchorder = 0;
+                    $pagelinks   = '';
+                    // $df / $nowtf already defined above
                     include $vikOrdersTmplPath;
-
                 } else {
-                    // ── Inline fallback render ────────────────────────────
+                    // ── Inline fallback ───────────────────────────────────
                     if (!empty($orders)): ?>
                     <div class="orders-list">
                         <div class="orders-list-header">
@@ -254,17 +243,16 @@ if (class_exists('VikRentCar')) {
                             </div>
                         </div>
                     </div>
-                    <?php endif; ?>
-
-                    <?php
-                    // ── Debug: show DB error or column detection (remove in production) ──
-                    if (defined('JDEBUG') && JDEBUG && isset($ordersError)): ?>
-                    <div style="background:#fff3cd;border:1px solid #ffc107;padding:12px;border-radius:8px;margin-top:16px;font-family:monospace;font-size:12px;">
-                        <strong>VRC Orders Debug:</strong> <?php echo htmlspecialchars($ordersError); ?>
-                    </div>
                     <?php endif;
                 }
                 ?>
+
+                <?php if (isset($ordersError)): ?>
+                <div style="background:#fff3cd;border:1px solid #ffc107;padding:12px;border-radius:8px;margin-top:16px;font-family:monospace;font-size:12px;">
+                    <strong>VRC Orders DB Error:</strong> <?php echo htmlspecialchars($ordersError); ?>
+                </div>
+                <?php endif; ?>
+
             </div>
             <?php endif; ?>
 
@@ -314,9 +302,8 @@ if (class_exists('VikRentCar')) {
 
 <style>
 /*
- * FIX: When userorders/default.php is included inside the profile,
- * its .orders-page wrapper adds unwanted padding/margin.
- * These rules neutralise that extra nesting.
+ * Neutralise the extra .orders-page > .orders-container wrapper
+ * that userorders/default.php adds when included inside profile.
  */
 .orders-section .orders-page {
     padding: 0 !important;
