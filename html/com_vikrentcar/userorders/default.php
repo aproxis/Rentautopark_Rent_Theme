@@ -11,22 +11,37 @@
 
 defined('_JEXEC') OR die('Restricted Area');
 
-$rows = $this->rows;
-$searchorder = $this->searchorder;
-$islogged = $this->islogged;
-$pagelinks = $this->pagelinks;
+// ── When included from the profile page, $rows/$df/$tf are already set ──
+// Only read from $this if we're being rendered as a standalone view
+if (!isset($rows))        { $rows        = isset($this->rows)        ? $this->rows        : []; }
+if (!isset($searchorder)) { $searchorder = isset($this->searchorder) ? $this->searchorder : 0;  }
+if (!isset($islogged))    { $islogged    = isset($this->islogged)    ? $this->islogged    : 0;  }
+if (!isset($pagelinks))   { $pagelinks   = isset($this->pagelinks)   ? $this->pagelinks   : ''; }
 
-$nowdf = VikRentCar::getDateFormat();
-$nowtf = VikRentCar::getTimeFormat();
-if ($nowdf=="%d/%m/%Y") {
-	$df='d/m/Y';
-} elseif ($nowdf=="%m/%d/%Y") {
-	$df='m/d/Y';
-} else {
-	$df='Y/m/d';
+// ── Date/time format — use parent's $df/$tf if already computed, ──────────
+// otherwise call VikRentCar only if the class is actually available
+if (!isset($df) || !isset($nowtf)) {
+    $df    = 'd/m/Y';
+    $nowtf = 'H:i';
+    if (class_exists('VikRentCar')) {
+        $nowdf = VikRentCar::getDateFormat();
+        $nowtf = VikRentCar::getTimeFormat();
+        if ($nowdf == '%d/%m/%Y') {
+            $df = 'd/m/Y';
+        } elseif ($nowdf == '%m/%d/%Y') {
+            $df = 'm/d/Y';
+        } else {
+            $df = 'Y/m/d';
+        }
+    }
 }
 
-$pitemid = VikRequest::getString('Itemid', '', 'request');
+// ── VikRequest may also not be available — use Joomla input as fallback ──
+if (class_exists('VikRequest')) {
+    $pitemid = VikRequest::getString('Itemid', '', 'request');
+} else {
+    $pitemid = Joomla\CMS\Factory::getApplication()->input->getString('Itemid', '');
+}
 
 // Add your custom CSS
 $document = JFactory::getDocument();
