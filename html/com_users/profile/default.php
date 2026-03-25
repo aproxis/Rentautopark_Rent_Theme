@@ -7,6 +7,12 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 
+// ── Load VikRentCar helper unconditionally ─────────────────────────────────
+$_vikHelper = JPATH_SITE . '/components/com_vikrentcar/helpers/vikrentcar.php';
+if (file_exists($_vikHelper)) {
+    require_once $_vikHelper;
+}
+
 $user        = Factory::getUser();
 $currentUser = ($user->id == $this->data->id);
 $document    = Factory::getDocument();
