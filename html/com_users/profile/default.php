@@ -38,24 +38,23 @@ if ($currentUser && $user->id > 0) {
         try {
             $db = Factory::getDbo();
 
-            $query = $db->getQuery(true)
-                ->select('*')
-                ->from($db->quoteName('#__vikrentcar_orders'))
-                ->where(
-                    '('
-                    // 1. ujid — the correct column name (NOT iduser / custid)
-                    . $db->quoteName('ujid') . ' = ' . (int)$user->id
-                    // 2. custmail column has the email
-                    . ' OR (' . $db->quoteName('custmail') . ' != ' . $db->quote('')
-                        . ' AND ' . $db->quoteName('custmail') . ' = ' . $db->quote($user->email) . ')'
-                    // 3. email is buried inside the custdata text blob
-                    . ' OR ' . $db->quoteName('custdata') . ' LIKE '
-                        . $db->quote('%' . $db->escape($user->email, true) . '%')
-                    . ')'
-                )
-                ->order($db->quoteName('ts') . ' DESC');
+            // Raw SQL — avoids Joomla query-builder wrapping each ->where() call
+            // with AND, which silently breaks OR-only WHERE clauses (J3/J4/J5).
+            $ujid      = (int)$user->id;
+            $email     = $db->quote($user->email);
+            $emailLike = $db->quote('%' . $db->escape($user->email, true) . '%');
 
-            $db->setQuery($query);
+            $sql = 'SELECT * FROM ' . $db->quoteName('#__vikrentcar_orders')
+                 . ' WHERE ('
+                 // 1. Order placed while logged in — ujid stored at checkout
+                 . '  (' . $db->quoteName('ujid') . ' > 0 AND ' . $db->quoteName('ujid') . ' = ' . $ujid . ')'
+                 // 2. Guest order: email in custmail column (order #113 pattern: ujid=0, custmail set)
+                 . '  OR (' . $db->quoteName('custmail') . " != '' AND " . $db->quoteName('custmail') . ' = ' . $email . ')'
+                 // 3. Old guest order: email only in custdata text blob
+                 . '  OR (' . $db->quoteName('custmail') . " = '' AND " . $db->quoteName('custdata') . ' LIKE ' . $emailLike . ')'
+                 . ' ) ORDER BY ' . $db->quoteName('ts') . ' DESC';
+
+            $db->setQuery($sql);
             $orders = $db->loadAssocList() ?: [];
 
         } catch (\Exception $e) {
