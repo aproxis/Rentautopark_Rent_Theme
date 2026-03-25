@@ -55,138 +55,64 @@ if (class_exists('VikRentCar')) {
 <div class="profile-page">
     <div class="profile-container">
 
-        <!-- ── Profile Header ─────────────────────────────────────────────── -->
-        <div class="profile-header">
-            <div class="profile-header-content">
+       <!-- ── Unified Profile Header (replaces both old blocks) ─────────────── -->
+<div class="profile-header">
+    <div class="profile-header-inner">
 
-                <div class="profile-user-info">
-                    <div class="profile-avatar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="8" r="4"/>
-                            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                        </svg>
-                    </div>
+        <div class="profile-avatar">
+            <?php
+            // Initials from display name
+            $nameParts = explode(' ', trim($this->data->name));
+            $initials  = strtoupper(
+                (isset($nameParts[0]) ? mb_substr($nameParts[0], 0, 1) : '') .
+                (isset($nameParts[1]) ? mb_substr($nameParts[1], 0, 1) : '')
+            );
+            echo $initials ?: strtoupper(mb_substr($this->data->username, 0, 2));
+            ?>
+        </div>
 
-                    <div class="profile-basic-info">
-                        <div class="profile-name-row">
-                            <span class="profile-username">
-                                <?php echo $this->escape($this->data->username); ?>
-                            </span>
-                            <span class="profile-separator">•</span>
-                            <span class="profile-display-name">
-                                <?php echo $this->escape($this->data->name); ?>
-                            </span>
-                        </div>
-
-                        <div class="profile-dates-group">
-                            <div class="profile-date-item">
-                                <span class="profile-date-label">
-                                    <?php echo Text::_('COM_USERS_PROFILE_REGISTERED_DATE_LABEL'); ?>
-                                </span>
-                                <span class="profile-date-value">
-                                    <?php echo HTMLHelper::_('date', $this->data->registerDate, Text::_('DATE_FORMAT_LC1')); ?>
-                                </span>
-                            </div>
-                            <div class="profile-date-item">
-                                <span class="profile-date-label">
-                                    <?php echo Text::_('COM_USERS_PROFILE_LAST_VISITED_DATE_LABEL'); ?>
-                                </span>
-                                <span class="profile-date-value">
-                                    <?php if ($this->data->lastvisitDate): ?>
-                                        <?php echo HTMLHelper::_('date', $this->data->lastvisitDate, Text::_('DATE_FORMAT_LC1')); ?>
-                                    <?php else: ?>
-                                        <?php echo Text::_('COM_USERS_PROFILE_NEVER_VISITED'); ?>
-                                    <?php endif; ?>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <?php if ($currentUser): ?>
-                <div class="profile-actions">
-                    <button class="profile-edit-btn" onclick="openEditModal()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                        </svg>
-                        <span><?php echo Text::_('COM_USERS_EDIT_PROFILE'); ?></span>
-                    </button>
-                </div>
-                <?php endif; ?>
-
+        <div class="profile-identity">
+            <div class="profile-identity-row">
+                <span class="profile-name"><?php echo $this->escape($this->data->name); ?></span>
+                <span class="profile-username">@<?php echo $this->escape($this->data->username); ?></span>
+                <span class="profile-email"><?php echo $this->escape($this->data->email); ?></span>
+            </div>
+            <div class="profile-meta-row">
+                <span class="profile-meta-item">
+                    <?php echo Text::_('COM_USERS_PROFILE_REGISTERED_DATE_LABEL'); ?>
+                    <strong><?php echo HTMLHelper::_('date', $this->data->registerDate, Text::_('DATE_FORMAT_LC1')); ?></strong>
+                </span>
+                <span class="profile-meta-sep">·</span>
+                <span class="profile-meta-item">
+                    <?php echo Text::_('COM_USERS_PROFILE_LAST_VISITED_DATE_LABEL'); ?>
+                    <strong>
+                        <?php if ($this->data->lastvisitDate): ?>
+                            <?php echo HTMLHelper::_('date', $this->data->lastvisitDate, Text::_('DATE_FORMAT_LC1')); ?>
+                        <?php else: ?>
+                            <?php echo Text::_('COM_USERS_PROFILE_NEVER_VISITED'); ?>
+                        <?php endif; ?>
+                    </strong>
+                </span>
             </div>
         </div>
 
+        <?php if ($currentUser): ?>
+        <button class="profile-edit-btn" onclick="openEditModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            <?php echo Text::_('COM_USERS_EDIT_PROFILE'); ?>
+        </button>
+        <?php endif; ?>
+
+    </div>
+</div>
+
         <!-- ── Profile Content ────────────────────────────────────────────── -->
         <div class="profile-content">
-
-            <!-- Account Info Card -->
-            <div class="profile-card">
-                <div class="profile-card-header">
-                    <h3><?php echo Text::_('COM_USERS_PROFILE_CORE_LEGEND'); ?></h3>
-                </div>
-                <div class="profile-card-body">
-                    <div class="profile-info-grid">
-
-                        <div class="profile-info-item">
-                            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="8" r="4"/>
-                                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                            </svg>
-                            <div class="info-content">
-                                <span class="info-label">
-                                    <?php echo Text::_('COM_USERS_PROFILE_NAME_LABEL'); ?>
-                                </span>
-                                <span class="info-value">
-                                    <?php echo $this->escape($this->data->name); ?>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="profile-info-item">
-                            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-                            </svg>
-                            <div class="info-content">
-                                <span class="info-label">
-                                    <?php echo Text::_('COM_USERS_PROFILE_USERNAME_LABEL'); ?>
-                                </span>
-                                <span class="info-value">
-                                    <?php echo $this->escape($this->data->username); ?>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="profile-info-item">
-                            <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                <polyline points="22,6 12,13 2,6"/>
-                            </svg>
-                            <div class="info-content">
-                                <span class="info-label">
-                                    <?php echo Text::_('COM_USERS_PROFILE_EMAIL_LABEL'); ?>
-                                </span>
-                                <span class="info-value">
-                                    <?php echo $this->escape($this->data->email); ?>
-                                </span>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
 
             <!-- ── Booking History ─────────────────────────────────────────── -->
             <?php if ($currentUser): ?>
