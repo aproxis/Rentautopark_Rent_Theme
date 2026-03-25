@@ -1,21 +1,15 @@
 <?php
-/*
+/**
  * ------------------------------------------------------------------------
  * JA Rent template - Profile Page Override
  * AutoRent Figma Design — v1
  * Changes:
  *  - Modern horizontal profile header layout
- *  - Integrated booking history from VikRentCar
+ *  - Integrated booking history from VikRentCar (FIXED)
  *  - Orange theme (#FE5001) matching design system
  *  - Responsive design with mobile optimization
  * ------------------------------------------------------------------------
- * Copyright (C) 2004-2018 J.O.O.M Solutions Co., Ltd. All Rights Reserved.
- * @license - Copyrighted Commercial Software
- * Author: J.O.O.M Solutions Co., Ltd
- * Websites:  http://www.joomlart.com -  http://www.joomlancers.com
- * This file may not be redistributed in whole or significant part.
- * ------------------------------------------------------------------------
-*/
+ */
 
 defined('_JEXEC') or die;
 
@@ -24,16 +18,12 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
-// Get current user
 $user = Factory::getUser();
 $currentUser = $user->id == $this->data->id;
 
 // Add profile styles
-$document = JFactory::getDocument();
+$document = Factory::getDocument();
 $document->addStyleSheet(JURI::root() . 'templates/rent/css/profile-styles.css');
-
-// Add edit modal template
-require_once JPATH_SITE . '/templates/rent/html/com_users/profile/edit_modal.php';
 ?>
 <div class="profile-page">
     <div class="profile-container">
@@ -147,66 +137,74 @@ require_once JPATH_SITE . '/templates/rent/html/com_users/profile/edit_modal.php
                 </div>
             </div>
 
-            <!-- Booking History Section -->
+            <!-- FIXED: Booking History Section -->
             <?php if ($currentUser): ?>
-            <div class="profile-section">
-                <div class="profile-section-header">
+            <div class="profile-section orders-section">
+                <div class="profile-section-header orders-header">
                     <h3><?php echo Text::_('VRCYOURRESERVATIONS') ?: 'Rezervările dvs.'; ?></h3>
-                    <p><?php echo Text::_('VRCYOURRESERVATIONS_SUBTITLE') ?: 'Gestionați și urmăriți toate rezervările dvs.'; ?></p>
+                    <p><?php echo Text::_('VRCYOURRESERVATIONSSUBTITLE') ?: 'Gestionați și urmăriți toate rezervările dvs.'; ?></p>
                 </div>
                 
-                <!-- Include VikRentCar Orders -->
                 <?php
-                // Check if user is logged in and has orders
-                if ($currentUser) {
-                    // Load VikRentCar component files
-                    $vikrentcarPath = JPATH_SITE . '/components/com_vikrentcar';
-                    if (file_exists($vikrentcarPath)) {
-                        // Include the VikRentCar orders view
-                        $ordersViewPath = $vikrentcarPath . '/views/userorders/tmpl/default.php';
-                        if (file_exists($ordersViewPath)) {
-                            // We need to load the view properly through Joomla's MVC
-                            // For now, we'll include the template directly with proper context
-                            $vikrentcarHelper = $vikrentcarPath . '/helpers/vikrentcar.php';
-                            if (file_exists($vikrentcarHelper)) {
-                                require_once $vikrentcarHelper;
-                            }
-                            
-                            // Set up the view context
-                            $view = new stdClass();
-                            $view->rows = $this->rows ?? [];
-                            $view->searchorder = $this->searchorder ?? 0;
-                            $view->islogged = $this->islogged ?? 1;
-                            $view->pagelinks = $this->pagelinks ?? '';
-                            
-                            // Include the template with proper variables
-                            include $ordersViewPath;
-                        } else {
-                            echo '<div class="profile-empty-card">';
-                            echo '<div class="orders-empty-icon">';
-                            echo '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
-                            echo '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>';
-                            echo '<polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>';
-                            echo '<line x1="12" y1="22.08" x2="12" y2="12"></line>';
-                            echo '</svg>';
-                            echo '</div>';
-                            echo '<div class="orders-empty-content">';
-                            echo '<h3>' . Text::_('VRCNOUSERRESFOUND') . '</h3>';
-                            echo '<p>' . Text::_('VRCNOUSERRESFOUND_SUBTITLE') . '</p>';
-                            echo '<a href="' . JRoute::_('index.php?option=com_vikrentcar&view=carslist') . '" class="orders-empty-btn">';
-                            echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
-                            echo '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>';
-                            echo '<polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>';
-                            echo '<line x1="12" y1="22.08" x2="12" y2="12"></line>';
-                            echo '</svg>';
-                            echo '<span>' . Text::_('VRCBOOKACAR') . '</span>';
-                            echo '</a>';
-                            echo '</div>';
-                            echo '</div>';
-                        }
-                    } else {
-                        echo '<p>' . Text::_('VRCNOUSERRESFOUND') . '</p>';
-                    }
+                // FIXED: Properly load VikRentCar user orders
+                $vikModelPath = JPATH_SITE . '/components/com_vikrentcar/models/userorders.php';
+                $vikOrdersTmplPath = JPATH_THEMES . '/rent/html/com_vikrentcar/userorders/default.php';
+                
+                if (file_exists($vikModelPath) && file_exists($vikOrdersTmplPath)) {
+                    require_once $vikModelPath;
+                    $ordersModel = new VikRentCarModelUserOrders();
+                    
+                    // Get orders for profile owner
+                    $userId = (int)$this->data->id;
+                    $ordersModel->setState('id_user', $userId);
+                    
+                    $rows = $ordersModel->getItems();
+                    $searchorder = $ordersModel->getState('searchorder') ?? 0;
+                    $islogged = 1;
+                    $pagelinks = $ordersModel->getPagination()->getPagesLinks() ?? '';
+                    
+                    // Create view context for your template
+                    $vikView = new stdClass();
+                    $vikView->rows = $rows;
+                    $vikView->searchorder = $searchorder;
+                    $vikView->islogged = $islogged;
+                    $vikView->pagelinks = $pagelinks;
+                    $vikView->pagination = $ordersModel->getPagination();
+                    
+                    // Include YOUR custom VikRentCar orders template
+                    ob_start();
+                    $oldThis = $this;
+                    $this = $vikView;
+                    include $vikOrdersTmplPath;
+                    $ordersContent = ob_get_clean();
+                    $this = $oldThis;
+                    
+                    echo $ordersContent;
+                } else {
+                    // Fallback empty state
+                    ?>
+                    <div class="profile-empty-card orders-empty">
+                        <div class="orders-empty-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                            </svg>
+                        </div>
+                        <div class="orders-empty-content">
+                            <h3><?php echo Text::_('VRCNOUSERRESFOUND') ?: 'Nicio rezervare găsită'; ?></h3>
+                            <p><?php echo Text::_('VRCNOUSERRESFOUNDSUBTITLE') ?: 'Rezervați acum pentru a vedea istoricul dvs.'; ?></p>
+                            <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=carslist'); ?>" class="orders-empty-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                                <span><?php echo Text::_('VRCBOOKACAR') ?: 'Rezervați o mașină'; ?></span>
+                            </a>
+                        </div>
+                    </div>
+                    <?php
                 }
                 ?>
             </div>
@@ -246,17 +244,11 @@ function closeEditModal() {
     document.body.style.overflow = 'unset';
 }
 
-// Close modal when clicking outside
 document.getElementById('editProfileModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeEditModal();
-    }
+    if (e.target === this) closeEditModal();
 });
 
-// Close modal on Escape key
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeEditModal();
-    }
+    if (e.key === 'Escape') closeEditModal();
 });
 </script>
