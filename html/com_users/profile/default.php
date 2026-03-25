@@ -13,6 +13,24 @@ if (file_exists($_vikHelper)) {
     require_once $_vikHelper;
 }
 
+// ── Load VikRentCar language strings ─────────────────────────────────────
+// The profile page is a com_users view, so Joomla never auto-loads
+// VikRentCar's language file. We load it manually here so that
+// Text::_('VRCYOURRESERVATIONS') etc. resolve to actual strings.
+$_lang = Factory::getLanguage();
+$_lang->load('com_vikrentcar', JPATH_ROOT . '/components/com_vikrentcar', null, true);
+// Also try the site language override path (templates/rent/language/…)
+$_lang->load('com_vikrentcar', JPATH_ROOT, null, false);
+
+// Helper: returns the translation if the key was found, otherwise the fallback.
+// Text::_() returns the key itself when untranslated, so ?: won't ever fire.
+if (!function_exists('vrcText')) {
+    function vrcText(string $key, string $fallback): string {
+        $t = \Joomla\CMS\Language\Text::_($key);
+        return ($t !== $key) ? $t : $fallback;
+    }
+}
+
 $user        = Factory::getUser();
 $currentUser = ($user->id == $this->data->id);
 $document    = Factory::getDocument();
@@ -170,8 +188,8 @@ if (class_exists('VikRentCar')) {
             <?php if ($currentUser): ?>
             <div class="profile-section orders-section">
                 <div class="profile-section-header orders-header">
-                    <h3><?php echo Text::_('VRCYOURRESERVATIONS') ?: 'Rezervările dvs.'; ?></h3>
-                    <p><?php echo Text::_('VRCYOURRESERVATIONSSUBTITLE') ?: 'Gestionați și urmăriți toate rezervările dvs.'; ?></p>
+                    <h3><?php echo vrcText('VRCYOURRESERVATIONS', 'Rezervările dvs.'); ?></h3>
+                    <p><?php echo vrcText('VRCYOURRESERVATIONSSUBTITLE', 'Gestionați și urmăriți toate rezervările dvs.'); ?></p>
                 </div>
 
                 <?php
@@ -190,8 +208,8 @@ if (class_exists('VikRentCar')) {
                     if (!empty($orders)): ?>
                     <div class="orders-list">
                         <div class="orders-list-header">
-                            <h2><?php echo Text::_('VRCYOURRESERVATIONS') ?: 'Rezervările dvs.'; ?></h2>
-                            <span class="orders-count"><?php echo count($orders); ?> <?php echo Text::_('VRCRESERVATIONS') ?: 'rezervări'; ?></span>
+                            <h2><?php echo vrcText('VRCYOURRESERVATIONS', 'Rezervările dvs.'); ?></h2>
+                            <span class="orders-count"><?php echo count($orders); ?> <?php echo vrcText('VRCRESERVATIONS', 'rezervări'); ?></span>
                         </div>
                         <div class="orders-grid">
                             <?php foreach ($orders as $ord): ?>
@@ -209,13 +227,13 @@ if (class_exists('VikRentCar')) {
                                     <div class="order-status">
                                         <?php
                                         $statusMap = [
-                                            'confirmed' => ['class' => 'confirmed', 'key' => 'VRCONFIRMED'],
-                                            'standby'   => ['class' => 'standby',   'key' => 'VRSTANDBY'],
-                                            'cancelled' => ['class' => 'cancelled', 'key' => 'VRCANCELLED'],
+                                            'confirmed' => ['class' => 'confirmed', 'key' => 'VRCONFIRMED',  'fallback' => 'Confirmat'],
+                                            'standby'   => ['class' => 'standby',   'key' => 'VRSTANDBY',   'fallback' => 'În așteptare'],
+                                            'cancelled' => ['class' => 'cancelled', 'key' => 'VRCANCELLED', 'fallback' => 'Anulat'],
                                         ];
                                         $s = $statusMap[$ord['status']] ?? null;
                                         if ($s) {
-                                            echo '<span class="order-status-badge ' . $s['class'] . '">' . Text::_($s['key']) . '</span>';
+                                            echo '<span class="order-status-badge ' . $s['class'] . '">' . vrcText($s['key'], $s['fallback']) . '</span>';
                                         } else {
                                             echo '<span class="order-status-badge">' . htmlspecialchars($ord['status']) . '</span>';
                                         }
@@ -226,13 +244,13 @@ if (class_exists('VikRentCar')) {
                                     <div class="order-details">
                                         <div class="order-detail-item">
                                             <div class="order-detail-content">
-                                                <span class="order-detail-label"><?php echo Text::_('VRPICKUP') ?: 'Ridicare'; ?></span>
+                                                <span class="order-detail-label"><?php echo vrcText('VRPICKUP', 'Ridicare'); ?></span>
                                                 <span class="order-detail-value"><?php echo date($df . ' ' . $nowtf, $ord['ritiro']); ?></span>
                                             </div>
                                         </div>
                                         <div class="order-detail-item">
                                             <div class="order-detail-content">
-                                                <span class="order-detail-label"><?php echo Text::_('VRRETURN') ?: 'Predare'; ?></span>
+                                                <span class="order-detail-label"><?php echo vrcText('VRRETURN', 'Predare'); ?></span>
                                                 <span class="order-detail-value"><?php echo date($df . ' ' . $nowtf, $ord['consegna']); ?></span>
                                             </div>
                                         </div>
@@ -243,7 +261,7 @@ if (class_exists('VikRentCar')) {
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                 <circle cx="12" cy="12" r="3"></circle>
                                             </svg>
-                                            <span><?php echo Text::_('VRCVIEWORDER') ?: 'Vezi detalii'; ?></span>
+                                            <span><?php echo vrcText('VRCVIEWORDER', 'Vezi detalii'); ?></span>
                                         </a>
                                     </div>
                                 </div>
@@ -262,10 +280,10 @@ if (class_exists('VikRentCar')) {
                                 </svg>
                             </div>
                             <div class="orders-empty-content">
-                                <h3><?php echo Text::_('VRCNOUSERRESFOUND') ?: 'Nicio rezervare găsită'; ?></h3>
-                                <p><?php echo Text::_('VRCNOUSERRESFOUND_SUBTITLE') ?: 'Momentan nu aveți nicio rezervare.'; ?></p>
+                                <h3><?php echo vrcText('VRCNOUSERRESFOUND', 'Nicio rezervare găsită'); ?></h3>
+                                <p><?php echo vrcText('VRCNOUSERRESFOUND_SUBTITLE', 'Momentan nu aveți nicio rezervare.'); ?></p>
                                 <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=carslist'); ?>" class="orders-empty-btn">
-                                    <span><?php echo Text::_('VRCBOOKACAR') ?: 'Rezervați o mașină'; ?></span>
+                                    <span><?php echo vrcText('VRCBOOKACAR', 'Rezervați o mașină'); ?></span>
                                 </a>
                             </div>
                         </div>
