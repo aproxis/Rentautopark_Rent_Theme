@@ -44,15 +44,43 @@ if ($currentUser && $user->id > 0) {
             $email     = $db->quote($user->email);
             $emailLike = $db->quote('%' . $db->escape($user->email, true) . '%');
 
+            // 4th path: find the customer record(s) linked to this Joomla uid,
+            //    then look up all orders for those customers via the bridge table.
+            $custIdsSql = 'SELECT ' . $db->quoteName('id')
+                        . ' FROM '  . $db->quoteName('#__vikrentcar_customers')
+                        . ' WHERE ' . $db->quoteName('ujid') . ' = ' . $ujid;
+            $db->setQuery($custIdsSql);
+            $custIds = $db->loadColumn() ?: [];
+
+            $custOrderIdsSql = '';
+            if (!empty($custIds)) {
+                $custIdsIn = implode(',', array_map('intval', $custIds));
+                $custOrderIdsSql = 'SELECT ' . $db->quoteName('idorder')
+                                 . ' FROM '  . $db->quoteName('#__vikrentcar_customers_orders')
+                                 . ' WHERE ' . $db->quoteName('idcustomer') . ' IN (' . $custIdsIn . ')';
+                $db->setQuery($custOrderIdsSql);
+                $linkedOrderIds = $db->loadColumn() ?: [];
+            } else {
+                $linkedOrderIds = [];
+            }
+
             $sql = 'SELECT * FROM ' . $db->quoteName('#__vikrentcar_orders')
                  . ' WHERE ('
                  // 1. Order placed while logged in — ujid stored at checkout
                  . '  (' . $db->quoteName('ujid') . ' > 0 AND ' . $db->quoteName('ujid') . ' = ' . $ujid . ')'
-                 // 2. Guest order: email in custmail column (order #113 pattern: ujid=0, custmail set)
+                 // 2. Guest order: email in custmail column
                  . '  OR (' . $db->quoteName('custmail') . " != '' AND " . $db->quoteName('custmail') . ' = ' . $email . ')'
                  // 3. Old guest order: email only in custdata text blob
-                 . '  OR (' . $db->quoteName('custmail') . " = '' AND " . $db->quoteName('custdata') . ' LIKE ' . $emailLike . ')'
-                 . ' ) ORDER BY ' . $db->quoteName('ts') . ' DESC';
+                 . '  OR (' . $db->quoteName('custmail') . " = '' AND " . $db->quoteName('custdata') . ' LIKE ' . $emailLike . ')';
+
+            // 4. Orders linked via customers_orders bridge table (catches orders where
+            //    ujid=0 but admin manually linked the customer, or checkout email differs)
+            if (!empty($linkedOrderIds)) {
+                $orderIdsIn = implode(',', array_map('intval', $linkedOrderIds));
+                $sql .= '  OR ' . $db->quoteName('id') . ' IN (' . $orderIdsIn . ')';
+            }
+
+            $sql .= ' ) ORDER BY ' . $db->quoteName('ts') . ' DESC';
 
             $db->setQuery($sql);
             $orders = $db->loadAssocList() ?: [];
