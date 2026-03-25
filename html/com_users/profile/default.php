@@ -7,8 +7,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 
-// ── Load VikRentCar helper unconditionally ─────────────────────────────────
-$_vikHelper = Uri::root() . 'components/com_vikrentcar/helpers/vikrentcar.php';
+// ── Load VikRentCar helper using FILESYSTEM path (not URL) ────────────────
+$_vikHelper = JPATH_ROOT . '/components/com_vikrentcar/helpers/vikrentcar.php';
 if (file_exists($_vikHelper)) {
     require_once $_vikHelper;
 }
@@ -22,14 +22,11 @@ $document->addStyleSheet(Uri::root() . 'templates/rent/css/orders-styles.css');
 // ── Fetch VikRentCar orders directly from DB ──────────────────────────────
 $orders = [];
 if ($currentUser && $user->id > 0) {
-    $vikPath = Uri::root() . 'components/com_vikrentcar';
+    // ✅ Use JPATH_ROOT (filesystem), not Uri::root() (URL)
+    $vikPath = JPATH_ROOT . '/components/com_vikrentcar';
     if (is_dir($vikPath)) {
-        $helperFile = $vikPath . '/helpers/vikrentcar.php';
-        if (file_exists($helperFile)) {
-            require_once $helperFile;
-        }
         try {
-            $db = Factory::getDbo();
+            $db    = Factory::getDbo();
             $query = $db->getQuery(true)
                 ->select('*')
                 ->from($db->quoteName('#__vikrentcar_orders'))
@@ -49,7 +46,7 @@ if ($currentUser && $user->id > 0) {
     }
 }
 
-// ── Date/time format from VikRentCar settings ────────────────────────────────
+// ── Date/time format from VikRentCar settings ─────────────────────────────
 $df = 'd/m/Y';
 $tf = 'H:i';
 if (class_exists('VikRentCar')) {
