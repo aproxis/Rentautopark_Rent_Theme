@@ -13,7 +13,7 @@ $document    = Factory::getDocument();
 $document->addStyleSheet(Uri::root() . 'templates/rent/css/profile-styles.css');
 $document->addStyleSheet(Uri::root() . 'templates/rent/css/orders-styles.css');
 
-// ── Fetch VikRentCar orders directly from DB ─────────────────────────────────
+// ── Fetch VikRentCar orders directly from DB ──────────────────────────────
 $orders = [];
 if ($currentUser && $user->id > 0) {
     $vikPath = JPATH_SITE . '/components/com_vikrentcar';
@@ -23,11 +23,17 @@ if ($currentUser && $user->id > 0) {
             require_once $helperFile;
         }
         try {
-            $db    = Factory::getDbo();
+            $db = Factory::getDbo();
             $query = $db->getQuery(true)
                 ->select('*')
                 ->from($db->quoteName('#__vikrentcar_orders'))
-                ->where($db->quoteName('custmail') . ' = ' . $db->quote($user->email))
+                ->where(
+                    '(' .
+                    $db->quoteName('iduser') . ' = ' . (int)$user->id .
+                    ' OR ' .
+                    $db->quoteName('custmail') . ' = ' . $db->quote($user->email) .
+                    ')'
+                )
                 ->order($db->quoteName('ts') . ' DESC');
             $db->setQuery($query);
             $orders = $db->loadAssocList() ?: [];
@@ -114,143 +120,77 @@ if (class_exists('VikRentCar')) {
         <!-- ── Profile Content ────────────────────────────────────────────── -->
         <div class="profile-content">
 
-            <!-- ── Booking History ─────────────────────────────────────────── -->
-            <?php if ($currentUser): ?>
-            <div class="profile-section">
+            <!-- Booking History Section -->
+<?php if ($currentUser): ?>
+<div class="profile-section orders-section">
+    <div class="profile-section-header orders-header">
+        <h3><?php echo Text::_('VRCYOURRESERVATIONS') ?: 'Rezervările dvs.'; ?></h3>
+        <p><?php echo Text::_('VRCYOURRESERVATIONSSUBTITLE') ?: 'Gestionați și urmăriți toate rezervările dvs.'; ?></p>
+    </div>
 
-                <div class="profile-section-header">
-                    <h3><?php echo Text::_('VRCYOURRESERVATIONS') ?: 'Your Reservations'; ?></h3>
-                    <p><?php echo Text::_('VRCYOURRESERVATIONS_SUBTITLE') ?: 'Manage and track all your bookings.'; ?></p>
-                </div>
-
-                <?php if (count($orders) > 0): ?>
-
-                <div class="orders-list-header">
-                    <span class="orders-count">
-                        <?php echo count($orders); ?> <?php echo Text::_('VRCRESERVATIONS') ?: 'reservations'; ?>
-                    </span>
-                </div>
-
-                <div class="orders-grid">
-                    <?php foreach ($orders as $ord): ?>
-                    <div class="order-card">
-
-                        <div class="order-card-header">
-                            <div class="order-date">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                    <line x1="3" y1="10" x2="21" y2="10"/>
-                                </svg>
-                                <span><?php echo date($df . ' ' . $tf, $ord['ts']); ?></span>
-                            </div>
+    <?php
+    $vikOrdersTmplPath = JPATH_THEMES . '/rent/html/com_vikrentcar/userorders/default.php';
+    if (file_exists($vikOrdersTmplPath)) {
+        // Map $orders (from DB) into variables the VikRentCar template expects
+        $rows        = $orders;   // template reads: $rows = $this->rows
+        $searchorder = 0;
+        $islogged    = 1;
+        $pagelinks   = '';
+        include $vikOrdersTmplPath;
+    } else {
+        // Fallback: inline render
+        if (!empty($orders)): ?>
+        <div class="orders-list">
+            <div class="orders-grid">
+                <?php foreach ($orders as $ord): ?>
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <div class="order-date">
+                            <span><?php echo date($df . ' ' . $tf, $ord['ts']); ?></span>
+                        </div>
+                        <div class="order-status">
                             <?php
-                            $statusMap = [
-                                'confirmed' => ['css' => 'confirmed', 'key' => 'VRCONFIRMED'],
-                                'standby'   => ['css' => 'standby',   'key' => 'VRSTANDBY'],
-                                'cancelled' => ['css' => 'cancelled', 'key' => 'VRCANCELLED'],
-                            ];
-                            $s   = $statusMap[$ord['status']] ?? ['css' => 'standby', 'key' => ''];
-                            $lbl = $s['key'] ? Text::_($s['key']) : ucfirst($ord['status']);
+                            $badge = match($ord['status']) {
+                                'confirmed' => '<span class="order-status-badge confirmed">' . Text::_('VRCCONFIRMED') . '</span>',
+                                'standby'   => '<span class="order-status-badge standby">'   . Text::_('VRCSTANDBY')  . '</span>',
+                                'cancelled' => '<span class="order-status-badge cancelled">' . Text::_('VRCCANCELLED') . '</span>',
+                                default     => '<span class="order-status-badge">' . $ord['status'] . '</span>',
+                            };
+                            echo $badge;
                             ?>
-                            <span class="order-status-badge <?php echo $s['css']; ?>">
-                                <?php echo $lbl; ?>
-                            </span>
                         </div>
-
-                        <div class="order-card-body">
-                            <div class="order-details">
-
-                                <div class="order-detail-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <polyline points="12 6 12 12 16 14"/>
-                                    </svg>
-                                    <div class="order-detail-content">
-                                        <span class="order-detail-label">
-                                            <?php echo Text::_('VRPICKUP') ?: 'Pick-up'; ?>
-                                        </span>
-                                        <span class="order-detail-value">
-                                            <?php echo date($df . ' ' . $tf, $ord['ritiro']); ?>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="order-detail-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <polyline points="12 6 12 12 16 14"/>
-                                    </svg>
-                                    <div class="order-detail-content">
-                                        <span class="order-detail-label">
-                                            <?php echo Text::_('VRRETURN') ?: 'Return'; ?>
-                                        </span>
-                                        <span class="order-detail-value">
-                                            <?php echo date($df . ' ' . $tf, $ord['consegna']); ?>
-                                        </span>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="order-actions">
-                                <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=order&sid=' . $ord['sid'] . '&ts=' . $ord['ts']); ?>"
-                                   class="order-view-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                    </svg>
-                                    <span><?php echo Text::_('VRCVIEWORDER') ?: 'View details'; ?></span>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-detail-item">
+                            <span class="order-detail-label"><?php echo Text::_('VRPICKUP'); ?></span>
+                            <span class="order-detail-value"><?php echo date($df . ' ' . $tf, $ord['ritiro']); ?></span>
                         </div>
-
+                        <div class="order-detail-item">
+                            <span class="order-detail-label"><?php echo Text::_('VRRETURN'); ?></span>
+                            <span class="order-detail-value"><?php echo date($df . ' ' . $tf, $ord['consegna']); ?></span>
+                        </div>
                     </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <?php else: ?>
-
-                <div class="orders-empty-card">
-                    <div class="orders-empty-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"
-                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                            <line x1="12" y1="22.08" x2="12" y2="12"/>
-                        </svg>
-                    </div>
-                    <div class="orders-empty-content">
-                        <h3><?php echo Text::_('VRCNOUSERRESFOUND') ?: 'No reservations found'; ?></h3>
-                        <p><?php echo Text::_('VRCNOUSERRESFOUND_SUBTITLE') ?: 'You have no bookings yet.'; ?></p>
-                        <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=carslist'); ?>"
-                           class="orders-empty-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="1" y="3" width="15" height="13" rx="2"/>
-                                <path d="M16 8h4l3 5v3h-7V8z"/>
-                                <circle cx="5.5" cy="18.5" r="2.5"/>
-                                <circle cx="18.5" cy="18.5" r="2.5"/>
-                            </svg>
-                            <span><?php echo Text::_('VRCBOOKACAR') ?: 'Book a car'; ?></span>
+                    <div class="order-actions">
+                        <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=orders&sid=' . $ord['sid'] . '&ts=' . $ord['ts']); ?>" class="order-view-btn">
+                            <span><?php echo Text::_('VRCVIEWORDER') ?: 'Vezi detalii'; ?></span>
                         </a>
                     </div>
                 </div>
-
-                <?php endif; ?>
+                <?php endforeach; ?>
             </div>
-            <?php endif; ?>
+        </div>
+        <?php else: ?>
+        <div class="orders-empty">
+            <h3><?php echo Text::_('VRCNOUSERRESFOUND') ?: 'Nicio rezervare găsită'; ?></h3>
+            <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=carslist'); ?>" class="orders-empty-btn">
+                <?php echo Text::_('VRCBOOKACAR') ?: 'Rezervați o mașină'; ?>
+            </a>
+        </div>
+        <?php endif;
+    }
+    ?>
+</div>
+<?php endif; ?>
 
         </div><!-- /.profile-content -->
     </div><!-- /.profile-container -->
