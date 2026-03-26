@@ -23,9 +23,7 @@ $lang->load('plg_user_profile', JPATH_ADMINISTRATOR);
 
 // Load shared profile-edit styles
 $doc = Factory::getDocument();
-$doc->addStyleSheet(
-    \Joomla\CMS\Uri\Uri::root(true) . '/templates/' . $doc->template . '/css/profile-edit.css'
-);
+$doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
 ?>
 <div class="profile-edit<?php echo $this->pageclass_sfx; ?>">
 

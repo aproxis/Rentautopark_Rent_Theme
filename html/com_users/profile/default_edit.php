@@ -27,9 +27,7 @@ HTMLHelper::_('formbehavior.chosen', 'select');
 
 // Load shared profile-edit styles
 $doc = Factory::getDocument();
-$doc->addStyleSheet(
-    \Joomla\CMS\Uri\Uri::root(true) . '/templates/' . $doc->template . '/css/profile-edit.css'
-);
+$doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
 ?>
 <form id="member-profile-edit" action="<?php echo Route::_('index.php?option=com_users&task=profile.save'); ?>" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
 
