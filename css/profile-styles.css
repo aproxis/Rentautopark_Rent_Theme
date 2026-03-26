@@ -595,28 +595,28 @@
 
 
 
-/* ── Unified profile header ─────────────────────────────────────────────── */
+/* ── Unified profile header with three breakpoints ───────────────────────── */
 .profile-header-inner {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1.5rem;
     background: #fff;
     border: 0.5px solid rgba(0,0,0,0.12);
     border-radius: 12px;
-    padding: 1.25rem 1.5rem;
+    padding: 1.5rem;
 }
 
 .profile-avatar {
-    width: 52px;
-    height: 52px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    background: #FFF0E8;           /* light tint of your #FE5001 orange */
+    background: #FFF0E8;
     color: #FE5001;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 600;
     flex-shrink: 0;
     letter-spacing: 0.5px;
 }
@@ -629,78 +629,175 @@
 .profile-identity-row {
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .profile-name {
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     color: #1a1a1a;
 }
 
 .profile-username {
-    font-size: 13px;
+    font-size: 14px;
     color: #888;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
 }
 
 .profile-email {
-    font-size: 12px;
+    font-size: 14px;
     color: #aaa;
 }
 
 .profile-meta-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
 .profile-meta-item {
-    font-size: 12px;
-    color: #aaa;
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .profile-meta-item strong {
-    font-weight: 400;
-    color: #666;
+    font-weight: 600;
+    color: #333;
 }
 
 .profile-meta-sep {
-    font-size: 12px;
     color: #ccc;
+    font-size: 14px;
 }
 
 .profile-edit-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    font-size: 13px;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
     background: transparent;
-    border: 0.5px solid rgba(0,0,0,0.2);
-    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 10px;
     color: #333;
     cursor: pointer;
     white-space: nowrap;
-    transition: background 0.15s, border-color 0.15s;
+    transition: all 0.2s ease;
+    font-weight: 600;
 }
 
 .profile-edit-btn:hover {
     background: #f5f5f5;
     border-color: rgba(0,0,0,0.3);
+    transform: translateY(-1px);
 }
 
-/* Mobile: stack avatar + identity, button goes below */
-@media (max-width: 600px) {
+/* Tablet breakpoint (768px - 991px) */
+@media (max-width: 991px) {
     .profile-header-inner {
-        flex-wrap: wrap;
+        gap: 1.25rem;
+        padding: 1.25rem;
     }
+    
+    .profile-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 18px;
+    }
+    
     .profile-identity-row {
-        gap: 6px;
+        gap: 10px;
+        margin-bottom: 6px;
     }
+    
+    .profile-name {
+        font-size: 16px;
+    }
+    
+    .profile-meta-row {
+        gap: 10px;
+    }
+    
+    .profile-meta-item {
+        font-size: 12px;
+    }
+}
+
+/* Mobile breakpoint (767px and below) */
+@media (max-width: 767px) {
+    .profile-header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 1.25rem;
+    }
+    
+    .profile-avatar {
+        display: none;
+    }
+    
+    .profile-identity-row {
+        gap: 8px;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+    
+    .profile-name {
+        font-size: 18px;
+    }
+    
+    .profile-meta-row {
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .profile-meta-item:first-child {
+        display: none;
+    }
+    
+    .profile-meta-item strong {
+        display: block;
+        margin-top: 2px;
+    }
+    
     .profile-edit-btn {
-        margin-left: auto;
+        align-self: flex-end;
+        width: 100%;
+        justify-content: center;
+        margin-top: 8px;
+    }
+}
+
+/* Small mobile breakpoint (480px and below) */
+@media (max-width: 480px) {
+    .profile-header-inner {
+        padding: 1rem;
+    }
+    
+    .profile-name {
+        font-size: 16px;
+    }
+    
+    .profile-username {
+        font-size: 12px;
+        padding: 3px 6px;
+    }
+    
+    .profile-meta-item {
+        font-size: 12px;
+    }
+    
+    .profile-edit-btn {
+        padding: 10px 16px;
+        font-size: 13px;
     }
 }
