@@ -735,29 +735,37 @@
 /* Mobile breakpoint (767px and below) */
 @media (max-width: 767px) {
     .profile-header-inner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
         padding: 1.25rem;
+        flex-wrap: wrap;
     }
     
     .profile-avatar {
-        display: none;
+        width: 48px;
+        height: 48px;
+        font-size: 16px;
+    }
+    
+    .profile-identity {
+        flex: 1;
+        min-width: 0;
     }
     
     .profile-identity-row {
         gap: 8px;
-        margin-bottom: 8px;
-        width: 100%;
+        margin-bottom: 4px;
+        flex-wrap: wrap;
     }
     
     .profile-name {
-        font-size: 18px;
+        font-size: 16px;
     }
     
     .profile-meta-row {
         gap: 8px;
-        width: 100%;
+        flex-wrap: wrap;
     }
     
     .profile-meta-item:first-child {
@@ -765,15 +773,14 @@
     }
     
     .profile-meta-item strong {
-        display: block;
-        margin-top: 2px;
+        display: inline;
+        margin-top: 0;
     }
     
     .profile-edit-btn {
-        align-self: flex-end;
-        width: 100%;
-        justify-content: center;
-        margin-top: 8px;
+        align-self: center;
+        margin-top: 0;
+        white-space: nowrap;
     }
     
     /* Hide edit button text on mobile, keep only icon */
