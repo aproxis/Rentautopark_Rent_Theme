@@ -775,6 +775,18 @@
         justify-content: center;
         margin-top: 8px;
     }
+    
+    /* Hide edit button text on mobile, keep only icon */
+    .profile-edit-text {
+        display: none;
+    }
+    
+    .profile-edit-btn {
+        padding: 8px;
+        min-width: 40px;
+        justify-content: center;
+        gap: 0;
+    }
 }
 
 /* Hide profile-meta-row completely */
