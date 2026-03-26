@@ -2,19 +2,9 @@
 /*
  * ------------------------------------------------------------------------
  * JA Rent template - Profile Edit Modal
- * AutoRent Figma Design — v1
- * Changes:
- *  - Modern modal dialog for profile editing
- *  - Styled form inputs matching design system
- *  - Orange theme integration
+ * AutoRent Figma Design — v2
  * ------------------------------------------------------------------------
- * Copyright (C) 2004-2018 J.O.O.M Solutions Co., Ltd. All Rights Reserved.
- * @license - Copyrighted Commercial Software
- * Author: J.O.O.M Solutions Co., Ltd
- * Websites:  http://www.joomlart.com -  http://www.joomlancers.com
- * This file may not be redistributed in whole or significant part.
- * ------------------------------------------------------------------------
-*/
+ */
 
 defined('_JEXEC') or die;
 
@@ -23,7 +13,6 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
-// Get current user to check permissions
 $user = Factory::getUser();
 $currentUser = $user->id == $this->data->id;
 
@@ -36,63 +25,221 @@ HTMLHelper::_('behavior.formvalidator');
 HTMLHelper::_('formbehavior.chosen', 'select');
 ?>
 <style>
-/* Hide username field in profile edit modal */
-#jform_username {
+/* ── Profile Edit Form ─────────────────────────────────────────── */
+
+/* Hide username label */
+#jform_username-lbl,
+label[for="jform_username"] > label {
     display: none !important;
+}
+
+/* Row: label + input on one line */
+#member-profile-edit .form-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+#member-profile-edit .form-group .control-label {
+    flex: 0 0 140px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Strip inner label margin */
+#member-profile-edit .form-group .control-label label {
+    margin: 0;
+    font-weight: 600;
+    color: #374151;
+}
+
+#member-profile-edit .form-group .controls {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Inputs */
+#member-profile-edit .form-control {
+    width: 100%;
+    padding: 9px 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #0a0a0a;
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color .2s, box-shadow .2s;
+}
+#member-profile-edit .form-control:focus {
+    outline: none;
+    border-color: #FE5001;
+    box-shadow: 0 0 0 3px rgba(254,80,1,.12);
+}
+#member-profile-edit .form-control[readonly] {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Password rules hint */
+#member-profile-edit [id$="-rules"] {
+    font-size: 11px !important;
+    color: #9ca3af !important;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+/* Password group — eye button overlaid */
+#member-profile-edit .password-group {
+    position: relative;
+}
+#member-profile-edit .password-group .input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+#member-profile-edit .password-group .form-control {
+    padding-right: 42px;
+}
+#member-profile-edit .input-password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0;
+    color: #9ca3af;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: color .2s;
+}
+#member-profile-edit .input-password-toggle:hover {
+    color: #374151;
+}
+
+/* Hide "Показать пароль" text — keep only icon */
+#member-profile-edit .visually-hidden {
+    display: none !important;
+}
+
+/* Meter (password strength) */
+#member-profile-edit meter {
+    width: 100%;
+    height: 4px;
+    margin-top: 6px;
+    border-radius: 2px;
+}
+
+/* Form actions */
+#member-profile-edit .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+}
+
+/* Buttons */
+#member-profile-edit .btn-primary,
+#member-profile-edit .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+    line-height: 1;
+}
+#member-profile-edit .btn-primary svg,
+#member-profile-edit .btn-danger svg {
+    flex-shrink: 0;
+    display: block;
+    margin: 0 !important;
+}
+#member-profile-edit .btn-primary {
+    background: #FE5001;
+    color: #fff;
+}
+#member-profile-edit .btn-primary:hover {
+    background: #E54801;
+    box-shadow: 0 4px 12px rgba(254,80,1,.28);
+}
+#member-profile-edit .btn-danger {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1.5px solid #e5e7eb;
+}
+#member-profile-edit .btn-danger:hover {
+    background: #fee2e2;
+    color: #ef4444;
+    border-color: #fca5a5;
+}
+
+/* Responsive */
+@media (max-width: 540px) {
+    #member-profile-edit .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    #member-profile-edit .form-group .control-label {
+        flex: none;
+    }
+    #member-profile-edit .form-group .controls {
+        width: 100%;
+    }
 }
 </style>
 
 <form id="member-profile-edit" action="<?php echo Route::_('index.php?option=com_users&task=profile.save'); ?>" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
-    <?php foreach ($this->form->getFieldsets() as $group => $fieldset):// Iterate through the form fieldsets and display each one.?>
-        <?php $fields = $this->form->getFieldset($group);?>
-        <?php if (count($fields)):?>
-            <?php foreach ($fields as $field):// Iterate through the fields in the set and display them.?>
-                <?php if ($field->hidden):// If the field is hidden, just display the input.?>
+
+    <?php foreach ($this->form->getFieldsets() as $group => $fieldset): ?>
+        <?php $fields = $this->form->getFieldset($group); ?>
+        <?php if (count($fields)): ?>
+            <?php foreach ($fields as $field): ?>
+                <?php if ($field->hidden): ?>
                     <div class="form-group">
                         <div class="controls">
-                            <?php echo $field->input;?>
+                            <?php echo $field->input; ?>
                         </div>
                     </div>
-                <?php else:?>
+                <?php else: ?>
                     <div class="form-group">
                         <label class="control-label" for="<?php echo $field->id; ?>">
                             <?php echo $field->label; ?>
-                            <?php if (!$field->required && $field->type != 'Spacer') : ?>
-                                <!-- <span class="optional"><?php echo Text::_('COM_USERS_OPTIONAL'); ?></span> -->
-                            <?php endif; ?>
                         </label>
                         <div class="controls">
                             <?php echo $field->input; ?>
-                            <?php if ($field->type == 'Password') : ?>
-                                <!-- <div class="password-strength-indicator" id="password-strength-<?php echo $field->id; ?>" style="display: none; margin-top: 8px;">
-                                    <div class="strength-bar">
-                                        <div class="strength-fill" style="width: 0%;"></div>
-                                    </div>
-                                    <div class="strength-text" style="margin-top: 4px; font-size: 0.85rem;"></div>
-                                </div>
-                                <div class="password-toggle" style="margin-top: 8px;">
-                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                        <input type="checkbox" id="toggle-<?php echo $field->id; ?>" style="width: 16px; height: 16px;">
-                                        <span style="font-size: 0.9rem; color: #6c757d;"><?php echo Text::_('COM_USERS_SHOW_PASSWORD'); ?></span>
-                                    </label>
-                                </div> -->
-                            <?php endif; ?>
                         </div>
                     </div>
-                <?php endif;?>
-            <?php endforeach;?>
-        <?php endif;?>
-    <?php endforeach;?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
 
     <div class="form-actions">
         <button type="submit" class="btn-primary validate">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 6L9 17l-5-5"></path>
             </svg>
-            <span><?php echo Text::_('JSUBMIT'); ?></span>
+            <span><?php echo Text::_('JAPPLY'); ?></span>
         </button>
         <button type="button" class="btn-danger" onclick="closeEditModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -104,83 +251,3 @@ HTMLHelper::_('formbehavior.chosen', 'select');
         <?php echo HTMLHelper::_('form.token'); ?>
     </div>
 </form>
-
-<script type="text/javascript">
-// Password strength indicator
-document.addEventListener('DOMContentLoaded', function() {
-    const passwordFields = document.querySelectorAll('input[type="password"]');
-    
-    passwordFields.forEach(function(field) {
-        const strengthIndicator = document.getElementById('password-strength-' + field.id);
-        const toggleCheckbox = document.getElementById('toggle-' + field.id);
-        
-        if (strengthIndicator) {
-            field.addEventListener('input', function() {
-                const strength = calculatePasswordStrength(this.value);
-                updatePasswordStrength(strengthIndicator, strength);
-            });
-        }
-        
-        if (toggleCheckbox) {
-            toggleCheckbox.addEventListener('change', function() {
-                field.type = this.checked ? 'text' : 'password';
-            });
-        }
-    });
-    
-    // Form validation
-    document.getElementById('member-profile-edit').addEventListener('submit', function(e) {
-        const passwordField = document.querySelector('input[type="password"]');
-        const confirmPasswordField = document.querySelector('input[type="password"][name*="password2"]');
-        
-        if (passwordField && confirmPasswordField) {
-            if (passwordField.value !== confirmPasswordField.value) {
-                e.preventDefault();
-                alert('<?php echo Text::_('COM_USERS_PASSWORDS_DO_NOT_MATCH'); ?>');
-                return false;
-            }
-        }
-    });
-});
-
-function calculatePasswordStrength(password) {
-    let strength = 0;
-    
-    if (password.length >= 8) strength++;
-    if (password.match(/[a-z]/)) strength++;
-    if (password.match(/[A-Z]/)) strength++;
-    if (password.match(/[0-9]/)) strength++;
-    if (password.match(/[^a-zA-Z0-9]/)) strength++;
-    
-    return strength;
-}
-
-function updatePasswordStrength(indicator, strength) {
-    const fill = indicator.querySelector('.strength-fill');
-    const text = indicator.querySelector('.strength-text');
-    
-    indicator.style.display = 'block';
-    
-    if (strength === 0) {
-        fill.style.width = '0%';
-        fill.style.backgroundColor = '#dc3545';
-        text.textContent = '<?php echo Text::_('COM_USERS_PASSWORD_TOO_WEAK'); ?>';
-        text.style.color = '#dc3545';
-    } else if (strength <= 2) {
-        fill.style.width = '40%';
-        fill.style.backgroundColor = '#ffc107';
-        text.textContent = '<?php echo Text::_('COM_USERS_PASSWORD_WEAK'); ?>';
-        text.style.color = '#ffc107';
-    } else if (strength <= 3) {
-        fill.style.width = '70%';
-        fill.style.backgroundColor = '#fd7e14';
-        text.textContent = '<?php echo Text::_('COM_USERS_PASSWORD_MEDIUM'); ?>';
-        text.style.color = '#fd7e14';
-    } else {
-        fill.style.width = '100%';
-        fill.style.backgroundColor = '#28a745';
-        text.textContent = '<?php echo Text::_('COM_USERS_PASSWORD_STRONG'); ?>';
-        text.style.color = '#28a745';
-    }
-}
-</script>
