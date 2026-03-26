@@ -51,13 +51,13 @@ HTMLHelper::_('formbehavior.chosen', 'select');
                         <label class="control-label" for="<?php echo $field->id; ?>">
                             <?php echo $field->label; ?>
                             <?php if (!$field->required && $field->type != 'Spacer') : ?>
-                                <span class="optional"><?php echo Text::_('COM_USERS_OPTIONAL'); ?></span>
+                                <!-- <span class="optional"><?php echo Text::_('COM_USERS_OPTIONAL'); ?></span> -->
                             <?php endif; ?>
                         </label>
                         <div class="controls">
                             <?php echo $field->input; ?>
                             <?php if ($field->type == 'Password') : ?>
-                                <div class="password-strength-indicator" id="password-strength-<?php echo $field->id; ?>" style="display: none; margin-top: 8px;">
+                                <!-- <div class="password-strength-indicator" id="password-strength-<?php echo $field->id; ?>" style="display: none; margin-top: 8px;">
                                     <div class="strength-bar">
                                         <div class="strength-fill" style="width: 0%;"></div>
                                     </div>
@@ -68,7 +68,7 @@ HTMLHelper::_('formbehavior.chosen', 'select');
                                         <input type="checkbox" id="toggle-<?php echo $field->id; ?>" style="width: 16px; height: 16px;">
                                         <span style="font-size: 0.9rem; color: #6c757d;"><?php echo Text::_('COM_USERS_SHOW_PASSWORD'); ?></span>
                                     </label>
-                                </div>
+                                </div> -->
                             <?php endif; ?>
                         </div>
                     </div>
