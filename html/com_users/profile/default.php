@@ -497,30 +497,9 @@ if (class_exists('VikRentCar')) {
         display: none;
     }
     
-    /* Show last visited date on new line */
-    .profile-meta-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-    
     /* Make date strong tag display as block on mobile */
     .profile-meta-item strong {
         display: block;
-    }
-    
-    /* Adjust spacing for mobile */
-    .profile-header-inner {
-        gap: 12px;
-    }
-    
-    .profile-identity-row {
-        margin-bottom: 6px;
-    }
-    
-    /* Make profile name larger on mobile */
-    .profile-name {
-        font-size: 20px;
     }
     
     /* Adjust button position for mobile */
