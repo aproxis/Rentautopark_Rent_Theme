@@ -35,6 +35,13 @@ HTMLHelper::_('behavior.keepalive');
 HTMLHelper::_('behavior.formvalidator');
 HTMLHelper::_('formbehavior.chosen', 'select');
 ?>
+<style>
+/* Hide username field in profile edit modal */
+#jform_username {
+    display: none !important;
+}
+</style>
+
 <form id="member-profile-edit" action="<?php echo Route::_('index.php?option=com_users&task=profile.save'); ?>" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
     <?php foreach ($this->form->getFieldsets() as $group => $fieldset):// Iterate through the form fieldsets and display each one.?>
         <?php $fields = $this->form->getFieldset($group);?>
