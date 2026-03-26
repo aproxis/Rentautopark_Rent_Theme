@@ -22,7 +22,7 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 10px 16px;
+	padding: 8px 12px;
 	background: #007bff;
 	color: white;
 	text-decoration: none;
@@ -348,7 +348,7 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 10px 16px;
+	padding: 8px 12px;
 	background: #007bff;
 	color: white;
 	text-decoration: none;
@@ -389,7 +389,7 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 10px 16px;
+	padding: 8px 12px;
 	background: #28a745;
 	color: white;
 	text-decoration: none;
@@ -532,7 +532,7 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 10px 16px;
+	padding: 8px 12px;
 	background: #6c757d;
 	color: white;
 	text-decoration: none;
@@ -566,7 +566,7 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 10px 16px;
+	padding: 8px 12px;
 	background: #dc3545;
 	color: white;
 	border: none;
@@ -624,7 +624,7 @@
 }
 
 .order-cancellation-submit {
-	padding: 10px 16px;
+	padding: 8px 12px;
 	background: #007bff;
 	color: white;
 	border: none;
@@ -796,7 +796,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 8px 12px;
     background: #007bff;
     color: white;
     text-decoration: none;
