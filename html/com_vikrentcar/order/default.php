@@ -193,54 +193,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 <div class="order-details-page">
 	<div class="order-details-container">
 		
-		<!-- Order Status Header -->
-		<div class="order-status-header">
-			<?php if ($ord['status'] == 'confirmed') { ?>
-			<div class="order-status-card confirmed">
-				<div class="order-status-icon">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-						<polyline points="22 4 12 14.01 9 11.01"></polyline>
-					</svg>
-				</div>
-				<div class="order-status-content">
-					<h2 class="order-status-title"><?php echo JText::_('VRC_YOURCONF_ORDER_AT') ?: 'Your order is confirmed'; ?></h2>
-				</div>
-			</div>
-			<?php } elseif ($ord['status'] == 'standby') { ?>
-			<div class="order-status-card standby">
-				<div class="order-status-icon">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M12 2v4"></path>
-						<path d="m4.93 4.93 2.83 2.83"></path>
-						<path d="M2 12h4"></path>
-						<path d="m4.93 19.07 2.83-2.83"></path>
-						<path d="M12 22v-4"></path>
-						<path d="m19.07 19.07-2.83-2.83"></path>
-						<path d="M22 12h-4"></path>
-						<path d="m19.07 4.93-2.83 2.83"></path>
-						<circle cx="12" cy="12" r="3"></circle>
-					</svg>
-				</div>
-				<div class="order-status-content">
-					<h2 class="order-status-title"><?php echo JText::_('VRC_YOURORDER_PENDING') ?: 'Order Pending'; ?></h2>
-				</div>
-			</div>
-			<?php } else { ?>
-			<div class="order-status-card cancelled">
-				<div class="order-status-icon">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="12" cy="12" r="10"></circle>
-						<line x1="15" y1="9" x2="9" y2="15"></line>
-						<line x1="9" y1="9" x2="15" y2="15"></line>
-					</svg>
-				</div>
-				<div class="order-status-content">
-					<h2 class="order-status-title"><?php echo JText::_('VRC_YOURORDER_CANCELLED') ?: 'Order Cancelled'; ?></h2>
-				</div>
-			</div>
-			<?php } ?>
-		</div>
+		
 
 		<!-- Main Content Grid -->
 		<div class="order-details-grid">
