@@ -189,6 +189,24 @@ label[for="jform_username"] > label {
     border-color: #fca5a5;
 }
 
+/* Password match message — small, left-aligned */
+#member-profile-edit [aria-live="polite"] {
+    font-size: 11px !important;
+    text-align: left !important;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+/* Hide username row (readonly, not editable) */
+#member-profile-edit .form-group:has(#jform_username) {
+    display: none !important;
+}
+
+/* Hide required stars */
+#member-profile-edit .star {
+    display: none !important;
+}
+
 /* Responsive */
 @media (max-width: 540px) {
     #member-profile-edit .form-group {
