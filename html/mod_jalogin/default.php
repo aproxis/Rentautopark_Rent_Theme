@@ -25,9 +25,6 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
 
-// Always redirect back to the current page — preserves language prefix (/ru, /ro, /en)
-$return = base64_encode(Uri::current());
-
 if (version_compare(JVERSION, 4, 'ge')) {
 	$app = Factory::getApplication();
 	$wa = $app->getDocument()->getWebAssetManager();
@@ -285,7 +282,7 @@ if (version_compare(JVERSION, 4, 'ge')) {
 				<?php HTMLHelper::_('script', 'openid.js'); ?>
 			<?php endif; ?>
 
-			<form action="<?php echo Route::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="form-login" id="login-form">
+			<form action="<?php echo Route::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="form-login" id="modal-login-form">
 				<div class="auth-grid">
 					<div class="auth-field">
 						<label for="modlgn-username"><?php echo Text::_('JAUSERNAME'); ?></label>
@@ -343,7 +340,7 @@ if (version_compare(JVERSION, 4, 'ge')) {
 
 				<input type="hidden" name="option" value="com_users" />
 				<input type="hidden" name="task" value="user.login" />
-				<input type="hidden" name="return" value="<?php echo $return; ?>" />
+				<input type="hidden" name="return" value="<?php echo $returnLogin; ?>" />
 				<?php echo HTMLHelper::_('form.token'); ?>
 			</form>
 		</div>
@@ -351,7 +348,7 @@ if (version_compare(JVERSION, 4, 'ge')) {
 		<!-- REGISTER TAB -->
 		<div id="register-content" class="auth-tab-content">
 			<h2 class="auth-form-title">Creează un cont nou</h2>
-			<p class="auth-form-subtitle">Înregistrează-te pentru a începe</p>
+			<p class="auth-form-subtitle">Completează datele — parola va fi trimisă pe email</p>
 
 			<?php
 			HTMLHelper::_('behavior.keepalive');
@@ -388,32 +385,8 @@ if (version_compare(JVERSION, 4, 'ge')) {
 						</div>
 					</div>
 
-					<div class="auth-field">
-						<label for="jform_password1"><?php echo Text::_('JGLOBAL_PASSWORD'); ?> <span style="color:#ef4444">*</span></label>
-						<div class="input-wrap">
-							<input type="password" size="30" class="validate-password required" autocomplete="new-password" value="" id="jform_password1" name="jform[password1]" />
-							<button type="button" class="pw-toggle" onclick="arTogglePw(this)" aria-label="Show/hide password">
-								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-									<circle cx="12" cy="12" r="3"></circle>
-								</svg>
-							</button>
-						</div>
-					</div>
-
-					<div class="auth-field">
-						<label for="jform_password2"><?php echo Text::_('JGLOBAL_REPASSWORD'); ?> <span style="color:#ef4444">*</span></label>
-						<div class="input-wrap">
-							<input type="password" size="30" class="validate-password required" autocomplete="new-password" value="" id="jform_password2" name="jform[password2]" />
-							<button type="button" class="pw-toggle" onclick="arTogglePw(this)" aria-label="Show/hide password">
-								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-									<circle cx="12" cy="12" r="3"></circle>
-								</svg>
-							</button>
-						</div>
-					</div>
 				</div>
+				<!-- Password fields omitted: Joomla "Send passwords" is ON — a generated password is emailed automatically -->
 
 				<?php if(!empty($captchatext)): ?>
 				<div class="auth-field" style="margin-top:16px;">
@@ -553,15 +526,35 @@ document.addEventListener('keydown', function(e) {
 // 	}
 // })();
 
+// Update login return URL to current page on submit
 (function() {
-		var form = document.getElementById('login-form');
-		if (form) {
-			form.addEventListener('submit', function () {
-				var returnField = form.querySelector('input[name="return"]');
-				returnField.value = btoa(window.location.href);
-			});
-		}
-	})();
+	var form = document.getElementById('modal-login-form');
+	if (form) {
+		form.addEventListener('submit', function () {
+			var returnField = form.querySelector('input[name="return"]');
+			if (returnField) returnField.value = btoa(window.location.href);
+		});
+	}
+})();
+
+// Account dropdown toggle (logged-in state)
+function arToggleAccountMenu(btn) {
+	var wrap = btn.closest('.ar-account-wrap');
+	if (!wrap) return;
+	var isOpen = wrap.classList.contains('open');
+	// Close all other open dropdowns first
+	document.querySelectorAll('.ar-account-wrap.open').forEach(function(el) { el.classList.remove('open'); });
+	if (!isOpen) {
+		wrap.classList.add('open');
+		btn.setAttribute('aria-expanded', 'true');
+	}
+}
+// Close account dropdown on outside click
+document.addEventListener('click', function(e) {
+	if (!e.target.closest('.ar-account-wrap')) {
+		document.querySelectorAll('.ar-account-wrap.open').forEach(function(el) { el.classList.remove('open'); });
+	}
+});
 
 // Password toggle
 function arTogglePw(btn) {
@@ -577,49 +570,156 @@ function arTogglePw(btn) {
 }
 </script>
 
-<!-- Login/Register buttons for header integration -->
-<?php if($type == 'logout') : ?>
-	<ul class="ja-login<?php echo $params->get('moduleclass_sfx','')?>">
-		<li>
-			<form action="<?php echo Route::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="form-login" id="login-form">
-				<?php if ($params->get('greeting')) : ?>
-					<div class="login-greeting">
-					<?php if($params->get('name') == 0) :
-						echo Text::sprintf('HINAME', $user->get('username'));
-					 else :
-						echo Text::sprintf('HINAME', $user->get('name'));
-					 endif; ?>
-					</div>
-				<?php endif; ?>
-				<div class="logout-button">
-					<input type="submit" name="<?php echo Text::_('JLOGOUT'); ?>" class="button btn" value="<?php echo Text::_('JLOGOUT'); ?>" />
-				</div>
+<!-- Auth output — single "My Account" button -->
+<?php
+// Login:  redirect back to current page (preserves language prefix /ru, /ro, /en)
+$returnLogin  = base64_encode(Uri::current());
+// Logout: always go to homepage — avoids landing on ?view=login URLs
+$returnLogout = base64_encode(Uri::root());
+?>
 
+<?php if($type == 'logout') : ?>
+	<?php
+	// Show first name only for brevity
+	$displayName = ($params->get('name') == 0)
+		? htmlspecialchars($user->get('username'))
+		: htmlspecialchars(explode(' ', trim($user->get('name')))[0]);
+	?>
+	<div class="ar-account-wrap">
+		<button class="ar-account-btn" onclick="arToggleAccountMenu(this)" type="button" aria-haspopup="true" aria-expanded="false">
+			<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+			<span class="ar-account-name"><?php echo $displayName; ?></span>
+			<svg class="ar-account-caret" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+		</button>
+		<div class="ar-account-dropdown" role="menu">
+			<form action="<?php echo Route::_('index.php', true, $params->get('usesecure')); ?>" method="post">
+				<button type="submit" class="ar-account-logout-btn">
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+					<?php echo Text::_('JLOGOUT'); ?>
+				</button>
 				<input type="hidden" name="option" value="com_users" />
 				<input type="hidden" name="task" value="user.logout" />
-				<input type="hidden" name="return" value="<?php echo $return; ?>" />
-				<?php echo HTMLHelper::_('form.token');?>
+				<input type="hidden" name="return" value="<?php echo $returnLogout; ?>" />
+				<?php echo HTMLHelper::_('form.token'); ?>
 			</form>
-		</li>
-	</ul>
+		</div>
+	</div>
+
 <?php else : ?>
-	<ul class="ja-login<?php echo $params->get('moduleclass_sfx','')?>">
-		<li>
-			<a class="login-switch" href="#" onclick="event.preventDefault(); openAuthModal('login');">
-				<span><?php echo Text::_('TXT_LOGIN');?></span>
-			</a>
-		</li>
-		<?php
-		$jinput = Factory::getApplication()->input;
-		$option = $jinput->get('option', '', 'CMD');
-		$task = $jinput->get('task', '', 'CMD');
-		if($option!='com_user' && $task != 'register' && $params->get('show_register_form', 1)) 
-			{ ?>
-		<li>
-			<a class="register-switch" href="#" onclick="event.preventDefault(); openAuthModal('register');">
-				<span><?php echo Text::_('REGISTER');?></span>
-			</a>
-		</li>
-		<?php } ?>
-	</ul>
+
+	<button class="ar-myaccount-btn" onclick="openAuthModal('login')" type="button">
+		<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+		<span>My Account</span>
+	</button>
+
+	<!-- Hidden login form (used by JS to set the return URL on submit) -->
+	<form action="<?php echo Route::_('index.php', true, $params->get('usesecure')); ?>" method="post" id="login-form" style="display:none;">
+		<input type="hidden" name="username" />
+		<input type="hidden" name="password" />
+		<input type="hidden" name="option" value="com_users" />
+		<input type="hidden" name="task" value="user.login" />
+		<input type="hidden" name="return" value="<?php echo $returnLogin; ?>" />
+		<?php echo HTMLHelper::_('form.token'); ?>
+	</form>
+
 <?php endif; ?>
+
+<style>
+/* ── My Account button (logged-out) ──────────────────────────── */
+.ar-myaccount-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 16px;
+	font-size: 13px;
+	font-weight: 700;
+	color: #fff;
+	background: #FE5001;
+	border: 2px solid #FE5001;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background .2s, box-shadow .2s;
+	white-space: nowrap;
+	line-height: 1;
+}
+.ar-myaccount-btn:hover {
+	background: #E54801;
+	border-color: #E54801;
+	box-shadow: 0 4px 12px rgba(254,80,1,.28);
+}
+
+/* ── Account dropdown (logged-in) ────────────────────────────── */
+.ar-account-wrap {
+	position: relative;
+}
+.ar-account-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 14px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #374151;
+	background: #f3f4f6;
+	border: 1.5px solid #e5e7eb;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: border-color .2s, background .2s, color .2s;
+	white-space: nowrap;
+	line-height: 1;
+}
+.ar-account-btn:hover,
+.ar-account-wrap.open .ar-account-btn {
+	border-color: #FE5001;
+	color: #FE5001;
+	background: rgba(254,80,1,.04);
+}
+.ar-account-caret {
+	transition: transform .2s;
+	flex-shrink: 0;
+}
+.ar-account-wrap.open .ar-account-caret {
+	transform: rotate(180deg);
+}
+.ar-account-dropdown {
+	display: none;
+	position: absolute;
+	top: calc(100% + 6px);
+	right: 0;
+	min-width: 150px;
+	background: #fff;
+	border: 1.5px solid #e5e7eb;
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0,0,0,.1);
+	padding: 6px;
+	z-index: 1050;
+}
+.ar-account-wrap.open .ar-account-dropdown {
+	display: block;
+	animation: arDropIn .15s ease;
+}
+@keyframes arDropIn {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+.ar-account-logout-btn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 9px 12px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #ef4444;
+	background: none;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	text-align: left;
+	transition: background .15s;
+	white-space: nowrap;
+}
+.ar-account-logout-btn:hover {
+	background: #fee2e2;
+}
+</style>
