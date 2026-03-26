@@ -473,6 +473,7 @@
 	font-weight: 600;
 	font-size: 14px;
 	flex: 1;
+	text-align: right;
 }
 
 /* Upload Status */
