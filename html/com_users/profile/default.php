@@ -168,14 +168,14 @@ if (class_exists('VikRentCar')) {
                 </div>
 
                 <?php if ($currentUser): ?>
-                <button class="profile-edit-btn" onclick="openEditModal()">
+                <button class="profile-edit-btn" onclick="openEditModal()" aria-label="<?php echo Text::_('COM_USERS_EDIT_PROFILE'); ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                          fill="none" stroke="currentColor" stroke-width="2"
                          stroke-linecap="round" stroke-linejoin="round">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                     </svg>
-                    <?php echo Text::_('COM_USERS_EDIT_PROFILE'); ?>
+                    <span class="profile-edit-text"><?php echo Text::_('COM_USERS_EDIT_PROFILE'); ?></span>
                 </button>
                 <?php endif; ?>
 
@@ -187,10 +187,10 @@ if (class_exists('VikRentCar')) {
 
             <?php if ($currentUser): ?>
             <div class="profile-section orders-section">
-                <div class="profile-section-header orders-header">
+                <!-- <div class="profile-section-header orders-header">
                     <h3><?php echo vrcText('VRCYOURRESERVATIONS', 'Rezervările dvs.'); ?></h3>
                     <p><?php echo vrcText('VRCYOURRESERVATIONSSUBTITLE', 'Gestionați și urmăriți toate rezervările dvs.'); ?></p>
-                </div>
+                </div> -->
 
                 <?php
                 $vikOrdersTmplPath = JPATH_THEMES . '/rent/html/com_vikrentcar/userorders/default.php';
@@ -359,5 +359,52 @@ if (class_exists('VikRentCar')) {
     padding: 0 !important;
     margin: 0 !important;
     max-width: none !important;
+}
+
+/* Profile edit button responsive styles */
+.profile-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.profile-edit-btn:hover {
+    border-color: #FE5001;
+    color: #FE5001;
+    background-color: #fff5f5;
+}
+
+.profile-edit-text {
+    transition: opacity 0.2s ease;
+}
+
+/* Hide text on mobile, keep icon */
+@media (max-width: 767px) {
+    .profile-edit-text {
+        display: none;
+    }
+    
+    .profile-edit-btn {
+        padding: 8px;
+        min-width: 40px;
+        justify-content: center;
+        gap: 0;
+    }
+}
+
+/* Optional: Add hover effect for desktop */
+@media (min-width: 768px) {
+    .profile-edit-btn:hover .profile-edit-text {
+        opacity: 0.8;
+    }
 }
 </style>
