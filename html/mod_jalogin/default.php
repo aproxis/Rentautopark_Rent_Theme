@@ -378,12 +378,12 @@ if (version_compare(JVERSION, 4, 'ge')) {
 						</div>
 					</div>
 
-					<div class="auth-field">
+					<!-- <div class="auth-field">
 						<label for="jform_email2"><?php echo Text::_('JACONFIRM_EMAIL_ADDRESS'); ?> <span style="color:#ef4444">*</span></label>
 						<div class="input-wrap">
 							<input type="text" size="30" class="validate-email required" value="" id="jform_email2" name="jform[email2]" autocomplete="email" />
 						</div>
-					</div>
+					</div> -->
 
 				</div>
 				
