@@ -1,0 +1,807 @@
+/* Document Upload Page Styles - AutoRent Figma Design v1 */
+
+/* Base Styles */
+.docsupload-page {
+	padding: 24px;
+	background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+	min-height: 100vh;
+}
+
+/* Success Message */
+.successmade {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 16px;
+	background: #d4edda;
+	border: 1px solid #c3e6cb;
+	border-radius: 8px;
+	color: #155724;
+	margin-bottom: 24px;
+	font-weight: 500;
+}
+
+.successmade svg {
+	width: 20px;
+	height: 20px;
+	flex-shrink: 0;
+}
+
+/* Main Container */
+.docsupload-container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* Grid Layout */
+.docsupload-grid {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 24px;
+}
+
+/* Left Column */
+.docsupload-left {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* Right Column */
+.docsupload-right {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* Cards */
+.docsupload-card {
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	border: 1px solid #e9ecef;
+	overflow: hidden;
+	transition: all 0.3s ease;
+}
+
+.docsupload-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Headers */
+.docsupload-card-header {
+	padding: 16px 20px;
+	border-bottom: 1px solid #e9ecef;
+	background: #f8f9fa;
+}
+
+.docsupload-card-header h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #212529;
+}
+
+/* Instructions */
+.docsupload-instructions {
+	padding: 20px;
+	color: #495057;
+	line-height: 1.6;
+}
+
+/* Content Areas */
+.docsupload-content {
+	padding: 20px;
+}
+
+.docsupload-disclaimer {
+	padding: 12px 16px;
+	background: #fff3cd;
+	border: 1px solid #ffeaa7;
+	border-radius: 8px;
+	margin-bottom: 20px;
+	color: #856404;
+	font-size: 14px;
+}
+
+/* Form Styles */
+.docsupload-form {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.docsupload-section {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+/* Form Fields */
+.docsupload-field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.docsupload-field-label {
+	font-weight: 500;
+	color: #495057;
+	font-size: 14px;
+}
+
+/* Upload Area */
+.docsupload-upload-area {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+/* Drag and Drop Area */
+.docsupload-drag-drop {
+	border: 2px dashed #dee2e6;
+	border-radius: 12px;
+	padding: 24px;
+	text-align: center;
+	transition: all 0.3s ease;
+	cursor: pointer;
+	background: #f8f9fa;
+}
+
+.docsupload-drag-drop:hover {
+	border-color: #007bff;
+	background: #e7f3ff;
+}
+
+.docsupload-drag-drop.drag-over {
+	border-color: #007bff;
+	background: #e7f3ff;
+	box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.docsupload-drag-drop-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+}
+
+.docsupload-drag-drop-icon {
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 12px;
+	background: rgba(0, 0, 0, 0.05);
+}
+
+.docsupload-drag-drop-icon svg {
+	width: 24px;
+	height: 24px;
+	opacity: 0.8;
+}
+
+.docsupload-drag-drop-text {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+}
+
+.docsupload-drag-drop-text strong {
+	font-size: 16px;
+	color: #212529;
+}
+
+.docsupload-drag-drop-text span {
+	font-size: 14px;
+	color: #6c757d;
+}
+
+/* Browse Button */
+.docsupload-browse-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: #007bff;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+	border: none;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.docsupload-browse-btn:hover {
+	background: #0056b3;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.docsupload-browse-btn svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* Progress Bar */
+.docsupload-progress {
+	height: 8px;
+	background: #e9ecef;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.docsupload-progress-bar {
+	height: 100%;
+	width: 0%;
+	background: #007bff;
+	transition: width 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+/* File List */
+.docsupload-files {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-height: 60px;
+}
+
+.docsupload-file-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px;
+	background: #f8f9fa;
+	border: 1px solid #e9ecef;
+	border-radius: 8px;
+	transition: all 0.2s ease;
+}
+
+.docsupload-file-item:hover {
+	background: #e9ecef;
+	border-color: #dee2e6;
+}
+
+.docsupload-file-info {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+}
+
+.docsupload-file-icon {
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.05);
+	flex-shrink: 0;
+}
+
+.docsupload-file-icon svg {
+	width: 16px;
+	height: 16px;
+	opacity: 0.8;
+}
+
+.docsupload-file-details {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.docsupload-file-name {
+	font-weight: 500;
+	color: #212529;
+	font-size: 14px;
+}
+
+.docsupload-file-size {
+	font-size: 12px;
+	color: #6c757d;
+}
+
+.docsupload-file-remove {
+	background: #dc3545;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	padding: 6px 8px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.docsupload-file-remove:hover {
+	background: #c82333;
+	transform: translateY(-1px);
+}
+
+.docsupload-file-remove svg {
+	width: 14px;
+	height: 14px;
+}
+
+/* Textarea */
+.docsupload-field-input textarea {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid #ced4da;
+	border-radius: 8px;
+	font-size: 14px;
+	min-height: 100px;
+	resize: vertical;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.docsupload-field-input textarea:focus {
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.docsupload-field-input textarea::placeholder {
+	color: #6c757d;
+}
+
+/* Form Actions */
+.docsupload-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 16px;
+	border-top: 1px solid #e9ecef;
+}
+
+.docsupload-actions-left {
+	display: flex;
+	gap: 8px;
+}
+
+.docsupload-actions-right {
+	display: flex;
+	gap: 8px;
+}
+
+/* Buttons */
+.docsupload-back-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	background: #6c757d;
+	color: white;
+	text-decoration: none;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.docsupload-back-btn:hover {
+	background: #5a6268;
+	transform: translateY(-1px);
+}
+
+.docsupload-back-btn svg {
+	width: 16px;
+	height: 16px;
+}
+
+.docsupload-submit-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: #28a745;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.docsupload-submit-btn:hover {
+	background: #218838;
+	transform: translateY(-1px);
+}
+
+.docsupload-submit-btn svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* Order Details */
+.docsupload-order-details {
+	padding: 20px;
+}
+
+.docsupload-order-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 12px;
+}
+
+.docsupload-order-item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 10px 12px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+	transition: all 0.2s ease;
+}
+
+.docsupload-order-item:hover {
+	background: #fff;
+	border-color: #dee2e6;
+}
+
+.docsupload-order-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+	color: #495057;
+	font-size: 14px;
+	flex-shrink: 0;
+}
+
+.docsupload-order-icon {
+	width: 16px;
+	height: 16px;
+	opacity: 0.8;
+}
+
+.docsupload-order-value {
+	color: #212529;
+	font-weight: 600;
+	font-size: 14px;
+	flex: 1;
+}
+
+/* Upload Status */
+.docsupload-status {
+	padding: 20px;
+}
+
+.docsupload-status-item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 16px;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+	margin-bottom: 16px;
+}
+
+.docsupload-status-item.pending {
+	background: #fff3cd;
+	border-color: #ffeaa7;
+}
+
+.docsupload-status-item.completed {
+	background: #d4edda;
+	border-color: #c3e6cb;
+}
+
+.docsupload-status-icon {
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.05);
+	flex-shrink: 0;
+}
+
+.docsupload-status-item.pending .docsupload-status-icon {
+	background: rgba(255, 193, 7, 0.1);
+	color: #ffc107;
+}
+
+.docsupload-status-item.completed .docsupload-status-icon {
+	background: rgba(40, 167, 69, 0.1);
+	color: #28a745;
+}
+
+.docsupload-status-icon svg {
+	width: 18px;
+	height: 18px;
+}
+
+.docsupload-status-content {
+	flex: 1;
+}
+
+.docsupload-status-title {
+	margin: 0 0 4px 0;
+	font-weight: 600;
+	color: #212529;
+	font-size: 16px;
+}
+
+.docsupload-status-subtitle {
+	margin: 0;
+	font-size: 14px;
+	color: #495057;
+}
+
+.docsupload-status-actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.docsupload-status-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	border-radius: 8px;
+	border: 1px solid;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.docsupload-status-btn-primary {
+	background: #007bff;
+	color: white;
+	border-color: #0056b3;
+}
+
+.docsupload-status-btn-primary:hover {
+	background: #0056b3;
+	border-color: #004085;
+	transform: translateY(-1px);
+}
+
+.docsupload-status-btn-success {
+	background: #28a745;
+	color: white;
+	border-color: #1e7e34;
+}
+
+.docsupload-status-btn-success:hover {
+	background: #218838;
+	border-color: #16652a;
+	transform: translateY(-1px);
+}
+
+.docsupload-status-btn svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+	.docsupload-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 768px) {
+	.docsupload-page {
+		padding: 16px;
+	}
+	
+	.docsupload-grid {
+		gap: 16px;
+	}
+	
+	.docsupload-actions {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 12px;
+	}
+	
+	.docsupload-order-item {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	}
+	
+	.docsupload-order-label {
+		min-width: 120px;
+	}
+	
+	.docsupload-order-value {
+		text-align: left;
+	}
+	
+	.docsupload-drag-drop {
+		padding: 16px;
+	}
+	
+	.docsupload-drag-drop-text {
+		gap: 8px;
+	}
+	
+	.docsupload-drag-drop-text strong {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 480px) {
+	.docsupload-page {
+		padding: 12px;
+	}
+	
+	.successmade {
+		padding: 10px 12px;
+		font-size: 14px;
+	}
+	
+	.successmade svg {
+		width: 18px;
+		height: 18px;
+	}
+	
+	.docsupload-card-header h3 {
+		font-size: 16px;
+	}
+	
+	.docsupload-order-item {
+		padding: 8px 10px;
+	}
+	
+	.docsupload-order-label {
+		font-size: 12px;
+		min-width: 100px;
+	}
+	
+	.docsupload-order-value {
+		font-size: 13px;
+	}
+	
+	.docsupload-status-title {
+		font-size: 14px;
+	}
+	
+	.docsupload-status-subtitle {
+		font-size: 12px;
+	}
+	
+	.docsupload-browse-btn,
+	.docsupload-submit-btn {
+		padding: 8px 12px;
+		font-size: 13px;
+	}
+}
+
+/* Print Styles */
+@media print {
+	.successmade,
+	.docsupload-actions,
+	.docsupload-drag-drop,
+	.docsupload-status {
+		display: none !important;
+	}
+	
+	.docsupload-card {
+		box-shadow: none !important;
+		border: 1px solid #000 !important;
+	}
+	
+	.docsupload-card-header {
+		background: transparent !important;
+		border-bottom: 1px solid #000 !important;
+	}
+}
+
+/* Toast Message Styles (reusing existing styles) */
+.vrc-toast-message {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background: #343a40;
+	color: white;
+	padding: 12px 16px;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	z-index: 9999;
+	opacity: 0;
+	transform: translateY(20px);
+	transition: all 0.3s ease;
+}
+
+.vrc-toast-message-presented {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.vrc-toast-message-dimissed {
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+.vrc-toast-message-content {
+	font-size: 14px;
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.docsupload-card {
+	animation: fadeInUp 0.5s ease-out;
+}
+
+/* Focus styles for accessibility */
+.docsupload-drag-drop:focus,
+.docsupload-browse-btn:focus,
+.docsupload-submit-btn:focus,
+.docsupload-back-btn:focus {
+	outline: 2px solid #007bff;
+	outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.docsupload-card {
+		border: 2px solid #000;
+	}
+	
+	.docsupload-drag-drop {
+		border-width: 3px;
+	}
+	
+	.docsupload-order-item,
+	.docsupload-file-item {
+		border-width: 2px;
+	}
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+	.docsupload-card,
+	.docsupload-card:hover,
+	.docsupload-file-item:hover,
+	.docsupload-order-item:hover,
+	.docsupload-browse-btn:hover,
+	.docsupload-submit-btn:hover,
+	.docsupload-back-btn:hover,
+	.docsupload-status-btn:hover {
+		transition: none;
+		transform: none;
+	}
+	
+	.vrc-toast-message,
+	.vrc-toast-message-presented,
+	.vrc-toast-message-dimissed {
+		transition: none;
+	}
+	
+	@keyframes fadeInUp {
+		animation-duration: 0s;
+	}
+}
+
+.container {
+	max-width: 100% !important;
+}
