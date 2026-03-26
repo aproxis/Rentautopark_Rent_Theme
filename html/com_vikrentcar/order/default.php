@@ -172,7 +172,7 @@ $printer 	= VikRequest::getInt('printer', '', 'request');
 $bestitemid = VikRentCar::findProperItemIdType(array('order'));
 if ($printer != 1) {
 ?>
-<div class="order-details-print">
+<!-- <div class="order-details-print">
 	<a href="<?php echo JRoute::_('index.php?option=com_vikrentcar&view=order&sid='.$ord['sid'].'&ts='.$ord['ts'].'&printer=1&tmpl=component'.(!empty($bestitemid) ? '&Itemid='.$bestitemid : (!empty($pitemid) ? '&Itemid='.$pitemid : ''))); ?>" target="_blank" class="order-print-btn">
 		<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 			<polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -181,7 +181,7 @@ if ($printer != 1) {
 		</svg>
 		<span><?php echo JText::_('VRCDOWNLOADPDF') ?: 'Print Order'; ?></span>
 	</a>
-</div>
+</div> -->
 <?php
 }
 
