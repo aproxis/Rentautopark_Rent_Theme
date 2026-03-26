@@ -387,7 +387,10 @@ if (version_compare(JVERSION, 4, 'ge')) {
 
 				</div>
 				<!-- Password fields omitted: Joomla "Send passwords" is ON — a generated password is emailed automatically -->
+				<input type="hidden" name="jform[password1]" value="" />
+				<input type="hidden" name="jform[password2]" value="" />
 
+				
 				<?php if(!empty($captchatext)): ?>
 				<div class="auth-field" style="margin-top:16px;">
 					<label for="jform_captcha"><?php echo Text::_('JACAPTCHA'); ?> <span style="color:#ef4444">*</span></label>
