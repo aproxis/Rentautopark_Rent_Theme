@@ -803,7 +803,7 @@
     border-radius: 8px;
     border: 1px solid #0056b3;
     transition: all 0.2s ease;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
 }
 
@@ -865,7 +865,7 @@
     
     .order-pdf-btn {
         padding: 8px 12px;
-        font-size: 13px;
+        font-size: 12px;
     }
 }
 
