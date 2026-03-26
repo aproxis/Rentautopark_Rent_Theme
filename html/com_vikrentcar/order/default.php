@@ -291,6 +291,18 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 				<div class="order-card order-details-flex">
 					<div class="order-card-header">
 						<h3><?php echo JText::_('VRCORDERDETAILS') ?: 'Order Details'; ?></h3>
+						<?php if ($ord['status'] == 'confirmed' && is_file(VRC_SITE_PATH . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "pdfs" . DIRECTORY_SEPARATOR . $ord['id'] . '_' . $ord['ts'] . '.pdf')) { ?>
+						<a href="<?php echo VRC_SITE_URI; ?>resources/pdfs/<?php echo $ord['id'].'_'.$ord['ts']; ?>.pdf" target="_blank" class="order-pdf-btn">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+								<polyline points="14,2 14,8 20,8"></polyline>
+								<line x1="16" y1="13" x2="8" y2="13"></line>
+								<line x1="16" y1="17" x2="8" y2="17"></line>
+								<polyline points="10,9 9,9 8,9"></polyline>
+							</svg>
+							<span><?php echo JText::_('VRCDOWNLOADPDF'); ?></span>
+						</a>
+						<?php } ?>
 					</div>
 					<div class="order-details-content">
 						<div class="order-details-flex-container">
@@ -327,20 +339,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 							</div>
 						</div>
 						
-						<?php if ($ord['status'] == 'confirmed' && is_file(VRC_SITE_PATH . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . "pdfs" . DIRECTORY_SEPARATOR . $ord['id'] . '_' . $ord['ts'] . '.pdf')) { ?>
-						<div class="order-details-actions">
-							<a href="<?php echo VRC_SITE_URI; ?>resources/pdfs/<?php echo $ord['id'].'_'.$ord['ts']; ?>.pdf" target="_blank" class="order-pdf-btn">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-									<polyline points="14,2 14,8 20,8"></polyline>
-									<line x1="16" y1="13" x2="8" y2="13"></line>
-									<line x1="16" y1="17" x2="8" y2="17"></line>
-									<polyline points="10,9 9,9 8,9"></polyline>
-								</svg>
-								<span><?php echo JText::_('VRCDOWNLOADPDF'); ?></span>
-							</a>
-						</div>
-						<?php } ?>
+						<?php /* PDF button moved to .order-card-header above */ ?>
 					</div>
 				</div>
 
@@ -348,30 +347,26 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 				<div class="order-card">
 					<div class="order-card-header">
 						<h3><?php echo JText::_('VRPERSDETS') ?: 'Customer Information'; ?></h3>
+						<?php
+						$cpin = VikRentCar::getCPinIstance();
+						$customer = $cpin->getCustomerFromBooking($ord['id']);
+						if (VikRentCar::allowDocsUpload() && $ord['status'] == 'confirmed' && count($customer) && mktime(23, 59, 59, $info_from['mon'], $info_from['mday'], $info_from['year']) >= time()) {
+							$has_uploaded_docs = !empty($customer['drivers_data']);
+							?>
+							<a href="<?php echo JRoute::_('index.php?option=com_vikrentcar&view=docsupload&sid='.$ord['sid'].'&ts='.$ord['ts'].(!empty($bestitemid) ? '&Itemid='.$bestitemid : (!empty($pitemid) ? '&Itemid='.$pitemid : ''))); ?>" class="order-docs-btn <?php echo $has_uploaded_docs ? 'uploaded' : ''; ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<?php echo $has_uploaded_docs ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' : '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>'; ?>
+								</svg>
+								<span><?php echo $has_uploaded_docs ? JText::_('VRC_UPLOAD_DOCUMENTS_COMPLETED') : JText::_('VRC_UPLOAD_DOCUMENTS'); ?></span>
+							</a>
+							<?php
+						}
+						?>
 					</div>
 					<div class="order-customer-content">
 						<div class="order-customer-details">
 							<?php echo nl2br($ord['custdata']); ?>
 						</div>
-						
-						<?php
-						$cpin = VikRentCar::getCPinIstance();
-						$customer = $cpin->getCustomerFromBooking($ord['id']);
-						if (VikRentCar::allowDocsUpload() && $ord['status'] == 'confirmed' && count($customer) && mktime(23, 59, 59, $info_from['mon'], $info_from['mday'], $info_from['year']) >= time()) {
-							// manage customer uploaded documents
-							$has_uploaded_docs = !empty($customer['drivers_data']);
-							?>
-							<div class="order-docs-upload">
-								<a href="<?php echo JRoute::_('index.php?option=com_vikrentcar&view=docsupload&sid='.$ord['sid'].'&ts='.$ord['ts'].(!empty($bestitemid) ? '&Itemid='.$bestitemid : (!empty($pitemid) ? '&Itemid='.$pitemid : ''))); ?>" class="order-docs-btn <?php echo $has_uploaded_docs ? 'uploaded' : ''; ?>">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<?php echo $has_uploaded_docs ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' : '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>'; ?>
-									</svg>
-									<span><?php echo $has_uploaded_docs ? JText::_('VRC_UPLOAD_DOCUMENTS_COMPLETED') : JText::_('VRC_UPLOAD_DOCUMENTS'); ?></span>
-								</a>
-							</div>
-							<?php
-						}
-						?>
 					</div>
 				</div>
 
