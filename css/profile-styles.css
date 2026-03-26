@@ -807,6 +807,10 @@
         padding: 1rem;
     }
     
+    .profile-avatar {
+        display: none;
+    }
+    
     .profile-name {
         font-size: 16px;
     }
