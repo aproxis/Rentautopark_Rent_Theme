@@ -504,6 +504,11 @@ if (class_exists('VikRentCar')) {
         gap: 4px;
     }
     
+    /* Make date strong tag display as block on mobile */
+    .profile-meta-item strong {
+        display: block;
+    }
+    
     /* Adjust spacing for mobile */
     .profile-header-inner {
         gap: 12px;
