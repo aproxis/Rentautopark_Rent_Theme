@@ -879,7 +879,7 @@ body.vrc-modal-open {
 #vrc-booking-modal-iframe {
 	width: 100%;
 	flex: 1;
-	min-height: 625vh;
+	min-height: 625px;
 	border: none;
 	display: block;
 	border-radius: 0 0 20px 20px;
