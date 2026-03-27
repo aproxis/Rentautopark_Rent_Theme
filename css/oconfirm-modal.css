@@ -410,7 +410,7 @@ body.contentpane .vrcrentalfor {
 .vrccustomfields .vrc-customfield-input input[type="text"],
 .vrccustomfields .vrc-customfield-input select {
     width: 100%;
-    padding: 9px 12px;
+    padding: 9px 12px 9px 85px;
     border: 1px solid var(--oc-border);
     border-radius: var(--oc-radius-sm);
     font-size: 14px;
@@ -421,6 +421,10 @@ body.contentpane .vrcrentalfor {
     appearance: none;
     -webkit-appearance: none;
     outline: none;
+}
+
+.iti__selected-flag {
+	padding-left: 85px;
 }
 
 .vrccustomfields input.vrcinput:focus,
@@ -919,12 +923,20 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     font-weight: 600;
 }
 
+.vrcdivcustomfield label {
+    font-size: 11px !important;
+}
+
+.com_vikrentcar .vrccustomfields .vrcdivcustomfield {
+    min-height: 50px;
+}
+
 /* Phone input — the intl-tel-input lib adds its own wrapper */
 .vrc-float-wrap--phone .iti {
     width: 100%;
 }
 .vrc-float-wrap--phone .iti input[type="tel"] {
-    padding: 20px 12px 8px 58px;
+    padding: 20px 12px 8px 120px;
     width: 100%;
     border: 1px solid var(--oc-border);
     border-radius: var(--oc-radius-sm);
