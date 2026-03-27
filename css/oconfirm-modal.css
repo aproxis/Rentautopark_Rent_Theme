@@ -538,7 +538,7 @@ body.contentpane .vrcrentalfor {
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
 }
 
@@ -812,4 +812,8 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 .com_vikrentcar .vrccustomfields:before, 
 .com_vikrentcar .vrccustomfields:after {
     display: none;
+}
+
+.iti--allow-dropdown input[type=tel] {
+	padding-left: 58px;
 }
