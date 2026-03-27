@@ -519,3 +519,322 @@ button[type="submit"].btn.vrc-pref-color-btn:hover {
 .vrc-oconfirm-wrap table.vrc-booking-details-table td:last-child {
 	color: #111827 !important;
 }
+
+
+
+/* ========================================================== */
+
+
+/**
+ * /templates/rent/css/oconfirm-modal.css
+ *
+ * Phase 1 — Two-column layout for oconfirm (modal + full-page)
+ * Phase 2 — Applied coupon badge styles
+ * Phase 3 — Registration section styles
+ *
+ * Loaded unconditionally in modal mode (tmpl=component).
+ * For full-page mode, add this file to your template's head or
+ * include it via the component's assets.
+ */
+
+/* ══════════════════════════════════════════════════════════
+   PHASE 1 — Two-column layout
+   ══════════════════════════════════════════════════════════ */
+
+/**
+ * Outer flex wrapper — sits directly inside the modal or page body.
+ * Left column: sticky price summary (46%).
+ * Right column: scrollable form (flex: 1).
+ */
+.vrc-oconfirm-two-col {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    min-height: 0;
+}
+
+/* ── Left column: sticky, scrolls only within the modal viewport ── */
+.vrc-oconfirm-col-left {
+    width: 46%;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    /* Scroll within the column if it overflows the modal height */
+    max-height: 100vh;
+    overflow-y: auto;
+    padding: 20px 24px 24px 20px;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+}
+
+/* ── Right column: takes remaining width, scrollable ── */
+.vrc-oconfirm-col-right {
+    flex: 1;
+    min-width: 0;
+    padding: 20px 20px 24px 24px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* ── In modal (tmpl=component), constrain viewport height ── */
+body.contentpane .vrc-oconfirm-two-col,
+.vrc-modal-wrap .vrc-oconfirm-two-col {
+    max-height: calc(100vh - 60px); /* subtract modal header */
+    overflow: hidden;
+}
+
+/* ── Left column inner helpers ── */
+.vrc-col-left-carinfo {
+    margin-bottom: 16px;
+}
+
+/* ── Mobile: stack columns vertically ── */
+@media (max-width: 768px) {
+    .vrc-oconfirm-two-col {
+        flex-direction: column;
+    }
+
+    .vrc-oconfirm-col-left {
+        width: 100%;
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        padding: 16px 16px 0 16px;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .vrc-oconfirm-col-right {
+        width: 100%;
+        padding: 16px;
+    }
+}
+
+/* ── Tablet: slightly tighter split ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .vrc-oconfirm-col-left {
+        width: 44%;
+    }
+}
+
+/* ── Small modal (narrow iframe) ── */
+@media (max-width: 600px) {
+    .vrc-oconfirm-col-left,
+    .vrc-oconfirm-col-right {
+        padding: 12px;
+    }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   PHASE 2 — Applied coupon badge (read-only in left column)
+   ══════════════════════════════════════════════════════════ */
+
+/**
+ * Replaces the old coupon input form.
+ * Shown only when a coupon was pre-applied via URL param.
+ */
+.vrc-applied-coupon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 8px;
+    background-color: rgba(34, 197, 94, 0.10);
+    border: 1px solid rgba(34, 197, 94, 0.30);
+    border-radius: 999px;
+    font-size: 13px;
+    color: inherit;
+    white-space: nowrap;
+}
+
+.vrc-coupon-tag-icon {
+    font-size: 14px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.vrc-applied-coupon-badge strong {
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+/* Discount amount in the coupon row */
+.vrc-coupon-saving {
+    color: #16a34a;
+    font-weight: 500;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   PHASE 3 — Registration section
+   ══════════════════════════════════════════════════════════ */
+
+.vrc-register-section {
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.04);
+    border: 1px solid rgba(59, 130, 246, 0.18);
+    border-radius: 10px;
+}
+
+/* Toggle row: checkbox + label */
+.vrc-register-toggle-row {
+    display: flex;
+    align-items: center;
+}
+
+.vrc-register-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.vrc-register-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #2563eb;
+    flex-shrink: 0;
+}
+
+.vrc-register-toggle-text {
+    line-height: 1.4;
+}
+
+/* Expanded panel (toggled via JS slideDown/slideUp) */
+.vrc-register-fields {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+/* Benefits list */
+.vrc-reg-benefits {
+    margin-bottom: 10px;
+}
+
+.vrc-reg-benefits ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.vrc-reg-benefits ul li {
+    font-size: 13px;
+    color: #374151;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.vrc-reg-benefits ul li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #16a34a;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* Auto-password note */
+.vrc-reg-info-note {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 8px 0 0;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+/* Inline error message */
+.vrc-reg-error {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(220, 38, 38, 0.07);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    border-radius: 6px;
+    color: #b91c1c;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   Modal header (modal-mode only)
+   ══════════════════════════════════════════════════════════ */
+
+.vrc-modal-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 0;
+}
+
+.vrc-modal-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   Form footer (Back + Submit buttons)
+   ══════════════════════════════════════════════════════════ */
+
+.vrc-oconfirm-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    flex-wrap: wrap;
+}
+
+.vrc-goback-block {
+    flex-shrink: 0;
+}
+
+.vrc-save-order-block {
+    flex-shrink: 0;
+}
+
+.vrc-save-order-block input[type="submit"] {
+    min-width: 160px;
+}
+
+@media (max-width: 480px) {
+    .vrc-oconfirm-footer {
+        flex-direction: column-reverse;
+    }
+
+    .vrc-save-order-block,
+    .vrc-goback-block {
+        width: 100%;
+    }
+
+    .vrc-save-order-block input[type="submit"],
+    .vrc-goback-block .btn,
+    .vrc-goback-block a.btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   Misc: hide car image inside modal to save space
+   ══════════════════════════════════════════════════════════ */
+
+body.contentpane .vrc-summary-car-img,
+.vrc-modal-wrap .vrc-summary-car-img {
+    display: none;
+}

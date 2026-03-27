@@ -1,156 +1,249 @@
 <?php
 /**
- * AJAX endpoint — Register a new Joomla user and log them in.
- * Called from the booking modal (oconfirm override) before submitting the order.
- * Compatible with Joomla 5 (uses namespaced classes, no JFactory, no initialise()).
+ * /templates/rent/php/register-ajax.php
  *
- * POST JSON: { reg_name, reg_email }
- * Response:  { "ok": true, "userid": 123 }
- *         or { "error": "message" }
+ * Phase 3 — Zero-friction Joomla user registration during checkout.
+ *
+ * Behaviour:
+ *  - Receives { reg_name, reg_email } via POST/JSON (no password from client).
+ *  - Generates a secure 16-character random password server-side.
+ *  - Creates a Joomla user that is immediately active (block=0, no activation token).
+ *  - Joomla's built-in new-user email is triggered, delivering the credentials to the user.
+ *  - Logs the new user in for the current session so the booking is tied to the account.
+ *  - Duplicate email → returns { ok: false, error_code: "EMAIL_EXISTS" }.
+ *    The JS caller treats this as a soft error and proceeds with guest checkout.
+ *  - All other errors → { ok: false, error: "...", error_code: "..." }.
+ *
+ * Prerequisites (Joomla admin):
+ *  User Manager → Options → User Registration: Allowed
+ *  User Manager → Options → New User Account Activation: None
+ *  User Manager → Options → Send Password: Yes  (so Joomla includes it in the welcome email)
+ *
+ * CORS / origin:
+ *  Called via same-origin AJAX from oconfirm/default.php — no additional CORS headers needed.
  */
 
-// Buffer ALL output from the Joomla bootstrap so nothing leaks before our JSON headers
-ob_start();
-
-// ── Bootstrap Joomla 5 ───────────────────────────────────────────────────────
+// ── Bootstrap Joomla ──────────────────────────────────────────────────────
 define('_JEXEC', 1);
 
-$jbase = dirname(dirname(dirname(dirname(__FILE__))));
-if (!file_exists($jbase . '/includes/defines.php')) {
-	ob_end_clean();
-	header('Content-Type: application/json; charset=utf-8');
-	echo json_encode(['error' => 'Joomla root not found.']);
-	exit;
+// Locate Joomla's base path (script is 3 levels deep: templates/rent/php/)
+$joomlaBase = realpath(dirname(__FILE__) . '/../../../');
+if (!$joomlaBase || !file_exists($joomlaBase . '/includes/defines.php')) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'Joomla base not found.', 'error_code' => 'BOOT_FAIL']);
+    exit;
 }
 
-define('JPATH_BASE', $jbase);
-require_once JPATH_BASE . '/includes/defines.php';
-require_once JPATH_BASE . '/includes/framework.php';
+require_once $joomlaBase . '/includes/defines.php';
+require_once $joomlaBase . '/includes/framework.php';
 
-try {
-	// Joomla 5: use fully-qualified Factory, no $app->initialise()
-	$app = \Joomla\CMS\Factory::getApplication('site');
-} catch (Throwable $e) {
-	ob_end_clean();
-	header('Content-Type: application/json; charset=utf-8');
-	echo json_encode(['error' => 'Joomla bootstrap failed: ' . $e->getMessage()]);
-	exit;
-}
+$mainframe = JFactory::getApplication('site');
+$mainframe->initialise();
 
-// Discard any output Joomla produced during bootstrap
-ob_end_clean();
-
-// ── JSON headers ──────────────────────────────────────────────────────────────
+// ── Response helpers ──────────────────────────────────────────────────────
 header('Content-Type: application/json; charset=utf-8');
-header('X-Content-Type-Options: nosniff');
 
-// ── Parse input ───────────────────────────────────────────────────────────────
-$raw   = file_get_contents('php://input');
-$input = $raw ? json_decode($raw, true) : null;
+function sendJson(array $data): void
+{
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+function sendError(string $message, string $code = 'GENERIC', int $httpStatus = 200): void
+{
+    http_response_code($httpStatus);
+    sendJson(['ok' => false, 'error' => $message, 'error_code' => $code]);
+}
+
+// ── Accept POST only ──────────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    sendError('Method not allowed.', 'METHOD', 405);
+}
+
+// ── Parse input (JSON body) ───────────────────────────────────────────────
+$rawBody = file_get_contents('php://input');
+$input   = json_decode($rawBody, true);
+
 if (!is_array($input)) {
-	$input = $_POST;
+    sendError('Invalid JSON body.', 'BAD_REQUEST', 400);
 }
 
-$name     = isset($input['reg_name'])     ? trim($input['reg_name'])     : '';
-$email    = isset($input['reg_email'])    ? trim($input['reg_email'])    : '';
+$regName  = trim($input['reg_name']  ?? '');
+$regEmail = trim($input['reg_email'] ?? '');
 
-// ── Validate ──────────────────────────────────────────────────────────────────
-if (!$name || !$email) {
-	echo json_encode(['error' => 'Toate câmpurile sunt obligatorii.']);
-	exit;
-}
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-	echo json_encode(['error' => 'Adresa de email nu este validă.']);
-	exit;
+// ── Validate ──────────────────────────────────────────────────────────────
+if (empty($regName)) {
+    sendError('Name is required.', 'MISSING_NAME');
 }
 
-// ── Check for duplicate email ─────────────────────────────────────────────────
-try {
-	$db = \Joomla\CMS\Factory::getDbo();
-	$db->setQuery(
-		'SELECT id FROM ' . $db->quoteName('#__users')
-		. ' WHERE ' . $db->quoteName('email') . ' = ' . $db->quote($email) . ' LIMIT 1'
-	);
-	$existing = $db->loadResult();
-	if ($existing) {
-		echo json_encode(['error' => 'Această adresă de email este deja înregistrată. Vă rugăm să vă autentificați.']);
-		exit;
-	}
-} catch (Throwable $e) {
-	echo json_encode(['error' => 'Eroare la verificarea email-ului: ' . $e->getMessage()]);
-	exit;
+if (empty($regEmail) || !filter_var($regEmail, FILTER_VALIDATE_EMAIL)) {
+    sendError('A valid email address is required.', 'INVALID_EMAIL');
 }
 
-// ── Build a unique username from email ────────────────────────────────────────
-$baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9._-]/', '', explode('@', $email)[0]));
-if (strlen($baseUsername) < 3) {
-	$baseUsername = 'user' . $baseUsername;
+// ── Duplicate email check ─────────────────────────────────────────────────
+$db    = JFactory::getDbo();
+$query = $db->getQuery(true)
+    ->select($db->quoteName('id'))
+    ->from($db->quoteName('#__users'))
+    ->where($db->quoteName('email') . ' = ' . $db->quote($regEmail));
+$db->setQuery($query);
+$existingId = $db->loadResult();
+
+if ($existingId) {
+    // Soft error — JS caller will proceed with guest checkout
+    sendJson(['ok' => false, 'error' => 'An account with this email already exists.', 'error_code' => 'EMAIL_EXISTS']);
 }
+
+// ── Generate secure password ──────────────────────────────────────────────
+/**
+ * 16-character password mixing uppercase, lowercase, digits and safe symbols.
+ * Uses random_int() (CSPRNG) — requires PHP 7+.
+ * Includes at least one character from each character class to satisfy
+ * common password-strength requirements.
+ */
+function generateSecurePassword(int $length = 16): string
+{
+    $upper   = 'ABCDEFGHJKLMNPQRSTUVWXYZ';   // no I/O (look-alike)
+    $lower   = 'abcdefghjkmnpqrstuvwxyz';     // no i/l/o
+    $digits  = '23456789';                    // no 0/1
+    $symbols = '@#!%';
+
+    $all      = $upper . $lower . $digits . $symbols;
+    $password = '';
+
+    // Guarantee one of each class
+    $password .= $upper[random_int(0, strlen($upper) - 1)];
+    $password .= $lower[random_int(0, strlen($lower) - 1)];
+    $password .= $digits[random_int(0, strlen($digits) - 1)];
+    $password .= $symbols[random_int(0, strlen($symbols) - 1)];
+
+    // Fill the remainder
+    for ($i = 4; $i < $length; $i++) {
+        $password .= $all[random_int(0, strlen($all) - 1)];
+    }
+
+    // Shuffle so the guaranteed chars aren't always first
+    return str_shuffle($password);
+}
+
+$password = generateSecurePassword(16);
+
+// ── Build username from email (must be unique) ────────────────────────────
+$baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9._\-]/', '', strstr($regEmail, '@', true)));
+if (empty($baseUsername)) {
+    $baseUsername = 'user';
+}
+
 $username = $baseUsername;
 $suffix   = 1;
-try {
-	while (true) {
-		$db->setQuery(
-			'SELECT id FROM ' . $db->quoteName('#__users')
-			. ' WHERE ' . $db->quoteName('username') . ' = ' . $db->quote($username) . ' LIMIT 1'
-		);
-		if (!$db->loadResult()) {
-			break;
-		}
-		$username = $baseUsername . $suffix;
-		$suffix++;
-		if ($suffix > 999) {
-			break;
-		}
-	}
-} catch (Throwable $e) {
-	$username = $baseUsername . rand(100, 999);
+
+while (true) {
+    $q = $db->getQuery(true)
+        ->select($db->quoteName('id'))
+        ->from($db->quoteName('#__users'))
+        ->where($db->quoteName('username') . ' = ' . $db->quote($username));
+    $db->setQuery($q);
+    if (!$db->loadResult()) {
+        break;
+    }
+    $username = $baseUsername . $suffix;
+    $suffix++;
 }
 
-// ── Generate random password ──────────────────────────────────────────────────
-$password = \Joomla\CMS\User\UserHelper::genRandomPassword(12);
+// ── Build name (first + last from full name string) ───────────────────────
+$nameParts = preg_split('/\s+/', $regName, 2);
+$firstName = $nameParts[0];
+$lastName  = isset($nameParts[1]) ? $nameParts[1] : '';
 
-// ── Create the Joomla user ────────────────────────────────────────────────────
-try {
-	// Joomla 5: \Joomla\CMS\Component\ComponentHelper instead of JComponentHelper
-	$params      = \Joomla\CMS\Component\ComponentHelper::getParams('com_users');
-	$newUsertype = $params->get('new_usertype', 2);
+// ── Create Joomla user ────────────────────────────────────────────────────
+$user = JFactory::getUser();  // blank user object for new user
 
-	// Joomla 5: \Joomla\CMS\User\User instead of JUser
-	$userObj  = new \Joomla\CMS\User\User();
-	$userdata = [
-		'name'      => $name,
-		'username'  => $username,
-		'password'  => $password,
-		'password2' => $password,
-		'email'     => $email,
-		'email1'    => $email,
-		'groups'    => [$newUsertype],
-		'block'     => 0,
-		'sendEmail' => 0,
-	];
+$userData = [
+    'name'      => $regName,
+    'username'  => $username,
+    'password'  => $password,
+    'password2' => $password,   // confirmation
+    'email'     => $regEmail,
+    'email2'    => $regEmail,   // confirmation (some Joomla versions check this)
+    'groups'    => [2],         // 2 = Registered group (default front-end group)
+    'block'     => 0,           // immediately active
+    'activation' => '',         // no activation token (requires "None" activation in J! config)
+    'sendEmail'  => 0,          // we trigger the email ourselves below for more control
+    'params'    => [],
+];
 
-	if (!$userObj->bind($userdata)) {
-		echo json_encode(['error' => 'Eroare la crearea contului: ' . $userObj->getError()]);
-		exit;
-	}
-	if (!$userObj->save()) {
-		echo json_encode(['error' => 'Eroare la salvarea contului: ' . $userObj->getError()]);
-		exit;
-	}
-
-	// ── Log the user in ───────────────────────────────────────────────────────
-	$credentials = ['username' => $username, 'password' => $password];
-	$result = $app->login($credentials, ['action' => 'core.login.site']);
-
-	if ($result === false || $result instanceof \Exception || $result instanceof \Throwable) {
-		echo json_encode(['error' => 'Contul a fost creat dar autentificarea a eșuat. Vă rugăm să vă autentificați manual.']);
-		exit;
-	}
-
-	echo json_encode(['ok' => true, 'userid' => (int)$userObj->id]);
-
-} catch (Throwable $e) {
-	echo json_encode(['error' => 'Eroare neașteptată: ' . $e->getMessage()]);
+if (!$user->bind($userData)) {
+    sendError('Failed to bind user data: ' . $user->getError(), 'BIND_FAIL');
 }
-exit;
+
+if (!$user->save()) {
+    $errMsg = $user->getError();
+    sendError('Failed to create account: ' . $errMsg, 'SAVE_FAIL');
+}
+
+$newUserId = (int) $user->id;
+
+if ($newUserId <= 0) {
+    sendError('User creation returned no ID.', 'NO_ID');
+}
+
+// ── Send welcome email with credentials ───────────────────────────────────
+/**
+ * We call JUserHelper to send the "new account" email.
+ * This uses the Joomla mail template defined in:
+ *   User Manager → Options → Mail → "New User Account" mail template
+ *
+ * If Joomla's built-in mail fails silently we still return success —
+ * the booking should never be blocked by an email delivery issue.
+ */
+try {
+    // Reload the fully-saved user so all fields are populated
+    $newUser = JFactory::getUser($newUserId);
+
+    // JUserHelper::sendMail expects the cleartext password for the welcome email.
+    // We pass it via the user's `password_clear` property (Joomla internal convention).
+    $newUser->password_clear = $password;
+
+    JUserHelper::sendMail(
+        $newUser,           // JUser object
+        $mainframe,         // JApplication
+        $regEmail,          // recipient
+        false               // not a reminder (this is a new account)
+    );
+} catch (Exception $e) {
+    // Email failure is non-fatal — log it and continue
+    JFactory::getLogger()->warning('register-ajax: welcome email failed for ' . $regEmail . ': ' . $e->getMessage());
+}
+
+// ── Log the new user in for the current session ───────────────────────────
+/**
+ * This ties the subsequent booking form submission to the new account.
+ * Requires the site's session cookie to persist across the iframe boundary.
+ */
+try {
+    $options = [
+        'remember'  => false,
+        'silent'    => true,   // suppress login events if desired
+    ];
+
+    // Joomla 3 login API
+    $credentials = [
+        'username' => $username,
+        'password' => $password,
+    ];
+
+    $mainframe->login($credentials, $options);
+} catch (Exception $e) {
+    // Non-fatal — the account was created; we just couldn't auto-log in
+    JFactory::getLogger()->warning('register-ajax: auto-login failed for ' . $username . ': ' . $e->getMessage());
+}
+
+// ── Return success ────────────────────────────────────────────────────────
+sendJson([
+    'ok'         => true,
+    'user_id'    => $newUserId,
+    'username'   => $username,
+    'first_name' => $firstName,
+    'last_name'  => $lastName,
+    // Do NOT return the password in the response — it was sent by email
+]);
