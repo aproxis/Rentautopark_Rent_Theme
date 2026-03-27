@@ -258,6 +258,13 @@ if (array_key_exists('hours', $price)) {
 </div>
 <?php else: ?>
 <h2 class="vrc-rental-summary-title"><?php echo JText::_('VRRIEPILOGOORD'); ?></h2>
+<?php /* Mobile sticky total bar — shown only on scroll, below header (full-page view) */ ?>
+<div class="vrc-sticky-total-bar" id="vrc-sticky-total-bar" aria-hidden="true">
+    <span class="vrc-sticky-total-label"><?php echo JText::_('VRTOTAL'); ?></span>
+    <span class="vrc-sticky-total-value">
+        <span class="vrc_currency"><?php echo $currencysymb; ?></span><?php echo VikRentCar::numberFormat($totdue); ?>
+    </span>
+</div>
 <?php endif; ?>
 
 <?php /* ══════════════════════════════════════════════════════════════════
