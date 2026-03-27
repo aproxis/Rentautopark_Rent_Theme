@@ -104,6 +104,8 @@ body.contentpane > .vrc-oconfirm-two-col {
     height: 0; /* flex child needs explicit 0 to shrink properly */
 }
 
+
+
 /* body.contentpane .vrc-oconfirm-two-col,
 .vrc-modal-wrap .vrc-oconfirm-two-col {
     height: calc(85vh - 58px);
@@ -1070,6 +1072,7 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    display: flex !important;
 }
 
 .vrc-sticky-total-label {

@@ -1368,7 +1368,10 @@ if (array_key_exists('hours', $price)) {
     stickyBar.classList.remove('is-visible');
     stickyBar.setAttribute('aria-hidden', 'true');
   }
-  function isMobile() { return window.innerWidth <= 768; }
+  function isMobile() {
+  var container = document.querySelector('.vrc-oconfirm-two-col') || document.body;
+  return (container.offsetWidth || window.innerWidth) <= 768;
+}
 
   if (window.IntersectionObserver) {
     var headerEl = document.querySelector('.vrc-modal-header');
