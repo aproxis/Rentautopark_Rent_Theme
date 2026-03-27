@@ -1008,3 +1008,16 @@
 		max-height: 60vh;
 	}
 }
+
+.docsupload-order-status-row {
+    margin-bottom: 12px;
+}
+
+.docsupload-bottom-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #e9ecef;
+    margin-top: 8px;
+}
