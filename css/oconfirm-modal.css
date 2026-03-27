@@ -85,8 +85,8 @@
 
 /* ── Modal height: 85vh, children scroll inside ── */
 body.contentpane {
-    height: 85vh !important;
-    max-height: 85vh !important;
+    /* height: 85vh !important;
+    max-height: 85vh !important; */
     overflow: hidden;
     display: flex;
     flex-direction: column;
