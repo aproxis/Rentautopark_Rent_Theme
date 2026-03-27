@@ -936,7 +936,7 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     width: 100%;
 }
 .vrc-float-wrap--phone .iti input[type="tel"] {
-    padding: 20px 12px 8px 120px;
+    padding: 9px 12px 9px 125px;
     width: 100%;
     border: 1px solid var(--oc-border);
     border-radius: var(--oc-radius-sm);
