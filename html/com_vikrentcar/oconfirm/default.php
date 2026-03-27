@@ -1411,4 +1411,16 @@ if (array_key_exists('hours', $price)) {
     onScroll();
   }
 })();
+
+function checkSentinel() {
+  if (!isMobile()) { hide(); return; }
+  var rect = sentinel.getBoundingClientRect();
+  if (rect.bottom < 0) { show(); } else { hide(); }
+}
+
+document.addEventListener('scroll', checkSentinel, { passive: true });
+window.addEventListener('scroll', checkSentinel, { passive: true });
+document.body.addEventListener('scroll', checkSentinel, { passive: true });
+checkSentinel(); // run once on load
+
 </script>
