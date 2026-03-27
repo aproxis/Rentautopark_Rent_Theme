@@ -200,6 +200,19 @@ if (count($oohfee) > 0) {
 $pickloc = VikRentCar::getPlaceInfo($place,       $vrc_tn);
 $droploc = VikRentCar::getPlaceInfo($returnplace,  $vrc_tn);
 
+// ── Fetch lat/lng directly from DB for Google Maps tooltip links
+$_placeDb  = JFactory::getDbo();
+$_placeQ   = $_placeDb->getQuery(true)
+    ->select(array($_placeDb->quoteName('id'), $_placeDb->quoteName('lat'), $_placeDb->quoteName('lng')))
+    ->from($_placeDb->quoteName('#__vikrentcar_places'))
+    ->where($_placeDb->quoteName('id') . ' IN (' . (int)$place . ',' . (int)$returnplace . ')');
+$_placeDb->setQuery($_placeQ);
+$_placeRows = $_placeDb->loadAssocList('id');
+$pickloc_lat = isset($_placeRows[$place]['lat'])        ? $_placeRows[$place]['lat']        : '';
+$pickloc_lng = isset($_placeRows[$place]['lng'])        ? $_placeRows[$place]['lng']        : '';
+$droploc_lat = isset($_placeRows[$returnplace]['lat'])  ? $_placeRows[$returnplace]['lat']  : '';
+$droploc_lng = isset($_placeRows[$returnplace]['lng'])  ? $_placeRows[$returnplace]['lng']  : '';
+
 // ── Register-AJAX URL
 $registerAjaxUrl = JURI::root() . 'templates/rent/php/register-ajax.php';
 ?>
@@ -235,6 +248,13 @@ if (array_key_exists('hours', $price)) {
 <?php if ($isModal): ?>
 <div class="vrc-modal-header">
     <h2 class="vrc-modal-title"><?php echo $vrc_modal_title; ?></h2>
+</div>
+<?php /* Mobile sticky total bar — shown only on scroll, below header */ ?>
+<div class="vrc-sticky-total-bar" id="vrc-sticky-total-bar" aria-hidden="true">
+    <span class="vrc-sticky-total-label"><?php echo JText::_('VRTOTAL'); ?></span>
+    <span class="vrc-sticky-total-value">
+        <span class="vrc_currency"><?php echo $currencysymb; ?></span><?php echo VikRentCar::numberFormat($totdue); ?>
+    </span>
 </div>
 <?php else: ?>
 <h2 class="vrc-rental-summary-title"><?php echo JText::_('VRRIEPILOGOORD'); ?></h2>
@@ -273,7 +293,9 @@ if (array_key_exists('hours', $price)) {
                             <strong class="vrc-itin-loc"><?php echo htmlspecialchars($pickloc['name']); ?></strong>
                             <button type="button" class="vrc-itin-info-btn"
                                 data-name="<?php echo htmlspecialchars($pickloc['name'] ?? ''); ?>"
-                                data-addr="<?php echo htmlspecialchars($pickloc['address'] ?? ''); ?>">
+                                data-addr="<?php echo htmlspecialchars($pickloc['address'] ?? ''); ?>"
+                                data-lat="<?php echo htmlspecialchars($pickloc_lat); ?>"
+                                data-lng="<?php echo htmlspecialchars($pickloc_lng); ?>">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253l-.317 2.539a.75.75 0 1 0 1.489.186l.359-2.871A.75.75 0 0 0 10 9H9Z" clip-rule="evenodd"/></svg>
                             </button>
                             <?php endif; ?>
@@ -290,7 +312,9 @@ if (array_key_exists('hours', $price)) {
                             <strong class="vrc-itin-loc"><?php echo htmlspecialchars($droploc['name']); ?></strong>
                             <button type="button" class="vrc-itin-info-btn"
                                 data-name="<?php echo htmlspecialchars($droploc['name'] ?? ''); ?>"
-                                data-addr="<?php echo htmlspecialchars($droploc['address'] ?? ''); ?>">
+                                data-addr="<?php echo htmlspecialchars($droploc['address'] ?? ''); ?>"
+                                data-lat="<?php echo htmlspecialchars($droploc_lat); ?>"
+                                data-lng="<?php echo htmlspecialchars($droploc_lng); ?>">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253l-.317 2.539a.75.75 0 1 0 1.489.186l.359-2.871A.75.75 0 0 0 10 9H9Z" clip-rule="evenodd"/></svg>
                             </button>
                             <?php endif; ?>
@@ -717,19 +741,27 @@ if (array_key_exists('hours', $price)) {
                         } elseif (array_key_exists('cfields', $customer_details) && array_key_exists($cf['id'], $customer_details['cfields'])) {
                             $def_textval = $customer_details['cfields'][$cf['id']];
                         }
+                        // Plain label text for floating label span
+                        $plain_label = JText::_($cf['name']);
+                        $req_star    = intval($cf['required']) == 1 ? ' *' : '';
                         ?>
                         <div class="vrcdivcustomfield">
-                            <div class="vrc-customfield-label"><?php echo $isreq; ?><?php echo $fname; ?></div>
                             <div class="vrc-customfield-input">
                             <?php if ($cf['isphone'] == 1 && method_exists($vrc_app, 'printPhoneInputField')): ?>
-                                <?php echo $vrc_app->printPhoneInputField(array('name'=>'vrcf'.$cf['id'],'id'=>'vrcf-inp'.$cf['id'],'value'=>$def_textval,'class'=>'vrcinput','size'=>'40',$extraDataAttr=>'')); ?>
+                                <div class="vrc-float-wrap vrc-float-wrap--phone<?php echo !empty($def_textval) ? ' vrc-float-has-val' : ''; ?>">
+                                    <?php echo $vrc_app->printPhoneInputField(array('name'=>'vrcf'.$cf['id'],'id'=>'vrcf-inp'.$cf['id'],'value'=>$def_textval,'class'=>'vrcinput','size'=>'40',$extraDataAttr=>'')); ?>
+                                    <label class="vrc-float-label" id="vrcf<?php echo $cf['id']; ?>" for="vrcf-inp<?php echo $cf['id']; ?>"><?php echo htmlspecialchars($plain_label . $req_star); ?></label>
+                                </div>
                             <?php else: ?>
-                                <input type="text"
-                                       name="vrcf<?php echo $cf['id']; ?>"
-                                       id="vrcf-inp<?php echo $cf['id']; ?>"
-                                       value="<?php echo htmlspecialchars($def_textval); ?>"
-                                       size="40"
-                                       class="vrcinput"<?php echo $extraDataAttr; ?>/>
+                                <div class="vrc-float-wrap<?php echo !empty($def_textval) ? ' vrc-float-has-val' : ''; ?>">
+                                    <input type="text"
+                                           name="vrcf<?php echo $cf['id']; ?>"
+                                           id="vrcf-inp<?php echo $cf['id']; ?>"
+                                           value="<?php echo htmlspecialchars($def_textval); ?>"
+                                           placeholder=" "
+                                           class="vrcinput"<?php echo $extraDataAttr; ?>/>
+                                    <label class="vrc-float-label" id="vrcf<?php echo $cf['id']; ?>" for="vrcf-inp<?php echo $cf['id']; ?>"><?php echo htmlspecialchars($plain_label . $req_star); ?></label>
+                                </div>
                             <?php endif; ?>
                             </div>
                         </div>
@@ -784,24 +816,30 @@ if (array_key_exists('hours', $price)) {
                             $defaultval = !empty($customer_details['country'])
                                 ? substr($customer_details['country'], 0, 3) : '';
                         }
-                        $countries_sel  = '<select name="vrcf'.$cf['id'].'" class="vrcf-countryinp"><option value=""></option>'."\n";
+                        $countries_sel  = '<select name="vrcf'.$cf['id'].'" id="vrcf-inp'.$cf['id'].'" class="vrcf-countryinp"><option value=""></option>'."\n";
                         foreach ($countries as $country) {
                             $countries_sel .= '<option value="'.$country['country_3_code'].'::'.$country['country_name'].'"'
                                 . ($defaultval == $country['country_3_code'] ? ' selected="selected"' : '')
                                 . '>'.$country['country_name'].'</option>'."\n";
                         }
                         $countries_sel .= '</select>';
+                        $plain_label = JText::_($cf['name']);
+                        $req_star    = intval($cf['required']) == 1 ? ' *' : '';
                         ?>
                         <div class="vrcdivcustomfield">
-                            <div class="vrc-customfield-label"><?php echo $isreq; ?><?php echo $fname; ?></div>
-                            <div class="vrc-customfield-input"><?php echo $countries_sel; ?></div>
+                            <div class="vrc-customfield-input">
+                                <div class="vrc-float-wrap<?php echo !empty($defaultval) ? ' vrc-float-has-val' : ''; ?>">
+                                    <?php echo $countries_sel; ?>
+                                    <label class="vrc-float-label" id="vrcf<?php echo $cf['id']; ?>" for="vrcf-inp<?php echo $cf['id']; ?>"><?php echo htmlspecialchars($plain_label . $req_star); ?></label>
+                                </div>
+                            </div>
                         </div>
                         <?php
                     } elseif ($cf['type'] == "select") {
                         $defaultval = array_key_exists($cf['id'], $previousdata['customfields'])
                             ? $previousdata['customfields'][$cf['id']] : '';
                         $answ   = explode(";;__;;", $cf['choose']);
-                        $wcfsel = "<select name=\"vrcf".$cf['id']."\">\n";
+                        $wcfsel = "<select name=\"vrcf".$cf['id']."\" id=\"vrcf-inp".$cf['id']."\">\n<option value=\"\"></option>\n";
                         foreach ($answ as $aw) {
                             if (!empty($aw)) {
                                 $wcfsel .= "<option value=\"".JText::_($aw)."\""
@@ -810,10 +848,16 @@ if (array_key_exists('hours', $price)) {
                             }
                         }
                         $wcfsel .= "</select>\n";
+                        $plain_label = JText::_($cf['name']);
+                        $req_star    = intval($cf['required']) == 1 ? ' *' : '';
                         ?>
                         <div class="vrcdivcustomfield">
-                            <div class="vrc-customfield-label"><?php echo $isreq; ?><?php echo $fname; ?></div>
-                            <div class="vrc-customfield-input"><?php echo $wcfsel; ?></div>
+                            <div class="vrc-customfield-input">
+                                <div class="vrc-float-wrap<?php echo !empty($defaultval) ? ' vrc-float-has-val' : ''; ?>">
+                                    <?php echo $wcfsel; ?>
+                                    <label class="vrc-float-label" id="vrcf<?php echo $cf['id']; ?>" for="vrcf-inp<?php echo $cf['id']; ?>"><?php echo htmlspecialchars($plain_label . $req_star); ?></label>
+                                </div>
+                            </div>
                         </div>
                         <?php
                     } elseif ($cf['type'] == "separator") {
@@ -825,18 +869,21 @@ if (array_key_exists('hours', $price)) {
                         </div>
                         <?php
                     } else {
-                        // Checkbox type
+                        // Checkbox type — collect for rendering after payment methods
+                        // Store in buffer; will be output below payment block
+                        ob_start();
                         ?>
-                        <div class="vrcdivcustomfield vrc-oconfirm-cfield-entry-checkbox">
-                            <div class="vrc-customfield-label"><?php echo $isreq; ?><?php echo $fname; ?></div>
-                            <div class="vrc-customfield-input">
+                        <div class="vrcdivcustomfield vrc-oconfirm-cfield-entry-checkbox vrc-terms-checkbox">
+                            <label class="vrc-terms-label" for="vrcf-inp<?php echo $cf['id']; ?>">
                                 <input type="checkbox"
                                        name="vrcf<?php echo $cf['id']; ?>"
                                        id="vrcf-inp<?php echo $cf['id']; ?>"
                                        value="<?php echo JText::_('VRYES'); ?>"<?php echo $extraDataAttr; ?>/>
-                            </div>
+                                <span class="vrc-terms-text"><?php echo $isreq; ?><?php echo JText::_($cf['name']); ?></span>
+                            </label>
                         </div>
                         <?php
+                        $vrc_checkbox_buffer = (isset($vrc_checkbox_buffer) ? $vrc_checkbox_buffer : '') . ob_get_clean();
                     }
                 }
                 ?>
@@ -926,6 +973,13 @@ if (array_key_exists('hours', $price)) {
             </script>
             <?php endif; ?>
 
+            <?php /* ── Terms / checkbox cfields — output after payment, one row ── */ ?>
+            <?php if (!empty($vrc_checkbox_buffer)): ?>
+            <div class="vrc-terms-block">
+                <?php echo $vrc_checkbox_buffer; ?>
+            </div>
+            <?php endif; ?>
+
             <?php /* ══════════════════════════════════════════════════════════
                PHASE 3 — Zero-friction registration
                • Only shown to guests (logged-in users already have an account)
@@ -1003,13 +1057,24 @@ if (array_key_exists('hours', $price)) {
     var $mapEl  = $tooltip.querySelector('.vrc-itin-tooltip-map');
     var activeBtn = null;
 
-    function showTooltip(btn) {
+    function buildMapsUrl(btn) {
+        var lat  = btn.getAttribute('data-lat')  || '';
+        var lng  = btn.getAttribute('data-lng')  || '';
         var name = btn.getAttribute('data-name') || '';
         var addr = btn.getAttribute('data-addr') || '';
-        var query = encodeURIComponent((name + ' ' + addr).trim());
 
-        $nameEl.textContent = addr || name;
-        $mapEl.href = 'https://www.google.com/maps/search/?api=1&query=' + query;
+        // Use precise coordinates when available (from DB), fall back to text search
+        if (lat && lng && parseFloat(lat) && parseFloat(lng)) {
+            return 'https://www.google.com/maps?q=' + encodeURIComponent(lat) + ',' + encodeURIComponent(lng);
+        }
+        var query = encodeURIComponent((name + ' ' + addr).trim());
+        return 'https://www.google.com/maps/search/?api=1&query=' + query;
+    }
+
+    function showTooltip(btn) {
+        var addr = btn.getAttribute('data-addr') || btn.getAttribute('data-name') || '';
+        $nameEl.textContent = addr;
+        $mapEl.href = buildMapsUrl(btn);
 
         $tooltip.removeAttribute('aria-hidden');
         $tooltip.classList.add('is-visible');
@@ -1166,4 +1231,45 @@ if (array_key_exists('hours', $price)) {
     });
 
 })(jQuery);
+</script>
+
+<script type="text/javascript">
+/* ── Mobile: sticky modal header + sticky total bar on scroll ── */
+(function () {
+    'use strict';
+
+    var stickyBar = document.getElementById('vrc-sticky-total-bar');
+    if (!stickyBar) return;
+
+    // The scrolling element on mobile is body.contentpane itself
+    var scroller = document.body;
+
+    // Sentinel: the left column's total row — when it scrolls out of view, show bar
+    var sentinel = document.querySelector('.vrc-oconfirm-summary-total-wrapper');
+    if (!sentinel) return;
+
+    function onScroll() {
+        var sentinelBottom = sentinel.getBoundingClientRect().bottom;
+        // Show sticky total when the real total row has scrolled above viewport
+        if (sentinelBottom < 0) {
+            stickyBar.classList.add('is-visible');
+            stickyBar.removeAttribute('aria-hidden');
+        } else {
+            stickyBar.classList.remove('is-visible');
+            stickyBar.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    // On mobile the modal body itself scrolls
+    document.addEventListener('scroll', onScroll, { passive: true });
+    // Also watch the right column in case it has its own scroll
+    var colRight = document.querySelector('.vrc-oconfirm-col-right');
+    if (colRight) {
+        colRight.addEventListener('scroll', onScroll, { passive: true });
+    }
+    var colLeft = document.querySelector('.vrc-oconfirm-col-left');
+    if (colLeft) {
+        colLeft.addEventListener('scroll', onScroll, { passive: true });
+    }
+})();
 </script>

@@ -821,3 +821,234 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 .vrc-oconfirm-paym-block .vrc-gpay-licont-active:before {
     font-family: "Font Awesome 6 Free" !important;
 }
+
+/* ══════════════════════════════════════════════════════════
+   FLOATING LABELS
+   Label sits inside the input, floats up on focus / has-value
+   ══════════════════════════════════════════════════════════ */
+
+.vrc-float-wrap {
+    position: relative;
+    display: block;
+}
+
+/* The actual input inside a float wrap */
+.vrc-float-wrap input.vrcinput,
+.vrc-float-wrap select,
+.vrc-float-wrap select.vrcf-countryinp {
+    width: 100%;
+    padding: 20px 12px 8px;   /* tall top padding to give label room */
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius-sm);
+    font-size: 14px;
+    color: var(--oc-dark);
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color .15s, box-shadow .15s;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    /* select needs extra right padding for chevron */
+}
+
+.vrc-float-wrap select,
+.vrc-float-wrap select.vrcf-countryinp {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20'%3E%3Cpath fill='%236b7280' d='M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.vrc-float-wrap input.vrcinput:focus,
+.vrc-float-wrap select:focus {
+    border-color: var(--oc-primary);
+    box-shadow: 0 0 0 3px rgba(254,80,1,.10);
+}
+
+/* Floating label */
+.vrc-float-label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--oc-muted);
+    pointer-events: none;
+    transition: top .18s ease, font-size .18s ease, color .18s ease, font-weight .18s ease;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 24px);
+}
+
+/* Floated state: input focused */
+.vrc-float-wrap input.vrcinput:focus   ~ .vrc-float-label,
+.vrc-float-wrap select:focus           ~ .vrc-float-label {
+    top: 10px;
+    transform: translateY(0);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--oc-primary);
+}
+
+/* Floated state: input has a value (placeholder trick: :not(:placeholder-shown)) */
+.vrc-float-wrap input.vrcinput:not(:placeholder-shown) ~ .vrc-float-label {
+    top: 10px;
+    transform: translateY(0);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--oc-muted);
+}
+
+/* Floated state: PHP pre-filled value (class added server-side) */
+.vrc-float-has-val .vrc-float-label {
+    top: 10px !important;
+    transform: translateY(0) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--oc-muted) !important;
+}
+
+/* Select always needs floated label (no placeholder-shown trick for <select>) */
+.vrc-float-wrap select ~ .vrc-float-label {
+    top: 10px;
+    transform: translateY(0);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Phone input — the intl-tel-input lib adds its own wrapper */
+.vrc-float-wrap--phone .iti {
+    width: 100%;
+}
+.vrc-float-wrap--phone .iti input[type="tel"] {
+    padding: 20px 12px 8px 58px;
+    width: 100%;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius-sm);
+    font-size: 14px;
+    color: var(--oc-dark);
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+}
+.vrc-float-wrap--phone .iti input[type="tel"]:focus {
+    border-color: var(--oc-primary);
+    box-shadow: 0 0 0 3px rgba(254,80,1,.10);
+}
+.vrc-float-wrap--phone.vrc-float-has-val .vrc-float-label,
+.vrc-float-wrap--phone .iti input[type="tel"]:focus ~ .vrc-float-label {
+    top: 10px;
+    transform: translateY(0);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--oc-muted);
+}
+
+/* Hide external labels — they're now inside the input */
+.vrcdivcustomfield .vrc-customfield-label {
+    display: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   TERMS CHECKBOX — full-width one-liner after payment
+   ══════════════════════════════════════════════════════════ */
+
+.vrc-terms-block {
+    margin-top: 14px;
+}
+
+.vrc-terms-checkbox {
+    display: block !important;
+    grid-column: 1 / -1;
+    margin: 0 !important;
+}
+
+.vrc-terms-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    color: var(--oc-dark);
+    line-height: 1.4;
+    flex-wrap: nowrap;
+}
+
+.vrc-terms-label input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--oc-primary);
+}
+
+.vrc-terms-text {
+    flex: 1;
+}
+
+.vrc-terms-text .vrcrequired sup {
+    color: var(--oc-primary);
+}
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE STICKY TOTAL BAR
+   Appears below sticky modal header when total scrolls out of view
+   ══════════════════════════════════════════════════════════ */
+
+.vrc-sticky-total-bar {
+    display: none; /* hidden on desktop */
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: #fff;
+    border-bottom: 1px solid var(--oc-border);
+    padding: 10px 16px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity .2s, transform .2s;
+    pointer-events: none;
+}
+
+.vrc-sticky-total-bar.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.vrc-sticky-total-label {
+    font-weight: 600;
+    color: var(--oc-dark);
+}
+
+.vrc-sticky-total-value {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--oc-primary);
+}
+
+@media (max-width: 768px) {
+    .vrc-sticky-total-bar {
+        display: flex; /* visible only on mobile */
+    }
+
+    /* Payment methods stay in a row on mobile */
+    .vrc-noliststyletype {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+    }
+
+    .vrc-gpay-licont {
+        flex: 1 1 auto;
+        min-width: 120px;
+    }
+}
