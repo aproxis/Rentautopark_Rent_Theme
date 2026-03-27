@@ -950,7 +950,7 @@ if (array_key_exists('hours', $price)) {
                                     // Use $fname which already resolves poplink → <a href="..."> or plain <label>
                                     if (!empty($cf['poplink'])) {
                                         // Direct link text (not a <label> since the checkbox is above)
-                                        echo '<a href="' . $cf['poplink'] . '" target="_blank" rel="noopener noreferrer" class="vrc-terms-link">' . JText::_($cf['name']) . '</a>';
+                                        echo '<a href="' . $cf['poplink'] . '" rel="noopener noreferrer" class="vrc-terms-link vrcmodal">' . JText::_($cf['name']) . '</a>';
                                     } else {
                                         echo '<label for="vrcf-inp' . $cf['id'] . '" class="vrc-terms-inline-label">' . JText::_($cf['name']) . '</label>';
                                     }
