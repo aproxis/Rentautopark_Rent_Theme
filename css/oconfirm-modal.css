@@ -817,3 +817,7 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 .iti--allow-dropdown input[type=tel] {
 	padding-left: 58px;
 }
+
+.vrc-oconfirm-paym-block .vrc-gpay-licont-active:before {
+    font-family: "Font Awesome 6 Free" !important;
+}
