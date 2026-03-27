@@ -324,22 +324,27 @@ if (array_key_exists('hours', $price)) {
 
                 </div><!-- /.vrc-itinerary-inline -->
 
-                <?php /* ── Shared tooltip (positioned by JS) ── */ ?>
-                <div class="vrc-itin-tooltip" id="vrc-itin-tooltip" role="tooltip" aria-hidden="true">
-                    <p class="vrc-itin-tooltip-name"></p>
-                    <a class="vrc-itin-tooltip-map" href="#" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="12" height="12"><path fill-rule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C14.827 15.17 17 12.543 17 9A7 7 0 1 0 3 9c0 3.543 2.173 6.172 3.354 7.385a13.381 13.381 0 0 0 3.033 2.198l.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clip-rule="evenodd"/></svg>
-                        View on Google Maps
-                    </a>
-                </div>
-            </div>
+            </div><!-- /.vrcrentforlocs -->
 
             <?php if (!empty($car['img']) && !$isModal): ?>
             <div class="vrc-summary-car-img">
                 <img src="<?php echo VRC_ADMIN_URI; ?>resources/<?php echo $car['img']; ?>"/>
             </div>
             <?php endif; ?>
+        </div><!-- /.vrcinfocarcontainer -->
+
+        <?php /* ── Shared tooltip — lives at col-left root (position:relative) so JS offsetParent is correct ── */ ?>
+        <div class="vrc-itin-tooltip" id="vrc-itin-tooltip" role="tooltip" aria-hidden="true">
+            <p class="vrc-itin-tooltip-name"></p>
+            <p class="vrc-itin-tooltip-addr"></p>
+            <a class="vrc-itin-tooltip-map" href="#" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="12" height="12"><path fill-rule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C14.827 15.17 17 12.543 17 9A7 7 0 1 0 3 9c0 3.543 2.173 6.172 3.354 7.385a13.381 13.381 0 0 0 3.033 2.198l.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clip-rule="evenodd"/></svg>
+                <?php echo JText::_('VRC_VIEW_ON_MAPS') ?: 'View on Google Maps'; ?>
+            </a>
         </div>
+
+        <!-- Sentinel for sticky total bar — invisible pixel at bottom of price list -->
+        <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;"></div>
 
         <!-- Price breakdown — simplified clean list -->
         <div class="vrc-price-list">
@@ -874,13 +879,21 @@ if (array_key_exists('hours', $price)) {
                         ob_start();
                         ?>
                         <div class="vrcdivcustomfield vrc-oconfirm-cfield-entry-checkbox vrc-terms-checkbox">
-                            <label class="vrc-terms-label" for="vrcf-inp<?php echo $cf['id']; ?>">
+                            <div class="vrc-terms-label">
                                 <input type="checkbox"
                                        name="vrcf<?php echo $cf['id']; ?>"
                                        id="vrcf-inp<?php echo $cf['id']; ?>"
                                        value="<?php echo JText::_('VRYES'); ?>"<?php echo $extraDataAttr; ?>/>
-                                <span class="vrc-terms-text"><?php echo $isreq; ?><?php echo JText::_($cf['name']); ?></span>
-                            </label>
+                                <span class="vrc-terms-text"><?php echo $isreq; ?><?php
+                                    // Use $fname which already resolves poplink → <a href="..."> or plain <label>
+                                    if (!empty($cf['poplink'])) {
+                                        // Direct link text (not a <label> since the checkbox is above)
+                                        echo '<a href="' . $cf['poplink'] . '" target="_blank" rel="noopener noreferrer" class="vrc-terms-link">' . JText::_($cf['name']) . '</a>';
+                                    } else {
+                                        echo '<label for="vrcf-inp' . $cf['id'] . '" class="vrc-terms-inline-label">' . JText::_($cf['name']) . '</label>';
+                                    }
+                                ?></span>
+                            </div>
                         </div>
                         <?php
                         $vrc_checkbox_buffer = (isset($vrc_checkbox_buffer) ? $vrc_checkbox_buffer : '') . ob_get_clean();
@@ -1050,69 +1063,100 @@ if (array_key_exists('hours', $price)) {
 (function () {
     'use strict';
 
-    var $tooltip = document.getElementById('vrc-itin-tooltip');
-    if (!$tooltip) return;
+    function initTooltip() {
+        var $tooltip = document.getElementById('vrc-itin-tooltip');
+        if (!$tooltip) return;
 
-    var $nameEl = $tooltip.querySelector('.vrc-itin-tooltip-name');
-    var $mapEl  = $tooltip.querySelector('.vrc-itin-tooltip-map');
-    var activeBtn = null;
+        var $nameEl = $tooltip.querySelector('.vrc-itin-tooltip-name');
+        var $addrEl = $tooltip.querySelector('.vrc-itin-tooltip-addr');
+        var $mapEl  = $tooltip.querySelector('.vrc-itin-tooltip-map');
+        var activeBtn = null;
 
-    function buildMapsUrl(btn) {
-        var lat  = btn.getAttribute('data-lat')  || '';
-        var lng  = btn.getAttribute('data-lng')  || '';
-        var name = btn.getAttribute('data-name') || '';
-        var addr = btn.getAttribute('data-addr') || '';
+        function buildMapsUrl(btn) {
+            var lat  = btn.getAttribute('data-lat')  || '';
+            var lng  = btn.getAttribute('data-lng')  || '';
+            var name = btn.getAttribute('data-name') || '';
+            var addr = btn.getAttribute('data-addr') || '';
 
-        // Use precise coordinates when available (from DB), fall back to text search
-        if (lat && lng && parseFloat(lat) && parseFloat(lng)) {
-            return 'https://www.google.com/maps?q=' + encodeURIComponent(lat) + ',' + encodeURIComponent(lng);
+            // Prefer precise DB coordinates (lat/lng from #__vikrentcar_places)
+            // Use raw float values — no encodeURIComponent — Maps expects plain lat,lng
+            if (lat && lng && parseFloat(lat) !== 0 && parseFloat(lng) !== 0) {
+                return 'https://www.google.com/maps?q=' + parseFloat(lat) + ',' + parseFloat(lng);
+            }
+            // Fallback: text search
+            var query = encodeURIComponent((name + ' ' + addr).trim());
+            return 'https://www.google.com/maps/search/?api=1&query=' + query;
         }
-        var query = encodeURIComponent((name + ' ' + addr).trim());
-        return 'https://www.google.com/maps/search/?api=1&query=' + query;
-    }
 
-    function showTooltip(btn) {
-        var addr = btn.getAttribute('data-addr') || btn.getAttribute('data-name') || '';
-        $nameEl.textContent = addr;
-        $mapEl.href = buildMapsUrl(btn);
+        function showTooltip(btn) {
+            var name = btn.getAttribute('data-name') || '';
+            var addr = btn.getAttribute('data-addr') || '';
 
-        $tooltip.removeAttribute('aria-hidden');
-        $tooltip.classList.add('is-visible');
+            if ($nameEl) $nameEl.textContent = addr || name;
+            if ($addrEl) $addrEl.textContent = '';
+            if ($mapEl)  $mapEl.href = buildMapsUrl(btn);
 
-        /* Position below the button */
-        var rect = btn.getBoundingClientRect();
-        var parentRect = $tooltip.offsetParent
-            ? $tooltip.offsetParent.getBoundingClientRect()
-            : { top: 0, left: 0 };
-        $tooltip.style.top  = (rect.bottom - parentRect.top + 6) + 'px';
-        $tooltip.style.left = (rect.left   - parentRect.left)    + 'px';
+            // Show first so we can measure its width for clamping
+            $tooltip.removeAttribute('aria-hidden');
+            $tooltip.classList.add('is-visible');
 
-        activeBtn = btn;
-    }
+            /* The tooltip is position:absolute inside .vrc-oconfirm-col-left.
+               We must add the column's scrollTop to get correct position. */
+            var colLeft    = document.querySelector('.vrc-oconfirm-col-left');
+            var btnRect    = btn.getBoundingClientRect();
+            var baseRect   = colLeft ? colLeft.getBoundingClientRect() : { top: 0, left: 0 };
+            var scrollTop  = colLeft ? colLeft.scrollTop  : 0;
+            var scrollLeft = colLeft ? colLeft.scrollLeft : 0;
 
-    function hideTooltip() {
-        $tooltip.setAttribute('aria-hidden', 'true');
-        $tooltip.classList.remove('is-visible');
-        activeBtn = null;
-    }
+            var top  = btnRect.bottom - baseRect.top  + scrollTop  + 6;
+            var left = btnRect.left   - baseRect.left + scrollLeft;
 
-    document.querySelectorAll('.vrc-itin-info-btn').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            if (activeBtn === btn) { hideTooltip(); return; }
-            showTooltip(btn);
+            // Clamp horizontally so tooltip doesn't bleed outside the column
+            var containerWidth = colLeft ? colLeft.offsetWidth : 300;
+            var tooltipWidth   = $tooltip.offsetWidth || 220;
+            if (left + tooltipWidth > containerWidth - 8) {
+                left = containerWidth - tooltipWidth - 8;
+            }
+            if (left < 8) left = 8;
+
+            $tooltip.style.top  = top  + 'px';
+            $tooltip.style.left = left + 'px';
+
+            activeBtn = btn;
+        }
+
+        function hideTooltip() {
+            $tooltip.setAttribute('aria-hidden', 'true');
+            $tooltip.classList.remove('is-visible');
+            activeBtn = null;
+        }
+
+        document.querySelectorAll('.vrc-itin-info-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (activeBtn === btn) { hideTooltip(); return; }
+                showTooltip(btn);
+            });
         });
-    });
 
-    document.addEventListener('click', function (e) {
-        if (activeBtn && !$tooltip.contains(e.target)) {
-            hideTooltip();
-        }
-    });
+        // Clicking anywhere else closes the tooltip
+        document.addEventListener('click', function (e) {
+            if (activeBtn && !$tooltip.contains(e.target)) {
+                hideTooltip();
+            }
+        });
 
-    document.addEventListener('keyup', function (e) {
-        if (e.key === 'Escape' && activeBtn) hideTooltip();
-    });
+        document.addEventListener('keyup', function (e) {
+            if (e.key === 'Escape' && activeBtn) hideTooltip();
+        });
+    }
+
+    // Safe init: works whether DOM is ready or not (important inside iframe)
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTooltip);
+    } else {
+        initTooltip();
+    }
 })();
 </script>
 
@@ -1234,24 +1278,26 @@ if (array_key_exists('hours', $price)) {
 </script>
 
 <script type="text/javascript">
-/* ── Mobile: sticky modal header + sticky total bar on scroll ── */
+/* ── Mobile: sticky total bar — appears when total row scrolls out of view ── */
 (function () {
     'use strict';
 
     var stickyBar = document.getElementById('vrc-sticky-total-bar');
     if (!stickyBar) return;
 
-    // The scrolling element on mobile is body.contentpane itself
-    var scroller = document.body;
-
-    // Sentinel: the left column's total row — when it scrolls out of view, show bar
-    var sentinel = document.querySelector('.vrc-oconfirm-summary-total-wrapper');
+    // Sentinel: the visible price-list total row
+    // (NOT the hidden compat wrapper which has display:none)
+    var sentinel = document.getElementById('vrc-price-sentinel')
+                || document.querySelector('.vrc-price-row-total');
     if (!sentinel) return;
 
+    // Approximate height of sticky modal header to use as threshold
+    var headerEl = document.querySelector('.vrc-modal-header');
+
     function onScroll() {
-        var sentinelBottom = sentinel.getBoundingClientRect().bottom;
-        // Show sticky total when the real total row has scrolled above viewport
-        if (sentinelBottom < 0) {
+        var headerH = headerEl ? headerEl.offsetHeight : 56;
+        var rect = sentinel.getBoundingClientRect();
+        if (rect.bottom < headerH + 4) {
             stickyBar.classList.add('is-visible');
             stickyBar.removeAttribute('aria-hidden');
         } else {
@@ -1260,16 +1306,15 @@ if (array_key_exists('hours', $price)) {
         }
     }
 
-    // On mobile the modal body itself scrolls
-    document.addEventListener('scroll', onScroll, { passive: true });
-    // Also watch the right column in case it has its own scroll
-    var colRight = document.querySelector('.vrc-oconfirm-col-right');
-    if (colRight) {
-        colRight.addEventListener('scroll', onScroll, { passive: true });
-    }
-    var colLeft = document.querySelector('.vrc-oconfirm-col-left');
-    if (colLeft) {
-        colLeft.addEventListener('scroll', onScroll, { passive: true });
-    }
+    // Catch scroll on document, window, body, and both columns
+    var targets = [document, window, document.body,
+                   document.querySelector('.vrc-oconfirm-col-left'),
+                   document.querySelector('.vrc-oconfirm-col-right')];
+    targets.forEach(function (t) {
+        if (t) t.addEventListener('scroll', onScroll, { passive: true });
+    });
+
+    // Run once immediately in case page starts already scrolled
+    onScroll();
 })();
 </script>

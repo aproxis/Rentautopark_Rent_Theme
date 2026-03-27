@@ -245,24 +245,34 @@ body.contentpane .vrcrentalfor {
     font-size: 12px;
     line-height: 1.5;
     max-width: 220px;
-    box-shadow: 0 4px 16px rgba(0,0,0,.18);
-    pointer-events: none;
+    min-width: 160px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.22);
+    /* Hidden by default via opacity — pointer-events only blocked when invisible */
     opacity: 0;
     transform: translateY(-4px);
     transition: opacity .18s, transform .18s;
+    pointer-events: none;
     white-space: normal;
 }
 .vrc-itin-tooltip.is-visible {
     opacity: 1;
     transform: translateY(0);
-    pointer-events: auto;
+    pointer-events: auto; /* enable click on the map link */
 }
 
 .vrc-itin-tooltip-name {
-    margin: 0 0 7px;
+    margin: 0 0 2px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #f9fafb;
+    line-height: 1.4;
+}
+
+.vrc-itin-tooltip-addr {
+    margin: 0 0 8px;
     font-size: 11px;
-    color: #d1d5db;
-    line-height: 1.5;
+    color: #9ca3af;
+    line-height: 1.4;
 }
 
 .vrc-itin-tooltip-map {
@@ -979,30 +989,49 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     margin: 0 !important;
 }
 
-.vrc-terms-label {
+/* Row: checkbox + label/link side by side */
+.vrc-terms-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     cursor: pointer;
-    user-select: none;
     font-size: 13px;
     color: var(--oc-dark);
-    line-height: 1.4;
-    flex-wrap: nowrap;
+    line-height: 1.5;
 }
 
-.vrc-terms-label input[type="checkbox"] {
+.vrc-terms-row input[type="checkbox"] {
     width: 17px;
     height: 17px;
     flex-shrink: 0;
-    margin: 0;
+    margin-top: 1px; /* align with first text line */
     cursor: pointer;
     accent-color: var(--oc-primary);
 }
 
 .vrc-terms-text {
     flex: 1;
+    line-height: 1.5;
 }
+
+/* The label element inside .vrc-terms-text */
+.vrc-terms-text label {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    color: var(--oc-dark) !important;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+/* The poplink anchor (terms & conditions link) */
+.vrc-terms-text a.vrcmodal,
+.vrc-terms-text a {
+    color: var(--oc-primary) !important;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 500;
+}
+.vrc-terms-text a:hover { color: var(--oc-primary-h) !important; }
 
 .vrc-terms-text .vrcrequired sup {
     color: var(--oc-primary);
@@ -1010,11 +1039,12 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 
 /* ══════════════════════════════════════════════════════════
    MOBILE STICKY TOTAL BAR
-   Appears below sticky modal header when total scrolls out of view
+   Appears below sticky modal header when total scrolls out of view.
+   On desktop: hidden. On mobile: flex but invisible until JS adds .is-visible.
    ══════════════════════════════════════════════════════════ */
 
 .vrc-sticky-total-bar {
-    display: none; /* hidden on desktop */
+    display: none; /* hidden on desktop; overridden in media query */
     position: sticky;
     top: 0;
     z-index: 90;
@@ -1025,6 +1055,7 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     justify-content: space-between;
     gap: 8px;
     font-size: 14px;
+    /* Start invisible — JS adds .is-visible to fade in */
     opacity: 0;
     transform: translateY(-6px);
     transition: opacity .2s, transform .2s;
@@ -1049,8 +1080,17 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 }
 
 @media (max-width: 768px) {
+    /* Show sticky bar on mobile */
     .vrc-sticky-total-bar {
-        display: flex; /* visible only on mobile */
+        display: flex; /* active — JS controls opacity via .is-visible */
+    }
+
+    /* Modal header also needs to stick on mobile while body scrolls */
+    body.contentpane > .vrc-modal-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #fff;
     }
 
     /* Payment methods stay in a row on mobile */
