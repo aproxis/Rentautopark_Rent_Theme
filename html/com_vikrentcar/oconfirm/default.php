@@ -655,45 +655,107 @@ if (array_key_exists('hours', $price)) {
             var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(email);
         }
+        
         function checkvrcFields() {
             var vrvar = document.vrc;
+            var isValid = true;
+            var errorMessage = '';
+            
+            // Reset all field colors
+            <?php
+            if (@is_array($cfields)) {
+                foreach ($cfields as $cf) {
+                    ?>
+                    if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                        document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='';
+                    }
+                    <?php
+                }
+            }
+            ?>
+            
+            // Validate required fields
             <?php
             if (@is_array($cfields)) {
                 foreach ($cfields as $cf) {
                     if (intval($cf['required']) == 1) {
                         if ($cf['type'] == "text" || $cf['type'] == "textarea" || $cf['type'] == "date" || $cf['type'] == "country") {
                             ?>
-                    if (!vrvar.vrcf<?php echo $cf['id']; ?>.value.match(/\S/)) {
-                        document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000';
-                        return false;
-                    } else { document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color=''; }
+                    var field<?php echo $cf['id']; ?> = vrvar.vrcf<?php echo $cf['id']; ?>;
+                    if (!field<?php echo $cf['id']; ?> || !field<?php echo $cf['id']; ?>.value.match(/\S/)) {
+                        if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000';
+                        }
+                        isValid = false;
+                        errorMessage = 'Please fill in all required fields.';
+                    } else { 
+                        if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='';
+                        }
+                    }
                             <?php
                             if ($cf['isemail'] == 1) {
                                 ?>
-                    if (!vrcValidateEmail(vrvar.vrcf<?php echo $cf['id']; ?>.value)) {
-                        document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000';
-                        return false;
-                    } else { document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color=''; }
+                    if (field<?php echo $cf['id']; ?> && field<?php echo $cf['id']; ?>.value.match(/\S/) && !vrcValidateEmail(field<?php echo $cf['id']; ?>.value)) {
+                        if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000';
+                        }
+                        isValid = false;
+                        errorMessage = 'Please enter a valid email address.';
+                    }
                                 <?php
                             }
                         } elseif ($cf['type'] == "select") {
                             ?>
-                    if (!vrvar.vrcf<?php echo $cf['id']; ?>.value.match(/\S/)) {
-                        document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000';
-                        return false;
-                    } else { document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color=''; }
+                    var select<?php echo $cf['id']; ?> = vrvar.vrcf<?php echo $cf['id']; ?>;
+                    if (!select<?php echo $cf['id']; ?> || !select<?php echo $cf['id']; ?>.value.match(/\S/)) {
+                        if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000';
+                        }
+                        isValid = false;
+                        errorMessage = 'Please select an option for all required fields.';
+                    } else { 
+                        if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='';
+                        }
+                    }
                             <?php
                         } elseif ($cf['type'] == "checkbox") {
                             ?>
-                    if (vrvar.vrcf<?php echo $cf['id']; ?>.checked) {
-                        document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='';
-                    } else { document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000'; return false; }
+                    var checkbox<?php echo $cf['id']; ?> = vrvar.vrcf<?php echo $cf['id']; ?>;
+                    if (!checkbox<?php echo $cf['id']; ?> || !checkbox<?php echo $cf['id']; ?>.checked) {
+                        if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='#ff0000';
+                        }
+                        // Also highlight the checkbox itself
+                        if (document.getElementById('vrcf-inp<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf-inp<?php echo $cf['id']; ?>').style.borderColor = '#ff0000';
+                            document.getElementById('vrcf-inp<?php echo $cf['id']; ?>').style.boxShadow = '0 0 5px #ff0000';
+                        }
+                        isValid = false;
+                        errorMessage = 'Please agree to the terms and conditions.';
+                    } else { 
+                        if (document.getElementById('vrcf<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf<?php echo $cf['id']; ?>').style.color='';
+                        }
+                        if (document.getElementById('vrcf-inp<?php echo $cf['id']; ?>')) {
+                            document.getElementById('vrcf-inp<?php echo $cf['id']; ?>').style.borderColor = '';
+                            document.getElementById('vrcf-inp<?php echo $cf['id']; ?>').style.boxShadow = '';
+                        }
+                    }
                             <?php
                         }
                     }
                 }
             }
             ?>
+            
+            // If validation failed, show error message and prevent submission
+            if (!isValid) {
+                alert(errorMessage);
+                return false;
+            }
+            
             return true;
         }
         </script>
