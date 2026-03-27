@@ -698,9 +698,9 @@ body.contentpane .vrcrentalfor {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--oc-border);
+ 	margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
     flex-wrap: wrap;
 }
 
