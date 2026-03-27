@@ -350,9 +350,6 @@ if (array_key_exists('hours', $price)) {
             </a>
         </div>
 
-        <!-- Sentinel for sticky total bar — invisible pixel at bottom of price list -->
-        <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;position:absolute;bottom:0;left:0;width:100%;pointer-events:none;"></div>
-
         <!-- Price breakdown — simplified clean list -->
         <div class="vrc-price-list">
 
@@ -410,8 +407,10 @@ if (array_key_exists('hours', $price)) {
                 <span class="vrc-price-row-label"><?php echo $usedcoupon ? JText::_('VRCNEWTOTAL') : JText::_('VRTOTAL'); ?></span>
                 <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($totdue); ?></span>
             </div>
-
         </div><!-- /.vrc-price-list -->
+
+        <!-- Sentinel for sticky total bar — invisible pixel at bottom of price list -->
+        <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;"></div>
 
         <?php /* ── OLD table kept for compatibility but hidden via CSS ── */ ?>
         <div class="vrc-oconfirm-summary-container" style="display:none!important;">
@@ -1347,84 +1346,64 @@ if (array_key_exists('hours', $price)) {
 </script>
 
 <script type="text/javascript">
-/* ── Mobile: sticky total bar — appears when total row scrolls out of view ── */
 (function () {
-    'use strict';
+  'use strict';
+  var stickyBar = document.getElementById('vrc-sticky-total-bar');
+  if (!stickyBar) return;
 
-    var stickyBar = document.getElementById('vrc-sticky-total-bar');
-    if (!stickyBar) {
-        console.log('Sticky bar element not found');
-        return;
-    }
-    console.log('Sticky bar found:', stickyBar);
+  // Use sentinel inside .vrc-price-list (NOT the hidden compat wrapper)
+  var sentinel = document.getElementById('vrc-price-sentinel');
+  if (!sentinel) {
+    sentinel = document.querySelector('.vrc-price-list .vrc-price-row-total');
+  }
+  if (!sentinel) return;
 
-    // Sentinel: the visible price-list total row
-    // (NOT the hidden compat wrapper which has display:none)
-    var sentinel = document.getElementById('vrc-price-sentinel')
-                || document.querySelector('.vrc-price-row-total');
-    if (!sentinel) {
-        console.log('Sentinel element not found');
-        return;
-    }
-    console.log('Sentinel found:', sentinel);
+  function show() {
+    stickyBar.classList.add('is-visible');
+    stickyBar.removeAttribute('aria-hidden');
+  }
+  function hide() {
+    stickyBar.classList.remove('is-visible');
+    stickyBar.setAttribute('aria-hidden', 'true');
+  }
+  function isMobile() { return window.innerWidth <= 768; }
 
-    // Approximate height of sticky modal header to use as threshold
+  if (window.IntersectionObserver) {
     var headerEl = document.querySelector('.vrc-modal-header');
-    console.log('Header element:', headerEl);
+    var headerH = headerEl ? headerEl.offsetHeight : 56;
 
-    function onScroll() {
-        console.log('Scroll event triggered');
-        console.log('Window width:', window.innerWidth);
-        
-        // Only run on mobile (when sticky bar is visible)
-        if (window.innerWidth > 768) {
-            console.log('Desktop view - hiding sticky bar');
-            stickyBar.classList.remove('is-visible');
-            stickyBar.setAttribute('aria-hidden', 'true');
-            return;
-        }
-
-        console.log('Mobile view - checking scroll position');
-        
-        var headerH = headerEl ? headerEl.offsetHeight : 56;
-        var rect = sentinel.getBoundingClientRect();
-        
-        console.log('Header height:', headerH);
-        console.log('Sentinel rect:', rect);
-        console.log('Sentinel bottom position:', rect.bottom);
-        
-        // Check if total row is above the header bottom
-        if (rect.bottom < headerH + 4) {
-            console.log('Total row is above header - showing sticky bar');
-            stickyBar.classList.add('is-visible');
-            stickyBar.removeAttribute('aria-hidden');
-        } else {
-            console.log('Total row is below header - hiding sticky bar');
-            stickyBar.classList.remove('is-visible');
-            stickyBar.setAttribute('aria-hidden', 'true');
-        }
-    }
-
-    // Catch scroll on document, window, body, and both columns
-    var targets = [document, window, document.body,
-                   document.querySelector('.vrc-oconfirm-col-left'),
-                   document.querySelector('.vrc-oconfirm-col-right')];
-    
-    console.log('Setting up scroll listeners on:', targets);
-    
-    targets.forEach(function (t) {
-        if (t) {
-            console.log('Adding scroll listener to:', t);
-            t.addEventListener('scroll', onScroll, { passive: true });
-        }
+    var observer = new IntersectionObserver(function (entries) {
+      if (!isMobile()) { hide(); return; }
+      if (!entries[0].isIntersecting) {
+        show();
+      } else {
+        hide();
+      }
+    }, {
+      root: null,
+      rootMargin: '-' + headerH + 'px 0px 0px 0px',
+      threshold: 0
     });
 
-    // Also listen for resize to handle orientation changes
-    window.addEventListener('resize', onScroll, { passive: true });
-    console.log('Added resize listener');
+    observer.observe(sentinel);
+    window.addEventListener('resize', function () {
+      if (!isMobile()) hide();
+    }, { passive: true });
 
-    // Run once immediately in case page starts already scrolled
-    console.log('Initial scroll check');
+  } else {
+    // Fallback for very old browsers
+    function onScroll() {
+      if (!isMobile()) { hide(); return; }
+      var hH = (document.querySelector('.vrc-modal-header') || {offsetHeight:56}).offsetHeight || 56;
+      var rect = sentinel.getBoundingClientRect();
+      if (rect.bottom < hH + 4) { show(); } else { hide(); }
+    }
+    [document, window, document.body,
+     document.querySelector('.vrc-oconfirm-col-left'),
+     document.querySelector('.vrc-oconfirm-col-right')
+    ].forEach(function(t) { if (t) t.addEventListener('scroll', onScroll, {passive:true}); });
+    window.addEventListener('resize', onScroll, {passive:true});
     onScroll();
+  }
 })();
 </script>
