@@ -375,6 +375,23 @@
 	gap: 8px;
 }
 
+/* Actions Bar */
+.docsupload-actions-bar {
+	background: white;
+	border: 1px solid #e9ecef;
+	border-radius: 12px;
+	margin-bottom: 24px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	overflow: hidden;
+}
+
+.docsupload-actions-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 20px;
+}
+
 /* Buttons */
 .docsupload-back-btn {
 	display: inline-flex;
@@ -404,8 +421,8 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 10px 16px;
-	background: #28a745;
+	padding: 8px 12px;
+	background: #ff7f50;
 	color: white;
 	border: none;
 	border-radius: 8px;
@@ -416,8 +433,14 @@
 }
 
 .docsupload-submit-btn:hover {
-	background: #218838;
+	background: #ff6347;
 	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(255, 127, 80, 0.3);
+}
+
+.docsupload-submit-btn:active {
+	background: #ff8c69;
+	transform: translateY(0);
 }
 
 .docsupload-submit-btn svg {

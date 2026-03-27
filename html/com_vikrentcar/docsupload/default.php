@@ -68,6 +68,24 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 		<span><?php echo JText::sprintf('VRC_YOURCONF_ORDER_AT', VikRentCar::getFrontTitle($this->vrc_tn)); ?></span>
 	</div>
 
+	<!-- Actions Bar -->
+	<div class="docsupload-actions-bar">
+		<div class="docsupload-actions-container">
+			<div class="docsupload-actions-left">
+				<a href="<?php echo JRoute::_($backto); ?>" class="docsupload-back-btn">
+					<?php VikRentCarIcons::e('arrow-left'); ?>
+					<span><?php echo JText::_('VRBACK'); ?></span>
+				</a>
+			</div>
+			<div class="docsupload-actions-right">
+				<button type="submit" name="docsuploadsubmit" class="docsupload-submit-btn" form="docsupload-form">
+					<?php VikRentCarIcons::e('check'); ?>
+					<span><?php echo JText::_('JAPPLY'); ?></span>
+				</button>
+			</div>
+		</div>
+	</div>
+
 	<!-- Main Grid Layout -->
 	<div class="docsupload-container">
 		<div class="docsupload-grid">
@@ -103,7 +121,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 							<?php echo JText::_('VRC_PRECHECKIN_DISCLAIMER'); ?>
 						</div>
 
-						<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar'.(!empty($pitemid) ? '&Itemid='.$pitemid : '')); ?>" method="post" class="docsupload-form">
+						<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar'.(!empty($pitemid) ? '&Itemid='.$pitemid : '')); ?>" method="post" class="docsupload-form" id="docsupload-form">
 							<input type="hidden" name="option" value="com_vikrentcar" />
 							<input type="hidden" name="task" value="storedocsupload" />
 							<input type="hidden" name="sid" value="<?php echo $this->order['sid']; ?>" />
@@ -181,22 +199,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 									</div>
 								</div>
 							</div>
-
-							<!-- Form Actions -->
-							<div class="docsupload-actions">
-								<div class="docsupload-actions-left">
-									<a href="<?php echo JRoute::_($backto); ?>" class="docsupload-back-btn">
-										<?php VikRentCarIcons::e('arrow-left'); ?>
-										<span><?php echo JText::_('VRBACK'); ?></span>
-									</a>
-								</div>
-								<div class="docsupload-actions-right">
-									<button type="submit" name="docsuploadsubmit" class="docsupload-submit-btn">
-										<?php VikRentCarIcons::e('check'); ?>
-										<span><?php echo JText::_('VRPROSEGUI'); ?></span>
-									</button>
-								</div>
-							</div>
 						</form>
 					</div>
 				</div>
@@ -265,49 +267,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 								</div>
 								<div class="docsupload-order-value"><?php echo $wdays_map[$info_to['wday']] . ' ' . date($df . ' ' . $nowtf, $this->order['consegna']); ?></div>
 							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Upload Status Card -->
-				<div class="docsupload-card">
-					<div class="docsupload-card-header">
-						<h3><?php echo JText::_('VRC_UPLOAD_STATUS'); ?></h3>
-					</div>
-					<div class="docsupload-status">
-						<?php
-						$has_uploaded_docs = !empty($current_files) && count($current_files) > 0;
-						?>
-						<div class="docsupload-status-item <?php echo $has_uploaded_docs ? 'completed' : 'pending'; ?>">
-							<div class="docsupload-status-icon">
-								<?php if ($has_uploaded_docs) { ?>
-									<?php VikRentCarIcons::e('check-circle'); ?>
-								<?php } else { ?>
-									<?php VikRentCarIcons::e('circle'); ?>
-								<?php } ?>
-							</div>
-							<div class="docsupload-status-content">
-								<div class="docsupload-status-title">
-									<?php echo JText::_('VRC_DOCUMENTS_UPLOADED'); ?>
-								</div>
-								<div class="docsupload-status-subtitle">
-									<?php echo $has_uploaded_docs ? JText::_('VRC_DOCUMENTS_UPLOADED_SUCCESS') : JText::_('VRC_DOCUMENTS_PENDING'); ?>
-								</div>
-							</div>
-						</div>
-						
-						<div class="docsupload-status-actions">
-							<?php if ($has_uploaded_docs) { ?>
-								<button type="button" class="docsupload-status-btn docsupload-status-btn-success">
-									<?php VikRentCarIcons::e('check'); ?>
-									<span><?php echo JText::_('VRC_ALL_DOCUMENTS_UPLOADED'); ?></span>
-								</button>
-							<?php } else { ?>
-								<button type="button" class="docsupload-status-btn docsupload-status-btn-primary" id="docsupload-start-upload">
-									<?php VikRentCarIcons::e('upload'); ?>
-									<span><?php echo JText::_('VRC_START_UPLOAD'); ?></span>
-								</button>
-							<?php } ?>
 						</div>
 					</div>
 				</div>
