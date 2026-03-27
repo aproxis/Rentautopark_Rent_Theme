@@ -207,6 +207,25 @@ $registerAjaxUrl = JURI::root() . 'templates/rent/php/register-ajax.php';
 <?php /* ── Modal CSS ── */ ?>
 <?php if ($isModal): ?>
 <link rel="stylesheet" href="<?php echo JURI::root(); ?>templates/rent/css/oconfirm-modal.css"/>
+<style>
+/* Modal body height fix — make the modal fill available height */
+body.contentpane {
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+body.contentpane > .vrc-modal-header {
+    flex-shrink: 0;
+}
+body.contentpane > .vrc-oconfirm-two-col {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 0; /* flex child needs explicit 0 to shrink */
+}
+</style>
 <?php endif; ?>
 
 <?php /* ── Stepbar — hidden in modal ── */ ?>
@@ -297,11 +316,74 @@ $registerAjaxUrl = JURI::root() . 'templates/rent/php/register-ajax.php';
             <?php endif; ?>
         </div>
 
-        <!-- Price breakdown table -->
-        <div class="vrc-oconfirm-summary-container">
-            <div class="vrc-oconfirm-summary-car-wrapper">
+        <!-- Price breakdown — simplified clean list -->
+        <div class="vrc-price-list">
 
-                <!-- Table header -->
+            <!-- Car base row -->
+            <div class="vrc-price-row">
+                <span class="vrc-price-row-label">
+                    <?php echo $car['name']; ?>
+                    <?php if (!empty($price['idprice'])): ?>
+                    <small style="display:block;font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo VikRentCar::getPriceName($price['idprice'],$vrc_tn); ?></small>
+                    <?php endif; ?>
+                </span>
+                <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($saywith); ?></span>
+            </div>
+
+            <!-- Optional rows -->
+            <?php if (is_array($selopt)): foreach ($selopt as $aop):
+                $thisoptcost  = intval($aop['perday']) == 1 ? ($aop['cost'] * $aop['quan']) * $days_int : $aop['cost'] * $aop['quan'];
+                $basequancost = intval($aop['perday']) == 1 ? ($aop['cost'] * $days_int) : $aop['cost'];
+                if (!empty($aop['maxprice']) && $aop['maxprice'] > 0 && $basequancost > $aop['maxprice']) {
+                    $thisoptcost = $aop['maxprice'];
+                    if (intval($aop['hmany']) == 1 && intval($aop['quan']) > 1) { $thisoptcost = $aop['maxprice'] * $aop['quan']; }
+                }
+                $optwith = VikRentCar::sayOptionalsPlusIva($thisoptcost, $aop['idiva']);
+            ?>
+            <div class="vrc-price-row">
+                <span class="vrc-price-row-label"><?php echo $aop['name'].($aop['quan']>1?' &times;'.$aop['quan']:''); ?></span>
+                <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($optwith); ?></span>
+            </div>
+            <?php endforeach; endif; ?>
+
+            <!-- Location fee -->
+            <?php if ($locfee && $locfeewith > 0): ?>
+            <div class="vrc-price-row">
+                <span class="vrc-price-row-label"><?php echo JText::_('VRLOCFEETOPAY'); ?></span>
+                <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($locfeewith); ?></span>
+            </div>
+            <?php endif; ?>
+
+            <!-- Out-of-hours fee -->
+            <?php if (count($oohfee) > 0): ?>
+            <div class="vrc-price-row">
+                <span class="vrc-price-row-label"><?php echo JText::sprintf('VRCOOHFEETOPAY', $ooh_time); ?></span>
+                <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($oohfeewith); ?></span>
+            </div>
+            <?php endif; ?>
+
+            <!-- Coupon saving -->
+            <?php if ($usedcoupon && is_array($coupon)): ?>
+            <div class="vrc-price-row vrc-price-row-coupon">
+                <span class="vrc-price-row-label">
+                    <span class="vrc-coupon-tag-icon">&#127991;</span>
+                    <?php echo JText::_('VRCCOUPON'); ?> <strong><?php echo htmlspecialchars($coupon['code']); ?></strong>
+                </span>
+                <span class="vrc-price-row-value vrc-coupon-saving">&minus;<?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($couponsave); ?></span>
+            </div>
+            <?php endif; ?>
+
+            <!-- Total -->
+            <div class="vrc-price-row vrc-price-row-total">
+                <span class="vrc-price-row-label"><?php echo $usedcoupon ? JText::_('VRCNEWTOTAL') : JText::_('VRTOTAL'); ?></span>
+                <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($totdue); ?></span>
+            </div>
+
+        </div><!-- /.vrc-price-list -->
+
+        <?php /* ── OLD table kept for compatibility but hidden via CSS ── */ ?>
+        <div class="vrc-oconfirm-summary-container" style="display:none!important;">
+            <div class="vrc-oconfirm-summary-car-wrapper">
                 <div class="vrc-oconfirm-summary-car-head">
                     <div class="vrc-oconfirm-summary-car-head-cell vrc-oconfirm-summary-car-cell-descr"><span></span></div>
                     <div class="vrc-oconfirm-summary-car-head-cell vrc-oconfirm-summary-car-cell-days"><span><?php echo (array_key_exists('hours',$price)?JText::_('VRCHOURS'):JText::_('VRDAYS')); ?></span></div>
@@ -494,13 +576,15 @@ $registerAjaxUrl = JURI::root() . 'templates/rent/php/register-ajax.php';
                 </div>
                 <?php endif; ?>
 
-            </div><!-- /.vrc-oconfirm-summary-total-wrapper -->
-        </div><!-- /.vrc-oconfirm-summary-container -->
+        </div><!-- /.vrc-oconfirm-summary-total-wrapper (hidden compat) -->
+        </div><!-- /.vrc-oconfirm-summary-container (hidden compat) -->
 
     </div><!-- /.vrc-oconfirm-col-left -->
 
     <!-- ═══════════════════ RIGHT COLUMN ═══════════════════ -->
     <div class="vrc-oconfirm-col-right">
+
+        <h3 class="vrc-section-heading"><?php echo JText::_('VRCDRIVERINFO') ?: 'Driver Information'; ?></h3>
 
         <?php /* ── Customer PIN (guests without stored data only) ── */ ?>
         <?php if (VikRentCar::customersPinEnabled() && !VikRentCar::userIsLogged() && !(count($customer_details) > 0)): ?>
