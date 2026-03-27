@@ -1357,8 +1357,17 @@ if (array_key_exists('hours', $price)) {
     var headerEl = document.querySelector('.vrc-modal-header');
 
     function onScroll() {
+        // Only run on mobile (when sticky bar is visible)
+        if (window.innerWidth > 768) {
+            stickyBar.classList.remove('is-visible');
+            stickyBar.setAttribute('aria-hidden', 'true');
+            return;
+        }
+
         var headerH = headerEl ? headerEl.offsetHeight : 56;
         var rect = sentinel.getBoundingClientRect();
+        
+        // Check if total row is above the header bottom
         if (rect.bottom < headerH + 4) {
             stickyBar.classList.add('is-visible');
             stickyBar.removeAttribute('aria-hidden');
@@ -1375,6 +1384,9 @@ if (array_key_exists('hours', $price)) {
     targets.forEach(function (t) {
         if (t) t.addEventListener('scroll', onScroll, { passive: true });
     });
+
+    // Also listen for resize to handle orientation changes
+    window.addEventListener('resize', onScroll, { passive: true });
 
     // Run once immediately in case page starts already scrolled
     onScroll();

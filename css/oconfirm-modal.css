@@ -1045,9 +1045,11 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 
 .vrc-sticky-total-bar {
     display: none; /* hidden on desktop; overridden in media query */
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 90;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     background: #fff;
     border-bottom: 1px solid var(--oc-border);
     padding: 10px 16px;
@@ -1055,11 +1057,13 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     justify-content: space-between;
     gap: 8px;
     font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     /* Start invisible — JS adds .is-visible to fade in */
     opacity: 0;
     transform: translateY(-6px);
     transition: opacity .2s, transform .2s;
     pointer-events: none;
+    width: 100%;
 }
 
 .vrc-sticky-total-bar.is-visible {
@@ -1089,7 +1093,7 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     body.contentpane > .vrc-modal-header {
         position: sticky;
         top: 0;
-        z-index: 100;
+        z-index: 900;
         background: #fff;
     }
 
