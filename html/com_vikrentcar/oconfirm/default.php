@@ -344,7 +344,7 @@ if (array_key_exists('hours', $price)) {
         </div>
 
         <!-- Sentinel for sticky total bar — invisible pixel at bottom of price list -->
-        <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;"></div>
+        <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;position:absolute;bottom:0;left:0;width:100%;pointer-events:none;"></div>
 
         <!-- Price breakdown — simplified clean list -->
         <div class="vrc-price-list">
@@ -1345,33 +1345,54 @@ if (array_key_exists('hours', $price)) {
     'use strict';
 
     var stickyBar = document.getElementById('vrc-sticky-total-bar');
-    if (!stickyBar) return;
+    if (!stickyBar) {
+        console.log('Sticky bar element not found');
+        return;
+    }
+    console.log('Sticky bar found:', stickyBar);
 
     // Sentinel: the visible price-list total row
     // (NOT the hidden compat wrapper which has display:none)
     var sentinel = document.getElementById('vrc-price-sentinel')
                 || document.querySelector('.vrc-price-row-total');
-    if (!sentinel) return;
+    if (!sentinel) {
+        console.log('Sentinel element not found');
+        return;
+    }
+    console.log('Sentinel found:', sentinel);
 
     // Approximate height of sticky modal header to use as threshold
     var headerEl = document.querySelector('.vrc-modal-header');
+    console.log('Header element:', headerEl);
 
     function onScroll() {
+        console.log('Scroll event triggered');
+        console.log('Window width:', window.innerWidth);
+        
         // Only run on mobile (when sticky bar is visible)
         if (window.innerWidth > 768) {
+            console.log('Desktop view - hiding sticky bar');
             stickyBar.classList.remove('is-visible');
             stickyBar.setAttribute('aria-hidden', 'true');
             return;
         }
 
+        console.log('Mobile view - checking scroll position');
+        
         var headerH = headerEl ? headerEl.offsetHeight : 56;
         var rect = sentinel.getBoundingClientRect();
         
+        console.log('Header height:', headerH);
+        console.log('Sentinel rect:', rect);
+        console.log('Sentinel bottom position:', rect.bottom);
+        
         // Check if total row is above the header bottom
         if (rect.bottom < headerH + 4) {
+            console.log('Total row is above header - showing sticky bar');
             stickyBar.classList.add('is-visible');
             stickyBar.removeAttribute('aria-hidden');
         } else {
+            console.log('Total row is below header - hiding sticky bar');
             stickyBar.classList.remove('is-visible');
             stickyBar.setAttribute('aria-hidden', 'true');
         }
@@ -1381,14 +1402,22 @@ if (array_key_exists('hours', $price)) {
     var targets = [document, window, document.body,
                    document.querySelector('.vrc-oconfirm-col-left'),
                    document.querySelector('.vrc-oconfirm-col-right')];
+    
+    console.log('Setting up scroll listeners on:', targets);
+    
     targets.forEach(function (t) {
-        if (t) t.addEventListener('scroll', onScroll, { passive: true });
+        if (t) {
+            console.log('Adding scroll listener to:', t);
+            t.addEventListener('scroll', onScroll, { passive: true });
+        }
     });
 
     // Also listen for resize to handle orientation changes
     window.addEventListener('resize', onScroll, { passive: true });
+    console.log('Added resize listener');
 
     // Run once immediately in case page starts already scrolled
+    console.log('Initial scroll check');
     onScroll();
 })();
 </script>
