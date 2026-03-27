@@ -104,11 +104,11 @@ body.contentpane > .vrc-oconfirm-two-col {
     height: 0; /* flex child needs explicit 0 to shrink properly */
 }
 
-body.contentpane .vrc-oconfirm-two-col,
+/* body.contentpane .vrc-oconfirm-two-col,
 .vrc-modal-wrap .vrc-oconfirm-two-col {
     height: calc(85vh - 58px);
     max-height: calc(85vh - 58px);
-}
+} */
 
 /* ══════════════════════════════════════════════════════════
    LEFT COLUMN — CAR INFO BLOCK
