@@ -808,3 +808,8 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     .vrc-save-order-block input[type="submit"],
     .vrc-goback-block .btn { width: 100%; text-align: center; justify-content: center; }
 }
+
+.com_vikrentcar .vrccustomfields:before, 
+.com_vikrentcar .vrccustomfields:after {
+    display: none;
+}
