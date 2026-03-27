@@ -62,12 +62,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 ?>
 
 <div class="docsupload-page">
-	<!-- Success Message -->
-	<div class="successmade">
-		<?php VikRentCarIcons::e('check-circle'); ?>
-		<span><?php echo JText::sprintf('VRC_YOURCONF_ORDER_AT', VikRentCar::getFrontTitle($this->vrc_tn)); ?></span>
-	</div>
-
 	<!-- Actions Bar -->
 	<div class="docsupload-actions-bar">
 		<div class="docsupload-actions-container">
@@ -114,11 +108,121 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 				<div class="docsupload-card">
 					<div class="docsupload-card-header">
 						<h3><?php echo JText::_('VRC_UPLOAD_DOCUMENTS'); ?></h3>
+						<div class="docsupload-order-status">
+							<?php
+							$status_class = '';
+							$status_icon = '';
+							$status_text = '';
+							
+							switch ($this->order['status']) {
+								case 'confirmed':
+									$status_class = 'status-confirmed';
+									$status_icon = 'check-circle';
+									$status_text = JText::_('VRC_YOURCONF_ORDER_AT_SUBTITLE');
+									break;
+								case 'standby':
+									$status_class = 'status-standby';
+									$status_icon = 'clock';
+									$status_text = JText::_('VRC_YOURORDER_PENDING_SUBTITLE');
+									break;
+								case 'cancelled':
+									$status_class = 'status-cancelled';
+									$status_icon = 'x-circle';
+									$status_text = JText::_('VRC_YOURORDER_CANCELLED_SUBTITLE');
+									break;
+								default:
+									$status_class = 'status-unknown';
+									$status_icon = 'circle';
+									$status_text = JText::_('VRCORDERSTATUS');
+							}
+							?>
+							<span class="docsupload-status-badge <?php echo $status_class; ?>">
+								<?php VikRentCarIcons::e($status_icon); ?>
+								<span><?php echo $status_text; ?></span>
+							</span>
+						</div>
 					</div>
 					
 					<div class="docsupload-content">
-						<div class="docsupload-disclaimer info">
-							<?php echo JText::_('VRC_PRECHECKIN_DISCLAIMER'); ?>
+						<!-- Uploaded Files -->
+						<div class="docsupload-field">
+							<label class="docsupload-field-label"><?php echo JText::_('VRC_UPLOADED_FILES'); ?></label>
+							<div class="docsupload-files" id="docsupload-files">
+								<?php
+								foreach ($current_files as $guest_file) {
+									if (empty($guest_file) || strpos($guest_file, 'http') !== 0) {
+										continue;
+									}
+									$furl_segments = explode('/', $guest_file);
+									$guest_fname = $furl_segments[(count($furl_segments) - 1)];
+									$read_fname = substr($guest_fname, (strpos($guest_fname, '_') + 1));
+									
+									// Determine file type for icon
+									$file_extension = strtolower(pathinfo($read_fname, PATHINFO_EXTENSION));
+									$file_icon = 'file';
+									$is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+									$is_pdf = ($file_extension === 'pdf');
+									
+									if ($is_image) {
+										$file_icon = 'image';
+									} elseif ($is_pdf) {
+										$file_icon = 'file-text';
+									}
+									?>
+									<div class="docsupload-file-item" data-file-url="<?php echo $guest_file; ?>" data-file-name="<?php echo $read_fname; ?>" data-file-type="<?php echo $file_extension; ?>">
+										<div class="docsupload-file-info">
+											<div class="docsupload-file-icon">
+												<?php VikRentCarIcons::e($file_icon); ?>
+											</div>
+											<div class="docsupload-file-details">
+												<div class="docsupload-file-name"><?php echo $read_fname; ?></div>
+												<div class="docsupload-file-size"><?php echo JText::_('VRC_FILE_UPLOADED'); ?></div>
+											</div>
+										</div>
+										<button type="button" class="docsupload-file-remove" data-file="<?php echo $guest_file; ?>">
+											<?php VikRentCarIcons::e('times'); ?>
+										</button>
+									</div>
+									<?php
+								}
+								?>
+							</div>
+						</div>
+
+						<!-- Upload Area -->
+						<div class="docsupload-section">
+							<div class="docsupload-field">
+								<label class="docsupload-field-label"><?php echo JText::_('VRC_ADD_DOCUMENTS'); ?></label>
+								<div class="docsupload-upload-area">
+									<input type="hidden" id="docsupload-curfiles" name="docsupload[files]" value="<?php echo $this->escape($docs_uploaded->get('files', '')); ?>" />
+									
+									<div class="docsupload-drag-drop" id="docsupload-drag-drop">
+										<div class="docsupload-drag-drop-content">
+											<div class="docsupload-drag-drop-icon">
+												<?php VikRentCarIcons::e('cloud-upload'); ?>
+											</div>
+											<div class="docsupload-drag-drop-text">
+												<strong><?php echo JText::_('VRC_DRAG_DROP_UPLOAD'); ?></strong>
+												<span><?php echo JText::_('VRC_DRAG_DROP_HINT'); ?></span>
+											</div>
+											<button type="button" class="docsupload-browse-btn" id="docsupload-browse-btn">
+												<?php VikRentCarIcons::e('folder-open'); ?>
+												<span><?php echo JText::_('VRC_BROWSE_FILES'); ?></span>
+											</button>
+										</div>
+									</div>
+
+									<!-- Progress Bar -->
+									<div class="docsupload-progress" id="docsupload-progress" style="display: none;">
+										<div class="docsupload-progress-bar">&nbsp;</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Disclaimer -->
+							<div class="docsupload-disclaimer info">
+								<?php echo JText::_('VRC_PRECHECKIN_DISCLAIMER'); ?>
+							</div>
 						</div>
 
 						<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar'.(!empty($pitemid) ? '&Itemid='.$pitemid : '')); ?>" method="post" class="docsupload-form" id="docsupload-form">
@@ -127,78 +231,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 							<input type="hidden" name="sid" value="<?php echo $this->order['sid']; ?>" />
 							<input type="hidden" name="ts" value="<?php echo $this->order['ts']; ?>" />
 							<input type="hidden" name="Itemid" value="<?php echo $pitemid; ?>" />
-
-							<!-- Upload Area -->
-							<div class="docsupload-section">
-								<div class="docsupload-field">
-									<label class="docsupload-field-label"><?php echo JText::_('VRC_ADD_DOCUMENTS'); ?></label>
-									<div class="docsupload-upload-area">
-										<input type="hidden" id="docsupload-curfiles" name="docsupload[files]" value="<?php echo $this->escape($docs_uploaded->get('files', '')); ?>" />
-										
-										<div class="docsupload-drag-drop" id="docsupload-drag-drop">
-											<div class="docsupload-drag-drop-content">
-												<div class="docsupload-drag-drop-icon">
-													<?php VikRentCarIcons::e('cloud-upload'); ?>
-												</div>
-												<div class="docsupload-drag-drop-text">
-													<strong><?php echo JText::_('VRC_DRAG_DROP_UPLOAD'); ?></strong>
-													<span><?php echo JText::_('VRC_DRAG_DROP_HINT'); ?></span>
-												</div>
-												<button type="button" class="docsupload-browse-btn" id="docsupload-browse-btn">
-													<?php VikRentCarIcons::e('folder-open'); ?>
-													<span><?php echo JText::_('VRC_BROWSE_FILES'); ?></span>
-												</button>
-											</div>
-										</div>
-
-										<!-- Progress Bar -->
-										<div class="docsupload-progress" id="docsupload-progress" style="display: none;">
-											<div class="docsupload-progress-bar">&nbsp;</div>
-										</div>
-									</div>
-								</div>
-
-								<!-- Uploaded Files -->
-								<div class="docsupload-field">
-									<label class="docsupload-field-label"><?php echo JText::_('VRC_UPLOADED_FILES'); ?></label>
-									<div class="docsupload-files" id="docsupload-files">
-										<?php
-										foreach ($current_files as $guest_file) {
-											if (empty($guest_file) || strpos($guest_file, 'http') !== 0) {
-												continue;
-											}
-											$furl_segments = explode('/', $guest_file);
-											$guest_fname = $furl_segments[(count($furl_segments) - 1)];
-											$read_fname = substr($guest_fname, (strpos($guest_fname, '_') + 1));
-											?>
-											<div class="docsupload-file-item">
-												<div class="docsupload-file-info">
-													<div class="docsupload-file-icon">
-														<?php VikRentCarIcons::e('file'); ?>
-													</div>
-													<div class="docsupload-file-details">
-														<div class="docsupload-file-name"><?php echo $read_fname; ?></div>
-														<div class="docsupload-file-size"><?php echo JText::_('VRC_FILE_UPLOADED'); ?></div>
-													</div>
-												</div>
-												<button type="button" class="docsupload-file-remove" data-file="<?php echo $guest_file; ?>">
-													<?php VikRentCarIcons::e('times'); ?>
-												</button>
-											</div>
-											<?php
-										}
-										?>
-									</div>
-								</div>
-
-								<!-- Comments -->
-								<div class="docsupload-field">
-									<label class="docsupload-field-label"><?php echo JText::_('VRADDNOTES'); ?></label>
-									<div class="docsupload-field-input">
-										<textarea id="docsupload-comments" name="docsupload[comments]" placeholder="<?php echo JText::_('VRC_COMMENTS_PLACEHOLDER'); ?>"><?php echo JHtml::_('esc_textarea', $docs_uploaded->get('comments', '')); ?></textarea>
-									</div>
-								</div>
-							</div>
 						</form>
 					</div>
 				</div>
@@ -269,6 +301,27 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Lightbox Modal -->
+	<div id="docsupload-lightbox" class="docsupload-lightbox" style="display: none;">
+		<div class="docsupload-lightbox-content">
+			<span class="docsupload-lightbox-close">&times;</span>
+			<div class="docsupload-lightbox-header">
+				<h4 id="docsupload-lightbox-title"></h4>
+			</div>
+			<div class="docsupload-lightbox-body">
+				<div id="docsupload-lightbox-image-container" style="display: none;">
+					<img id="docsupload-lightbox-image" src="" alt="">
+				</div>
+				<div id="docsupload-lightbox-pdf-container" style="display: none;">
+					<embed id="docsupload-lightbox-pdf" src="" type="application/pdf" width="100%" height="600px">
+				</div>
+				<div id="docsupload-lightbox-text-container" style="display: none;">
+					<p>File preview not available. <a id="docsupload-lightbox-download" href="#" download>Download file</a></p>
 				</div>
 			</div>
 		</div>
@@ -605,7 +658,8 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 		/**
 		 * Click event on the button to remove an uploaded file
 		 */
-		jQuery(document.body).on('click', '.docsupload-file-remove', function() {
+		jQuery(document.body).on('click', '.docsupload-file-remove', function(e) {
+			e.stopPropagation(); // Prevent lightbox from opening when clicking remove
 			var file_container = jQuery(this).closest('.docsupload-file-item');
 			if (!file_container.length) {
 				return false;
@@ -638,6 +692,57 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/docsupload-styles.cs
 				vrcPresentToast(Joomla.JText._('VRC_PRECHECKIN_TOAST_HELP'), 4000, function() {
 					jQuery('html,body').animate({scrollTop: jQuery('.docsupload-submit-btn').offset().top - 100}, {duration: 400});
 				});
+			}
+		});
+
+		/**
+		 * Click event on uploaded files to open lightbox
+		 */
+		jQuery(document.body).on('click', '.docsupload-file-item', function() {
+			var file_url = jQuery(this).data('file-url');
+			var file_name = jQuery(this).data('file-name');
+			var file_type = jQuery(this).data('file-type');
+			
+			// Set lightbox content
+			jQuery('#docsupload-lightbox-title').text(file_name);
+			jQuery('#docsupload-lightbox-download').attr('href', file_url);
+			
+			// Show appropriate content based on file type
+			if (file_type === 'pdf') {
+				jQuery('#docsupload-lightbox-pdf').attr('src', file_url);
+				jQuery('#docsupload-lightbox-pdf-container').show();
+				jQuery('#docsupload-lightbox-image-container').hide();
+				jQuery('#docsupload-lightbox-text-container').hide();
+			} else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(file_type)) {
+				jQuery('#docsupload-lightbox-image').attr('src', file_url);
+				jQuery('#docsupload-lightbox-image-container').show();
+				jQuery('#docsupload-lightbox-pdf-container').hide();
+				jQuery('#docsupload-lightbox-text-container').hide();
+			} else {
+				jQuery('#docsupload-lightbox-text-container').show();
+				jQuery('#docsupload-lightbox-image-container').hide();
+				jQuery('#docsupload-lightbox-pdf-container').hide();
+			}
+			
+			// Show lightbox
+			jQuery('#docsupload-lightbox').show();
+		});
+
+		/**
+		 * Close lightbox
+		 */
+		jQuery(document.body).on('click', '.docsupload-lightbox-close, .docsupload-lightbox', function(e) {
+			if (e.target === this || e.target.classList.contains('docsupload-lightbox-close')) {
+				jQuery('#docsupload-lightbox').hide();
+			}
+		});
+
+		/**
+		 * Close lightbox on escape key
+		 */
+		jQuery(document).on('keydown', function(e) {
+			if (e.key === 'Escape') {
+				jQuery('#docsupload-lightbox').hide();
 			}
 		});
 
