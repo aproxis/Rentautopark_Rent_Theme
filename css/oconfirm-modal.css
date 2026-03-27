@@ -83,10 +83,31 @@
 .vrc-oconfirm-col-right::-webkit-scrollbar { width: 4px; }
 .vrc-oconfirm-col-right::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
-/* ── Modal height: modal wrapper owns the height, children scroll inside ── */
+/* ── Modal height: 85vh, children scroll inside ── */
+body.contentpane {
+    height: 85vh !important;
+    max-height: 85vh !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+
+body.contentpane > .vrc-modal-header {
+    flex-shrink: 0;
+}
+
+body.contentpane > .vrc-oconfirm-two-col {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 0; /* flex child needs explicit 0 to shrink properly */
+}
+
 body.contentpane .vrc-oconfirm-two-col,
 .vrc-modal-wrap .vrc-oconfirm-two-col {
-    height: calc(100vh - 130px); /* header ~57px + footer ~73px */
+    height: calc(85vh - 58px);
+    max-height: calc(85vh - 58px);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -95,6 +116,11 @@ body.contentpane .vrc-oconfirm-two-col,
 
 .vrc-col-left-carinfo {
     margin-bottom: 20px;
+}
+
+/* Hide the rental name h3 in left col — it's now shown in the modal header */
+body.contentpane .vrcrentalfor {
+    display: none;
 }
 
 /* ── vrcrentforlocs: clean card container, no extra borders/shadows ── */
@@ -701,9 +727,18 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
    ══════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
+    /* On mobile: body IS the scroller — stack columns, no fixed height */
+    body.contentpane {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .vrc-oconfirm-two-col {
         flex-direction: column;
         height: auto !important;
+        max-height: none !important;
         overflow: visible !important;
     }
 

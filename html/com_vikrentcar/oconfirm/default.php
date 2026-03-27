@@ -207,25 +207,6 @@ $registerAjaxUrl = JURI::root() . 'templates/rent/php/register-ajax.php';
 <?php /* ── Modal CSS ── */ ?>
 <?php if ($isModal): ?>
 <link rel="stylesheet" href="<?php echo JURI::root(); ?>templates/rent/css/oconfirm-modal.css"/>
-<style>
-/* Modal body height fix — make the modal fill available height */
-body.contentpane {
-    overflow: hidden;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-}
-body.contentpane > .vrc-modal-header {
-    flex-shrink: 0;
-}
-body.contentpane > .vrc-oconfirm-two-col {
-    flex: 1 1 auto;
-    min-height: 0;
-    height: 0; /* flex child needs explicit 0 to shrink */
-}
-</style>
 <?php endif; ?>
 
 <?php /* ── Stepbar — hidden in modal ── */ ?>
@@ -241,9 +222,19 @@ body.contentpane > .vrc-oconfirm-two-col {
 <?php endif; ?>
 
 <?php /* ── Page / modal heading ── */ ?>
+<?php
+// Build the rental title — same logic as vrcrentalforone
+if (array_key_exists('hours', $price)) {
+    $vrc_modal_title = JText::_('VRRENTAL') . ' ' . $car['name'] . ' ' . JText::_('VRFOR') . ' '
+        . (intval($price['hours']) == 1 ? '1 ' . JText::_('VRCHOUR') : $price['hours'] . ' ' . JText::_('VRCHOURS'));
+} else {
+    $vrc_modal_title = JText::_('VRRENTAL') . ' ' . $car['name'] . ' ' . JText::_('VRFOR') . ' '
+        . (intval($days) == 1 ? '1 ' . JText::_('VRDAY') : $days . ' ' . JText::_('VRDAYS'));
+}
+?>
 <?php if ($isModal): ?>
 <div class="vrc-modal-header">
-    <h2 class="vrc-modal-title"><?php echo JText::_('VRRIEPILOGOORD'); ?></h2>
+    <h2 class="vrc-modal-title"><?php echo $vrc_modal_title; ?></h2>
 </div>
 <?php else: ?>
 <h2 class="vrc-rental-summary-title"><?php echo JText::_('VRRIEPILOGOORD'); ?></h2>
