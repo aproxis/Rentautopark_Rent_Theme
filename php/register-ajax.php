@@ -4,7 +4,7 @@
  * Called from the booking modal (oconfirm override) before submitting the order.
  * Compatible with Joomla 5 (uses namespaced classes, no JFactory, no initialise()).
  *
- * POST JSON: { reg_name, reg_email, reg_password }
+ * POST JSON: { reg_name, reg_email }
  * Response:  { "ok": true, "userid": 123 }
  *         or { "error": "message" }
  */
@@ -53,19 +53,14 @@ if (!is_array($input)) {
 
 $name     = isset($input['reg_name'])     ? trim($input['reg_name'])     : '';
 $email    = isset($input['reg_email'])    ? trim($input['reg_email'])    : '';
-$password = isset($input['reg_password']) ? trim($input['reg_password']) : '';
 
 // ── Validate ──────────────────────────────────────────────────────────────────
-if (!$name || !$email || !$password) {
+if (!$name || !$email) {
 	echo json_encode(['error' => 'Toate câmpurile sunt obligatorii.']);
 	exit;
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 	echo json_encode(['error' => 'Adresa de email nu este validă.']);
-	exit;
-}
-if (strlen($password) < 6) {
-	echo json_encode(['error' => 'Parola trebuie să aibă cel puțin 6 caractere.']);
 	exit;
 }
 
@@ -111,6 +106,9 @@ try {
 } catch (Throwable $e) {
 	$username = $baseUsername . rand(100, 999);
 }
+
+// ── Generate random password ──────────────────────────────────────────────────
+$password = \Joomla\CMS\User\UserHelper::genRandomPassword(12);
 
 // ── Create the Joomla user ────────────────────────────────────────────────────
 try {

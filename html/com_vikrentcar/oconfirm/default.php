@@ -142,62 +142,63 @@ $pickloc = VikRentCar::getPlaceInfo($place,       $vrc_tn);
 $droploc = VikRentCar::getPlaceInfo($returnplace,  $vrc_tn);
 ?>
 
-<div class="vrcinfocarcontainer">
-	<div class="vrcrentforlocs">
-		<div class="vrcrentalfor">
-		<?php if (array_key_exists('hours', $price)): ?>
-			<h3 class="vrcrentalforone"><?php echo JText::_('VRRENTAL'); ?> <?php echo $car['name']; ?> <?php echo JText::_('VRFOR'); ?> <?php echo (intval($price['hours'])==1?"1 ".JText::_('VRCHOUR'):$price['hours']." ".JText::_('VRCHOURS')); ?></h3>
-		<?php else: ?>
-			<h3 class="vrcrentalforone"><?php echo JText::_('VRRENTAL'); ?> <?php echo $car['name']; ?> <?php echo JText::_('VRFOR'); ?> <?php echo (intval($days)==1?"1 ".JText::_('VRDAY'):$days." ".JText::_('VRDAYS')); ?></h3>
+<div class="vrc-oconfirm-layout">
+	<div class="vrcinfocarcontainer">
+		<div class="vrcrentforlocs">
+			<div class="vrcrentalfor">
+			<?php if (array_key_exists('hours', $price)): ?>
+				<h3 class="vrcrentalforone"><?php echo JText::_('VRRENTAL'); ?> <?php echo $car['name']; ?> <?php echo JText::_('VRFOR'); ?> <?php echo (intval($price['hours'])==1?"1 ".JText::_('VRCHOUR'):$price['hours']." ".JText::_('VRCHOURS')); ?></h3>
+			<?php else: ?>
+				<h3 class="vrcrentalforone"><?php echo JText::_('VRRENTAL'); ?> <?php echo $car['name']; ?> <?php echo JText::_('VRFOR'); ?> <?php echo (intval($days)==1?"1 ".JText::_('VRDAY'):$days." ".JText::_('VRDAYS')); ?></h3>
+			<?php endif; ?>
+			</div>
+
+			<div class="vrc-itinerary-confirmation">
+				<div class="vrc-itinerary-pickup">
+					<h4><?php echo JText::_('VRPICKUP'); ?></h4>
+					<?php if (count($pickloc)): ?>
+					<div class="vrc-itinerary-pickup-location">
+						<?php VikRentCarIcons::e('location-arrow', 'vrc-pref-color-text'); ?>
+						<div class="vrc-itinerary-pickup-locdet">
+							<span class="vrc-itinerary-pickup-locname"><?php echo $pickloc['name']; ?></span>
+							<span class="vrc-itinerary-pickup-locaddr"><?php echo $pickloc['address']; ?></span>
+						</div>
+					</div>
+					<?php endif; ?>
+					<div class="vrc-itinerary-pickup-date">
+						<?php VikRentCarIcons::e('calendar', 'vrc-pref-color-text'); ?>
+						<span class="vrc-itinerary-pickup-date-day"><?php echo date($df, $first); ?></span>
+						<span class="vrc-itinerary-pickup-date-time"><?php echo date($nowtf, $first); ?></span>
+					</div>
+				</div>
+				<div class="vrc-itinerary-dropoff">
+					<h4><?php echo JText::_('VRRETURN'); ?></h4>
+					<?php if (count($droploc)): ?>
+					<div class="vrc-itinerary-dropoff-location">
+						<?php VikRentCarIcons::e('location-arrow', 'vrc-pref-color-text'); ?>
+						<div class="vrc-itinerary-dropfff-locdet">
+							<span class="vrc-itinerary-dropoff-locname"><?php echo $droploc['name']; ?></span>
+							<span class="vrc-itinerary-dropoff-locaddr"><?php echo $droploc['address']; ?></span>
+						</div>
+					</div>
+					<?php endif; ?>
+					<div class="vrc-itinerary-dropoff-date">
+						<?php VikRentCarIcons::e('calendar', 'vrc-pref-color-text'); ?>
+						<span class="vrc-itinerary-dropoff-date-day"><?php echo !array_key_exists('hours', $price) ? date($df, $second) : ''; ?></span>
+						<span class="vrc-itinerary-dropoff-date-time"><?php echo date($nowtf, $second); ?></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<?php if (!empty($car['img']) && !$isModal): ?>
+		<div class="vrc-summary-car-img">
+			<img src="<?php echo VRC_ADMIN_URI; ?>resources/<?php echo $car['img']; ?>"/>
+		</div>
 		<?php endif; ?>
-		</div>
-
-		<div class="vrc-itinerary-confirmation">
-			<div class="vrc-itinerary-pickup">
-				<h4><?php echo JText::_('VRPICKUP'); ?></h4>
-				<?php if (count($pickloc)): ?>
-				<div class="vrc-itinerary-pickup-location">
-					<?php VikRentCarIcons::e('location-arrow', 'vrc-pref-color-text'); ?>
-					<div class="vrc-itinerary-pickup-locdet">
-						<span class="vrc-itinerary-pickup-locname"><?php echo $pickloc['name']; ?></span>
-						<span class="vrc-itinerary-pickup-locaddr"><?php echo $pickloc['address']; ?></span>
-					</div>
-				</div>
-				<?php endif; ?>
-				<div class="vrc-itinerary-pickup-date">
-					<?php VikRentCarIcons::e('calendar', 'vrc-pref-color-text'); ?>
-					<span class="vrc-itinerary-pickup-date-day"><?php echo date($df, $first); ?></span>
-					<span class="vrc-itinerary-pickup-date-time"><?php echo date($nowtf, $first); ?></span>
-				</div>
-			</div>
-			<div class="vrc-itinerary-dropoff">
-				<h4><?php echo JText::_('VRRETURN'); ?></h4>
-				<?php if (count($droploc)): ?>
-				<div class="vrc-itinerary-dropoff-location">
-					<?php VikRentCarIcons::e('location-arrow', 'vrc-pref-color-text'); ?>
-					<div class="vrc-itinerary-dropfff-locdet">
-						<span class="vrc-itinerary-dropoff-locname"><?php echo $droploc['name']; ?></span>
-						<span class="vrc-itinerary-dropoff-locaddr"><?php echo $droploc['address']; ?></span>
-					</div>
-				</div>
-				<?php endif; ?>
-				<div class="vrc-itinerary-dropoff-date">
-					<?php VikRentCarIcons::e('calendar', 'vrc-pref-color-text'); ?>
-					<span class="vrc-itinerary-dropoff-date-day"><?php echo !array_key_exists('hours', $price) ? date($df, $second) : ''; ?></span>
-					<span class="vrc-itinerary-dropoff-date-time"><?php echo date($nowtf, $second); ?></span>
-				</div>
-			</div>
-		</div>
 	</div>
 
-	<?php if (!empty($car['img']) && !$isModal): ?>
-	<div class="vrc-summary-car-img">
-		<img src="<?php echo VRC_ADMIN_URI; ?>resources/<?php echo $car['img']; ?>"/>
-	</div>
-	<?php endif; ?>
-</div>
-
-<div class="vrc-oconfirm-summary-container">
+	<div class="vrc-oconfirm-summary-container">
 	<div class="vrc-oconfirm-summary-car-wrapper">
 		<div class="vrc-oconfirm-summary-car-head">
 			<div class="vrc-oconfirm-summary-car-head-cell vrc-oconfirm-summary-car-cell-descr"><span></span></div>
@@ -356,42 +357,6 @@ if (is_array($coupon)) {
 
 <div class="vrc-oconfirm-middlep">
 <?php
-// ── Coupon input — only when coupons are enabled AND no coupon already applied
-// In modal mode, hide if the coupon was pre-applied via URL param
-if (VikRentCar::couponsEnabled() && !is_array($coupon)) {
-	$hideCouponBlock = $isModal && !empty($preAppliedCoupon);
-	?>
-	<div class="vrc-coupon-outer"<?php echo $hideCouponBlock ? ' style="display:none;"' : ''; ?>>
-		<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar'.(!empty($pitemid)?'&Itemid='.$pitemid:'')); ?>"
-		      method="post"
-		      target="_top">
-			<div class="vrcentercoupon">
-				<span class="vrchaveacoupon"><?php echo JText::_('VRCHAVEACOUPON'); ?></span>
-				<input type="text" name="couponcode" value="<?php echo htmlspecialchars($preAppliedCoupon); ?>" size="20" class="vrcinputcoupon"/>
-				<input type="submit" class="btn vrcsubmitcoupon vrc-pref-color-btn" name="applyacoupon" value="<?php echo JText::_('VRCSUBMITCOUPON'); ?>"/>
-			</div>
-			<input type="hidden" name="priceid"      value="<?php echo $price['idprice']; ?>"/>
-			<input type="hidden" name="place"        value="<?php echo $place; ?>"/>
-			<input type="hidden" name="returnplace"  value="<?php echo $returnplace; ?>"/>
-			<input type="hidden" name="carid"        value="<?php echo $car['id']; ?>"/>
-			<input type="hidden" name="days"         value="<?php echo $days; ?>"/>
-			<input type="hidden" name="pickup"       value="<?php echo $first; ?>"/>
-			<input type="hidden" name="release"      value="<?php echo $second; ?>"/>
-			<?php if (is_array($selopt)): foreach ($selopt as $aop): ?>
-			<input type="hidden" name="optid<?php echo $aop['id']; ?>" value="<?php echo $aop['quan']; ?>"/>
-			<?php endforeach; endif; ?>
-			<?php if (!empty($pitemid)): ?>
-			<input type="hidden" name="Itemid" value="<?php echo $pitemid; ?>"/>
-			<?php endif; ?>
-			<?php if ($isModal): ?>
-			<input type="hidden" name="tmpl" value="component"/>
-			<?php endif; ?>
-			<input type="hidden" name="task" value="oconfirm"/>
-		</form>
-	</div>
-	<?php
-}
-
 // ── Customer PIN
 if (VikRentCar::customersPinEnabled() && !VikRentCar::userIsLogged() && !(count($customer_details) > 0)) {
 	?>
@@ -523,7 +488,14 @@ function checkvrcFields() {
 			$def_textval = '';
 			if ($cf['isemail'] == 1) { $def_textval = $useremail; }
 			elseif ($cf['isphone'] == 1) { if (array_key_exists('phone', $customer_details)) { $def_textval = $customer_details['phone']; } }
-			elseif ($cf['isnominative'] == 1) { if (count($nominatives) > 0) { $def_textval = array_shift($nominatives); } }
+			elseif ($cf['isnominative'] == 1) {
+				// Name splitting logic: if we have full name, split it appropriately
+				if (count($nominatives) > 0) {
+					$def_textval = array_shift($nominatives);
+				} elseif (array_key_exists('cfields', $customer_details) && array_key_exists($cf['id'], $customer_details['cfields'])) {
+					$def_textval = $customer_details['cfields'][$cf['id']];
+				}
+			}
 			elseif (array_key_exists('cfields', $customer_details) && array_key_exists($cf['id'], $customer_details['cfields'])) { $def_textval = $customer_details['cfields'][$cf['id']]; }
 			?>
 			<div class="vrcdivcustomfield">
@@ -733,7 +705,7 @@ function checkvrcFields() {
 		}
 	});
 
-	/* ── Intercept form submit for registration ──────────────────────────── */
+		/* ── Intercept form submit for registration ──────────────────────────── */
 	$(document).on('submit', 'form[name="vrc"]', function (e) {
 		// Only intercept if "create account" is checked
 		if (!$checkbox.is(':checked')) {
@@ -742,9 +714,6 @@ function checkvrcFields() {
 
 		e.preventDefault();
 		e.stopPropagation();
-
-		var pass1 = $('#vrc-reg-password').val().trim();
-		var pass2 = $('#vrc-reg-password2').val().trim();
 
 		// Gather name & email from cfields (marked with data-vrc-field-type)
 		var email = $('[data-vrc-field-type="email"]').val() || '';
@@ -761,14 +730,6 @@ function checkvrcFields() {
 			$error.text('<?php echo addslashes(JText::_('VRC_REG_ERR_NAME') ?: 'Introduceți numele complet în câmpul de mai sus.'); ?>').show();
 			return false;
 		}
-		if (pass1.length < 6) {
-			$error.text('<?php echo addslashes(JText::_('VRC_REG_ERR_PASS_SHORT') ?: 'Parola trebuie să aibă cel puțin 6 caractere.'); ?>').show();
-			return false;
-		}
-		if (pass1 !== pass2) {
-			$error.text('<?php echo addslashes(JText::_('VRC_REG_ERR_PASS_MISMATCH') ?: 'Parolele nu coincid.'); ?>').show();
-			return false;
-		}
 
 		// Disable button while processing
 		$submitBtn.prop('disabled', true).val('<?php echo addslashes(JText::_('VRC_CREATING_ACCOUNT') ?: 'Se creează contul…'); ?>');
@@ -778,7 +739,7 @@ function checkvrcFields() {
 			url:         '<?php echo $registerAjaxUrl; ?>',
 			type:        'POST',
 			contentType: 'application/json',
-			data:        JSON.stringify({ reg_name: name, reg_email: email, reg_password: pass1 }),
+			data:        JSON.stringify({ reg_name: name, reg_email: email }),
 			dataType:    'json'
 		})
 		.done(function (res) {
