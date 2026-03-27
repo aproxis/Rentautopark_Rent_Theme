@@ -262,41 +262,51 @@ if (array_key_exists('hours', $price)) {
                 <?php endif; ?>
                 </div>
 
-                <div class="vrc-itinerary-confirmation">
-                    <div class="vrc-itinerary-pickup">
-                        <h4><?php echo JText::_('VRPICKUP'); ?></h4>
-                        <?php if (count($pickloc)): ?>
-                        <div class="vrc-itinerary-pickup-location">
-                            <?php VikRentCarIcons::e('location-arrow', 'vrc-pref-color-text'); ?>
-                            <div class="vrc-itinerary-pickup-locdet">
-                                <span class="vrc-itinerary-pickup-locname"><?php echo $pickloc['name']; ?></span>
-                                <span class="vrc-itinerary-pickup-locaddr"><?php echo $pickloc['address']; ?></span>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                        <div class="vrc-itinerary-pickup-date">
-                            <?php VikRentCarIcons::e('calendar', 'vrc-pref-color-text'); ?>
-                            <span class="vrc-itinerary-pickup-date-day"><?php echo date($df, $first); ?></span>
-                            <span class="vrc-itinerary-pickup-date-time"><?php echo date($nowtf, $first); ?></span>
-                        </div>
+                <div class="vrc-itinerary-inline">
+
+                    <?php /* ── Pickup line ── */ ?>
+                    <div class="vrc-itin-line">
+                        <span class="vrc-itin-dot vrc-itin-dot--pick"></span>
+                        <span class="vrc-itin-text">
+                            <span class="vrc-itin-label"><?php echo JText::_('VRPICKUPAT'); ?></span>
+                            <?php if (count($pickloc)): ?>
+                            <strong class="vrc-itin-loc"><?php echo htmlspecialchars($pickloc['name']); ?></strong>
+                            <button type="button" class="vrc-itin-info-btn"
+                                data-name="<?php echo htmlspecialchars($pickloc['name'] ?? ''); ?>"
+                                data-addr="<?php echo htmlspecialchars($pickloc['address'] ?? ''); ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253l-.317 2.539a.75.75 0 1 0 1.489.186l.359-2.871A.75.75 0 0 0 10 9H9Z" clip-rule="evenodd"/></svg>
+                            </button>
+                            <?php endif; ?>
+                        </span>
+                        <span class="vrc-itin-datetime"><?php echo date($df, $first); ?> &middot; <?php echo date($nowtf, $first); ?></span>
                     </div>
-                    <div class="vrc-itinerary-dropoff">
-                        <h4><?php echo JText::_('VRRETURN'); ?></h4>
-                        <?php if (count($droploc)): ?>
-                        <div class="vrc-itinerary-dropoff-location">
-                            <?php VikRentCarIcons::e('location-arrow', 'vrc-pref-color-text'); ?>
-                            <div class="vrc-itinerary-dropfff-locdet">
-                                <span class="vrc-itinerary-dropoff-locname"><?php echo $droploc['name']; ?></span>
-                                <span class="vrc-itinerary-dropoff-locaddr"><?php echo $droploc['address']; ?></span>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                        <div class="vrc-itinerary-dropoff-date">
-                            <?php VikRentCarIcons::e('calendar', 'vrc-pref-color-text'); ?>
-                            <span class="vrc-itinerary-dropoff-date-day"><?php echo !array_key_exists('hours', $price) ? date($df, $second) : ''; ?></span>
-                            <span class="vrc-itinerary-dropoff-date-time"><?php echo date($nowtf, $second); ?></span>
-                        </div>
+
+                    <?php /* ── Drop off line ── */ ?>
+                    <div class="vrc-itin-line">
+                        <span class="vrc-itin-dot vrc-itin-dot--drop"></span>
+                        <span class="vrc-itin-text">
+                            <span class="vrc-itin-label"><?php echo JText::_('VRRELEASEAT'); ?></span>
+                            <?php if (count($droploc)): ?>
+                            <strong class="vrc-itin-loc"><?php echo htmlspecialchars($droploc['name']); ?></strong>
+                            <button type="button" class="vrc-itin-info-btn"
+                                data-name="<?php echo htmlspecialchars($droploc['name'] ?? ''); ?>"
+                                data-addr="<?php echo htmlspecialchars($droploc['address'] ?? ''); ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253l-.317 2.539a.75.75 0 1 0 1.489.186l.359-2.871A.75.75 0 0 0 10 9H9Z" clip-rule="evenodd"/></svg>
+                            </button>
+                            <?php endif; ?>
+                        </span>
+                        <span class="vrc-itin-datetime"><?php echo !array_key_exists('hours', $price) ? date($df, $second) : ''; ?> &middot; <?php echo date($nowtf, $second); ?></span>
                     </div>
+
+                </div><!-- /.vrc-itinerary-inline -->
+
+                <?php /* ── Shared tooltip (positioned by JS) ── */ ?>
+                <div class="vrc-itin-tooltip" id="vrc-itin-tooltip" role="tooltip" aria-hidden="true">
+                    <p class="vrc-itin-tooltip-name"></p>
+                    <a class="vrc-itin-tooltip-map" href="#" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="12" height="12"><path fill-rule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C14.827 15.17 17 12.543 17 9A7 7 0 1 0 3 9c0 3.543 2.173 6.172 3.354 7.385a13.381 13.381 0 0 0 3.033 2.198l.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clip-rule="evenodd"/></svg>
+                        View on Google Maps
+                    </a>
                 </div>
             </div>
 
@@ -312,12 +322,7 @@ if (array_key_exists('hours', $price)) {
 
             <!-- Car base row -->
             <div class="vrc-price-row">
-                <span class="vrc-price-row-label">
-                    <?php echo $car['name']; ?>
-                    <?php if (!empty($price['idprice'])): ?>
-                    <small style="display:block;font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo VikRentCar::getPriceName($price['idprice'],$vrc_tn); ?></small>
-                    <?php endif; ?>
-                </span>
+                <span class="vrc-price-row-label"><?php echo $car['name']; ?></span>
                 <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($saywith); ?></span>
             </div>
 
@@ -985,6 +990,66 @@ if (array_key_exists('hours', $price)) {
 </div><!-- /.vrc-oconfirm-two-col -->
 
 <?php VikRentCar::printTrackingCode(); ?>
+
+<script type="text/javascript">
+/* ── Info-icon tooltip for pickup/dropoff locations ── */
+(function () {
+    'use strict';
+
+    var $tooltip = document.getElementById('vrc-itin-tooltip');
+    if (!$tooltip) return;
+
+    var $nameEl = $tooltip.querySelector('.vrc-itin-tooltip-name');
+    var $mapEl  = $tooltip.querySelector('.vrc-itin-tooltip-map');
+    var activeBtn = null;
+
+    function showTooltip(btn) {
+        var name = btn.getAttribute('data-name') || '';
+        var addr = btn.getAttribute('data-addr') || '';
+        var query = encodeURIComponent((name + ' ' + addr).trim());
+
+        $nameEl.textContent = addr || name;
+        $mapEl.href = 'https://www.google.com/maps/search/?api=1&query=' + query;
+
+        $tooltip.removeAttribute('aria-hidden');
+        $tooltip.classList.add('is-visible');
+
+        /* Position below the button */
+        var rect = btn.getBoundingClientRect();
+        var parentRect = $tooltip.offsetParent
+            ? $tooltip.offsetParent.getBoundingClientRect()
+            : { top: 0, left: 0 };
+        $tooltip.style.top  = (rect.bottom - parentRect.top + 6) + 'px';
+        $tooltip.style.left = (rect.left   - parentRect.left)    + 'px';
+
+        activeBtn = btn;
+    }
+
+    function hideTooltip() {
+        $tooltip.setAttribute('aria-hidden', 'true');
+        $tooltip.classList.remove('is-visible');
+        activeBtn = null;
+    }
+
+    document.querySelectorAll('.vrc-itin-info-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (activeBtn === btn) { hideTooltip(); return; }
+            showTooltip(btn);
+        });
+    });
+
+    document.addEventListener('click', function (e) {
+        if (activeBtn && !$tooltip.contains(e.target)) {
+            hideTooltip();
+        }
+    });
+
+    document.addEventListener('keyup', function (e) {
+        if (e.key === 'Escape' && activeBtn) hideTooltip();
+    });
+})();
+</script>
 
 <script type="text/javascript">
 /* ══════════════════════════════════════════════════════════════════════════
