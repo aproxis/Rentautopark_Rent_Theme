@@ -879,7 +879,7 @@ body.vrc-modal-open {
 #vrc-booking-modal-iframe {
 	width: 100%;
 	flex: 1;
-	min-height: 500px;
+	min-height: 85vh;
 	border: none;
 	display: block;
 	border-radius: 0 0 20px 20px;
@@ -892,7 +892,7 @@ body.vrc-modal-open {
 		border-radius: 16px;
 	}
 	#vrc-booking-modal-iframe {
-		min-height: 420px;
+		min-height: 85vh;
 	}
 	#vrc-booking-modal-overlay {
 		padding: 8px;
