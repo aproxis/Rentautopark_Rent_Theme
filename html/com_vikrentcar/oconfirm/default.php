@@ -409,8 +409,7 @@ if (array_key_exists('hours', $price)) {
             </div>
         </div><!-- /.vrc-price-list -->
 
-        <!-- Sentinel for sticky total bar — invisible pixel at bottom of price list -->
-        <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;"></div>
+        
 
         <?php /* ── OLD table kept for compatibility but hidden via CSS ── */ ?>
         <div class="vrc-oconfirm-summary-container" style="display:none!important;">
@@ -613,7 +612,10 @@ if (array_key_exists('hours', $price)) {
     </div><!-- /.vrc-oconfirm-col-left -->
 
     <!-- ═══════════════════ RIGHT COLUMN ═══════════════════ -->
-    <div class="vrc-oconfirm-col-right">
+    <!-- RIGHT COLUMN -->
+<div class="vrc-oconfirm-col-right">
+  <!-- Sentinel: scrolls away immediately, triggers sticky total bar -->
+  <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;"></div>
 
         <?php /* ── Customer PIN (guests without stored data only) ── */ ?>
         <?php if (VikRentCar::customersPinEnabled() && !VikRentCar::userIsLogged() && !(count($customer_details) > 0)): ?>
