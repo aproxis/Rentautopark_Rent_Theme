@@ -584,8 +584,6 @@ body.contentpane > .vrc-oconfirm-two-col {
     <!-- ═══════════════════ RIGHT COLUMN ═══════════════════ -->
     <div class="vrc-oconfirm-col-right">
 
-        <h3 class="vrc-section-heading"><?php echo JText::_('VRCDRIVERINFO') ?: 'Driver Information'; ?></h3>
-
         <?php /* ── Customer PIN (guests without stored data only) ── */ ?>
         <?php if (VikRentCar::customersPinEnabled() && !VikRentCar::userIsLogged() && !(count($customer_details) > 0)): ?>
         <div class="vrc-enterpin-block">
