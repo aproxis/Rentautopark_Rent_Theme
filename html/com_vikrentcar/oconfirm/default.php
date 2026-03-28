@@ -961,7 +961,63 @@ if (array_key_exists('hours', $price)) {
                     }
                 }
                 ?>
+
+
+                <?php /* ══════════════════════════════════════════════════════════
+                PHASE 3 — Zero-friction registration
+                • Only shown to guests (logged-in users already have an account)
+                • Single checkbox — no password fields
+                • register-ajax.php auto-generates password + emails it
+                ══════════════════════════════════════════════════════════ */ ?>
+                <?php if ($currentUser->guest): ?>
+                    <div class="vrc-register-section" id="vrc-register-section">
+
+                        <div class="vrc-register-toggle-row">
+                            <label class="vrc-register-label" for="vrc-reg-checkbox">
+                                <input type="checkbox" id="vrc-reg-checkbox"/>
+                                <span class="vrc-register-toggle-text">
+                                    <?php echo JText::_('VRC_CREATE_ACCOUNT_WITH_DATA') ?: 'Creează cont cu aceste date'; ?>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Expanded panel — visible only when checkbox is ticked -->
+                        <div class="vrc-register-fields" id="vrc-reg-fields" style="display:none;">
+
+                            <p class="vrc-reg-info-note">
+                                <?php echo JText::_('VRC_REG_AUTO_PASSWORD_NOTE') ?: 'Parola va fi generată automat și trimisă pe email-ul tău.'; ?>
+                            </p>
+
+                            <!-- Username row: input + register button -->
+                            <div class="vrc-reg-username-row">
+                                <div class="vrc-float-wrap" id="vrc-reg-username-wrap">
+                                    <input type="text"
+                                        id="vrc-reg-username"
+                                        name="vrc_reg_username"
+                                        placeholder=" "
+                                        autocomplete="username"
+                                        class="vrcinput vrc-reg-username-inp"
+                                        maxlength="150"/>
+                                    <label class="vrc-float-label" for="vrc-reg-username">
+                                        <?php echo JText::_('VRC_REG_USERNAME_LABEL') ?: 'Nume utilizator (opțional)'; ?>
+                                    </label>
+                                </div>
+                                <button type="button"
+                                        id="vrc-reg-btn"
+                                        class="btn vrc-pref-color-btn vrc-reg-create-btn">
+                                    <?php echo JText::_('VRC_REG_CREATE_BTN') ?: 'Creează Cont'; ?>
+                                </button>
+                            </div>
+
+                            <!-- Status / error feedback -->
+                            <div class="vrc-reg-error"   id="vrc-reg-error"   style="display:none;"></div>
+                            <div class="vrc-reg-success" id="vrc-reg-success" style="display:none;"></div>
+
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
+            
             <?php endif; ?>
 
             <?php /* ── Hidden booking fields ── */ ?>
@@ -1054,59 +1110,7 @@ if (array_key_exists('hours', $price)) {
             </div>
             <?php endif; ?>
 
-            <?php /* ══════════════════════════════════════════════════════════
-               PHASE 3 — Zero-friction registration
-               • Only shown to guests (logged-in users already have an account)
-               • Single checkbox — no password fields
-               • register-ajax.php auto-generates password + emails it
-               ══════════════════════════════════════════════════════════ */ ?>
-            <?php if ($currentUser->guest): ?>
-            <div class="vrc-register-section" id="vrc-register-section">
-
-                <div class="vrc-register-toggle-row">
-                    <label class="vrc-register-label" for="vrc-reg-checkbox">
-                        <input type="checkbox" id="vrc-reg-checkbox"/>
-                        <span class="vrc-register-toggle-text">
-                            <?php echo JText::_('VRC_CREATE_ACCOUNT_WITH_DATA') ?: 'Creează cont cu aceste date'; ?>
-                        </span>
-                    </label>
-                </div>
-
-                <!-- Expanded panel — visible only when checkbox is ticked -->
-                <div class="vrc-register-fields" id="vrc-reg-fields" style="display:none;">
-
-                    <p class="vrc-reg-info-note">
-                        <?php echo JText::_('VRC_REG_AUTO_PASSWORD_NOTE') ?: 'Parola va fi generată automat și trimisă pe email-ul tău.'; ?>
-                    </p>
-
-                    <!-- Username row: input + register button -->
-                    <div class="vrc-reg-username-row">
-                        <div class="vrc-float-wrap" id="vrc-reg-username-wrap">
-                            <input type="text"
-                                   id="vrc-reg-username"
-                                   name="vrc_reg_username"
-                                   placeholder=" "
-                                   autocomplete="username"
-                                   class="vrcinput vrc-reg-username-inp"
-                                   maxlength="150"/>
-                            <label class="vrc-float-label" for="vrc-reg-username">
-                                <?php echo JText::_('VRC_REG_USERNAME_LABEL') ?: 'Nume utilizator (opțional)'; ?>
-                            </label>
-                        </div>
-                        <button type="button"
-                                id="vrc-reg-btn"
-                                class="btn vrc-pref-color-btn vrc-reg-create-btn">
-                            <?php echo JText::_('VRC_REG_CREATE_BTN') ?: 'Creează Cont'; ?>
-                        </button>
-                    </div>
-
-                    <!-- Status / error feedback -->
-                    <div class="vrc-reg-error"   id="vrc-reg-error"   style="display:none;"></div>
-                    <div class="vrc-reg-success" id="vrc-reg-success" style="display:none;"></div>
-
-                </div>
-            </div>
-            <?php endif; ?>
+            
 
             <?php /* ── Form footer: Back + Submit ── */ ?>
             <div class="vrc-oconfirm-footer">
