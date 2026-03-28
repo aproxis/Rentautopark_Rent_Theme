@@ -1346,14 +1346,13 @@ if (array_key_exists('hours', $price)) {
 
 })(jQuery);
 </script>
-
 <script type="text/javascript">
 (function () {
   'use strict';
+
   var stickyBar = document.getElementById('vrc-sticky-total-bar');
   if (!stickyBar) return;
 
-  // Use sentinel inside .vrc-price-list (NOT the hidden compat wrapper)
   var sentinel = document.getElementById('vrc-price-sentinel');
   if (!sentinel) {
     sentinel = document.querySelector('.vrc-price-list .vrc-price-row-total');
@@ -1369,22 +1368,19 @@ if (array_key_exists('hours', $price)) {
     stickyBar.setAttribute('aria-hidden', 'true');
   }
   function isMobile() {
-  var container = document.querySelector('.vrc-oconfirm-two-col') || document.body;
-  return (container.offsetWidth || window.innerWidth) <= 768;
-}
-function checkSentinel() {
-  if (!isMobile()) { hide(); return; }
-  var rect = sentinel.getBoundingClientRect();
-  if (rect.bottom < 0) { show(); } else { hide(); }
-}
+    var container = document.querySelector('.vrc-oconfirm-two-col') || document.body;
+    return (container.offsetWidth || window.innerWidth) <= 768;
+  }
+  function checkSentinel() {
+    if (!isMobile()) { hide(); return; }
+    var rect = sentinel.getBoundingClientRect();
+    if (rect.bottom < 0) { show(); } else { hide(); }
+  }
+
+  document.addEventListener('scroll', checkSentinel, { passive: true });
+  window.addEventListener('scroll', checkSentinel, { passive: true });
+  document.body.addEventListener('scroll', checkSentinel, { passive: true });
+  checkSentinel();
 
 })();
-
-
-
-document.addEventListener('scroll', checkSentinel, { passive: true });
-window.addEventListener('scroll', checkSentinel, { passive: true });
-document.body.addEventListener('scroll', checkSentinel, { passive: true });
-checkSentinel(); // run once on load
-
 </script>
