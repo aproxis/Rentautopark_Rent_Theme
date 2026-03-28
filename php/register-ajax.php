@@ -54,23 +54,13 @@ define('JPATH_BASE', $joomlaBase);
 require_once $joomlaBase . '/includes/defines.php';
 require_once $joomlaBase . '/includes/framework.php';
 
-// ── Joomla 4/5 application bootstrap ─────────────────────────────────────
-// Factory::getApplication('site') does NOT work in standalone scripts.
-// In J4/5 the application must be created and stored via the CMSApplication
-// factory before any code calls Factory::getApplication().
+// Joomla 4/5 uses the CMSApplication factory
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
 use Joomla\CMS\Log\Log;
 
-// createApplication() instantiates SiteApplication AND registers it so that
-// subsequent Factory::getApplication() calls work throughout the stack.
-$app = Factory::getContainer()
-    ->get(SiteApplication::class);
-
-// Register it in the legacy Factory so the rest of Joomla's stack can find it
-Factory::$application = $app;
+$app = Factory::getApplication('site');
 
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
@@ -177,6 +167,7 @@ $firstName = $nameParts[0];
 $lastName  = $nameParts[1] ?? '';
 
 // ── Create user (Joomla 4/5) ──────────────────────────────────────────────
+// In J4/5: new User() — UserHelper::hashPassword() for the password hash
 $user = new User();
 
 $userData = [
@@ -212,9 +203,12 @@ try {
     $newUser = Factory::getUser($newUserId);
     $newUser->password_clear = $password;
 
+    // J4/5: sendMail is on the application, not JUserHelper
+    // Use UserHelper::sendMail if available, otherwise skip gracefully
     if (method_exists(UserHelper::class, 'sendMail')) {
         UserHelper::sendMail($newUser, $app, $regEmail, false);
     } else {
+        // Fallback: trigger the com_users registration email via events
         $app->triggerEvent('onUserAfterSave', [
             $userData,
             true,  // isNew
@@ -233,7 +227,7 @@ try {
         ['remember' => false]
     );
 } catch (\Throwable $e) {
-    // Session/cookie issues in standalone context — non-fatal
+    // Session/cookie issues in iframe context — non-fatal
 }
 
 // ── Success ───────────────────────────────────────────────────────────────
