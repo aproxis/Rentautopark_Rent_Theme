@@ -1,18 +1,13 @@
 <?php
 /**
  * /templates/rent/php/register-ajax.php
- * Joomla 4/5 compatible — uses Joomla\CMS\Factory, not JFactory
+ * Joomla 4/5 compatible — bootstrapped via CMSApplication::getInstance('site')
  */
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
-// Convert all PHP errors → catchable exceptions
-set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
-    throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-});
-
-// Last-resort: turn any uncaught exception into JSON (never a blank 500)
+// Last-resort JSON error output (before Joomla is loaded)
 set_exception_handler(function (\Throwable $e): void {
     if (ob_get_level()) { ob_end_clean(); }
     http_response_code(500);
@@ -30,9 +25,7 @@ set_exception_handler(function (\Throwable $e): void {
 ob_start();
 
 // ── Joomla 4/5 bootstrap ──────────────────────────────────────────────────
-define('_JEXEC', 1);
-
-// Script is at: templates/rent/php/register-ajax.php
+// Script lives at: templates/rent/php/register-ajax.php
 // Joomla root is 3 directories up
 $joomlaBase = realpath(dirname(__FILE__) . '/../../../');
 
@@ -42,25 +35,29 @@ if (!$joomlaBase || !file_exists($joomlaBase . '/includes/defines.php')) {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'ok'         => false,
-        'error'      => 'Joomla root not found. Looked at: ' . realpath(dirname(__FILE__) . '/../../..'),
+        'error'      => 'Joomla root not found at: ' . dirname(__FILE__) . '/../../..',
         'error_code' => 'BOOT_FAIL',
     ]);
     exit;
 }
 
-// Joomla 4/5 needs JPATH_BASE defined before includes/defines.php
+define('_JEXEC', 1);
 define('JPATH_BASE', $joomlaBase);
 
 require_once $joomlaBase . '/includes/defines.php';
 require_once $joomlaBase . '/includes/framework.php';
 
-// Joomla 4/5 uses the CMSApplication factory
+// ── Boot application the same way Joomla's index.php does ────────────────
+// CMSApplication::getInstance('site') runs the full service provider chain
+// (session, input, config, dispatcher, etc.) — the only reliable way to get
+// a working SiteApplication outside of Joomla's normal request cycle.
 use Joomla\CMS\Factory;
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
-use Joomla\CMS\Log\Log;
 
-$app = Factory::getApplication('site');
+$app = CMSApplication::getInstance('site');
+Factory::$application = $app;
 
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
@@ -166,8 +163,7 @@ $nameParts = preg_split('/\s+/', $regName, 2);
 $firstName = $nameParts[0];
 $lastName  = $nameParts[1] ?? '';
 
-// ── Create user (Joomla 4/5) ──────────────────────────────────────────────
-// In J4/5: new User() — UserHelper::hashPassword() for the password hash
+// ── Create user ───────────────────────────────────────────────────────────
 $user = new User();
 
 $userData = [
@@ -177,7 +173,7 @@ $userData = [
     'password2'  => $password,
     'email'      => $regEmail,
     'email2'     => $regEmail,
-    'groups'     => [2],         // Registered
+    'groups'     => [2],   // Registered
     'block'      => 0,
     'activation' => '',
     'sendEmail'  => 0,
@@ -188,7 +184,6 @@ if (!$user->bind($userData)) {
     sendError('User bind failed: ' . $user->getError(), 'BIND_FAIL', 500);
 }
 
-// J4/5 save() — triggers onUserBeforeSave / onUserAfterSave events
 if (!$user->save()) {
     sendError('User save failed: ' . $user->getError(), 'SAVE_FAIL', 500);
 }
@@ -203,18 +198,10 @@ try {
     $newUser = Factory::getUser($newUserId);
     $newUser->password_clear = $password;
 
-    // J4/5: sendMail is on the application, not JUserHelper
-    // Use UserHelper::sendMail if available, otherwise skip gracefully
     if (method_exists(UserHelper::class, 'sendMail')) {
         UserHelper::sendMail($newUser, $app, $regEmail, false);
     } else {
-        // Fallback: trigger the com_users registration email via events
-        $app->triggerEvent('onUserAfterSave', [
-            $userData,
-            true,  // isNew
-            true,  // success
-            null,
-        ]);
+        $app->triggerEvent('onUserAfterSave', [$userData, true, true, null]);
     }
 } catch (\Throwable $e) {
     // Email failure is never fatal
@@ -227,7 +214,7 @@ try {
         ['remember' => false]
     );
 } catch (\Throwable $e) {
-    // Session/cookie issues in iframe context — non-fatal
+    // Non-fatal — session/cookie may not work in all contexts
 }
 
 // ── Success ───────────────────────────────────────────────────────────────
