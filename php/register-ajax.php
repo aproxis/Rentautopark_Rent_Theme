@@ -242,18 +242,38 @@ if ($newUserId <= 0) {
 // Add to the "Registered" group (group ID 2)
 UserHelper::addUserToGroup($newUserId, 2);
 
-// ── Welcome email (non-fatal) ─────────────────────────────────────────────
+// ── Welcome email via Factory::getMailer() (J4/5 way) ────────────────────
+$emailSent  = false;
+$emailError = '';
 try {
-    $newUser = Factory::getUser($newUserId);
-    $newUser->password_clear = $password;
+    $config   = Factory::getConfig();
+    $siteName = $config->get('sitename', 'Our site');
+    $fromEmail = $config->get('mailfrom');
+    $fromName  = $config->get('fromname', $siteName);
 
-    if (method_exists(UserHelper::class, 'sendMail')) {
-        UserHelper::sendMail($newUser, $app, $regEmail, false);
+    $subject = 'Your account on ' . $siteName;
+    $body    = "Hello " . $regName . ",\n\n"
+             . "Your account has been created.\n\n"
+             . "Username : " . $username . "\n"
+             . "Password : " . $password . "\n\n"
+             . "Please log in and change your password as soon as possible.\n\n"
+             . "Regards,\n" . $siteName;
+
+    $mailer = Factory::getMailer();
+    $mailer->setSender([$fromEmail, $fromName]);
+    $mailer->addRecipient($regEmail, $regName);
+    $mailer->setSubject($subject);
+    $mailer->setBody($body);
+    $result = $mailer->Send();
+
+    if ($result === true) {
+        $emailSent = true;
     } else {
-        $app->triggerEvent('onUserAfterSave', [$userData, true, true, null]);
+        $emailError = is_string($result) ? $result : 'Mailer returned false';
     }
 } catch (\Throwable $e) {
-    // Email failure is never fatal
+    $emailError = $e->getMessage();
+    // Email failure is never fatal — user was already created successfully
 }
 
 // ── Auto-login (non-fatal) ────────────────────────────────────────────────
@@ -268,9 +288,11 @@ try {
 
 // ── Success ───────────────────────────────────────────────────────────────
 sendJson([
-    'ok'         => true,
-    'user_id'    => $newUserId,
-    'username'   => $username,
-    'first_name' => $firstName,
-    'last_name'  => $lastName,
+    'ok'          => true,
+    'user_id'     => $newUserId,
+    'username'    => $username,
+    'first_name'  => $firstName,
+    'last_name'   => $lastName,
+    'email_sent'  => $emailSent,
+    'email_error' => $emailError,
 ]);
