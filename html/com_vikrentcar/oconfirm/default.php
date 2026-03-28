@@ -1344,7 +1344,6 @@ if (array_key_exists('hours', $price)) {
 })(jQuery);
 </script>
 
-
 <script type="text/javascript">
 (function () {
   'use strict';
@@ -1352,31 +1351,32 @@ if (array_key_exists('hours', $price)) {
   var stickyBar = document.getElementById('vrc-sticky-total-bar');
   if (!stickyBar) return;
 
-  var sentinel = document.querySelector('.vrc-price-row-total');
-    if (!sentinel) return;
+  var totalRow = document.querySelector('.vrc-price-row-total');
+  if (!totalRow) return;
 
   function show() {
-    document.getElementById('vrc-sticky-total-bar').classList.add('is-visible');
-    document.getElementById('vrc-sticky-total-bar').removeAttribute('aria-hidden');
+    stickyBar.classList.add('is-visible');
+    stickyBar.removeAttribute('aria-hidden');
   }
   function hide() {
-    document.getElementById('vrc-sticky-total-bar').classList.remove('is-visible');
-    document.getElementById('vrc-sticky-total-bar').setAttribute('aria-hidden', 'true');
+    stickyBar.classList.remove('is-visible');
+    stickyBar.setAttribute('aria-hidden', 'true');
   }
   function isMobile() {
-    var container = document.querySelector('.vrc-oconfirm-two-col') || document.body;
-    return (document.querySelector('.vrc-oconfirm-two-col').offsetWidth || window.innerWidth) <= 768;
+    return document.body.offsetWidth <= 768;
   }
-  function checkSentinel() {
+  function checkScroll() {
     if (!isMobile()) { hide(); return; }
-    var rect = document.querySelector('.vrc-price-row-total').getBoundingClientRect();
-    if (document.querySelector('.vrc-price-row-total').getBoundingClientRect().bottom < 60) { show(); } else { hide(); }
+    var rect = totalRow.getBoundingClientRect();
+    if (rect.bottom < 60) { show(); } else { hide(); }
   }
 
-  document.addEventListener('scroll', checkSentinel, { passive: true });
-  window.addEventListener('scroll', checkSentinel, { passive: true });
-  document.body.addEventListener('scroll', checkSentinel, { passive: true });
-  checkSentinel();
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  document.addEventListener('scroll', checkScroll, { passive: true });
+  document.body.addEventListener('scroll', checkScroll, { passive: true });
+
+  // Delay to ensure layout is complete before first check
+  setTimeout(checkScroll, 300);
 
 })();
 </script>
