@@ -190,7 +190,7 @@ $userData = [
     'block'      => 0,
     'activation' => '',
     'sendEmail'  => 0,
-    'params'     => '{}',
+    'params'     => [],
 ];
 
 if (!$user->bind($userData)) {
