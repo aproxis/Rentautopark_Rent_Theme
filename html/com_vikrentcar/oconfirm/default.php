@@ -614,9 +614,6 @@ if (array_key_exists('hours', $price)) {
     <!-- ═══════════════════ RIGHT COLUMN ═══════════════════ -->
     <!-- RIGHT COLUMN -->
 <div class="vrc-oconfirm-col-right">
-  <!-- Sentinel: scrolls away immediately, triggers sticky total bar -->
-  <div id="vrc-price-sentinel" aria-hidden="true" style="height:1px;margin:0;padding:0;"></div>
-
         <?php /* ── Customer PIN (guests without stored data only) ── */ ?>
         <?php if (VikRentCar::customersPinEnabled() && !VikRentCar::userIsLogged() && !(count($customer_details) > 0)): ?>
         <div class="vrc-enterpin-block">
@@ -1346,6 +1343,8 @@ if (array_key_exists('hours', $price)) {
 
 })(jQuery);
 </script>
+
+
 <script type="text/javascript">
 (function () {
   'use strict';
@@ -1353,10 +1352,7 @@ if (array_key_exists('hours', $price)) {
   var stickyBar = document.getElementById('vrc-sticky-total-bar');
   if (!stickyBar) return;
 
-  var sentinel = document.getElementById('vrc-price-sentinel');
-  if (!sentinel) {
-    sentinel = document.querySelector('.vrc-price-list .vrc-price-row-total');
-  }
+  var sentinel = document.querySelector('.vrc-price-row-total');
   if (!sentinel) return;
 
   function show() {
@@ -1374,7 +1370,7 @@ if (array_key_exists('hours', $price)) {
   function checkSentinel() {
     if (!isMobile()) { hide(); return; }
     var rect = sentinel.getBoundingClientRect();
-    if (rect.bottom < 0) { show(); } else { hide(); }
+    if (rect.bottom < 60) { show(); } else { hide(); }
   }
 
   document.addEventListener('scroll', checkSentinel, { passive: true });
