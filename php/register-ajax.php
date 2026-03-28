@@ -276,14 +276,51 @@ try {
     // Email failure is never fatal — user was already created successfully
 }
 
-// ── Auto-login (non-fatal) ────────────────────────────────────────────────
+// ── Auto-login via pending-login token ───────────────────────────────────
+// $app->login() doesn't work reliably in a standalone script context because
+// the session cookie has already been sent. Instead we store a one-time token
+// in the DB and set a cookie. The plg_system_vrcuserjoin plugin reads it on
+// the very next page load and performs the login inside the real Joomla cycle.
 try {
-    $app->login(
-        ['username' => $username, 'password' => $password],
-        ['remember' => false]
-    );
+    // Ensure the helper table exists
+    $db->setQuery("CREATE TABLE IF NOT EXISTS `#__vrcuserjoin_pending_login` (
+        `token`    VARCHAR(64)  NOT NULL PRIMARY KEY,
+        `username` VARCHAR(150) NOT NULL,
+        `password` VARCHAR(255) NOT NULL,
+        `created`  DATETIME     NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    $db->execute();
+
+    // Write the token row
+    $loginToken = bin2hex(random_bytes(24)); // 48-char hex token
+    $now        = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s');
+    $q = $db->getQuery(true)
+        ->insert($db->quoteName('#__vrcuserjoin_pending_login'))
+        ->columns($db->quoteName(['token', 'username', 'password', 'created']))
+        ->values(implode(',', [
+            $db->quote($loginToken),
+            $db->quote($username),
+            $db->quote($password),
+            $db->quote($now),
+        ]));
+    $db->setQuery($q);
+    $db->execute();
+
+    // Set a cookie so the plugin can find this token on the next request.
+    // HttpOnly=true so JS can't read it; SameSite=Lax is fine for same-origin.
+    $cookiePath   = '/';
+    $cookieDomain = '';
+    $isSecure     = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    setcookie('vrc_pending_login', $loginToken, [
+        'expires'  => time() + 300,   // 5 minutes — matches plugin TTL
+        'path'     => $cookiePath,
+        'domain'   => $cookieDomain,
+        'secure'   => $isSecure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
 } catch (\Throwable $e) {
-    // Non-fatal — session/cookie may not work in all contexts
+    // Non-fatal — user was created, login deferred token just didn't save
 }
 
 // ── Success ───────────────────────────────────────────────────────────────
