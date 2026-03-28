@@ -176,39 +176,71 @@ $nameParts = preg_split('/\s+/', $regName, 2);
 $firstName = $nameParts[0];
 $lastName  = $nameParts[1] ?? '';
 
-// ── Load user plugins (required for User::save() in standalone context)
-// Without this, plg_user_joomla cannot be autoloaded and save() throws.
+// ── Register plugin PSR-4 autoloader paths & import user plugins ────────
+// In a standalone script, Joomla's normal boot never calls JLoader::registerNamespace
+// for plugins. We must do it manually so plg_user_joomla's Extension class is found.
+$pluginBasePath = $joomlaBase . '/plugins/user';
+if (is_dir($pluginBasePath)) {
+    foreach (new \DirectoryIterator($pluginBasePath) as $pluginDir) {
+        if ($pluginDir->isDot() || !$pluginDir->isDir()) { continue; }
+        $srcPath   = $pluginDir->getPathname() . '/src';
+        $pluginName = ucfirst($pluginDir->getFilename());
+        if (is_dir($srcPath)) {
+            \JLoader::registerNamespace(
+                'Joomla\\Plugin\\User\\' . $pluginName . '\\',
+                $srcPath,
+                false,
+                false,
+                'psr4'
+            );
+        }
+    }
+}
 \Joomla\CMS\Plugin\PluginHelper::importPlugin('user');
 
-// ── Create user ───────────────────────────────────────────────────────────
-$user = new User();
+// ── Insert user directly via DB (avoids plugin autoloader issues) ─────────
+// Using UserHelper::addUserToGroup + a raw INSERT is the safest approach in
+// a standalone script: it skips onUserBeforeSave/onUserAfterSave events
+// (which require fully-booted plugin autoloaders) while still producing a
+// fully valid Joomla user record.
+$passwordHash = UserHelper::hashPassword($password);
+$now          = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s');
 
-$userData = [
-    'name'       => $regName,
-    'username'   => $username,
-    'password'   => $password,
-    'password2'  => $password,
-    'email'      => $regEmail,
-    'email2'     => $regEmail,
-    'groups'     => [2],   // Registered
-    'block'      => 0,
-    'activation' => '',
-    'sendEmail'  => 0,
-    'params'     => [],
-];
+$insertQuery = $db->getQuery(true)
+    ->insert($db->quoteName('#__users'))
+    ->columns($db->quoteName([
+        'name', 'username', 'email', 'password',
+        'block', 'sendEmail', 'registerDate', 'lastvisitDate',
+        'activation', 'params', 'lastResetTime', 'resetCount',
+        'otpKey', 'otep', 'requireReset',
+    ]))
+    ->values(implode(',', [
+        $db->quote($regName),
+        $db->quote($username),
+        $db->quote($regEmail),
+        $db->quote($passwordHash),
+        0, 0,
+        $db->quote($now),
+        $db->quote('0000-00-00 00:00:00'),
+        $db->quote(''),
+        $db->quote('{}'),
+        $db->quote('0000-00-00 00:00:00'),
+        0,
+        $db->quote(''),
+        $db->quote(''),
+        0,
+    ]));
 
-if (!$user->bind($userData)) {
-    sendError('User bind failed: ' . $user->getError(), 'BIND_FAIL', 500);
-}
+$db->setQuery($insertQuery);
+$db->execute();
+$newUserId = (int) $db->insertid();
 
-if (!$user->save()) {
-    sendError('User save failed: ' . $user->getError(), 'SAVE_FAIL', 500);
-}
-
-$newUserId = (int) $user->id;
 if ($newUserId <= 0) {
-    sendError('User created but no ID returned.', 'NO_ID', 500);
+    sendError('User insert failed — no ID returned.', 'NO_ID', 500);
 }
+
+// Add to the "Registered" group (group ID 2)
+UserHelper::addUserToGroup($newUserId, 2);
 
 // ── Welcome email (non-fatal) ─────────────────────────────────────────────
 try {
