@@ -1353,24 +1353,24 @@ if (array_key_exists('hours', $price)) {
   if (!stickyBar) return;
 
   var sentinel = document.querySelector('.vrc-price-row-total');
-  if (!sentinel) return;
+    if (!sentinel) return;
 
   function show() {
-    stickyBar.classList.add('is-visible');
-    stickyBar.removeAttribute('aria-hidden');
+    document.getElementById('vrc-sticky-total-bar').classList.add('is-visible');
+    document.getElementById('vrc-sticky-total-bar').removeAttribute('aria-hidden');
   }
   function hide() {
-    stickyBar.classList.remove('is-visible');
-    stickyBar.setAttribute('aria-hidden', 'true');
+    document.getElementById('vrc-sticky-total-bar').classList.remove('is-visible');
+    document.getElementById('vrc-sticky-total-bar').setAttribute('aria-hidden', 'true');
   }
   function isMobile() {
     var container = document.querySelector('.vrc-oconfirm-two-col') || document.body;
-    return (container.offsetWidth || window.innerWidth) <= 768;
+    return (document.querySelector('.vrc-oconfirm-two-col').offsetWidth || window.innerWidth) <= 768;
   }
   function checkSentinel() {
     if (!isMobile()) { hide(); return; }
-    var rect = sentinel.getBoundingClientRect();
-    if (rect.bottom < 60) { show(); } else { hide(); }
+    var rect = document.querySelector('.vrc-price-row-total').getBoundingClientRect();
+    if (document.querySelector('.vrc-price-row-total').getBoundingClientRect().bottom < 60) { show(); } else { hide(); }
   }
 
   document.addEventListener('scroll', checkSentinel, { passive: true });
