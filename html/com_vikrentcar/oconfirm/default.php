@@ -1372,50 +1372,15 @@ if (array_key_exists('hours', $price)) {
   var container = document.querySelector('.vrc-oconfirm-two-col') || document.body;
   return (container.offsetWidth || window.innerWidth) <= 768;
 }
-
-  if (window.IntersectionObserver) {
-    var headerEl = document.querySelector('.vrc-modal-header');
-    var headerH = headerEl ? headerEl.offsetHeight : 56;
-
-    var observer = new IntersectionObserver(function (entries) {
-      if (!isMobile()) { hide(); return; }
-      if (!entries[0].isIntersecting) {
-        show();
-      } else {
-        hide();
-      }
-    }, {
-      root: null,
-      rootMargin: '-' + headerH + 'px 0px 0px 0px',
-      threshold: 0
-    });
-
-    observer.observe(sentinel);
-    window.addEventListener('resize', function () {
-      if (!isMobile()) hide();
-    }, { passive: true });
-
-  } else {
-    // Fallback for very old browsers
-    function onScroll() {
-      if (!isMobile()) { hide(); return; }
-      var hH = (document.querySelector('.vrc-modal-header') || {offsetHeight:56}).offsetHeight || 56;
-      var rect = sentinel.getBoundingClientRect();
-      if (rect.bottom < hH + 4) { show(); } else { hide(); }
-    }
-    [document, window, document.body,
-     document.querySelector('.vrc-oconfirm-col-left'),
-     document.querySelector('.vrc-oconfirm-col-right')
-    ].forEach(function(t) { if (t) t.addEventListener('scroll', onScroll, {passive:true}); });
-    window.addEventListener('resize', onScroll, {passive:true});
-    onScroll();
-  }
-})();
-
 function checkSentinel() {
   if (!isMobile()) { hide(); return; }
   var rect = sentinel.getBoundingClientRect();
   if (rect.bottom < 0) { show(); } else { hide(); }
+
+  
+})();
+
+
 }
 
 document.addEventListener('scroll', checkSentinel, { passive: true });
