@@ -176,6 +176,10 @@ $nameParts = preg_split('/\s+/', $regName, 2);
 $firstName = $nameParts[0];
 $lastName  = $nameParts[1] ?? '';
 
+// ── Load user plugins (required for User::save() in standalone context)
+// Without this, plg_user_joomla cannot be autoloaded and save() throws.
+\Joomla\CMS\Plugin\PluginHelper::importPlugin('user');
+
 // ── Create user ───────────────────────────────────────────────────────────
 $user = new User();
 
