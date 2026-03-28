@@ -68,8 +68,9 @@ if (!is_array($input)) {
     sendError('Invalid JSON body.', 'BAD_REQUEST', 400);
 }
 
-$regName  = trim($input['reg_name']  ?? '');
-$regEmail = trim($input['reg_email'] ?? '');
+$regName        = trim($input['reg_name']     ?? '');
+$regEmail       = trim($input['reg_email']    ?? '');
+$regUsernameHint = trim($input['reg_username'] ?? '');  // optional client suggestion
 
 // ── Validate ──────────────────────────────────────────────────────────────
 if (empty($regName)) {
@@ -128,8 +129,15 @@ function generateSecurePassword(int $length = 16): string
 
 $password = generateSecurePassword(16);
 
-// ── Build username from email (must be unique) ────────────────────────────
-$baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9._\-]/', '', strstr($regEmail, '@', true)));
+// ── Build username from client hint → email local-part → fallback 'user' ────
+if (!empty($regUsernameHint)) {
+    // Sanitise: keep alphanumeric, dots, underscores, hyphens; max 60 chars
+    $baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9._\-]/', '', $regUsernameHint));
+    $baseUsername = substr($baseUsername, 0, 60);
+}
+if (empty($baseUsername)) {
+    $baseUsername = strtolower(preg_replace('/[^a-zA-Z0-9._\-]/', '', strstr($regEmail, '@', true)));
+}
 if (empty($baseUsername)) {
     $baseUsername = 'user';
 }
