@@ -1,7 +1,8 @@
 <?php
 /**
  * /templates/rent/php/register-ajax.php
- * Joomla 4/5 compatible — bootstrapped via CMSApplication::getInstance('site')
+ * Joomla 4/5 compatible — uses the official standalone-script bootstrap pattern
+ * from https://manual.joomla.org/docs/4.4/building-extensions/custom-script/basic-script/
  */
 
 ini_set('display_errors', 0);
@@ -47,16 +48,28 @@ define('JPATH_BASE', $joomlaBase);
 require_once $joomlaBase . '/includes/defines.php';
 require_once $joomlaBase . '/includes/framework.php';
 
-// ── Boot application the same way Joomla's index.php does ────────────────
-// CMSApplication::getInstance('site') runs the full service provider chain
-// (session, input, config, dispatcher, etc.) — the only reliable way to get
-// a working SiteApplication outside of Joomla's normal request cycle.
+// ── Official J4/5 standalone-script bootstrap pattern ─────────────────────
+// Source: https://manual.joomla.org/docs/building-extensions/custom-script/basic-script/
+//
+// framework.php loads the service providers but does NOT resolve SiteApplication.
+// SessionInterface is registered as 'session.web.site' — we must alias it before
+// asking the container to build SiteApplication, otherwise the DI graph fails.
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
+use Joomla\Session\SessionInterface;
 
-$app = CMSApplication::getInstance('site');
+// 1. Get the fully-booted DI container (service providers already registered by framework.php)
+$container = Factory::getContainer();
+
+// 2. Register the missing alias that SiteApplication's constructor depends on
+$container->alias(SessionInterface::class, 'session.web.site');
+
+// 3. Now the full DI graph resolves cleanly
+$app = $container->get(SiteApplication::class);
+
+// 4. Make it available to all subsequent Factory::getApplication() calls
 Factory::$application = $app;
 
 ob_end_clean();
