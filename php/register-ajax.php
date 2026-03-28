@@ -1,16 +1,20 @@
 <?php
 /**
  * /templates/rent/php/register-ajax.php
- * Phase 3 — Zero-friction registration
+ * Joomla 4/5 compatible — uses Joomla\CMS\Factory, not JFactory
  */
 
-// Capture ALL errors — turn them into JSON instead of a blank 500
 ini_set('display_errors', 0);
-ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
-set_exception_handler(function (Throwable $e) {
-    ob_end_clean();
+// Convert all PHP errors → catchable exceptions
+set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
+    throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
+// Last-resort: turn any uncaught exception into JSON (never a blank 500)
+set_exception_handler(function (\Throwable $e): void {
+    if (ob_get_level()) { ob_end_clean(); }
     http_response_code(500);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
@@ -23,15 +27,13 @@ set_exception_handler(function (Throwable $e) {
     exit;
 });
 
-set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline) {
-    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-});
-
 ob_start();
 
-// ── Joomla bootstrap ──────────────────────────────────────────────────────
+// ── Joomla 4/5 bootstrap ──────────────────────────────────────────────────
 define('_JEXEC', 1);
 
+// Script is at: templates/rent/php/register-ajax.php
+// Joomla root is 3 directories up
 $joomlaBase = realpath(dirname(__FILE__) . '/../../../');
 
 if (!$joomlaBase || !file_exists($joomlaBase . '/includes/defines.php')) {
@@ -40,18 +42,25 @@ if (!$joomlaBase || !file_exists($joomlaBase . '/includes/defines.php')) {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'ok'         => false,
-        'error'      => 'Joomla root not found at: ' . dirname(__FILE__) . '/../../../',
+        'error'      => 'Joomla root not found. Looked at: ' . realpath(dirname(__FILE__) . '/../../..'),
         'error_code' => 'BOOT_FAIL',
-        'resolved'   => $joomlaBase ?: 'null',
     ]);
     exit;
 }
 
+// Joomla 4/5 needs JPATH_BASE defined before includes/defines.php
+define('JPATH_BASE', $joomlaBase);
+
 require_once $joomlaBase . '/includes/defines.php';
 require_once $joomlaBase . '/includes/framework.php';
 
-$mainframe = JFactory::getApplication('site');
-$mainframe->initialise();
+// Joomla 4/5 uses the CMSApplication factory
+use Joomla\CMS\Factory;
+use Joomla\CMS\User\User;
+use Joomla\CMS\User\UserHelper;
+use Joomla\CMS\Log\Log;
+
+$app = Factory::getApplication('site');
 
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
@@ -95,7 +104,7 @@ if ($regEmail === '' || !filter_var($regEmail, FILTER_VALIDATE_EMAIL)) {
 }
 
 // ── Duplicate email check ─────────────────────────────────────────────────
-$db    = JFactory::getDbo();
+$db    = Factory::getDbo();
 $query = $db->getQuery(true)
     ->select($db->quoteName('id'))
     ->from($db->quoteName('#__users'))
@@ -157,8 +166,9 @@ $nameParts = preg_split('/\s+/', $regName, 2);
 $firstName = $nameParts[0];
 $lastName  = $nameParts[1] ?? '';
 
-// ── Create Joomla user ────────────────────────────────────────────────────
-$user = new JUser();
+// ── Create user (Joomla 4/5) ──────────────────────────────────────────────
+// In J4/5: new User() — UserHelper::hashPassword() for the password hash
+$user = new User();
 
 $userData = [
     'name'       => $regName,
@@ -167,16 +177,18 @@ $userData = [
     'password2'  => $password,
     'email'      => $regEmail,
     'email2'     => $regEmail,
-    'groups'     => [2],
+    'groups'     => [2],         // Registered
     'block'      => 0,
     'activation' => '',
     'sendEmail'  => 0,
-    'params'     => [],
+    'params'     => '{}',
 ];
 
 if (!$user->bind($userData)) {
     sendError('User bind failed: ' . $user->getError(), 'BIND_FAIL', 500);
 }
+
+// J4/5 save() — triggers onUserBeforeSave / onUserAfterSave events
 if (!$user->save()) {
     sendError('User save failed: ' . $user->getError(), 'SAVE_FAIL', 500);
 }
@@ -188,24 +200,37 @@ if ($newUserId <= 0) {
 
 // ── Welcome email (non-fatal) ─────────────────────────────────────────────
 try {
-    $newUser = JFactory::getUser($newUserId);
+    $newUser = Factory::getUser($newUserId);
     $newUser->password_clear = $password;
-    JUserHelper::sendMail($newUser, $mainframe, $regEmail, false);
-} catch (Throwable $e) {
-    // email failure never blocks registration success
+
+    // J4/5: sendMail is on the application, not JUserHelper
+    // Use UserHelper::sendMail if available, otherwise skip gracefully
+    if (method_exists(UserHelper::class, 'sendMail')) {
+        UserHelper::sendMail($newUser, $app, $regEmail, false);
+    } else {
+        // Fallback: trigger the com_users registration email via events
+        $app->triggerEvent('onUserAfterSave', [
+            $userData,
+            true,  // isNew
+            true,  // success
+            null,
+        ]);
+    }
+} catch (\Throwable $e) {
+    // Email failure is never fatal
 }
 
 // ── Auto-login (non-fatal) ────────────────────────────────────────────────
 try {
-    $mainframe->login(
+    $app->login(
         ['username' => $username, 'password' => $password],
-        ['remember' => false, 'silent' => true]
+        ['remember' => false]
     );
-} catch (Throwable $e) {
-    // session/cookie issues in iframe — non-fatal
+} catch (\Throwable $e) {
+    // Session/cookie issues in iframe context — non-fatal
 }
 
-// ── Done ──────────────────────────────────────────────────────────────────
+// ── Success ───────────────────────────────────────────────────────────────
 sendJson([
     'ok'         => true,
     'user_id'    => $newUserId,
