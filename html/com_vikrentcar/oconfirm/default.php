@@ -250,12 +250,6 @@ if (array_key_exists('hours', $price)) {
     <h2 class="vrc-modal-title"><?php echo $vrc_modal_title; ?></h2>
 </div>
 <?php /* Mobile sticky total bar — shown only on scroll, below header */ ?>
-<div class="vrc-sticky-total-bar" id="vrc-sticky-total-bar" aria-hidden="true">
-    <span class="vrc-sticky-total-label"><?php echo JText::_('VRTOTAL'); ?></span>
-    <span class="vrc-sticky-total-value">
-        <span class="vrc_currency"><?php echo $currencysymb; ?></span><?php echo VikRentCar::numberFormat($totdue); ?>
-    </span>
-</div>
 <?php else: ?>
 <h2 class="vrc-rental-summary-title"><?php echo JText::_('VRRIEPILOGOORD'); ?></h2>
 <?php /* Mobile sticky total bar — shown only on scroll, below header (full-page view) */ ?>
@@ -1342,41 +1336,4 @@ if (array_key_exists('hours', $price)) {
     });
 
 })(jQuery);
-</script>
-
-<script type="text/javascript">
-(function () {
-  'use strict';
-
-  var stickyBar = document.getElementById('vrc-sticky-total-bar');
-  if (!stickyBar) return;
-
-  var totalRow = document.querySelector('.vrc-price-row-total');
-  if (!totalRow) return;
-
-  function show() {
-    stickyBar.classList.add('is-visible');
-    stickyBar.removeAttribute('aria-hidden');
-  }
-  function hide() {
-    stickyBar.classList.remove('is-visible');
-    stickyBar.setAttribute('aria-hidden', 'true');
-  }
-  function isMobile() {
-    return document.body.offsetWidth <= 768;
-  }
-  function checkScroll() {
-    if (!isMobile()) { hide(); return; }
-    var rect = totalRow.getBoundingClientRect();
-    if (rect.bottom < 60) { show(); } else { hide(); }
-  }
-
-  window.addEventListener('scroll', checkScroll, { passive: true });
-  document.addEventListener('scroll', checkScroll, { passive: true });
-  document.body.addEventListener('scroll', checkScroll, { passive: true });
-
-  // Delay to ensure layout is complete before first check
-  setTimeout(checkScroll, 300);
-
-})();
 </script>
