@@ -12,6 +12,9 @@
 
 defined('_JEXEC') OR die('Restricted Area');
 use Joomla\CMS\Language\Text;
+$document = JFactory::getDocument();
+$document->addStyleSheet(JURI::root() . 'templates/rent/css/carslist.css');
+$document->addScript(JURI::root() . 'templates/rent/js/carslist.js');
 
 $cars         = $this->cars;
 $category     = $this->category;
@@ -84,9 +87,6 @@ foreach ($cars as $c) {
 	}
 }
 ?>
-<link rel="stylesheet" href="<?php echo JURI::root(); ?>templates/rent/css/carslist.css"/>
-
-
 <!-- Header Section with Dynamic Title -->
 <section class="relative py-20 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] text-white overflow-hidden">
 	<div class="absolute inset-0 opacity-10">
@@ -390,8 +390,6 @@ function arBuildFilterHTML($caratDefs, $usedCaratCounts, $sidebarCats, $catCount
 
 	return $html;
 }
-
-$document->addScript(JURI::root() . 'templates/rent/js/carslist.js');
 
 ?>
 

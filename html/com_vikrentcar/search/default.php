@@ -7,6 +7,9 @@
 
 defined('_JEXEC') OR die('Restricted Area');
 use Joomla\CMS\Language\Text;
+$document = JFactory::getDocument();
+$document->addStyleSheet(JURI::root() . 'templates/rent/css/search.css');
+$document->addScript(JURI::root() . 'templates/rent/js/search.js');
 
 $res                 = $this->res;
 $days                = $this->days;
