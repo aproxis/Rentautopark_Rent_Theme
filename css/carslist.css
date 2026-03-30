@@ -397,7 +397,7 @@
 /* Price badge */
 .ar-badge {
 	position: absolute; bottom: 10px; left: 10px;
-	background: rgba(10,10,10,.72);
+	background: rgba(10,10,10,.72) !important;
 	backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
 	border-radius: 8px; padding: 5px 10px; line-height: 1.2;
 	pointer-events: none; max-width: calc(100% - 54px);

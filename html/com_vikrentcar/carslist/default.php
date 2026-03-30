@@ -226,12 +226,25 @@ foreach ($cars as $c):
 			);
 			$dbo->execute();
 $caratRows = $dbo->getNumRows() > 0 ? $dbo->loadAssocList('id') : array();
-			if (!empty($caratRows)) { $vrc_tn->translateContents($caratRows, '#__vikrentcar_caratteristiche'); }
-			foreach ($caratIds as $cid) {
+
+// Save original names for icon matching BEFORE translation overwrites them
+$caratOrigKeys = array();
+foreach ($caratRows as $origId => $origRow) {
+    $caratOrigKeys[$origId] = strtolower(
+        !empty($origRow['textimg']) ? $origRow['textimg'] : $origRow['name']
+    );
+}
+if (!empty($caratRows)) {
+    $vrc_tn->translateContents($caratRows, '#__vikrentcar_caratteristiche');
+}
+
+foreach ($caratIds as $cid) {
 				if (!isset($caratRows[$cid])) continue;
 				$cr    = $caratRows[$cid];
+				// Display label: use translated value (textimg preferred, fallback to name)
 				$label = !empty($cr['textimg']) ? $cr['textimg'] : $cr['name'];
-				$key   = strtolower($label);
+				// Icon matching: always use original untranslated key
+				$key   = isset($caratOrigKeys[$cid]) ? $caratOrigKeys[$cid] : strtolower($label);
 				$svg   = $svgDefault;
 				foreach ($svgIcons as $keyword => $iconSvg) {
 					if (strpos($key, $keyword) !== false) { $svg = $iconSvg; break; }
