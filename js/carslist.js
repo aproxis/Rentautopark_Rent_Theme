@@ -56,14 +56,24 @@ jQuery(document).ready(function ($) {
 /* Sort */
 var arCurrentSort = 'price-asc';
 
-function arToggleSort() {
-	document.getElementById('ar-sort-dd').classList.toggle('open');
-}
-function arSort(key, btn) {
-	arCurrentSort = key;
-	document.querySelectorAll('.ar-sb-sort-opt').forEach(function (b) { b.classList.remove('sel'); });
-	btn.classList.add('sel');
-	arFilter();
+function arSortToggle() {
+    var btn = document.querySelector('.ar-sort-toggle');
+    if (arCurrentSort === 'price-asc') {
+        arCurrentSort = 'price-desc';
+        var lbl = btn ? btn.getAttribute('data-label-desc') : 'Preț: Mare → Mic';
+        document.querySelectorAll('.ar-sort-toggle-lbl').forEach(function(el) { el.textContent = lbl; });
+        document.querySelectorAll('.ar-sort-icon').forEach(function(el) {
+            el.className = 'fa fa-arrow-down ar-sort-icon';
+        });
+    } else {
+        arCurrentSort = 'price-asc';
+        var lbl = btn ? btn.getAttribute('data-label-asc') : 'Preț: Mic → Mare';
+        document.querySelectorAll('.ar-sort-toggle-lbl').forEach(function(el) { el.textContent = lbl; });
+        document.querySelectorAll('.ar-sort-icon').forEach(function(el) {
+            el.className = 'fa fa-arrow-up ar-sort-icon';
+        });
+    }
+    arFilter();
 }
 
 function arToggleSection(titleEl) {
@@ -161,31 +171,44 @@ function arFilter(clickedEl) {
 		}
 	});
 
-	var cEl = document.getElementById('ar-count');
-	var countText = cEl ? cEl.getAttribute('data-count-text') : 'automobile gasite';
-	if (cEl) cEl.textContent = visible.length + ' ' + countText;
+	var countText = document.getElementById('ar-count')
+	    ? document.getElementById('ar-count').getAttribute('data-count-text')
+	    : 'automobile gasite';
+	['ar-count', 'ar-count-mob'].forEach(function(id) {
+	    var el = document.getElementById(id);
+	    if (el) el.textContent = visible.length + ' ' + countText;
+	});
 	document.getElementById('ar-empty').style.display = visible.length === 0 ? 'block' : 'none';
 	arUpdateChips();
 }
 
 function arUpdateChips() {
-	var chips = document.getElementById('ar-chips');
-	chips.innerHTML = '';
-	document.querySelectorAll('#ar-sidebar-desktop .ar-cb:checked').forEach(function (cb) {
-		var label = cb.getAttribute('data-label') || '';
-		var chip = document.createElement('span');
-		chip.className = 'ar-chip';
-		chip.innerHTML = label + '<span class="ar-chip-x">×</span>';
-		var caratid = cb.getAttribute('data-caratid');
-		var catid = cb.getAttribute('data-catid');
-		chip.onclick = function () {
-			if (caratid) {
-				document.querySelectorAll('.ar-cb[data-caratid="'+caratid+'"]').forEach(function(c){ c.checked = false; });
-			} else if (catid) {
-				document.querySelectorAll('.ar-cb[data-catid="'+catid+'"]').forEach(function(c){ c.checked = false; });
-			}
-			arFilter();
-		};
-		chips.appendChild(chip);
-	});
+    var chips    = document.getElementById('ar-chips');
+    var chipsMob = document.getElementById('ar-chips-mob');
+    if (chips)    chips.innerHTML = '';
+    if (chipsMob) chipsMob.innerHTML = '';
+
+    document.querySelectorAll('#ar-sidebar-desktop .ar-cb:checked').forEach(function (cb) {
+        var label   = cb.getAttribute('data-label') || '';
+        var caratid = cb.getAttribute('data-caratid');
+        var catid   = cb.getAttribute('data-catid');
+
+        [chips, chipsMob].forEach(function(container) {
+            if (!container) return;
+            var chip = document.createElement('span');
+            chip.className = 'ar-chip';
+            chip.innerHTML = label + '<span class="ar-chip-x">×</span>';
+            chip.onclick = function () {
+                if (caratid) {
+                    document.querySelectorAll('.ar-cb[data-caratid="'+caratid+'"]')
+                        .forEach(function(c){ c.checked = false; });
+                } else if (catid) {
+                    document.querySelectorAll('.ar-cb[data-catid="'+catid+'"]')
+                        .forEach(function(c){ c.checked = false; });
+                }
+                arFilter();
+            };
+            container.appendChild(chip);
+        });
+    });
 }

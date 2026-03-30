@@ -139,10 +139,6 @@ foreach ($cars as $c) {
 	<?php echo Text::_('VRCFILTERS') ?: 'Filtre'; ?>
 </button>
 
-<!-- Active chips -->
-<div class="ar-chips" id="ar-chips"></div>
-<div class="ar-count" id="ar-count"><?php echo count($cars); ?> <?php echo Text::_('VRCAUTOMOBILEFOUND') ?: 'automobile găsite'; ?></div>
-
 <!-- ================================================================
      MOBILE DRAWER
      ================================================================ -->
@@ -158,14 +154,19 @@ foreach ($cars as $c) {
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 			<input type="text" id="ar-q-mob" placeholder="<?php echo Text::_('VRCSEARCHCARS') ?: 'Caută mașină...'; ?>"/>
 		</div>
-		<!-- Sort by price -->
+		<!-- Sort toggle -->
 		<div class="ar-sb-sort">
 			<div class="ar-sb-sort-label"><i class="fa fa-sort"></i> <?php echo Text::_('VRCSORTBY') ?: 'Sortare'; ?></div>
-			<div class="ar-sb-sort-opts">
-				<div class="ar-sb-sort-opt sel" onclick="arSort('price-asc',this)"><span class="ar-sb-sort-dot"></span><?php echo Text::_('VRCSORTPRICELH') ?: 'Preț: Mic > Mare'; ?></div>
-				<div class="ar-sb-sort-opt" onclick="arSort('price-desc',this)"><span class="ar-sb-sort-dot"></span><?php echo Text::_('VRCSORTPRICEHL') ?: 'Preț: Mare > Mic'; ?></div>
-			</div>
+			<button class="ar-sort-toggle" type="button" onclick="arSortToggle()"
+				data-label-asc="<?php echo htmlspecialchars(Text::_('VRCSORTPRICELH') ?: 'Preț: Mic → Mare'); ?>"
+				data-label-desc="<?php echo htmlspecialchars(Text::_('VRCSORTPRICEHL') ?: 'Preț: Mare → Mic'); ?>">
+				<i class="fa fa-arrow-up ar-sort-icon"></i>
+				<span class="ar-sort-toggle-lbl"><?php echo Text::_('VRCSORTPRICELH') ?: 'Preț: Mic → Mare'; ?></span>
+			</button>
 		</div>
+		<!-- Count + chips for mobile -->
+		<div class="ar-count" id="ar-count-mob"></div>
+		<div class="ar-chips" id="ar-chips-mob"></div>
 		<!-- Filter sections filled by JS from sidebar -->
 	</div>
 </div>
@@ -186,11 +187,20 @@ foreach ($cars as $c) {
 	<!-- Sort by price -->
 	<div class="ar-sb-sort">
 		<div class="ar-sb-sort-label"><i class="fa fa-sort"></i> <?php echo Text::_('VRCSORTBY') ?: 'Sortare'; ?></div>
-		<div class="ar-sb-sort-opts">
-			<div class="ar-sb-sort-opt sel" onclick="arSort('price-asc',this)"><span class="ar-sb-sort-dot"></span><?php echo Text::_('VRCSORTPRICELH') ?: 'Preț: Mic > Mare'; ?></div>
-			<div class="ar-sb-sort-opt" onclick="arSort('price-desc',this)"><span class="ar-sb-sort-dot"></span><?php echo Text::_('VRCSORTPRICEHL') ?: 'Preț: Mare > Mic'; ?></div>
-		</div>
+		<button class="ar-sort-toggle" type="button" onclick="arSortToggle()"
+			data-label-asc="<?php echo htmlspecialchars(Text::_('VRCSORTPRICELH') ?: 'Preț: Mic → Mare'); ?>"
+			data-label-desc="<?php echo htmlspecialchars(Text::_('VRCSORTPRICEHL') ?: 'Preț: Mare → Mic'); ?>">
+			<i class="fa fa-arrow-up ar-sort-icon"></i>
+			<span class="ar-sort-toggle-lbl"><?php echo Text::_('VRCSORTPRICELH') ?: 'Preț: Mic → Mare'; ?></span>
+		</button>
 	</div>
+	<!-- Count + active chips -->
+	<div class="ar-count" id="ar-count"
+	     data-count-text="<?php echo htmlspecialchars(Text::_('VRCAUTOMOBILEFOUND') ?: 'automobile găsite'); ?>">
+	    <?php echo count($cars); ?> <?php echo Text::_('VRCAUTOMOBILEFOUND') ?: 'automobile găsite'; ?>
+	</div>
+	<div class="ar-chips" id="ar-chips"></div>
+
 	<?php echo arBuildFilterHTML($caratDefs, $usedCaratCounts, $sidebarCats, $catCounts, $vrc_tn); ?>
 </aside>
 
