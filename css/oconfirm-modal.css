@@ -811,6 +811,10 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     .vrccustomfields {
         grid-template-columns: 1fr;
     }
+    
+    .vrc-register-section {
+        grid-column: auto;
+    }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
