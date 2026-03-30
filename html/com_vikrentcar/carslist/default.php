@@ -111,8 +111,8 @@ foreach ($cars as $c) {
 <div class="ar-page-wrap">
 <div class="ar-page-inner">
 
-<!-- Toolbar -->
-<div class="ar-toolbar">
+<!--  Toolbar -->
+<!-- <div class="ar-toolbar">
 	<div class="ar-search-wrap">
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 		<input type="text" id="ar-q" placeholder="<?php echo Text::_('VRCSEARCHCARS') ?: 'Caută mașină...'; ?>"/>
@@ -131,7 +131,7 @@ foreach ($cars as $c) {
 		</div>
 	</div>
 
-</div>
+</div> -->
 
 <!-- Mobile filter button -->
 <button class="ar-mob-filter-btn" onclick="arOpenDrawer()" type="button">

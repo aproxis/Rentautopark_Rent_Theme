@@ -548,3 +548,11 @@
 @media (max-width: 400px) {
 	.ar-grid { grid-template-columns: 1fr; }
 }
+
+/* ================================================================
+   HIDDEN ELEMENTS
+   ================================================================ */
+.ar-toolbar                    { display: none !important; }   /* topbar removed */
+.ar-fav                        { display: none !important; }   /* favorites heart */
+.ar-card-footer .ar-price-row  { display: none !important; }   /* price row in footer */
+.ar-btn-o                      { display: none !important; }   /* "view details" button */

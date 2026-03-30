@@ -175,8 +175,6 @@ function arSrBuildFilterHTML($all_characteristics, $characteristics_map, $sideba
 	return $html;
 }
 ?>
-<link rel="stylesheet" href="<?php echo JURI::root(); ?>templates/rent/css/search.css"/>
-
 <!-- HERO -->
 <div class="ar-hero">
 	<h1><?php echo Text::_('VRCSEARCHRESULTSHEADING'); ?></h1>
@@ -402,8 +400,4 @@ foreach ($res as $k => $r) {
 <?php if (!empty($navig)) { ?>
 <div class="vrc-pagination"><?php echo $navig; ?></div>
 <?php } ?>
-
-<?php
-	$document->addScript(JURI::root() . 'templates/rent/js/search.js');
-?>
 
