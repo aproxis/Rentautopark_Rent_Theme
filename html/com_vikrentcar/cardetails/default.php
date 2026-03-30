@@ -142,6 +142,25 @@ if (!empty($car['idcarat'])) {
 	}
 }
 
+// raw key snapshot — lookup original textimg/name BEFORE translation
+$caratOrigKeys = array();
+if (!empty($caratDefs)) {
+	try {
+		$dbo2 = JFactory::getDbo();
+		$rawIds = array_map('intval', array_keys($caratDefs));
+		$dbo2->setQuery(
+			"SELECT `id`,`name`,`textimg` FROM `#__vikrentcar_caratteristiche`"
+			. " WHERE `id` IN (" . implode(',', $rawIds) . ")"
+		);
+		$rawRows = $dbo2->loadAssocList('id');
+		foreach ($rawRows as $rawId => $rawRow) {
+			$caratOrigKeys[$rawId] = strtolower(
+				!empty($rawRow['textimg']) ? $rawRow['textimg'] : $rawRow['name']
+			);
+		}
+	} catch (Exception $e) {}
+}
+
 $push_disabled_in = array();
 $push_disabled_out = array();
 if (is_array($busy) && count($busy) > 0) {
@@ -405,7 +424,8 @@ try {
 			<?php foreach ($caratDefs as $cid => $carat):
 				$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
 				$label = Text::_($rawLabel) ?: $rawLabel;
-				$key = strtolower($label); $svg = $svgDefault;
+				$key = isset($caratOrigKeys[$cid]) ? $caratOrigKeys[$cid] : strtolower($label);
+				$svg = $svgDefault;
 				foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
 			?>
 			<div class="cd-spec-pill"><?php echo $svg; ?><?php echo htmlspecialchars($label); ?></div>
@@ -424,7 +444,8 @@ try {
 				<?php foreach ($caratDefs as $cid => $carat):
 					$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
 					$label = Text::_($rawLabel) ?: $rawLabel;
-					$key = strtolower($label); $svg = $svgDefault;
+					$key = isset($caratOrigKeys[$cid]) ? $caratOrigKeys[$cid] : strtolower($label);
+					$svg = $svgDefault;
 					foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
 				?>
 				<div class="cd-spec"><div class="cd-spec-icon"><?php echo $svg; ?></div><div class="cd-spec-text"><span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span></div></div>
@@ -1425,10 +1446,11 @@ jQuery(function(){
 			<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
 			<?php if (!empty($caratDefs)): ?>
 			<div class="cd-specs">
-				<?php foreach ($caratDefs as $cid => $carat):
+			<?php foreach ($caratDefs as $cid => $carat):
 					$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
 					$label = Text::_($rawLabel) ?: $rawLabel;
-					$key = strtolower($label); $svg = $svgDefault;
+					$key = isset($caratOrigKeys[$cid]) ? $caratOrigKeys[$cid] : strtolower($label);
+					$svg = $svgDefault;
 					foreach ($svgIcons as $kw => $is) { if (strpos($key, $kw) !== false) { $svg = $is; break; } }
 				?>
 				<div class="cd-spec"><div class="cd-spec-icon"><?php echo $svg; ?></div><div class="cd-spec-text"><span class="cd-spec-value"><?php echo htmlspecialchars($label); ?></span></div></div>
@@ -1439,7 +1461,7 @@ jQuery(function(){
 			<a href="javascript:void(0);" onclick="vrcShowRequestInfo();" class="cd-reqinfo-btn"><i class="fas fa-envelope"></i> <?php echo Text::_('VRCCARREQINFOBTN'); ?></a>
 			<?php endif; ?>
 		</div>
-	
+	</div>
 
 	<!-- Description (mobile order 5) -->
 	<?php if (!empty($car['info'])): ?>
