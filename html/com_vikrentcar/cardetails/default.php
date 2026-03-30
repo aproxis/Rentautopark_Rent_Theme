@@ -1188,7 +1188,9 @@ jQuery(function(){
 	var cdCouponAjaxUrl = '<?php echo rtrim(JURI::root(), '/'); ?>/templates/rent/php/coupon-ajax.php';
 	var cdDescPrefix   = '<?php echo addslashes(Text::_('VRCSUMDESC_PREFIX')); ?>';
 	var cdDescCarInfix = '<?php echo addslashes(Text::_('VRCSUMDESC_CAR_INFIX')); ?>';
-	var cdDescLocInfix = '<?php echo addslashes(Text::_('VRCSUMDESC_LOC_INFIX')); ?>';
+	var cdDescLocInfix  = '<?php echo addslashes(Text::_('VRCSUMDESC_LOC_INFIX')); ?>';
+	var cdDescLocPickup = '<?php echo addslashes(Text::_('VRCSUMDESCLOC_PICKUP') ?: ', получение в'); ?>';
+	var cdDescLocReturn = '<?php echo addslashes(Text::_('VRCSUMDESCLOC_RETURN') ?: ', возврат в'); ?>';
 	var cdDescDayWord  = '<?php echo addslashes(Text::_('VRCSEARCHDAY')); ?>';
 	var cdDescDaysWord = '<?php echo addslashes(Text::_('VRCSEARCHDAYS')); ?>';
 		var cdRateByDay = <?php
@@ -1331,9 +1333,23 @@ jQuery(function(){
 		var _dw2 = days === 1 ? cdDescDayWord : cdDescDaysWord;
 		var _locId = jQuery('#place').val() || '';
 		var _locName = (_locId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_locId]) ? cdPlacesMap[_locId] : '';
+		var _diffReturn = jQuery('#cd-diff-return-chk').is(':checked');
+		var _retLocName = '';
+		if (_diffReturn) {
+			var _retLocId = jQuery('#returnplace_visible').val();
+			_retLocName = (_retLocId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_retLocId]) ? cdPlacesMap[_retLocId] : '';
+		}
+
 		var _desc = cdDescPrefix + ' <strong>' + days + '\u00A0' + _dw2 + '</strong>';
 		if (typeof cdCarName !== 'undefined' && cdCarName) { _desc += cdDescCarInfix + '<strong>' + cdCarName + '</strong>'; }
-		if (_locName) { _desc += cdDescLocInfix + '<strong>' + _locName + '</strong>'; }
+
+		if (_diffReturn && _locName && _retLocName) {
+			_desc += ' ' + cdDescLocPickup + ' <strong>' + _locName + '</strong>'
+				  + ' ' + cdDescLocReturn + ' <strong>' + _retLocName + '</strong>';
+		} else if (_locName) {
+			_desc += cdDescLocInfix + '<strong>' + _locName + '</strong>';
+		}
+
 		_desc += '.';
 		jQuery('#cd-summary-desc').html(_desc);
 
