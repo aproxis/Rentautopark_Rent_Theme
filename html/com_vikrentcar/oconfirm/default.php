@@ -70,7 +70,7 @@ $tok = "";
 if (VikRentCar::tokenForm()) {
     $vikt = uniqid(rand(17, 1717), true);
     $session->set('vikrtoken', $vikt);
-    $tok = "<input type=\"hidden\" name=\"viktoken\" value=\"" . $vikt . "\"/>\n";
+    $tok = "<input type=\"hidden\" name=\"viktoken\" id=\"vrc-viktoken\" value=\"" . $vikt . "\"/>\n";
 }
 
 $pitemid = VikRequest::getInt('Itemid', '', 'request');
@@ -1316,6 +1316,19 @@ if (array_key_exists('hours', $price)) {
 jQuery(document).ready(function ($) {
     'use strict';
 
+    /* ── Restore form fields saved before post-login reload ─────────── */
+    try {
+        var _saved = sessionStorage.getItem('vrc_form_restore');
+        if (_saved) {
+            sessionStorage.removeItem('vrc_form_restore');
+            var _data = JSON.parse(_saved);
+            $.each(_data, function (name, value) {
+                var $el = $('form[name="vrc"] [name="' + name + '"]');
+                if ($el.length && value) { $el.val(value); }
+            });
+        }
+    } catch (e) { /* ignore */ }
+
     /* ── i18n fallbacks ──────────────────────────────────────────────── */
     var REGISTER_AJAX   = '<?php echo $registerAjaxUrl; ?>';
     var ERR_EMAIL       = '<?php echo addslashes(JText::_('VRC_REG_ERR_EMAIL')        ?: 'Completați câmpul de email înainte de a continua.'); ?>';
@@ -1449,8 +1462,23 @@ jQuery(document).ready(function ($) {
                     clearFeedback();
                     showSuccess('✓ ' + MSG_LOGGED_IN + ' <strong>' +
                         $('<span>').text(name || username).html() +
-                        '</strong>. Apăsați <em>Confirmă Comanda</em> pentru a finaliza rezervarea.');
-                    $submitBtn.prop('disabled', false).val(ORIG_SUBMIT_VAL);
+                        '</strong>. Se reîncarcă pagina pentru a finaliza rezervarea&hellip;');
+                    $submitBtn.prop('disabled', true);
+
+                    /* After AJAX login Joomla regenerates the session, which invalidates
+                       the vikrtoken stored before login. Reload the page so PHP generates
+                       a fresh token bound to the new authenticated session.
+                       We preserve all form field values via sessionStorage so the user
+                       doesn't have to re-type anything. */
+                    try {
+                        var formData = {};
+                        $('form[name="vrc"]').find('input:not([type="hidden"]):not([type="submit"]), select, textarea').each(function () {
+                            if (this.name) { formData[this.name] = $(this).val(); }
+                        });
+                        sessionStorage.setItem('vrc_form_restore', JSON.stringify(formData));
+                    } catch (e) { /* sessionStorage may be unavailable — not critical */ }
+
+                    setTimeout(function () { window.location.reload(); }, 800);
                 },
                 function (msg) { /* fail */
                     $('#vrc-login-inline-error').text(msg).show();
