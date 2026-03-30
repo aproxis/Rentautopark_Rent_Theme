@@ -275,8 +275,8 @@ if (version_compare(JVERSION, 4, 'ge')) {
 
 		<!-- LOGIN TAB -->
 		<div id="login-content" class="auth-tab-content active">
-			<h2 class="auth-form-title">Bun venit înapoi</h2>
-			<p class="auth-form-subtitle">Autentifică-te pentru a continua</p>
+			<h2 class="auth-form-title"><?php echo Text::_('TXT_LOGIN_WELCOME_BACK'); ?></h2>
+			<p class="auth-form-subtitle"><?php echo Text::_('TXT_LOGIN_SUBTITLE'); ?></p>
 
 			<?php if(PluginHelper::isEnabled('authentication', 'openid')) : ?>
 				<?php HTMLHelper::_('script', 'openid.js'); ?>
@@ -334,9 +334,9 @@ if (version_compare(JVERSION, 4, 'ge')) {
 
 				<button class="auth-submit-btn" type="submit"><?php echo Text::_('JABUTTON_LOGIN'); ?></button>
 
-				<div class="auth-switch-row">
-					Nu ai cont? <button type="button" onclick="switchTab('register')"><?php echo Text::_('REGISTER'); ?></button>
-				</div>
+			<div class="auth-switch-row">
+				<?php echo Text::_('TXT_NO_ACCOUNT'); ?> <button type="button" onclick="switchTab('register')"><?php echo Text::_('REGISTER'); ?></button>
+			</div>
 
 				<input type="hidden" name="option" value="com_users" />
 				<input type="hidden" name="task" value="user.login" />
@@ -347,8 +347,8 @@ if (version_compare(JVERSION, 4, 'ge')) {
 
 		<!-- REGISTER TAB -->
 		<div id="register-content" class="auth-tab-content">
-			<h2 class="auth-form-title">Creează un cont nou</h2>
-			<p class="auth-form-subtitle">Completează datele — parola va fi trimisă pe email</p>
+			<h2 class="auth-form-title"><?php echo Text::_('TXT_REGISTER_WELCOME'); ?></h2>
+			<p class="auth-form-subtitle"><?php echo Text::_('TXT_REGISTER_SUBTITLE'); ?></p>
 
 			<?php
 			HTMLHelper::_('behavior.keepalive');
@@ -440,9 +440,9 @@ if (version_compare(JVERSION, 4, 'ge')) {
 
 				<button type="submit" class="auth-submit-btn validate"><?php echo Text::_('JAREGISTER'); ?></button>
 
-				<div class="auth-switch-row">
-					Ai deja cont? <button type="button" onclick="switchTab('login')"><?php echo Text::_('TXT_LOGIN'); ?></button>
-				</div>
+			<div class="auth-switch-row">
+				<?php echo Text::_('TXT_ALREADY_ACCOUNT'); ?> <button type="button" onclick="switchTab('login')"><?php echo Text::_('TXT_LOGIN'); ?></button>
+			</div>
 
 				<input type="hidden" name="option" value="com_users" />
 				<input type="hidden" name="task" value="registration.register" />
