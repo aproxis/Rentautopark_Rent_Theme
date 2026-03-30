@@ -1646,7 +1646,7 @@ function cdSetImage(idx) {
 
 		var currentRate = cdGetRate(days);
 		var nextRate = nextTier.rate;
-		var currentTotal = currentRate * days;
+		var currentTotal = currentRate * nextTier.from;  // same days as nextTier for fair comparison
 		var nextTotal = nextRate * nextTier.from;
 		var savings = Math.round(currentTotal - nextTotal);
 
