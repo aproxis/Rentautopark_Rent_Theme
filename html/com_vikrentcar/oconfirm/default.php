@@ -1244,7 +1244,7 @@ if (array_key_exists('hours', $price)) {
     color: #374151;
     margin: 0;
     user-select: none;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 .vrc-register-label input[type="checkbox"] {
     width: 17px; height: 17px;

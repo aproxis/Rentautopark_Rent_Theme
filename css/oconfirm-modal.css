@@ -626,16 +626,18 @@ body.contentpane .vrcrentalfor {
    ══════════════════════════════════════════════════════════ */
 
 .vrc-register-section {
-    margin-top: 20px;
+    grid-column: span 2;
+    
+    /* margin-top: 20px;
     padding: 14px 16px;
     background: rgba(59,130,246,.04);
     border: 1px solid rgba(59,130,246,.18);
-    border-radius: var(--oc-radius);
+    border-radius: var(--oc-radius); */
 }
 
-.vrc-register-toggle-row { display: flex; align-items: center; }
+/* .vrc-register-toggle-row { display: flex; align-items: center; } */
 
-.vrc-register-label {
+/* .vrc-register-label {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -644,7 +646,7 @@ body.contentpane .vrcrentalfor {
     font-size: 13px;
     font-weight: 500;
     color: var(--oc-dark);
-}
+} */
 
 .vrc-register-label input[type="checkbox"] {
     width: 17px;
