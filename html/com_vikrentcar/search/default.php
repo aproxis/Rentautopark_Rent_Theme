@@ -400,4 +400,7 @@ foreach ($res as $k => $r) {
 <div class="vrc-pagination"><?php echo $navig; ?></div>
 <?php } ?>
 
-<script src="<?php echo JURI::root(); ?>templates/rent/js/search.js"></script>
+<?php
+	$document->addScript(JURI::root() . 'templates/rent/js/search.js');
+?>
+

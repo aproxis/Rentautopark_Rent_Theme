@@ -391,6 +391,8 @@ function arBuildFilterHTML($caratDefs, $usedCaratCounts, $sidebarCats, $catCount
 	return $html;
 }
 
+$document->addScript(JURI::root() . 'templates/rent/js/carslist.js');
+
 ?>
 
-<script src="<?php echo JURI::root(); ?>templates/rent/js/carslist.js"></script>
+
