@@ -11,6 +11,20 @@
 
 defined('_JEXEC') OR die('Restricted Area');
 
+// === TEMPORARY DEBUG — remove after fix ===
+$_dbg_session = JFactory::getSession();
+$_dbg_flag    = $_dbg_session->get('vrc_from_checkout', 'NOT_SET');
+file_put_contents(
+    JPATH_ROOT . '/tmp/vrc_debug.log',
+    date('Y-m-d H:i:s') . ' | SID=' . JFactory::getApplication()->input->get('sid')
+    . ' | vrc_from_checkout=' . var_export($_dbg_flag, true)
+    . ' | REFERER=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'none')
+    . "\n",
+    FILE_APPEND
+);
+// === END DEBUG ===
+
+
 $ord = $this->ord;
 $tar = $this->tar;
 $payment = $this->payment;
@@ -556,6 +570,17 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 
 				<!-- Payment Methods -->
 				<?php
+
+				// Around line 560 in your file — what is $allow_next_payment set to?
+				// Add this debug right before the if ($allow_next_payment === true) check:
+				file_put_contents(
+					JPATH_ROOT . '/tmp/vrc_debug.log',
+					date('Y-m-d H:i:s') . ' | allow_next_payment=' . var_export($allow_next_payment, true)
+					. ' | status=' . $ord['status']
+					. "\n",
+					FILE_APPEND
+				);
+
 				// render payment method
 				if ($allow_next_payment === true) {
 					/**
