@@ -982,7 +982,7 @@ if (array_key_exists('hours', $price)) {
                                     <span class="vrc-reg-action-links">
                                         <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-create"><?php echo JText::_('VRC_REG_CREATE_BTN') ?: 'Creează cont'; ?></button>
                                         <span class="vrc-reg-or"><?php echo JText::_('VRC_REG_OR') ?: 'sau'; ?></span>
-                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-login" onclick="openAuthModal('login')"><?php echo JText::_('TXT_LOGIN') ?: 'Autentifică-te'; ?></button>
+                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-login"><?php echo JText::_('TXT_LOGIN') ?: 'Autentifică-te'; ?></button>
                                     </span>
                                 </span>
                             </label>
@@ -1228,10 +1228,7 @@ if (array_key_exists('hours', $price)) {
 <style>
 /* ── Phase 3 Registration UI ─────────────────────────────────────────── */
 .vrc-register-section {
-    margin: 16px 0 8px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    background: #fafafa;
+    margin: 12px 0 4px;
 }
 .vrc-register-toggle-row {
     display: flex;
@@ -1376,9 +1373,7 @@ jQuery(document).ready(function ($) {
 
         /* Wire the login button — opens the site's existing auth modal */
         $('#vrc-reg-exists-login').on('click', function () {
-            if (typeof openAuthModal === 'function') {
-                openAuthModal('login');
-            }
+            openLoginModal();
         });
     }
 
@@ -1391,14 +1386,28 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    /* ── Auth modal close → auto-uncheck if still blocked ───────────── */
-    /* The site modal has no native "closed" event, so we observe
-       classList changes on #ja-login-form for the removal of .modal-open */
+    /* ── Safe openAuthModal — works from iframe or top window ───────── */
+    function openLoginModal() {
+        /* Try current window first (full-page view), then parent (iframe/modal view) */
+        if (typeof openAuthModal === 'function') {
+            openAuthModal('login');
+        } else if (window.parent && typeof window.parent.openAuthModal === 'function') {
+            window.parent.openAuthModal('login');
+        }
+    }
+
+    /* Wire the static "Log in" button in the label */
+    $('#vrc-reg-trigger-login').on('click', function (e) {
+        e.preventDefault();
+        openLoginModal();
+    });
+    /* #ja-login-form lives in the parent window when booking is in an iframe */
     (function () {
-        var loginModal = document.getElementById('ja-login-form');
+        var targetDoc = (window.parent && window.parent !== window && window.parent.document)
+                        ? window.parent.document : document;
+        var loginModal = targetDoc.getElementById('ja-login-form');
         if (!loginModal || typeof MutationObserver === 'undefined') { return; }
         var obs = new MutationObserver(function () {
-            /* Modal just closed AND registration is still blocked → uncheck */
             if (!loginModal.classList.contains('modal-open') && registrationBlocked) {
                 $checkbox.prop('checked', false);
                 registrationBlocked = false;
