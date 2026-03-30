@@ -982,7 +982,7 @@ if (array_key_exists('hours', $price)) {
                                     <span class="vrc-reg-action-links">
                                         <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-create"><?php echo JText::_('VRC_REG_CREATE_BTN') ?: 'Creează cont'; ?></button>
                                         <span class="vrc-reg-or"><?php echo JText::_('VRC_REG_OR') ?: 'sau'; ?></span>
-                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-login"><?php echo JText::_('TXT_LOGIN') ?: 'Autentifică-te'; ?></button>
+                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-login"><?php echo JText::_('VRC_BTN_LOGIN') ?: 'Autentifică-te'; ?></button>
                                     </span>
                                 </span>
                             </label>
@@ -1339,7 +1339,7 @@ jQuery(document).ready(function ($) {
     var MSG_NETWORK     = '<?php echo addslashes(JText::_('VRC_REG_ERR_NETWORK')      ?: 'Eroare de rețea — rezervarea va fi salvată fără cont.'); ?>';
     var CREATING_LABEL  = '<?php echo addslashes(JText::_('VRC_CREATING_ACCOUNT')     ?: 'Se creează contul…'); ?>';
     var LOGGING_LABEL   = '<?php echo addslashes(JText::_('VRC_LOGGING_IN')           ?: 'Se autentifică…'); ?>';
-    var LBL_LOGIN       = '<?php echo addslashes(JText::_('TXT_LOGIN')                ?: 'Autentifică-te'); ?>';
+    var LBL_LOGIN       = '<?php echo addslashes(JText::_('VRC_BTN_LOGIN')                ?: 'Autentifică-te'); ?>';
     var ERR_LOGIN_FAIL  = '<?php echo addslashes(JText::_('VRC_LOGIN_FAILED')         ?: 'Autentificare eșuată. Verificați datele și încercați din nou.'); ?>';
     var MSG_LOGGED_IN   = '<?php echo addslashes(JText::_('VRC_LOGGED_IN_AS')         ?: 'Autentificat ca'); ?>';
     var ORIG_SUBMIT_VAL = '<?php echo addslashes(JText::_('VRORDCONFIRM') ?: 'Confirmă Comanda'); ?>';
