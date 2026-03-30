@@ -358,7 +358,7 @@ if (version_compare(JVERSION, 4, 'ge')) {
 			?>
 
 			<form id="member-registration" action="<?php echo Route::_('index.php?option=com_users&task=registration.register'); ?>" method="post" class="form-validate">
-				<div class="auth-field">
+				<div class="auth-field" style="margin-bottom: 50px;">
 					<label for="jformemail1"><?php echo Text::_('JGLOBAL_EMAIL'); ?> <span style="color:#ef4444">*</span></label>
 					<div class="input-wrap">
 						<svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -423,8 +423,6 @@ if (version_compare(JVERSION, 4, 'ge')) {
 					}
 				}
 				?>
-
-				<p class="auth-req-note"><?php echo Text::_('DESC_REQUIREMENT'); ?></p>
 
 				<button type="submit" class="auth-submit-btn validate"><?php echo Text::_('JAREGISTER'); ?></button>
 
