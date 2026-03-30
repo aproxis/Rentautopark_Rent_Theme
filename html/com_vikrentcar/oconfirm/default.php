@@ -966,8 +966,10 @@ if (array_key_exists('hours', $price)) {
                 <?php /* ══════════════════════════════════════════════════════════
                 PHASE 3 — Zero-friction registration
                 • Only shown to guests (logged-in users already have an account)
-                • Single checkbox — no password fields
-                • register-ajax.php auto-generates password + emails it
+                • Single checkbox — no password fields, no username field, no own button
+                • Submitting the main "Confirm order" button triggers registration
+                  first (if checkbox ticked), then the booking form submit.
+                • EMAIL_EXISTS → shows warning + "Log in" link → openAuthModal()
                 ══════════════════════════════════════════════════════════ */ ?>
                 <?php if ($currentUser->guest): ?>
                     <div class="vrc-register-section" id="vrc-register-section">
@@ -976,44 +978,20 @@ if (array_key_exists('hours', $price)) {
                             <label class="vrc-register-label" for="vrc-reg-checkbox">
                                 <input type="checkbox" id="vrc-reg-checkbox"/>
                                 <span class="vrc-register-toggle-text">
-                                    <?php echo JText::_('VRC_CREATE_ACCOUNT_WITH_DATA') ?: 'Creează cont cu aceste date'; ?>
+                                    <?php echo JText::_('VRC_SAVE_BOOKING_TO_ACCOUNT') ?: 'Salvează rezervarea în cont &mdash;'; ?>
+                                    <span class="vrc-reg-action-links">
+                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-create"><?php echo JText::_('VRC_REG_CREATE_BTN') ?: 'Creează cont'; ?></button>
+                                        <span class="vrc-reg-or"><?php echo JText::_('VRC_REG_OR') ?: 'sau'; ?></span>
+                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-login" onclick="openAuthModal('login')"><?php echo JText::_('TXT_LOGIN') ?: 'Autentifică-te'; ?></button>
+                                    </span>
                                 </span>
                             </label>
                         </div>
 
-                        <!-- Expanded panel — visible only when checkbox is ticked -->
-                        <div class="vrc-register-fields" id="vrc-reg-fields" style="display:none;">
+                        <!-- Feedback — always visible when checkbox is ticked, no panel needed -->
+                        <div class="vrc-reg-error"   id="vrc-reg-error"   style="display:none;"></div>
+                        <div class="vrc-reg-success" id="vrc-reg-success" style="display:none;"></div>
 
-                            <p class="vrc-reg-info-note">
-                                <?php echo JText::_('VRC_REG_AUTO_PASSWORD_NOTE') ?: 'Parola va fi generată automat și trimisă pe email-ul tău.'; ?>
-                            </p>
-
-                            <!-- Username row: input + register button -->
-                            <div class="vrc-reg-username-row">
-                                <div class="vrc-float-wrap" id="vrc-reg-username-wrap">
-                                    <input type="text"
-                                        id="vrc-reg-username"
-                                        name="vrc_reg_username"
-                                        placeholder=" "
-                                        autocomplete="username"
-                                        class="vrcinput vrc-reg-username-inp"
-                                        maxlength="150"/>
-                                    <label class="vrc-float-label" for="vrc-reg-username">
-                                        <?php echo JText::_('VRC_REG_USERNAME_LABEL') ?: 'Nume utilizator (opțional)'; ?>
-                                    </label>
-                                </div>
-                                <button type="button"
-                                        id="vrc-reg-btn"
-                                        class="btn vrc-pref-color-btn vrc-reg-create-btn">
-                                    <?php echo JText::_('VRC_REG_CREATE_BTN') ?: 'Creează Cont'; ?>
-                                </button>
-                            </div>
-
-                            <!-- Status / error feedback -->
-                            <div class="vrc-reg-error"   id="vrc-reg-error"   style="display:none;"></div>
-                            <div class="vrc-reg-success" id="vrc-reg-success" style="display:none;"></div>
-
-                        </div>
                     </div>
                 <?php endif; ?>
             </div>
@@ -1251,8 +1229,7 @@ if (array_key_exists('hours', $price)) {
 /* ── Phase 3 Registration UI ─────────────────────────────────────────── */
 .vrc-register-section {
     margin: 16px 0 8px;
-    padding: 14px 16px;
-    border: 1.5px solid #e5e7eb;
+    padding: 12px 16px;
     border-radius: 10px;
     background: #fafafa;
 }
@@ -1270,6 +1247,7 @@ if (array_key_exists('hours', $price)) {
     color: #374151;
     margin: 0;
     user-select: none;
+    flex-wrap: wrap;
 }
 .vrc-register-label input[type="checkbox"] {
     width: 17px; height: 17px;
@@ -1277,32 +1255,31 @@ if (array_key_exists('hours', $price)) {
     cursor: pointer;
     flex-shrink: 0;
 }
-.vrc-register-fields {
-    margin-top: 14px;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 14px;
+/* Action links — "Creează cont sau Autentifică-te" */
+.vrc-reg-action-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
-.vrc-reg-info-note {
+.vrc-reg-inline-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #FE5001;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    line-height: 1;
+}
+.vrc-reg-inline-btn:hover { color: #E54801; }
+.vrc-reg-or {
     font-size: 13px;
-    color: #6b7280;
-    margin: 0 0 12px;
+    color: #9ca3af;
+    font-weight: 400;
 }
-/* Username row: input + button side by side */
-.vrc-reg-username-row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-}
-.vrc-reg-username-row .vrc-float-wrap {
-    flex: 1;
-}
-.vrc-reg-create-btn {
-    flex-shrink: 0;
-    height: 42px;
-    padding: 0 18px;
-    font-size: 13px;
-    white-space: nowrap;
-}
+/* Feedback boxes */
 .vrc-reg-error {
     margin-top: 10px;
     padding: 8px 12px;
@@ -1321,49 +1298,51 @@ if (array_key_exists('hours', $price)) {
     color: #16a34a;
     font-size: 13px;
 }
-/* Disable button spinner state */
-.vrc-reg-create-btn[disabled] {
-    opacity: .65;
-    cursor: not-allowed;
-}
 </style>
 
 <script type="text/javascript">
 /* ══════════════════════════════════════════════════════════════════════════
    PHASE 3 — Registration section JS
-   Wrapped in jQuery(document).ready() so it works inside the iframe/modal
-   where the script tag is parsed before the DOM elements exist.
+   ──────────────────────────────────────────────────────────────────────────
+   Flow:
+   1. Checkbox unchecked → booking submits normally as guest.
+   2. Checkbox checked → "Confirm order" button intercepts submit:
+        a. Fires AJAX to register-ajax.php (auto-generates password, emails it).
+        b. ok:true        → account created → continue submit.
+        c. EMAIL_EXISTS   → show warning + "Log in" link → block submit.
+                            If user clicks "Log in" → openAuthModal('login').
+                            Login causes full-page reload → user is now logged in
+                            → register section hidden (PHP guest guard) → submit works.
+                            If user closes modal without logging in → checkbox auto-
+                            unchecked → submit allowed as guest.
+        d. network/server error → soft warning → submit allowed (booking not lost).
    ══════════════════════════════════════════════════════════════════════════ */
 jQuery(document).ready(function ($) {
     'use strict';
 
-    /* ── i18n / config ───────────────────────────────────────────────── */
+    /* ── Config ──────────────────────────────────────────────────────── */
     var REGISTER_AJAX  = '<?php echo $registerAjaxUrl; ?>';
-    var CREATING_LABEL = '<?php echo addslashes(JText::_('VRC_CREATING_ACCOUNT') ?: 'Se creează contul…'); ?>';
-    var ERR_EMAIL      = '<?php echo addslashes(JText::_('VRC_REG_ERR_EMAIL')   ?: 'Completați câmpul de email de mai sus înainte de a crea contul.'); ?>';
-    var ERR_NAME       = '<?php echo addslashes(JText::_('VRC_REG_ERR_NAME')    ?: 'Completați câmpul cu numele de mai sus înainte de a crea contul.'); ?>';
-    var ERR_GENERIC    = '<?php echo addslashes(JText::_('VRC_REG_ERR_GENERIC') ?: 'Eroare la crearea contului. Puteți continua rezervarea.'); ?>';
+    var ERR_EMAIL      = '<?php echo addslashes(JText::_('VRC_REG_ERR_EMAIL')   ?: 'Completați câmpul de email înainte de a continua.'); ?>';
+    var ERR_NAME       = '<?php echo addslashes(JText::_('VRC_REG_ERR_NAME')    ?: 'Completați câmpul cu numele înainte de a continua.'); ?>';
     var OK_LABEL       = '<?php echo addslashes(JText::_('VRC_REG_ACCOUNT_CREATED') ?: 'Cont creat! Parola a fost trimisă pe email.'); ?>';
-    var BTN_CREATE     = '<?php echo addslashes(JText::_('VRC_REG_CREATE_BTN')  ?: 'Creează Cont'); ?>';
-    var BTN_CONFIRM    = '<?php echo addslashes(JText::_('VRORDCONFIRM')        ?: 'Confirmă Rezervarea'); ?>';
-    var MSG_EXISTS     = '<?php echo addslashes(JText::_('VRC_REG_EMAIL_EXISTS_INFO') ?: 'Există deja un cont cu acest email. Puteți continua rezervarea.'); ?>';
-    var MSG_NETWORK    = '<?php echo addslashes(JText::_('VRC_REG_ERR_NETWORK') ?: 'Eroare de rețea. Puteți continua rezervarea fără cont.'); ?>';
-    var MSG_NUDGE      = '<?php echo addslashes(JText::_('VRC_REG_NUDGE') ?: 'Apăsați «Creează Cont» pentru a crea contul înainte de a rezerva, sau debifați caseta.'); ?>';
+    var MSG_EXISTS     = '<?php echo addslashes(JText::_('VRC_REG_EMAIL_EXISTS_INFO') ?: 'Există deja un cont cu acest email.'); ?>';
+    var MSG_LOGIN_CTA  = '<?php echo addslashes(JText::_('VRC_REG_LOGIN_CTA') ?: 'Autentifică-te pentru a conecta rezervarea la contul tău, sau continuă ca vizitator.'); ?>';
+    var MSG_NETWORK    = '<?php echo addslashes(JText::_('VRC_REG_ERR_NETWORK') ?: 'Eroare de rețea — rezervarea va fi salvată fără cont.'); ?>';
+    var CREATING_LABEL = '<?php echo addslashes(JText::_('VRC_CREATING_ACCOUNT') ?: 'Se creează contul…'); ?>';
+    var LBL_LOGIN_LINK = '<?php echo addslashes(JText::_('TXT_LOGIN') ?: 'Autentifică-te'); ?>';
 
-    /* ── Element refs — safe here because DOM is ready ───────────────── */
-    var $checkbox     = $('#vrc-reg-checkbox');
-    var $fields       = $('#vrc-reg-fields');
-    var $regBtn       = $('#vrc-reg-btn');
-    var $usernameWrap = $('#vrc-reg-username-wrap');
-    var $usernameInp  = $('#vrc-reg-username');
-    var $error        = $('#vrc-reg-error');
-    var $success      = $('#vrc-reg-success');
+    /* ── Element refs ────────────────────────────────────────────────── */
+    var $checkbox  = $('#vrc-reg-checkbox');
+    var $error     = $('#vrc-reg-error');
+    var $success   = $('#vrc-reg-success');
+    var $submitBtn = $('#vrc-saveorder-btn');
 
-    /* Registration section not present (logged-in users) — nothing to do */
+    /* Section not present (logged-in users) — nothing to do */
     if (!$checkbox.length) { return; }
 
     /* ── State ───────────────────────────────────────────────────────── */
-    var registrationDone = false;
+    var registrationDone    = false; // account created successfully this session
+    var registrationBlocked = false; // EMAIL_EXISTS — must login or uncheck
 
     /* ── Helpers ─────────────────────────────────────────────────────── */
     function getEmail() {
@@ -1381,64 +1360,94 @@ jQuery(document).ready(function ($) {
         return ($.trim($nf.eq(0).val()) + ' ' + $.trim($nf.eq(1).val())).trim();
     }
 
-    function getSuggestedUsername() {
-        var typed = $.trim($usernameInp.val());
-        if (typed) return typed;
-        var email = getEmail();
-        if (!email) return '';
-        return email.split('@')[0].replace(/[^a-zA-Z0-9._\-]/g, '').toLowerCase().substring(0, 60);
+    function getUsernameFromEmail(email) {
+        return email.split('@')[0].replace(/[^a-zA-Z0-9._\-]/g, '').toLowerCase().substring(0, 60) || 'user';
     }
 
-    function showError(msg)   { $error.text(msg).show();   $success.hide(); }
-    function showSuccess(msg) { $success.text(msg).show(); $error.hide();   }
-    function clearFeedback()  { $error.hide().text('');    $success.hide().text(''); }
+    function showError(html)   { $error.html(html).show();  $success.hide(); }
+    function showSuccess(msg)  { $success.text(msg).show(); $error.hide();   }
+    function clearFeedback()   { $error.hide().html('');    $success.hide().text(''); }
 
-    /* ── Checkbox: show/hide username row ────────────────────────────── */
-    $checkbox.on('change', function () {
-        if ($(this).is(':checked')) {
-            /* Pre-fill username from email local-part if blank */
-            if (!$.trim($usernameInp.val())) {
-                var suggested = getSuggestedUsername();
-                if (suggested) {
-                    $usernameInp.val(suggested);
-                    $usernameWrap.addClass('vrc-float-has-val');
-                }
+    /* Show EMAIL_EXISTS warning with an inline "Log in" button */
+    function showExistsWarning() {
+        var loginBtn = '<button type="button" class="vrc-reg-inline-btn" style="margin-left:6px;" id="vrc-reg-exists-login">'
+                     + LBL_LOGIN_LINK + '</button>';
+        showError(MSG_EXISTS + ' ' + MSG_LOGIN_CTA + loginBtn);
+
+        /* Wire the login button — opens the site's existing auth modal */
+        $('#vrc-reg-exists-login').on('click', function () {
+            if (typeof openAuthModal === 'function') {
+                openAuthModal('login');
             }
-            $fields.slideDown(220);
-        } else {
-            $fields.slideUp(200);
+        });
+    }
+
+    /* ── Checkbox: reset state on uncheck ────────────────────────────── */
+    $checkbox.on('change', function () {
+        if (!$(this).is(':checked')) {
             clearFeedback();
-            registrationDone = false;
-            $regBtn.prop('disabled', false).text(BTN_CREATE);
+            registrationDone    = false;
+            registrationBlocked = false;
         }
     });
 
-    /* Float-label for username input */
-    $usernameInp.on('input change', function () {
-        $usernameWrap.toggleClass('vrc-float-has-val', !!$(this).val());
-    });
+    /* ── Auth modal close → auto-uncheck if still blocked ───────────── */
+    /* The site modal has no native "closed" event, so we observe
+       classList changes on #ja-login-form for the removal of .modal-open */
+    (function () {
+        var loginModal = document.getElementById('ja-login-form');
+        if (!loginModal || typeof MutationObserver === 'undefined') { return; }
+        var obs = new MutationObserver(function () {
+            /* Modal just closed AND registration is still blocked → uncheck */
+            if (!loginModal.classList.contains('modal-open') && registrationBlocked) {
+                $checkbox.prop('checked', false);
+                registrationBlocked = false;
+                clearFeedback();
+            }
+        });
+        obs.observe(loginModal, { attributes: true, attributeFilter: ['class'] });
+    }());
 
-    /* ── "Creează Cont" button ───────────────────────────────────────── */
-    $regBtn.on('click', function () {
+    /* ── Main submit guard ───────────────────────────────────────────── */
+    /* We intercept the form's submit event. If the checkbox is ticked and
+       we haven't registered yet we fire AJAX, then either let the form
+       through or surface an error. */
+    $(document).on('submit', 'form[name="vrc"]', function (e) {
 
-        /* Second click after successful registration → submit the booking */
-        if (registrationDone) {
-            if (typeof checkvrcFields === 'function' && !checkvrcFields()) { return; }
-            document.vrc.submit();
-            return;
+        /* Already registered this session → let it through */
+        if (registrationDone) { return true; }
+
+        /* Checkbox not ticked → guest checkout, pass through */
+        if (!$checkbox.is(':checked')) { return true; }
+
+        /* EMAIL_EXISTS state — block until user logs in or unchecks */
+        if (registrationBlocked) {
+            var sect = document.getElementById('vrc-register-section');
+            if (sect) { sect.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            return false;
         }
 
-        clearFeedback();
+        /* ── Need to register first — stop submit, fire AJAX ── */
+        e.preventDefault();
 
         var email = getEmail();
         var name  = getName();
 
-        if (!email || !/\S+@\S+\.\S+/.test(email)) { showError(ERR_EMAIL); return; }
-        if (!name)                                   { showError(ERR_NAME);  return; }
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+            showError(ERR_EMAIL);
+            return false;
+        }
+        if (!name) {
+            showError(ERR_NAME);
+            return false;
+        }
 
-        var username = getSuggestedUsername() || email.split('@')[0];
+        var username = getUsernameFromEmail(email);
 
-        $regBtn.prop('disabled', true).text(CREATING_LABEL);
+        /* Visual feedback on the submit button */
+        var origLabel = $submitBtn.val();
+        $submitBtn.prop('disabled', true).val(CREATING_LABEL);
+        clearFeedback();
 
         $.ajax({
             url:         REGISTER_AJAX,
@@ -1448,32 +1457,42 @@ jQuery(document).ready(function ($) {
             dataType:    'json'
         })
         .done(function (res) {
-            if (res && (res.ok || res.error_code === 'EMAIL_EXISTS')) {
+            $submitBtn.prop('disabled', false).val(origLabel);
+
+            if (res && res.ok) {
+                /* ✓ Account created → show success briefly then submit */
                 registrationDone = true;
-                showSuccess(res.ok ? OK_LABEL : MSG_EXISTS);
-                $regBtn.prop('disabled', false).text(BTN_CONFIRM);
+                showSuccess(OK_LABEL);
+                setTimeout(function () { document.vrc.submit(); }, 600);
                 return;
             }
-            showError((res && res.error) ? res.error : ERR_GENERIC);
-            $regBtn.prop('disabled', false).text(BTN_CREATE);
+
+            if (res && res.error_code === 'EMAIL_EXISTS') {
+                /* ✗ Email already has an account — warn, offer login, block */
+                registrationBlocked = true;
+                showExistsWarning();
+                var sect = document.getElementById('vrc-register-section');
+                if (sect) { sect.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                return;
+            }
+
+            /* ✗ Any other server error — soft warning, allow submit as guest */
+            var errMsg = (res && res.error) ? res.error : 'Eroare la crearea contului.';
+            showError(errMsg + ' Rezervarea va fi salvată fără cont.');
+            $checkbox.prop('checked', false);
+            registrationDone    = false;
+            registrationBlocked = false;
+            setTimeout(function () { document.vrc.submit(); }, 800);
         })
         .fail(function () {
+            /* Network failure — soft warning, submit as guest */
+            $submitBtn.prop('disabled', false).val(origLabel);
             showError(MSG_NETWORK);
-            $regBtn.prop('disabled', false).text(BTN_CREATE);
+            $checkbox.prop('checked', false);
+            setTimeout(function () { document.vrc.submit(); }, 800);
         });
-    });
 
-    /* ── Booking submit guard ────────────────────────────────────────── */
-    /* If checkbox ticked but "Creează Cont" not yet clicked, nudge the user.
-       Unchecking the box bypasses this entirely — registration is optional. */
-    $(document).on('submit', 'form[name="vrc"]', function () {
-        if ($checkbox.is(':checked') && !registrationDone) {
-            showError(MSG_NUDGE);
-            var sect = document.getElementById('vrc-register-section');
-            if (sect) { sect.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-            return false;
-        }
-        return true;
+        return false; /* always stop the native submit here; AJAX done() re-fires it */
     });
 
 });
