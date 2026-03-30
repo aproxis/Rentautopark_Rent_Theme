@@ -704,7 +704,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 									<?php echo JText::_('VRCORDERPENDINGPAYMENT') ?: 'Your order is awaiting payment.'; ?>
 								</p>
 								<button type="button"
-										class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-primary-foreground py-2 has-[>svg]:px-3 bg-[#FE5001] hover:bg-[#E54801] h-[44px] sm:h-[46px] md:h-[48px] sm:w-auto sm:min-w-[150px] px-[28px] sm:px-[32px] text-[15px] sm:text-[15px] md:text-[16px] font-semibold"
+										class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md transition-all  text-primary-foreground py-2  bg-[#FE5001] hover:bg-[#E54801] h-[44px] px-[28px]  text-[15px] font-semibold mt-2"
 										onclick="
 											var pf = document.getElementById('vrc-payment-form');
 											pf.removeAttribute('data-autosubmit');
