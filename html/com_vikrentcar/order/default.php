@@ -706,9 +706,18 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 								<button type="button"
 										class="btn vrc-pref-color-btn order-pay-now-btn"
 										onclick="
-											document.getElementById('vrc-payment-form').removeAttribute('data-autosubmit');
-											document.getElementById('vrc-payment-form').style.display='block';
-											this.style.display='none';
+											var pf = document.getElementById('vrc-payment-form');
+											pf.removeAttribute('data-autosubmit');
+											var form = pf.querySelector('form');
+											if (form) {
+												this.disabled = true;
+												this.innerHTML = '<?php echo JText::_('VRCPROCESSING') ?: 'Processing...'; ?>';
+												form.submit();
+											} else {
+												/* Fallback: gateway has no plain <form>, reveal it normally */
+												pf.style.display = 'block';
+												this.style.display = 'none';
+											}
 										">
 									<?php echo JText::_('VRCPAYNOW') ?: 'Pay Now'; ?>
 								</button>
