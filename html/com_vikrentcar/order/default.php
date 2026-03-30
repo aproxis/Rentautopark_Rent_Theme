@@ -11,20 +11,6 @@
 
 defined('_JEXEC') OR die('Restricted Area');
 
-// === TEMPORARY DEBUG — remove after fix ===
-$_dbg_session = JFactory::getSession();
-$_dbg_flag    = $_dbg_session->get('vrc_from_checkout', 'NOT_SET');
-file_put_contents(
-    JPATH_ROOT . '/tmp/vrc_debug.log',
-    date('Y-m-d H:i:s') . ' | SID=' . JFactory::getApplication()->input->get('sid')
-    . ' | vrc_from_checkout=' . var_export($_dbg_flag, true)
-    . ' | REFERER=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'none')
-    . "\n",
-    FILE_APPEND
-);
-// === END DEBUG ===
-
-
 $ord = $this->ord;
 $tar = $this->tar;
 $payment = $this->payment;
@@ -570,17 +556,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 
 				<!-- Payment Methods -->
 				<?php
-
-				// Around line 560 in your file — what is $allow_next_payment set to?
-				// Add this debug right before the if ($allow_next_payment === true) check:
-				file_put_contents(
-					JPATH_ROOT . '/tmp/vrc_debug.log',
-					date('Y-m-d H:i:s') . ' | allow_next_payment=' . var_export($allow_next_payment, true)
-					. ' | status=' . $ord['status']
-					. "\n",
-					FILE_APPEND
-				);
-
 				// render payment method
 				if ($allow_next_payment === true) {
 					/**
@@ -687,20 +662,18 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 					$array_order['payment_info'] = $payment;
 					$array_order = array_merge($ord, $array_order);
 					
-					?>
-					<?php
 					/**
-					 * Single-use checkout flag:
+					 * Single-use checkout flag.
 					 * oconfirm/default.php sets 'vrc_from_checkout' = 1 when the confirmation
-					 * page renders. We read it once here and immediately clear it so that:
-					 *  - Checkout flow  → flag present  → auto-redirect runs as before.
-					 *  - Profile / order-history view → flag absent → "Pay Now" button shown.
-					 * A page-refresh on the order-details page will always show the button,
-					 * never auto-redirect a second time.
+					 * page renders. We read + immediately clear it here so:
+					 *  - Checkout flow        → flag = 1 → gateway renders + auto-submits as before
+					 *  - Profile/order-history → flag = 0 → "Pay Now" button shown; hidden wrapper
+					 *                            carries data-autosubmit="0" so the MAIB plugin JS
+					 *                            does NOT fire the 1.5 s auto-redirect either.
 					 */
 					$_vrc_session       = JFactory::getSession();
 					$_vrc_from_checkout = (int) $_vrc_session->get('vrc_from_checkout', 0);
-					$_vrc_session->clear('vrc_from_checkout'); // consume immediately — single-use
+					$_vrc_session->clear('vrc_from_checkout');
 					?>
 					<div class="order-card">
 						<div class="order-card-header">
@@ -718,19 +691,14 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 								</div>
 								<?php
 							}
-							/**
-							 * @joomlaonly 	The Payment Factory library will invoke the gateway.
-							 * 
-							 * @since 	1.14.5
-							 */
 							require_once VRC_ADMIN_PATH . DIRECTORY_SEPARATOR . 'payments' . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . 'factory.php';
 							$obj = VRCPaymentFactory::getPaymentInstance($payment['file'], $array_order, $payment['params']);
 
 							if ($_vrc_from_checkout):
-								/* ── Checkout flow: render normally, gateway may auto-submit ── */
+								/* Checkout flow — render normally, gateway may auto-submit */
 								$obj->showPayment();
 							else:
-								/* ── Profile / order-history: never auto-redirect ── */
+								/* Profile / order-history — never auto-redirect */
 								?>
 								<p class="order-pending-msg">
 									<?php echo JText::_('VRCORDERPENDINGPAYMENT') ?: 'Your order is awaiting payment.'; ?>
@@ -738,12 +706,21 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 								<button type="button"
 										class="btn vrc-pref-color-btn order-pay-now-btn"
 										onclick="
+											document.getElementById('vrc-payment-form').removeAttribute('data-autosubmit');
 											document.getElementById('vrc-payment-form').style.display='block';
 											this.style.display='none';
 										">
 									<?php echo JText::_('VRCPAYNOW') ?: 'Pay Now'; ?>
 								</button>
-								<div id="vrc-payment-form" style="display:none;">
+								<?php
+								/*
+								 * data-autosubmit="0" tells the MAIB plugin JS not to fire the
+								 * 1.5 s auto-redirect while this div is hidden.
+								 * The onclick above removes that attribute before revealing the div,
+								 * so the MAIB script will then proceed normally.
+								 */
+								?>
+								<div id="vrc-payment-form" data-autosubmit="0" style="display:none;">
 									<?php $obj->showPayment(); ?>
 								</div>
 								<?php
