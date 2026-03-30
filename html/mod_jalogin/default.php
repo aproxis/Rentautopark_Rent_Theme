@@ -612,7 +612,7 @@ $returnLogout = base64_encode(Uri::root());
 
 	<button class="ar-myaccount-btn" onclick="openAuthModal('login')" type="button">
 		<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-		<span>My Account</span>
+		<span class="ar-myaccount-label"><?php echo Text::_('MY_ACCOUNT'); ?></span>
 	</button>
 
 	<!-- Hidden login form (used by JS to set the return URL on submit) -->
@@ -649,6 +649,16 @@ $returnLogout = base64_encode(Uri::root());
 	background: #E54801;
 	border-color: #E54801;
 	box-shadow: 0 4px 12px rgba(254,80,1,.28);
+}
+
+/* ── Responsive: icon-only on small screens ──────────────────── */
+@media (max-width: 768px) {
+	.ar-myaccount-label {
+		display: none;
+	}
+	.ar-myaccount-btn {
+		padding: 8px 10px;
+	}
 }
 
 /* ── Account dropdown (logged-in) ────────────────────────────── */
