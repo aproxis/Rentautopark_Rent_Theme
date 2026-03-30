@@ -1042,6 +1042,26 @@ jQuery(function(){
 		<!-- Live summary -->
 		<div class="cd-summary-section" id="cd-summary">
 			<div class="cd-summary-desc" id="cd-summary-desc"></div>
+
+			<!-- Savings tip: shown when 1 day short of next tier -->
+			<div id="cd-savings-tip" style="display:none;">
+				<div class="cd-savings-tip-icon">💰</div>
+				<div class="cd-savings-tip-body">
+					<div class="cd-savings-tip-title"><?php echo Text::_('VRCSAVINGSTIP_TITLE') ?: 'Economisești mai mult!'; ?></div>
+					<div class="cd-savings-tip-text">
+						<?php echo Text::_('VRCSAVINGSTIP_PRE') ?: 'Extinde rezervarea la'; ?>
+						<strong class="cd-tip-days"></strong>
+						<?php echo Text::_('VRCSEARCHDAYS') ?: 'zile'; ?>
+						<?php echo Text::_('VRCSAVINGSTIP_MID') ?: 'și economisești'; ?>
+						<strong class="cd-tip-savings"></strong>!
+						<?php echo Text::_('VRCSAVINGSTIP_TOTAL') ?: 'Total:'; ?>
+						<strong class="cd-tip-newtotal"></strong>
+						<?php echo Text::_('VRCSAVINGSTIP_INSTEAD') ?: 'în loc de'; ?>
+						<s class="cd-tip-oldtotal"></s>.
+					</div>
+				</div>
+			</div>
+
 			<div class="cd-summary-title"><?php echo Text::_('VRPRICE') ?: 'Rezumat'; ?></div>
 			<div id="cd-summary-rows"></div>
 			<div class="cd-summary-total">
@@ -1317,6 +1337,7 @@ jQuery(function(){
 		$sum.addClass('is-visible');
 
 		cdHighlightTier(days);
+		cdCheckSavingsTip(days);
 	}
 
 	jQuery(function($) {
@@ -1589,6 +1610,39 @@ function cdSetImage(idx) {
 				}
 			}
 		}
+	};
+
+	window.cdCheckSavingsTip = function(days) {
+		var tipEl = document.getElementById('cd-savings-tip');
+		if (!tipEl) return;
+		if (!days || !cdRateByDay) { tipEl.style.display = 'none'; return; }
+
+		// Sort tier breakpoints ascending
+		var keys = Object.keys(cdRateByDay).map(Number).sort(function(a, b) { return a - b; });
+
+		// Find the next breakpoint strictly above current days
+		var nextKey = null;
+		for (var i = 0; i < keys.length; i++) {
+			if (keys[i] > days) { nextKey = keys[i]; break; }
+		}
+
+		// Only trigger when exactly 1 day away from next tier
+		if (nextKey === null || nextKey !== days + 1) {
+			tipEl.style.display = 'none';
+			return;
+		}
+
+		var currentTotal = cdGetRate(days) * days;
+		var nextTotal    = cdRateByDay[nextKey] * nextKey;
+		var savings      = Math.round(currentTotal - nextTotal);
+
+		if (savings <= 0) { tipEl.style.display = 'none'; return; }
+
+		tipEl.querySelector('.cd-tip-days').textContent     = nextKey;
+		tipEl.querySelector('.cd-tip-savings').textContent  = cdCurrency + cdFmt(savings);
+		tipEl.querySelector('.cd-tip-newtotal').textContent = cdCurrency + cdFmt(Math.round(nextTotal));
+		tipEl.querySelector('.cd-tip-oldtotal').textContent = cdCurrency + cdFmt(Math.round(currentTotal));
+		tipEl.style.display = '';
 	};
 })(jQuery);
 </script>

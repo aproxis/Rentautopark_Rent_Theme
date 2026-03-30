@@ -410,6 +410,36 @@
 	background: #fff7f5 !important;
 }
 
+/* ── Savings tip ─────────────────────────────────────────────── */
+#cd-savings-tip {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-top: 10px; margin-bottom: 4px;
+    padding: 12px 14px;
+    background: linear-gradient(to right, #f0fdf4, #ecfdf5);
+    border: 2px solid #22c55e;
+    border-radius: 10px;
+    animation: cdTipFadeIn .25s ease;
+}
+@keyframes cdTipFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+}
+.cd-savings-tip-icon {
+    width: 28px; height: 28px; flex-shrink: 0;
+    background: #22c55e; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+}
+.cd-savings-tip-title {
+    font-weight: 700; color: #15803d;
+    font-size: 13px; margin-bottom: 3px;
+}
+.cd-savings-tip-text {
+    font-size: 13px; color: #374151; line-height: 1.5;
+}
+.cd-savings-tip-text strong { color: #15803d; }
+.cd-savings-tip-text s { color: #9ca3af; }
+
 /* ── OOH warning ───────────────────────────────────────────────── */
 .cd-ooh-warning {
 	display: none;
