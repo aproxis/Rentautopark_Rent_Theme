@@ -284,16 +284,18 @@ if (version_compare(JVERSION, 4, 'ge')) {
 
 			<form action="<?php echo Route::_('index.php', true, $params->get('usesecure')); ?>" method="post" name="form-login" id="modal-login-form">
 				<div class="auth-grid">
-					<div class="auth-field">
-						<label for="modlgn-username"><?php echo Text::_('JAUSERNAME'); ?></label>
-						<div class="input-wrap">
-							<svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-								<circle cx="12" cy="7" r="4"></circle>
-							</svg>
-							<input id="modlgn-username" type="text" name="username" class="has-icon" placeholder="Nume utilizator" autocomplete="username" />
-						</div>
+				<div class="auth-field">
+					<label for="modlgn-username"><?php echo Text::_('JGLOBAL_EMAIL'); ?></label>
+					<div class="input-wrap">
+						<svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect width="20" height="16" x="2" y="4" rx="2"/>
+							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+						</svg>
+						<input id="modlgn-username" type="email" name="username"
+							   class="has-icon" placeholder="your@email.com"
+							   autocomplete="email">
 					</div>
+				</div>
 
 					<div class="auth-field">
 						<label for="modlgn-passwd"><?php echo Text::_('JGLOBAL_PASSWORD'); ?></label>
@@ -356,39 +358,25 @@ if (version_compare(JVERSION, 4, 'ge')) {
 			?>
 
 			<form id="member-registration" action="<?php echo Route::_('index.php?option=com_users&task=registration.register'); ?>" method="post" class="form-validate">
-				<div class="auth-grid">
-					<div class="auth-field">
-						<label for="jform_name"><?php echo Text::_('JANAME'); ?> <span style="color:#ef4444">*</span></label>
-						<div class="input-wrap">
-							<input type="text" size="30" class="required" value="" id="jform_name" name="jform[name]" autocomplete="name" />
-						</div>
+				<div class="auth-field">
+					<label for="jformemail1"><?php echo Text::_('JGLOBAL_EMAIL'); ?> <span style="color:#ef4444">*</span></label>
+					<div class="input-wrap">
+						<svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect width="20" height="16" x="2" y="4" rx="2"/>
+							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+						</svg>
+						<input type="email" size="30"
+							   class="validate-email required has-icon"
+							   value="" id="jformemail1" name="jform[email1]"
+							   autocomplete="email">
 					</div>
-
-					<div class="auth-field">
-						<label for="jform_username"><?php echo Text::_('JAUSERNAME'); ?> <span style="color:#ef4444">*</span></label>
-						<div class="input-wrap">
-							<input type="text" size="30" class="validate-username required" value="" id="jform_username" name="jform[username]" autocomplete="username" />
-						</div>
-					</div>
-
-					<div class="auth-field">
-						<label for="jform_email1"><?php echo Text::_('JAEMAIL'); ?> <span style="color:#ef4444">*</span></label>
-						<div class="input-wrap">
-							<input type="text" size="30" class="validate-email required" value="" id="jform_email1" name="jform[email1]" autocomplete="email" />
-						</div>
-					</div>
-
-					<!-- <div class="auth-field">
-						<label for="jform_email2"><?php echo Text::_('JACONFIRM_EMAIL_ADDRESS'); ?> <span style="color:#ef4444">*</span></label>
-						<div class="input-wrap">
-							<input type="text" size="30" class="validate-email required" value="" id="jform_email2" name="jform[email2]" autocomplete="email" />
-						</div>
-					</div> -->
-
 				</div>
-				
-				<input type="hidden" name="jform[password1]" value="" />
-				<input type="hidden" name="jform[password2]" value="" />
+
+				<?php /* Hidden fields — Joomla requires name; we sync it from email via JS */ ?>
+				<input type="hidden" id="jformname"     name="jform[name]"     value="">
+				<input type="hidden" id="jformusername" name="jform[username]" value="">
+				<input type="hidden" name="jform[password1]" value="">
+				<input type="hidden" name="jform[password2]" value="">
 
 
 				<?php if(!empty($captchatext)): ?>
@@ -571,6 +559,23 @@ function arTogglePw(btn) {
 		btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg>';
 	}
 }
+
+// Sync hidden name + username fields from email for registration
+(function () {
+	var emailInput = document.getElementById('jformemail1');
+	if (!emailInput) return;
+
+	function syncFromEmail() {
+		var val = emailInput.value.trim();
+		var nameField = document.getElementById('jformname');
+		var userField = document.getElementById('jformusername');
+		if (nameField)  nameField.value  = val;
+		if (userField)  userField.value  = val; // plugin will override this post-save
+	}
+
+	emailInput.addEventListener('input',  syncFromEmail);
+	emailInput.addEventListener('change', syncFromEmail);
+})();
 </script>
 
 <!-- Auth output — single "My Account" button -->
