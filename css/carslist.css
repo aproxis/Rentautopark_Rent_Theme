@@ -270,6 +270,23 @@
 .ar-count { font-size: 12px; color: #9ca3af; margin: 10px 0 6px; }
 .ar-chips  { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; min-height: 0; }
 
+/* ================================================================
+   CHARACTERISTIC GROUPS inside sidebar
+   ================================================================ */
+.ar-carat-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.ar-carat-group-title {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 8px;
+}
+.ar-carat-group-title i { font-size: 10px; }
+
 .ar-fsec { border-bottom: 1px solid #f3f4f6; padding-bottom: 14px; margin-bottom: 14px; }
 .ar-fsec:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
 

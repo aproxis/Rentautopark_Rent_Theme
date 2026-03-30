@@ -372,43 +372,107 @@ function arBuildFilterHTML($caratDefs, $usedCaratCounts, $sidebarCats, $catCount
 		$html .= '</div></div>';
 	}
 
-	// ── CHARACTERISTICS SECOND ────────────────────────────────────────────
+	// ── CHARACTERISTICS SECOND (grouped) ────────────────────────────────────
 	if (!empty($caratDefs)) {
-		$html .= '<div class="ar-fsec">';
-		$html .= '<div class="ar-ftitle" onclick="arToggleSection(this)">';
-		$html .= '<span class="ar-ftitle-left"><i class="fa fa-sliders"></i> ' . Text::_('VRCCHARACTERISTICS') . '</span>';
-		$html .= '<i class="fa fa-chevron-up ar-ftitle-arrow"></i>';
-		$html .= '</div>';
-		$html .= '<div class="ar-fopts ar-fopts-2col">';
+
+		// Bucket each carat into a logical group
+		$buckets = array(
+			'transmission' => array(),
+			'fuel'         => array(),
+			'seats'        => array(),
+			'other'        => array(),
+		);
+
 		foreach ($caratDefs as $cid => $carat) {
 			if (!isset($usedCaratCounts[$cid])) continue;
-			
-			// Получаем и переводим название
-			$rawLabel = !empty($carat['textimg']) ? $carat['textimg'] : $carat['name'];
-			$rawLabel = trim($rawLabel);
-			$label = Text::_($rawLabel) ?: $rawLabel;
-			$cnt = $usedCaratCounts[$cid];
-			
-			// Определяем логическую группу
-			$ll = mb_strtolower($rawLabel);
-			if ($ll === 'automat' || $ll === 'manual') {
-				$group = 'transmission'; // Логика исключения (только один)
-			} elseif ($ll === 'diesel' || $ll === 'benzină' || $ll === 'benzina' || $ll === 'hybrid') {
-				$group = 'fuel';         // Логика ИЛИ внутри группы
+			$rawLabel = trim(!empty($carat['textimg']) ? $carat['textimg'] : $carat['name']);
+			$label    = Text::_($rawLabel) ?: $rawLabel;
+			$cnt      = $usedCaratCounts[$cid];
+			$ll       = mb_strtolower($rawLabel);
+
+			// Match RO + RU + EN keywords
+			if (in_array($ll, array('automat','manual','automatic','автомат','ручная','manuală','manuala'))) {
+				$bucket   = 'transmission';
+				$jsGroup  = 'transmission';
+			} elseif (preg_match('/diesel|дизел|benzin|бензин|petrol|hybrid|гибрид|electric/ui', $ll)) {
+				$bucket   = 'fuel';
+				$jsGroup  = 'fuel';
+			} elseif (preg_match('/\bloc|seat|мест|place|locur/ui', $ll)) {
+				$bucket   = 'seats';
+				$jsGroup  = 'seats';
 			} else {
-				$group = 'carat_' . (int)$cid; // Логика И со всем остальным
+				$bucket   = 'other';
+				$jsGroup  = 'carat_' . (int)$cid;
 			}
 
-			$html .= '<label class="ar-fopt">';
-			$html .= '<input type="checkbox" class="ar-cb" data-group="' . $group . '"'
-			       . ' data-caratid="' . (int)$cid . '"'
-			       . ' data-label="' . htmlspecialchars($label) . '"'
-			       . ' onchange="arFilter(this)"/>';
-			$html .= '<span class="ar-fbox"><svg class="ar-fchk" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span>';
-			$html .= '<span>' . htmlspecialchars($label) . ' <span class="ar-fcnt">(' . $cnt . ')</span></span>';
-			$html .= '</label>';
+			$buckets[$bucket][] = array(
+				'cid'     => (int)$cid,
+				'label'   => $label,
+				'cnt'     => $cnt,
+				'jsGroup' => $jsGroup,
+			);
 		}
-		$html .= '</div></div>';
+
+		$groupMeta = array(
+			'transmission' => array(
+				'title' => (Text::_('VRCTRANSMISSION') ?: 'Transmisie'),
+				'icon'  => 'fa-cogs',
+			),
+			'fuel' => array(
+				'title' => (Text::_('VRCFUELTYPE') ?: 'Combustibil'),
+				'icon'  => 'fa-tint',
+			),
+			'seats' => array(
+				'title' => (Text::_('VRCSEATS') ?: 'Nr. locuri'),
+				'icon'  => 'fa-users',
+			),
+			'other' => array(
+				'title' => (Text::_('VRCOTHER') ?: 'Altele'),
+				'icon'  => 'fa-sliders',
+			),
+		);
+
+		// Only render the outer section if at least one bucket has items
+		$anyItems = false;
+		foreach ($buckets as $items) { if (!empty($items)) { $anyItems = true; break; } }
+
+		if ($anyItems) {
+			$html .= '<div class="ar-fsec">';
+			$html .= '<div class="ar-ftitle" onclick="arToggleSection(this)">';
+			$html .= '<span class="ar-ftitle-left"><i class="fa fa-sliders"></i> ' . Text::_('VRCCHARACTERISTICS') . '</span>';
+			$html .= '<i class="fa fa-chevron-up ar-ftitle-arrow"></i>';
+			$html .= '</div>';
+			$html .= '<div class="ar-carat-groups">';
+
+			foreach (array('transmission', 'fuel', 'seats', 'other') as $bKey) {
+				if (empty($buckets[$bKey])) continue;
+				$meta = $groupMeta[$bKey];
+
+				$html .= '<div class="ar-carat-group">';
+				$html .= '<div class="ar-carat-group-title">'
+				       . '<i class="fa ' . $meta['icon'] . '"></i>'
+				       . htmlspecialchars($meta['title'])
+				       . '</div>';
+				$html .= '<div class="ar-fopts ar-fopts-2col">';
+
+				foreach ($buckets[$bKey] as $item) {
+					$html .= '<label class="ar-fopt">';
+					$html .= '<input type="checkbox" class="ar-cb"'
+					       . ' data-group="'   . htmlspecialchars($item['jsGroup']) . '"'
+					       . ' data-caratid="' . $item['cid'] . '"'
+					       . ' data-label="'   . htmlspecialchars($item['label'])   . '"'
+					       . ' onchange="arFilter(this)"/>';
+					$html .= '<span class="ar-fbox"><svg class="ar-fchk" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span>';
+					$html .= '<span>' . htmlspecialchars($item['label'])
+					       . ' <span class="ar-fcnt">(' . $item['cnt'] . ')</span></span>';
+					$html .= '</label>';
+				}
+
+				$html .= '</div></div>'; // .ar-fopts .ar-carat-group
+			}
+
+			$html .= '</div></div>'; // .ar-carat-groups .ar-fsec
+		}
 	}
 
 	return $html;
