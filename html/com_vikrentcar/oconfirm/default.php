@@ -1472,7 +1472,9 @@ jQuery(document).ready(function ($) {
                        doesn't have to re-type anything. */
                     try {
                         var formData = {};
-                        $('form[name="vrc"]').find('input:not([type="hidden"]):not([type="submit"]), select, textarea').each(function () {
+                        /* Exclude radio inputs — payment method and similar selections
+                           are reset to their PHP defaults on reload, which is correct. */
+                        $('form[name="vrc"]').find('input:not([type="hidden"]):not([type="submit"]):not([type="radio"]), select, textarea').each(function () {
                             if (this.name) { formData[this.name] = $(this).val(); }
                         });
                         sessionStorage.setItem('vrc_form_restore', JSON.stringify(formData));
