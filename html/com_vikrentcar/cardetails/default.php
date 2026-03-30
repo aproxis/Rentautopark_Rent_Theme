@@ -1159,8 +1159,9 @@ jQuery(function(){
 	function cdGetRate(days) {
 		if (!days || !cdRateByDay) return null;
 		var best = null;
-		for (var d in cdRateByDay) {
-			if (parseInt(d) <= days) { best = cdRateByDay[d]; }
+		var keys = Object.keys(cdRateByDay).map(Number).sort(function(a, b) { return a - b; });
+		for (var i = 0; i < keys.length; i++) {
+			if (keys[i] <= days) { best = cdRateByDay[keys[i]]; }
 		}
 		return best;
 	}
@@ -1259,10 +1260,10 @@ jQuery(function(){
 	function cdUpdateSummary() {
 		var days = cdGetDays();
 		var $sum = jQuery('#cd-summary');
-		if (!days) { $sum.removeClass('is-visible'); return; }
+		if (!days) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
 
 		var rate = cdGetRate(days);
-		if (!rate) { $sum.removeClass('is-visible'); return; }
+		if (!rate) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
 
 		// Description sentence (i18n via cdDesc* vars)
 		var _dw2 = days === 1 ? cdDescDayWord : cdDescDaysWord;
@@ -1642,7 +1643,7 @@ function cdSetImage(idx) {
 		tipEl.querySelector('.cd-tip-savings').textContent  = cdCurrency + cdFmt(savings);
 		tipEl.querySelector('.cd-tip-newtotal').textContent = cdCurrency + cdFmt(Math.round(nextTotal));
 		tipEl.querySelector('.cd-tip-oldtotal').textContent = cdCurrency + cdFmt(Math.round(currentTotal));
-		tipEl.style.display = '';
+		tipEl.style.display = 'flex';
 	};
 })(jQuery);
 </script>
