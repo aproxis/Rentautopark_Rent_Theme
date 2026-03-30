@@ -1583,9 +1583,9 @@ function cdSetImage(idx) {
 <?php if (!empty($priceTiers)): ?>
 <script type="text/javascript">
 (function($) {
-	var tiers = <?php
+	window.cdTiers = <?php
 		$_jsRanges = array();
-		foreach ($priceTiers as $_t) { $_jsRanges[] = array('from' => (int)$_t['from'], 'to' => (int)$_t['to']); }
+		foreach ($priceTiers as $_t) { $_jsRanges[] = array('from' => (int)$_t['from'], 'to' => (int)$_t['to'], 'rate' => (int)$_t['rate']); }
 		echo json_encode($_jsRanges);
 	?>;
 
@@ -1594,10 +1594,10 @@ function cdSetImage(idx) {
 		$cells.removeClass('is-active is-active-prev');
 		if (!days) return;
 		var activeIdx = -1;
-		for (var i = 0; i < tiers.length; i++) {
-			if (days >= tiers[i].from && days <= tiers[i].to) { activeIdx = i; break; }
+		for (var i = 0; i < cdTiers.length; i++) {
+			if (days >= cdTiers[i].from && days <= cdTiers[i].to) { activeIdx = i; break; }
 		}
-		if (activeIdx === -1 && days > 0) { activeIdx = tiers.length - 1; }
+		if (activeIdx === -1 && days > 0) { activeIdx = cdTiers.length - 1; }
 		if (activeIdx >= 0) {
 			$cells.eq(activeIdx).addClass('is-active');
 			if (activeIdx > 0) { $cells.eq(activeIdx - 1).addClass('is-active-prev'); }
@@ -1616,30 +1616,43 @@ function cdSetImage(idx) {
 	window.cdCheckSavingsTip = function(days) {
 		var tipEl = document.getElementById('cd-savings-tip');
 		if (!tipEl) return;
-		if (!days || !cdRateByDay) { tipEl.style.display = 'none'; return; }
-
-		// Sort tier breakpoints ascending
-		var keys = Object.keys(cdRateByDay).map(Number).sort(function(a, b) { return a - b; });
-
-		// Find the next breakpoint strictly above current days
-		var nextKey = null;
-		for (var i = 0; i < keys.length; i++) {
-			if (keys[i] > days) { nextKey = keys[i]; break; }
-		}
-
-		// Only trigger when exactly 1 day away from next tier
-		if (nextKey === null || nextKey !== days + 1) {
+		if (!days || !window.cdTiers || !cdTiers.length) {
 			tipEl.style.display = 'none';
 			return;
 		}
 
-		var currentTotal = cdGetRate(days) * days;
-		var nextTotal    = cdRateByDay[nextKey] * nextKey;
-		var savings      = Math.round(currentTotal - nextTotal);
+		// Find which tier the current day count falls in
+		var currentTierIdx = -1;
+		for (var i = 0; i < cdTiers.length; i++) {
+			if (days >= cdTiers[i].from && days <= cdTiers[i].to) {
+				currentTierIdx = i;
+				break;
+			}
+		}
+
+		// No match or already in the last tier
+		if (currentTierIdx === -1 || currentTierIdx >= cdTiers.length - 1) {
+			tipEl.style.display = 'none';
+			return;
+		}
+
+		var nextTier = cdTiers[currentTierIdx + 1];
+
+		// Only show when exactly 1 day away from next tier boundary
+		if (days + 1 !== nextTier.from) {
+			tipEl.style.display = 'none';
+			return;
+		}
+
+		var currentRate = cdGetRate(days);
+		var nextRate = nextTier.rate;
+		var currentTotal = currentRate * days;
+		var nextTotal = nextRate * nextTier.from;
+		var savings = Math.round(currentTotal - nextTotal);
 
 		if (savings <= 0) { tipEl.style.display = 'none'; return; }
 
-		tipEl.querySelector('.cd-tip-days').textContent     = nextKey;
+		tipEl.querySelector('.cd-tip-days').textContent     = nextTier.from;
 		tipEl.querySelector('.cd-tip-savings').textContent  = cdCurrency + cdFmt(savings);
 		tipEl.querySelector('.cd-tip-newtotal').textContent = cdCurrency + cdFmt(Math.round(nextTotal));
 		tipEl.querySelector('.cd-tip-oldtotal').textContent = cdCurrency + cdFmt(Math.round(currentTotal));
