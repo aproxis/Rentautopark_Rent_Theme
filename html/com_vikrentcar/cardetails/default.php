@@ -977,20 +977,48 @@ jQuery(function(){
 		<!-- Location -->
 		<?php if (is_array($places) && count($places) > 0): ?>
 		<div class="cd-location-row" style="margin-top:10px;">
-			<div class="cd-row-label"><?php echo Text::_('VRPPLACE') ?: 'Место получения'; ?></div>
-			<div class="cd-select-wrap">
-				<select name="place" id="place"<?php echo $onchangeplaces; ?>>
-					<?php foreach ($places as $pla):
-						if ($check_pick_locs && !in_array($pla['id'], $plapick_ids)) { continue; }
-						if (!empty($pla['lat']) && !empty($pla['lng'])) { $coordsplaces[] = $pla; }
-					?>
-					<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
-					<?php endforeach; ?>
-				</select>
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#place').trigger('chosen:open'); jQuery('#place').focus();"><path d="m6 9 6 6 6-6"/></svg>
+
+			<!-- Pickup label — changes when checkbox is ticked -->
+			<div class="cd-row-label" id="cd-pickup-label">
+				<?php echo Text::_('VRPPICKUPRETURN') ?: 'Получение и возврат'; ?>
 			</div>
+			<div class="cd-select-wrap">
+				<select name="place" id="place"><?php echo $onchangeplaces; ?>
+				<?php foreach ($places as $pla):
+					if ($check_pick_locs && !in_array($pla['id'], $plapick_ids)) continue;
+					if (!empty($pla['lat']) && !empty($pla['lng'])) $coordsplaces[] = $pla;
+				?>
+					<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
+				<?php endforeach; ?>
+				</select>
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#place').trigger('chosen:open'); jQuery('#place').focus()"><path d="m6 9 6 6 6-6"/></svg>
+			</div>
+
+			<!-- Checkbox toggle -->
+			<label class="cd-diff-return-label" style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:13px;cursor:pointer;">
+				<input type="checkbox" id="cd-diff-return-chk" style="width:15px;height:15px;cursor:pointer;">
+				<?php echo Text::_('VRPDIFFRETURN') ?: 'Вернуть в другую локацию?'; ?>
+			</label>
+
+			<!-- Return location — hidden until checkbox checked -->
+			<div id="cd-return-location-wrap" style="display:none;margin-top:10px;">
+				<div class="cd-row-label" id="cd-return-label">
+					<?php echo Text::_('VRPRETURNPLACE') ?: 'Место возврата'; ?>
+				</div>
+				<div class="cd-select-wrap">
+					<select id="returnplace_visible" name="returnplace_visible">
+					<?php foreach ($places as $pla):
+						if ($check_drop_locs && !in_array($pla['id'], $pladrop_ids)) continue;
+					?>
+						<option value="<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
+					<?php endforeach; ?>
+					</select>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#returnplace_visible').focus()"><path d="m6 9 6 6 6-6"/></svg>
+				</div>
+			</div>
+
 		</div>
-		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>"/>
+		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>" />
 		<?php endif; ?>
 
 		<!-- OOH warning -->
@@ -1102,15 +1130,49 @@ jQuery(function(){
 	</form>
 
 	<script type="text/javascript">
-	/* Sync returnplace to mirror pickup */
+	/* Sync returnplace logic */
 	jQuery(function() {
+		var labelPickupReturn = <?php echo json_encode(Text::_('VRPPICKUPRETURN') ?: 'Получение и возврат'); ?>;
+		var labelPickup       = <?php echo json_encode(Text::_('VRPPLACE') ?: 'Место получения'); ?>;
+
 		jQuery('#place').on('change', function() {
-			jQuery('#returnplace').val(jQuery(this).val());
+			// Only mirror if checkbox is unchecked
+			if (!jQuery('#cd-diff-return-chk').is(':checked')) {
+				jQuery('#returnplace').val(jQuery(this).val());
+			}
 			cdUpdateSummary();
 			<?php if ($diffopentime): ?>
 			vrcSetLocOpenTime(jQuery(this).val(), 'pickup');
+			if (!jQuery('#cd-diff-return-chk').is(':checked')) {
+				vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
+			}
+			<?php endif; ?>
+		});
+
+		jQuery('#returnplace_visible').on('change', function() {
+			jQuery('#returnplace').val(jQuery(this).val());
+			cdUpdateSummary();
+			<?php if ($diffopentime): ?>
 			vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
 			<?php endif; ?>
+		});
+
+		jQuery('#cd-diff-return-chk').on('change', function() {
+			var checked = jQuery(this).is(':checked');
+			jQuery('#cd-return-location-wrap').toggle(checked);
+			if (checked) {
+				jQuery('#cd-pickup-label').text(labelPickup);
+				// set returnplace to current drop select value
+				jQuery('#returnplace').val(jQuery('#returnplace_visible').val());
+			} else {
+				jQuery('#cd-pickup-label').text(labelPickupReturn);
+				// mirror pickup again
+				jQuery('#returnplace').val(jQuery('#place').val());
+				<?php if ($diffopentime): ?>
+				vrcSetLocOpenTime(jQuery('#place').val(), 'dropoff');
+				<?php endif; ?>
+			}
+			cdUpdateSummary();
 		});
 	});
 
