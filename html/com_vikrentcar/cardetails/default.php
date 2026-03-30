@@ -1032,7 +1032,7 @@ jQuery(function(){
 		<!-- Optionals -->
 		<?php if (!empty($carOptionals)): ?>
 		<div class="cd-optionals-section">
-			<div class="cd-optionals-title"><?php echo Text::_('VRACCOPZ') ?: 'Alte opțiuni'; ?> <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+			<div class="cd-optionals-title"><?php echo Text::_('VRACCOPZ') ?: 'Alte opțiuni'; ?></div>
 			<?php foreach ($carOptionals as $_opt):
 				$_optPerDay = intval($_opt['perday']) === 1;
 				$_optBaseCost = (float)$_opt['cost'];
