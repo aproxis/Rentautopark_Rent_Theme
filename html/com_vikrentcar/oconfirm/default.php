@@ -215,6 +215,11 @@ $droploc_lng = isset($_placeRows[$returnplace]['lng'])  ? $_placeRows[$returnpla
 
 // ── Register-AJAX URL
 $registerAjaxUrl = JURI::root() . 'templates/rent/php/register-ajax.php';
+
+// ── Mark that the next order-details view comes from the checkout flow.
+//    orderdetails/default.php reads and clears this flag to decide whether
+//    to auto-redirect to payment or show a manual "Pay Now" button.
+$session->set('vrc_from_checkout', 1);
 ?>
 
 <?php /* ── Modal CSS ── */ ?>

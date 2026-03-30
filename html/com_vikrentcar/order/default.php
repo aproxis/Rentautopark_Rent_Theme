@@ -663,6 +663,20 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 					$array_order = array_merge($ord, $array_order);
 					
 					?>
+					<?php
+					/**
+					 * Single-use checkout flag:
+					 * oconfirm/default.php sets 'vrc_from_checkout' = 1 when the confirmation
+					 * page renders. We read it once here and immediately clear it so that:
+					 *  - Checkout flow  → flag present  → auto-redirect runs as before.
+					 *  - Profile / order-history view → flag absent → "Pay Now" button shown.
+					 * A page-refresh on the order-details page will always show the button,
+					 * never auto-redirect a second time.
+					 */
+					$_vrc_session       = JFactory::getSession();
+					$_vrc_from_checkout = (int) $_vrc_session->get('vrc_from_checkout', 0);
+					$_vrc_session->clear('vrc_from_checkout'); // consume immediately — single-use
+					?>
 					<div class="order-card">
 						<div class="order-card-header">
 							<h3><?php echo JText::_('VRCORDERPAYMENT') ?: 'Payment Method'; ?></h3>
@@ -687,7 +701,28 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 							require_once VRC_ADMIN_PATH . DIRECTORY_SEPARATOR . 'payments' . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . 'factory.php';
 							$obj = VRCPaymentFactory::getPaymentInstance($payment['file'], $array_order, $payment['params']);
 
-							$obj->showPayment();
+							if ($_vrc_from_checkout):
+								/* ── Checkout flow: render normally, gateway may auto-submit ── */
+								$obj->showPayment();
+							else:
+								/* ── Profile / order-history: never auto-redirect ── */
+								?>
+								<p class="order-pending-msg">
+									<?php echo JText::_('VRCORDERPENDINGPAYMENT') ?: 'Your order is awaiting payment.'; ?>
+								</p>
+								<button type="button"
+										class="btn vrc-pref-color-btn order-pay-now-btn"
+										onclick="
+											document.getElementById('vrc-payment-form').style.display='block';
+											this.style.display='none';
+										">
+									<?php echo JText::_('VRCPAYNOW') ?: 'Pay Now'; ?>
+								</button>
+								<div id="vrc-payment-form" style="display:none;">
+									<?php $obj->showPayment(); ?>
+								</div>
+								<?php
+							endif;
 							?>
 						</div>
 					</div>
