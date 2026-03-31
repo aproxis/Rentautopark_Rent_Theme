@@ -281,9 +281,8 @@ if (class_exists('VikRentCar')) {
                             </div>
                             <div class="orders-empty-content">
                                 <h3><?php echo vrcText('VRCNOUSERRESFOUND', 'Nicio rezervare găsită'); ?></h3>
-                                <p><?php echo vrcText('VRCNOUSERRESFOUND_SUBTITLE', 'Momentan nu aveți nicio rezervare.'); ?></p>
                                 <a href="<?php echo Route::_('index.php?option=com_vikrentcar&view=carslist'); ?>" class="orders-empty-btn">
-                                    <span><?php echo vrcText('VRCBOOKACAR', 'Rezervați o mașină'); ?></span>
+                                    <span><?php echo vrcText('VRCBOOKYOURFIRSTCAR', 'Rezervă prima ta mașină!'); ?></span>
                                 </a>
                             </div>
                         </div>

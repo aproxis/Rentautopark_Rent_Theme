@@ -184,9 +184,8 @@ $document->addStyleSheet(Joomla\CMS\Uri\Uri::root() . 'templates/rent/css/orders
 					</div>
 					<div class="orders-empty-content">
 						<h3><?php echo JText::_('VRCNOUSERRESFOUND') ?: 'Nicio rezervare găsită'; ?></h3>
-						<p><?php echo JText::_('VRCNOUSERRESFOUND_SUBTITLE') ?: 'Momentan nu aveți nicio rezervare.'; ?></p>
 						<a href="<?php echo JRoute::_('index.php?option=com_vikrentcar&view=carslist'.(!empty($pitemid) ? '&Itemid='.$pitemid : '')); ?>" class="orders-empty-btn">
-							<span><?php echo JText::_('VRCBOOKACAR') ?: 'Rezervați o mașină'; ?></span>
+							<span><?php echo JText::_('VRCBOOKYOURFIRSTCAR') ?: 'Rezervă prima ta mașină!'; ?></span>
 						</a>
 					</div>
 				</div>
