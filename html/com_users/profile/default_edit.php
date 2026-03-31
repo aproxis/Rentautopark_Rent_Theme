@@ -37,7 +37,7 @@ $doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
         <?php if (count($fields)): ?>
             <?php foreach ($fields as $field): ?>
                 <?php if ($field->hidden): ?>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <div class="controls">
                             <?php echo $field->input; ?>
                         </div>
@@ -47,6 +47,12 @@ $doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
                         <label class="control-label" for="<?php echo $field->id; ?>">
                             <?php echo $field->label; ?>
                         </label>
+                        <div class="controls">
+                            <?php echo $field->input; ?>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="form-group" style="display:none;">
                         <div class="controls">
                             <?php echo $field->input; ?>
                         </div>
