@@ -797,9 +797,9 @@
 }
 
 /* Hide profile-meta-row completely */
-.profile-meta-row {
+/* .profile-meta-row {
     display: none !important;
-}
+} */
 
 /* Small mobile breakpoint (480px and below) */
 @media (max-width: 480px) {

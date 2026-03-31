@@ -586,10 +586,8 @@ $returnLogout = base64_encode(Uri::root());
 
 <?php if($type == 'logout') : ?>
 	<?php
-	// Show first name only for brevity
-	$displayName = ($params->get('name') == 0)
-		? htmlspecialchars($user->get('username'))
-		: htmlspecialchars(explode(' ', trim($user->get('name')))[0]);
+	// Show part of email before @ sign
+	$displayName = htmlspecialchars(explode('@', $user->get('email'))[0]);
 	?>
 	<div class="ar-account-wrap">
 		<button class="ar-account-btn" onclick="arToggleAccountMenu(this)" type="button" aria-haspopup="true" aria-expanded="false">
