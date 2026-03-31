@@ -144,8 +144,6 @@ if (class_exists('VikRentCar')) {
 
                 <div class="profile-identity">
                     <div class="profile-identity-row">
-                        <span class="profile-name"><?php echo $this->escape($this->data->name); ?></span>
-                        <span class="profile-username">@<?php echo $this->escape($this->data->username); ?></span>
                         <span class="profile-email"><?php echo $this->escape($this->data->email); ?></span>
                     </div>
                     <div class="profile-meta-row">
