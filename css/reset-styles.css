@@ -36,7 +36,8 @@
 }
 
 /* ── Form scope ───────────────────────────────────────────────── */
-#user-reset-form {
+#user-reset-form,
+#user-reset-confirm-form {
 
     /* Row: label + input */
     .form-group {
@@ -204,16 +205,19 @@
         padding: 24px 20px;
     }
 
-    #user-reset-form .form-group {
+    #user-reset-form .form-group,
+    #user-reset-confirm-form .form-group {
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
     }
-    #user-reset-form .form-group .control-label {
+    #user-reset-form .form-group .control-label,
+    #user-reset-confirm-form .form-group .control-label {
         flex: none;
         text-align: left;
     }
-    #user-reset-form .form-group .controls {
+    #user-reset-form .form-group .controls,
+    #user-reset-confirm-form .form-group .controls {
         width: 100%;
     }
 }
@@ -222,7 +226,10 @@
 @media (prefers-reduced-motion: reduce) {
     #user-reset-form .form-control,
     #user-reset-form .btn-primary,
-    #user-reset-form .btn-danger {
+    #user-reset-form .btn-danger,
+    #user-reset-confirm-form .form-control,
+    #user-reset-confirm-form .btn-primary,
+    #user-reset-confirm-form .btn-danger {
         transition: none;
     }
 }
@@ -233,7 +240,9 @@
         border: 2px solid #000;
     }
     #user-reset-form .btn-primary,
-    #user-reset-form .btn-danger {
+    #user-reset-form .btn-danger,
+    #user-reset-confirm-form .btn-primary,
+    #user-reset-confirm-form .btn-danger {
         border: 2px solid #fff;
     }
 }
