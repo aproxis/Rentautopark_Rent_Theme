@@ -1,0 +1,236 @@
+/* ================================================================
+   AutoRent — Password Reset Page Styles
+   Used by: com_users/reset/default.php
+   Matches: profile-edit.css design system
+   ================================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────────── */
+.reset-page {
+    padding: 40px 20px;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    min-height: 100vh;
+}
+
+.reset-container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.07);
+}
+
+/* ── Page heading ─────────────────────────────────────────────── */
+.reset-container .page-header {
+    border: 0;
+    padding: 0;
+    margin: 0 0 24px;
+}
+
+.reset-container .page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0a0a0a;
+    margin: 0;
+}
+
+/* ── Form scope ───────────────────────────────────────────────── */
+#user-reset-form {
+
+    /* Row: label + input */
+    .form-group {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 14px;
+    }
+
+    fieldset {
+        border: none;
+        padding: 0;
+        margin: 0 0 8px 0;
+    }
+    fieldset legend {
+        font-size: 13px;
+        font-weight: 700;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        margin-bottom: 12px;
+        padding: 0;
+    }
+    fieldset > p {
+        display: none; /* hide Joomla fieldset label paragraph */
+    }
+
+    .form-group .control-label {
+        flex: 0 0 140px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin: 0;
+        padding: 0;
+        line-height: 1.4;
+        text-align: right;
+    }
+    .form-group .control-label label {
+        margin: 0;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group .controls {
+        flex: 1;
+        min-width: 0;
+        padding: 0;
+    }
+
+    /* Hide required stars */
+    .star {
+        display: none !important;
+    }
+
+    /* Inputs */
+    .form-control,
+    .controls input[type="text"],
+    .controls input[type="email"],
+    .controls input[type="password"] {
+        width: 100%;
+        padding: 9px 14px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #0a0a0a;
+        background: #fff;
+        box-sizing: border-box;
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .form-control:focus,
+    .controls input[type="text"]:focus,
+    .controls input[type="email"]:focus,
+    .controls input[type="password"]:focus {
+        outline: none;
+        border-color: #FE5001;
+        box-shadow: 0 0 0 3px rgba(254,80,1,.12);
+    }
+
+    /* Form actions row */
+    .form-actions,
+    .control-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #f3f4f6;
+    }
+
+    .control-group .controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background .2s, box-shadow .2s;
+        line-height: 1;
+        text-decoration: none;
+        background: #FE5001;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+    .btn-primary svg {
+        flex-shrink: 0;
+        display: block;
+        margin: 0 !important;
+    }
+    .btn-primary:hover {
+        background: #E54801;
+        box-shadow: 0 4px 12px rgba(254,80,1,.28);
+        color: #fff;
+    }
+    .btn-primary:focus {
+        outline: 3px solid #FE5001;
+        outline-offset: 2px;
+    }
+
+    /* Cancel / back link */
+    .btn-danger,
+    a.btn-danger {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background .2s, box-shadow .2s;
+        line-height: 1;
+        text-decoration: none;
+        background: #f3f4f6;
+        color: #374151;
+        border: 1.5px solid #e5e7eb !important;
+    }
+    .btn-danger:hover,
+    a.btn-danger:hover {
+        background: #fee2e2;
+        color: #ef4444;
+        border-color: #fca5a5 !important;
+    }
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 540px) {
+    .reset-page {
+        padding: 20px 16px;
+    }
+    .reset-container {
+        padding: 24px 20px;
+    }
+
+    #user-reset-form .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    #user-reset-form .form-group .control-label {
+        flex: none;
+        text-align: left;
+    }
+    #user-reset-form .form-group .controls {
+        width: 100%;
+    }
+}
+
+/* ── Accessibility ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    #user-reset-form .form-control,
+    #user-reset-form .btn-primary,
+    #user-reset-form .btn-danger {
+        transition: none;
+    }
+}
+
+/* ── High contrast ────────────────────────────────────────────── */
+@media (prefers-contrast: high) {
+    .reset-container {
+        border: 2px solid #000;
+    }
+    #user-reset-form .btn-primary,
+    #user-reset-form .btn-danger {
+        border: 2px solid #fff;
+    }
+}
