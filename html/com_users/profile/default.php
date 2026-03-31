@@ -308,7 +308,7 @@ if (class_exists('VikRentCar')) {
     <div id="editProfileModal" class="modal-overlay" style="display:none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><?php echo Text::_('COM_USERS_EDIT_PROFILE'); ?> - <?php echo $this->escape($this->data->username); ?></h3>
+                <h3><?php echo Text::_('COM_USERS_EDIT_PROFILE'); ?></h3>
                 <button class="modal-close" onclick="closeEditModal()" aria-label="Close">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                          viewBox="0 0 24 24" fill="none" stroke="currentColor"

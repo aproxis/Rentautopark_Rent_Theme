@@ -42,7 +42,7 @@ $doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
                             <?php echo $field->input; ?>
                         </div>
                     </div>
-                <?php else: ?>
+                <?php elseif (strpos($field->fieldname, 'password') !== false): ?>
                     <div class="form-group">
                         <label class="control-label" for="<?php echo $field->id; ?>">
                             <?php echo $field->label; ?>
