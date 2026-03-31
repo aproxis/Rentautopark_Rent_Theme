@@ -84,6 +84,20 @@ if (class_exists('VikRentCar')) {
 }
 
 /* ── SVG icon map keyed by carat name keywords ───────────────────────── */
+// Helper function to translate carat labels while preserving original keys for icon matching
+function arTranslateCaratForACM($rows, $translator, $tableName) {
+    $origKeys = array();
+    foreach ($rows as $id => $row) {
+        $origKeys[$id] = strtolower(
+            !empty($row['textimg']) ? $row['textimg'] : $row['name']
+        );
+    }
+    if (!empty($rows) && $translator) {
+        $translator->translateContents($rows, $tableName);
+    }
+    return array($rows, $origKeys);
+}
+
 $svgIcons = array(
     'automat' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>',
     'manual'  => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg>',
@@ -267,6 +281,10 @@ $svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" vi
 }
 .<?php echo $uid; ?>-cta-btn:hover { background: #E54801; color: #fff; }
 .<?php echo $uid; ?>-cta-btn svg { width: 18px; height: 18px; }
+
+/* Hidden elements — match carslist.css behavior */
+.<?php echo $uid; ?>-price-row  { display: none !important; }   /* price row in footer */
+.<?php echo $uid; ?>-btn-o      { display: none !important; }   /* "view details" button */
 /* ══════════════════════════════════════════════════════════════════════ */
 </style>
 
@@ -289,34 +307,48 @@ $svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" vi
 			<?php foreach ($cars as $c):
 				$detailUrl = JRoute::_('index.php?option=com_vikrentcar&view=cardetails&carid=' . (int)$c['id']);
 				$showPrice = $c['cost'] > 0;
-				$priceVal  = $showPrice ? VikRentCar::numberFormat($c['cost']) : '';
+				$priceVal  = strlen($c['startfrom']) > 0 ? VikRentCar::numberFormat($c['startfrom']) : VikRentCar::numberFormat($c['cost']);
 
 				/* ── Build custom SVG specs from carat IDs ─────────────────── */
 				$specItems = array();
 				if (!empty($c['idcarat'])) {
 					$caratIds = array_filter(array_map('intval', explode(';', trim($c['idcarat'], ';'))));
-					if (!empty($caratIds)) {
-						$dbo->setQuery(
-							"SELECT `id`,`name`,`textimg` FROM `#__vikrentcar_caratteristiche` WHERE `id` IN (" . implode(',', $caratIds) . ")"
+				if (!empty($caratIds)) {
+					$dbo->setQuery(
+						"SELECT `id`,`name`,`textimg` FROM `#__vikrentcar_caratteristiche` WHERE `id` IN (" . implode(',', $caratIds) . ")"
+					);
+					$dbo->execute();
+					$caratRows = $dbo->getNumRows() > 0 ? $dbo->loadAssocList('id') : array();
+					
+					// Save original names for icon matching BEFORE translation overwrites them
+					$caratOrigKeys = array();
+					foreach ($caratRows as $origId => $origRow) {
+						$caratOrigKeys[$origId] = strtolower(
+							!empty($origRow['textimg']) ? $origRow['textimg'] : $origRow['name']
 						);
-						$dbo->execute();
-						$caratRows = $dbo->getNumRows() > 0 ? $dbo->loadAssocList('id') : array();
-						// Preserve original order
-						foreach ($caratIds as $cid) {
-							if (!isset($caratRows[$cid])) continue;
-							$cr    = $caratRows[$cid];
-							$label = !empty($cr['textimg']) ? $cr['textimg'] : $cr['name'];
-							$key   = strtolower($label);
-							$svg   = $svgDefault;
-							foreach ($svgIcons as $keyword => $iconSvg) {
-								if (strpos($key, $keyword) !== false) {
-									$svg = $iconSvg;
-									break;
-								}
-							}
-							$specItems[] = array('svg' => $svg, 'label' => $label);
-						}
 					}
+					if (!empty($caratRows)) {
+						$vrc_tn->translateContents($caratRows, '#__vikrentcar_caratteristiche');
+					}
+					
+					// Preserve original order
+					foreach ($caratIds as $cid) {
+						if (!isset($caratRows[$cid])) continue;
+						$cr    = $caratRows[$cid];
+						// Display label: use translated value (textimg preferred, fallback to name)
+						$label = !empty($cr['textimg']) ? $cr['textimg'] : $cr['name'];
+						// Icon matching: always use original untranslated key
+						$key   = isset($caratOrigKeys[$cid]) ? $caratOrigKeys[$cid] : strtolower($label);
+						$svg   = $svgDefault;
+						foreach ($svgIcons as $keyword => $iconSvg) {
+							if (strpos($key, $keyword) !== false) {
+								$svg = $iconSvg;
+								break;
+							}
+						}
+						$specItems[] = array('svg' => $svg, 'label' => $label);
+					}
+				}
 				}
 
 				// Image src
@@ -372,7 +404,7 @@ $svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" vi
 						<?php endif; ?>
 						<div class="<?php echo $uid; ?>-btns">
 							<a href="<?php echo $detailUrl; ?>" class="<?php echo $uid; ?>-btn-p"><?php echo Text::_('VRCRENTBTN') ?: 'Închiriază'; ?></a>
-							<a href="<?php echo $detailUrl; ?>" class="<?php echo $uid; ?>-btn-o"><?php echo Text::_('VRCDETAILSBTN') ?: 'Detalii'; ?></a>
+							<a href="<?php echo $detailUrl; ?>" class="<?php echo $uid; ?>-btn-o"><?php echo Text::_('VRCDETAILSBTN') ?: 'Vezi detalii'; ?></a>
 						</div>
 					</div>
 				</div>
