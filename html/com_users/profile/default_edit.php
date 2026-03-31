@@ -52,11 +52,8 @@ $doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
                         </div>
                     </div>
                 <?php else: ?>
-                    <div class="form-group" style="display:none;">
-                        <div class="controls">
-                            <?php echo $field->input; ?>
-                        </div>
-                    </div>
+                    <?php /* Hide non-password fields but preserve their values */ ?>
+                    <input type="hidden" name="jform[<?php echo $field->fieldname; ?>]" value="<?php echo htmlspecialchars($this->data->{$field->fieldname} ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <?php endif; ?>
             <?php endforeach; ?>
         <?php endif; ?>
