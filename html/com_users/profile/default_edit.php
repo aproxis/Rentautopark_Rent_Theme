@@ -30,7 +30,7 @@ HTMLHelper::_('formbehavior.chosen', 'select');
 $doc = Factory::getDocument();
 $doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
 ?>
-<form id="member-profile-edit" action="<?php echo Route::_('index.php?option=com_users&task=profile.save'); ?>" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
+<form id="member-profile-edit" action="<?php echo Uri::base(); ?>index.php" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
 
     <?php foreach ($this->form->getFieldsets() as $group => $fieldset): ?>
         <?php $fields = $this->form->getFieldset($group); ?>
@@ -52,8 +52,22 @@ $doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
                         </div>
                     </div>
                 <?php else: ?>
-                    <?php /* Hide non-password fields but preserve their values */ ?>
-                    <input type="hidden" name="jform[<?php echo $field->fieldname; ?>]" value="<?php echo htmlspecialchars($this->data->{$field->fieldname} ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                    <?php
+                    // Joomla stores email as ->email, but the form field is email1/email2
+                    $fieldname = $field->fieldname;
+                    if (in_array($fieldname, ['email1', 'email2'])) {
+                        $value = $this->data->email ?? '';
+                    } elseif ($fieldname === 'name' || $fieldname === 'username') {
+                        $value = $this->data->{$fieldname} ?? '';
+                    } else {
+                        // For profile plugin fields, check params object
+                        $value = $this->data->{$fieldname}
+                            ?? ($this->data->params[$fieldname] ?? '');
+                    }
+                    ?>
+                    <input type="hidden"
+                           name="jform[<?php echo $fieldname; ?>]"
+                           value="<?php echo htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); ?>" />
                 <?php endif; ?>
             <?php endforeach; ?>
         <?php endif; ?>
