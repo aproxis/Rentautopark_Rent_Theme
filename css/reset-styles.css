@@ -61,7 +61,10 @@
         padding: 0;
     }
     fieldset > p {
-        display: none; /* hide Joomla fieldset label paragraph */
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 16px;
+        line-height: 1.5;
     }
 
     .form-group .control-label {
