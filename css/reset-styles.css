@@ -251,3 +251,25 @@
     .container {
         max-width: 100% !important;
     }
+/* ── Confirm step: inline error ───────────────────────────────── */
+#reset-confirm-error {
+    margin-top: 10px;
+}
+
+/* ── Fix: btn icon lost after JS text replacement ─────────────── */
+#reset-confirm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Fix: form-actions buttons don't clip on narrow screens ────── */
+.form-actions {
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ── Fix: input box-sizing missing from fieldset scope ──────────── */
+fieldset .form-control {
+    box-sizing: border-box;
+}

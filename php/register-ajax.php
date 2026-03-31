@@ -241,6 +241,17 @@ if ($newUserId <= 0) {
     sendError('User insert failed — no ID returned.', 'NO_ID', 500);
 }
 
+// ── Align with Nousernames plugin: set username to user{ID} ──
+if ($newUserId > 0) {
+    $alignQ = $db->getQuery(true)
+        ->update($db->quoteName('#__users'))
+        ->set($db->quoteName('username') . ' = ' . $db->quote('user' . $newUserId))
+        ->where($db->quoteName('id') . ' = ' . $newUserId);
+    $db->setQuery($alignQ);
+    $db->execute();
+    $username = 'user' . $newUserId; // update local var too (used in email + login token)
+}
+
 // Add to the "Registered" group (group ID 2)
 UserHelper::addUserToGroup($newUserId, 2);
 
