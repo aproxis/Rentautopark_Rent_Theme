@@ -106,11 +106,13 @@ $regEmail        = trim($input['reg_email']    ?? '');
 $regUsernameHint = trim($input['reg_username'] ?? '');
 
 // ── Validate ──────────────────────────────────────────────────────────────
-if ($regName === '') {
-    sendError('Name is required.', 'MISSING_NAME');
-}
 if ($regEmail === '' || !filter_var($regEmail, FILTER_VALIDATE_EMAIL)) {
     sendError('A valid email address is required.', 'INVALID_EMAIL');
+}
+
+// ── Derive name from email when not provided ──────────────────────────────
+if ($regName === '') {
+    $regName = strstr($regEmail, '@', true);
 }
 
 // ── Duplicate email check ─────────────────────────────────────────────────
@@ -254,7 +256,7 @@ try {
     $subject = 'Your account on ' . $siteName;
     $body    = "Hello " . $regName . ",\n\n"
              . "Your account has been created.\n\n"
-             . "Username : " . $username . "\n"
+             . "Email    : " . $regEmail . "\n"
              . "Password : " . $password . "\n\n"
              . "Please log in and change your password as soon as possible.\n\n"
              . "Regards,\n" . $siteName;

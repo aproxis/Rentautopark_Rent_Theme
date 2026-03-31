@@ -978,25 +978,19 @@ if (array_key_exists('hours', $price)) {
                 ══════════════════════════════════════════════════════════ */ ?>
                 <?php if ($currentUser->guest): ?>
                     <div class="vrc-register-section" id="vrc-register-section">
-
                         <div class="vrc-register-toggle-row">
                             <label class="vrc-register-label" for="vrc-reg-checkbox">
                                 <input type="checkbox" id="vrc-reg-checkbox"/>
                                 <span class="vrc-register-toggle-text">
-                                    <?php echo JText::_('VRC_SAVE_BOOKING_TO_ACCOUNT') ?: 'Salvează rezervarea în cont'; ?> &mdash;
-                                    <span class="vrc-reg-action-links">
-                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-create"><?php echo JText::_('VRC_REG_CREATE_BTN') ?: 'Creează cont'; ?></button>
-                                        <span class="vrc-reg-or"><?php echo JText::_('VRC_REG_OR') ?: 'sau'; ?></span>
-                                        <button type="button" class="vrc-reg-inline-btn" id="vrc-reg-trigger-login"><?php echo JText::_('VRC_BTN_LOGIN') ?: 'Autentifică-te'; ?></button>
-                                    </span>
+                                    <?php echo JText::_('VRC_SAVE_BOOKING_TO_ACCOUNT') ?: 'Salvează rezervarea în cont'; ?>
                                 </span>
                             </label>
+                            <span id="vrc-reg-checking" style="display:none;font-size:12px;color:#6b7280;margin-left:10px;">
+                                <?php echo JText::_('VRCREGCHECKING'); ?>
+                            </span>
                         </div>
-
-                        <!-- Feedback — always visible when checkbox is ticked, no panel needed -->
                         <div class="vrc-reg-error"   id="vrc-reg-error"   style="display:none;"></div>
                         <div class="vrc-reg-success" id="vrc-reg-success" style="display:none;"></div>
-
                     </div>
                 <?php endif; ?>
             </div>
@@ -1430,16 +1424,15 @@ jQuery(document).ready(function ($) {
 
     /* ── Inline login UI shown on EMAIL_EXISTS ───────────────────────── */
     function showExistsWithLoginForm() {
+        var currentEmail = getEmail();
         var html =
             '<div style="margin-bottom:10px;"><strong>' + MSG_EXISTS + '</strong> ' + MSG_EXISTS_CTA + '</div>' +
+            '<input type="hidden" id="vrc-login-user" value="' + $('<div>').text(currentEmail).html() + '"/>' +
             '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">' +
-              '<div style="flex:1;min-width:130px;">' +
-                '<label style="font-size:12px;color:#6b7280;display:block;margin-bottom:4px;">Utilizator / Email</label>' +
-                '<input type="text" id="vrc-login-user" autocomplete="username" ' +
-                       'style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;box-sizing:border-box;"/>' +
-              '</div>' +
-              '<div style="flex:1;min-width:130px;">' +
-                '<label style="font-size:12px;color:#6b7280;display:block;margin-bottom:4px;">Parolă</label>' +
+              '<div style="flex:1;min-width:160px;">' +
+                '<label style="font-size:12px;color:#6b7280;display:block;margin-bottom:4px;">' +
+                    '<?php echo addslashes(JText::_('JGLOBAL_PASSWORD')); ?>' +
+                '</label>' +
                 '<input type="password" id="vrc-login-pass" autocomplete="current-password" ' +
                        'style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;box-sizing:border-box;"/>' +
               '</div>' +
@@ -1499,103 +1492,80 @@ jQuery(document).ready(function ($) {
         });
     }
 
-    /* ── Checkbox: reset on uncheck ──────────────────────────────────── */
+    /* ── Checkbox: fire AJAX on tick ─────────────────────────────────── */
     $checkbox.on('change', function () {
         if (!$(this).is(':checked')) {
             clearFeedback();
             registrationDone    = false;
             registrationBlocked = false;
-        }
-    });
-
-    /* Static "Autentifică-te" in label → show inline login immediately */
-    $('#vrc-reg-trigger-login').on('click', function (e) {
-        e.preventDefault();
-        $checkbox.prop('checked', true);
-        registrationBlocked = true;
-        clearFeedback();
-        showExistsWithLoginForm();
-    });
-
-    /* Static "Creează cont" → just ensure checkbox ticked, clear state */
-    $('#vrc-reg-trigger-create').on('click', function (e) {
-        e.preventDefault();
-        $checkbox.prop('checked', true);
-        clearFeedback();
-        registrationDone    = false;
-        registrationBlocked = false;
-    });
-
-    /* ── Main submit guard ───────────────────────────────────────────── */
-    $(document).on('submit', 'form[name="vrc"]', function (e) {
-
-        if (registrationDone)           { return true; }  /* registered/logged-in → pass */
-        if (!$checkbox.is(':checked'))  { return true; }  /* guest → pass */
-
-        if (registrationBlocked) {                        /* EMAIL_EXISTS — scroll & block */
-            var sect = document.getElementById('vrc-register-section');
-            if (sect) { sect.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-            return false;
+            return;
         }
 
-        /* ── Validate registration fields first ── */
-        e.preventDefault();
+        // ── Validate email before attempting registration ──
         var email = getEmail();
-        var name  = getName();
-        if (!email || !/\S+@\S+\.\S+/.test(email)) { showError(ERR_EMAIL); return false; }
-        if (!name)                                  { showError(ERR_NAME);  return false; }
+        if (!email || !/[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}/.test(email)) {
+            showError(ERR_EMAIL);
+            $checkbox.prop('checked', false);
+            return;
+        }
 
-        var origLabel = $submitBtn.val();
-        $submitBtn.prop('disabled', true).val(CREATING_LABEL);
+        // ── Fire registration check immediately ──
+        $('#vrc-reg-checking').show();
         clearFeedback();
+        $checkbox.prop('disabled', true);
 
         $.ajax({
             url:         REGISTER_AJAX,
             type:        'POST',
             contentType: 'application/json',
-            data:        JSON.stringify({ reg_name: name, reg_email: email, reg_username: usernameFromEmail(email) }),
-            dataType:    'json'
+            data:        JSON.stringify({
+                reg_email:    email,
+                reg_username: usernameFromEmail(email)
+            }),
+            dataType: 'json'
         })
         .done(function (res) {
-            $submitBtn.prop('disabled', false).val(origLabel);
+            $('#vrc-reg-checking').hide();
+            $checkbox.prop('disabled', false);
 
             if (res && res.ok) {
+                // New account created, auto-password emailed
                 registrationDone = true;
                 showSuccess(OK_LABEL);
-                setTimeout(function () {
-                    if (typeof checkvrcFields === 'function' && !checkvrcFields()) { return; }
-                    document.vrc.submit();
-                }, 600);
-                return;
-            }
-
-            if (res && res.error_code === 'EMAIL_EXISTS') {
+            } else if (res && res.error_code === 'EMAIL_EXISTS') {
+                // Account exists — ask for password to log in
                 registrationBlocked = true;
                 showExistsWithLoginForm();
-                var sect = document.getElementById('vrc-register-section');
-                if (sect) { sect.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-                return;
+            } else {
+                // Any other error — soft warning, uncheck, allow guest submit
+                showError(res && res.error ? res.error : MSG_NETWORK);
+                $checkbox.prop('checked', false);
             }
-
-            /* Other server error — soft, submit as guest */
-            showError((res && res.error ? res.error : 'Eroare server.') + ' Rezervarea va fi salvată fără cont.');
-            $checkbox.prop('checked', false);
-            setTimeout(function () {
-                if (typeof checkvrcFields === 'function' && !checkvrcFields()) { return; }
-                document.vrc.submit();
-            }, 800);
         })
         .fail(function () {
-            $submitBtn.prop('disabled', false).val(origLabel);
+            $('#vrc-reg-checking').hide();
+            $checkbox.prop('disabled', false);
             showError(MSG_NETWORK);
             $checkbox.prop('checked', false);
-            setTimeout(function () {
-                if (typeof checkvrcFields === 'function' && !checkvrcFields()) { return; }
-                document.vrc.submit();
-            }, 800);
         });
+    });
 
-        return false;
+    /* ── Main submit guard ───────────────────────────────────────────── */
+    $(document).on('submit', 'form[name="vrc"]', function (e) {
+        if (registrationDone)           return true; // created or logged in — pass
+        if (!$checkbox.is(':checked'))  return true; // guest checkout — pass
+
+        if (registrationBlocked) {
+            var sect = document.getElementById('vrc-register-section');
+            if (sect) sect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+
+        // Edge case: checkbox checked but AJAX result not yet received
+        // Safe fallback: uncheck and submit as guest
+        $checkbox.prop('checked', false);
+        clearFeedback();
+        return true;
     });
 
 });
