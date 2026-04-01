@@ -348,3 +348,149 @@ fieldset .form-control {
     max-width: 34ch;
     line-height: 1.5;
 }
+
+/* ══════════════════════════════════════════════════════════
+   COMPLETE — set new password form
+══════════════════════════════════════════════════════════ */
+
+/* Password group container */
+#user-reset-complete-form .password-group {
+    width: 100%;
+}
+
+/* Input group with toggle button */
+#user-reset-complete-form .input-group {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+}
+
+#user-reset-complete-form .input-group .form-control {
+    flex: 1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+#user-reset-complete-form .input-group .form-control:focus {
+    border-right: 2px solid #FE5001;
+    z-index: 1;
+}
+
+/* Password toggle button */
+#user-reset-complete-form .input-password-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+#user-reset-complete-form .input-password-toggle:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+#user-reset-complete-form .input-password-toggle:focus {
+    outline: none;
+    border-color: #FE5001;
+    box-shadow: 0 0 0 3px rgba(254, 80, 1, 0.12);
+}
+
+#user-reset-complete-form .input-password-toggle .icon-eye {
+    color: #6b7280;
+    flex-shrink: 0;
+}
+
+#user-reset-complete-form .input-password-toggle:hover .icon-eye {
+    color: #374151;
+}
+
+/* Password requirements text */
+#user-reset-complete-form .small.text-muted {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+/* Password strength meter */
+#user-reset-complete-form meter {
+    width: 100%;
+    height: 6px;
+    margin-top: 8px;
+    border-radius: 3px;
+    background: #e5e7eb;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+#user-reset-complete-form meter::-webkit-meter-bar {
+    background: #e5e7eb;
+    border-radius: 3px;
+    border: none;
+}
+
+#user-reset-complete-form meter::-webkit-meter-optimum-value {
+    background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #22c55e 100%);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+#user-reset-complete-form meter::-webkit-meter-suboptimum-value {
+    background: linear-gradient(90deg, #ef4444 0%, #f59e0b 100%);
+    border-radius: 3px;
+}
+
+#user-reset-complete-form meter::-webkit-meter-even-less-good-value {
+    background: #ef4444;
+    border-radius: 3px;
+}
+
+#user-reset-complete-form meter::-moz-meter-bar {
+    background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #22c55e 100%);
+    border-radius: 3px;
+}
+
+/* Password strength text */
+#user-reset-complete-form .password-strength-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+    min-height: 18px;
+    transition: color 0.2s;
+}
+
+#user-reset-complete-form .password-strength-text.strength-weak {
+    color: #ef4444;
+}
+
+#user-reset-complete-form .password-strength-text.strength-medium {
+    color: #f59e0b;
+}
+
+#user-reset-complete-form .password-strength-text.strength-strong {
+    color: #22c55e;
+}
+
+/* Responsive adjustments for complete form */
+@media (max-width: 540px) {
+    #user-reset-complete-form .input-group {
+        flex-wrap: nowrap;
+    }
+    
+    #user-reset-complete-form .input-password-toggle {
+        width: 44px;
+    }
+}
