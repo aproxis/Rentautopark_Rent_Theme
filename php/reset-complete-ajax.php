@@ -1,22 +1,16 @@
 <?php
 /**
- * AJAX endpoint: validate + save new password.
- * Path: templates/rent/php/reset-complete-ajax.php
+ * templates/rent/php/reset-complete-ajax.php
  *
- * Accepts: POST JSON { password1: string, password2: string }
- * Returns: JSON { ok: true, email: string }
- *       or JSON { ok: false, error: string, error_code: string }
+ * Accepts: POST JSON { password1, password2 }
+ * Returns: JSON { ok: true } | { ok: false, error, error_code }
  *
- * Does NOT use bootComponent() / getMVCFactory() — that resolves to the
- * Administrator UsersComponent class which is not on the autoloader path
- * when bootstrapped as SiteApplication from a standalone file.
+ * IMPORTANT: This file MUST NOT write to the Joomla session.
+ * Any call to $app->setUserState() or $app->enqueueMessage() causes
+ * J5's session token to regenerate, which queues JINVALID_TOKEN on the
+ * next real Joomla page — the CSRF warning the user sees on the homepage.
  *
- * Instead we replicate exactly what processResetComplete() does:
- *   1. Read session state set by processResetConfirm()
- *   2. Validate password against com_users params (same rules as UserPasswordRule)
- *   3. UserHelper::hashPassword() + direct DB UPDATE
- *   4. DELETE #__session rows for that user (same as core model)
- *   5. Clear com_users.reset.* session keys
+ * All success/error feedback is handled client-side in complete.php.
  */
 
 set_exception_handler(function (\Throwable $e) {
@@ -28,7 +22,7 @@ set_exception_handler(function (\Throwable $e) {
 
 ob_start();
 
-// ── Bootstrap Joomla ──────────────────────────────────────────────────────
+// ── Bootstrap Joomla (read-only session use) ──────────────────────────────
 $joomlaBase = realpath(dirname(__FILE__) . '/../../../');
 if (!$joomlaBase || !file_exists($joomlaBase . '/includes/defines.php')) {
     ob_end_clean();
@@ -85,7 +79,7 @@ if (!is_array($input)) {
 $password1 = (string) ($input['password1'] ?? '');
 $password2 = (string) ($input['password2'] ?? '');
 
-// ── Quick mismatch pre-check ──────────────────────────────────────────────
+// ── Basic checks ──────────────────────────────────────────────────────────
 if ($password1 === '') {
     sendError(Text::_('JGLOBAL_PASSWORD') . ' is required.', 'EMPTY_PASSWORD');
 }
@@ -93,23 +87,23 @@ if ($password1 !== $password2) {
     sendError(Text::_('COM_USERS_PROFILES_PASSMATCH_ERROR'), 'PASSWORD_MISMATCH');
 }
 
-// ── Session state — set by processResetConfirm() ─────────────────────────
+// ── Read session (READ-ONLY — no writes) ──────────────────────────────────
+// getUserState() only reads from session; it does not write.
 $userId = (int) $app->getUserState('com_users.reset.user', 0);
 if ($userId <= 0) {
     sendError(
-        Text::_('COM_USERS_RESET_STEP_ERROR') ?: 'Session expired. Please start the password reset again.',
+        Text::_('COM_USERS_RESET_STEP_ERROR') ?: 'Session expired. Please restart the password reset.',
         'SESSION_EXPIRED'
     );
 }
 
-// ── Validate password against com_users complexity rules ─────────────────
-// Mirrors J5's UserPasswordRule exactly — same Text::plural() strings.
-$params    = ComponentHelper::getParams('com_users');
-$minLen    = max(1, (int) $params->get('minimum_length',   12));
-$minInts   = (int) $params->get('minimum_integers',  0);
-$minSyms   = (int) $params->get('minimum_symbols',   0);
-$minUpper  = (int) $params->get('minimum_uppercase', 0);
-$minLower  = (int) $params->get('minimum_lowercase', 0);
+// ── Validate complexity against com_users params ──────────────────────────
+$params   = ComponentHelper::getParams('com_users');
+$minLen   = max(1, (int) $params->get('minimum_length',   12));
+$minInts  = (int) $params->get('minimum_integers',  0);
+$minSyms  = (int) $params->get('minimum_symbols',   0);
+$minUpper = (int) $params->get('minimum_uppercase', 0);
+$minLower = (int) $params->get('minimum_lowercase', 0);
 
 if (strlen($password1) < $minLen) {
     sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_LENGTH_N',    $minLen),  'RULE_LENGTH');
@@ -121,63 +115,47 @@ if ($minSyms > 0 && preg_match_all('/[^a-zA-Z0-9]/', $password1) < $minSyms) {
     sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_SYMBOLS_N',   $minSyms), 'RULE_SYMBOLS');
 }
 if ($minUpper > 0 && preg_match_all('/[A-Z]/', $password1) < $minUpper) {
-    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_UPPERCASE_N', $minUpper),'RULE_UPPERCASE');
+    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_UPPERCASE_N', $minUpper), 'RULE_UPPERCASE');
 }
 if ($minLower > 0 && preg_match_all('/[a-z]/', $password1) < $minLower) {
-    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_LOWERCASE_N', $minLower),'RULE_LOWERCASE');
+    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_LOWERCASE_N', $minLower), 'RULE_LOWERCASE');
 }
 
-// ── Get user email before we clear the session ────────────────────────────
-$userEmail = '';
-try {
-    $u = Factory::getUser($userId);
-    if ($u && $u->id > 0) {
-        $userEmail = $u->email;
-    }
-} catch (\Exception $e) { /* non-fatal */ }
-
-// ── Hash password + UPDATE #__users ──────────────────────────────────────
-// Exactly what processResetComplete() does: hash → store → clear activation.
+// ── Save hashed password ──────────────────────────────────────────────────
 $hashedPw = UserHelper::hashPassword($password1);
-
-$db = Factory::getDbo();
+$db       = Factory::getDbo();
 
 try {
-    $q = $db->getQuery(true)
-        ->update($db->quoteName('#__users'))
-        ->set($db->quoteName('password')         . ' = ' . $db->quote($hashedPw))
-        ->set($db->quoteName('activation')       . ' = ' . $db->quote(''))
-        ->set($db->quoteName('requireReset')     . ' = 0')
-        ->where($db->quoteName('id')             . ' = ' . (int) $userId);
-    $db->setQuery($q);
+    $db->setQuery(
+        $db->getQuery(true)
+            ->update($db->quoteName('#__users'))
+            ->set($db->quoteName('password')     . ' = ' . $db->quote($hashedPw))
+            ->set($db->quoteName('activation')   . ' = ' . $db->quote(''))
+            ->set($db->quoteName('requireReset') . ' = 0')
+            ->where($db->quoteName('id')         . ' = ' . (int) $userId)
+    );
     $db->execute();
 } catch (\RuntimeException $e) {
     sendError('Could not save password: ' . $e->getMessage(), 'DB_ERROR', 500);
 }
 
-// ── Invalidate all existing sessions for this user (security) ────────────
-// Same step as J5 processResetComplete() — prevents old sessions staying valid.
+// ── Invalidate other sessions for this user (security) ───────────────────
 try {
-    $sq = $db->getQuery(true)
-        ->delete($db->quoteName('#__session'))
-        ->where($db->quoteName('userid') . ' = ' . (int) $userId);
-    $db->setQuery($sq);
+    $db->setQuery(
+        $db->getQuery(true)
+            ->delete($db->quoteName('#__session'))
+            ->where($db->quoteName('userid') . ' = ' . (int) $userId)
+    );
     $db->execute();
 } catch (\RuntimeException $e) { /* non-fatal */ }
 
-// ── Clear reset session keys ──────────────────────────────────────────────
-$app->setUserState('com_users.reset.token', null);
-$app->setUserState('com_users.reset.user',  null);
-
-// ── Enqueue success message in session ───────────────────────────────────
-// Stored in the shared PHP session → rendered by Joomla's message area on
-// the next page (homepage). Uses J5's own translated string.
-$successMsg = Text::_('COM_USERS_RESET_COMPLETE_SUCCESS');
-if (empty($successMsg) || $successMsg === 'COM_USERS_RESET_COMPLETE_SUCCESS') {
-    // Fallback if language string not loaded in this bootstrap context
-    $successMsg = 'Your password has been changed. You can now log in with your new password.';
-}
-$app->enqueueMessage($successMsg, 'success');
-
-// ── Done ─────────────────────────────────────────────────────────────────
-sendJson(['ok' => true, 'email' => $userEmail]);
+// ── Return success — NO session writes ───────────────────────────────────
+// Do NOT call $app->setUserState() or $app->enqueueMessage() here.
+// Those calls write to the Joomla session, causing J5 to regenerate its
+// internal form token. The next real Joomla request then finds a token
+// mismatch and queues JINVALID_TOKEN — the CSRF warning on the homepage.
+//
+// The activation field is now '' so the token cannot be reused.
+// com_users.reset.user will expire naturally with the session.
+// Success feedback is shown client-side in complete.php.
+sendJson(['ok' => true]);
