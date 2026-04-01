@@ -968,3 +968,106 @@ body.vrc-modal-open {
 	font-weight: 600;
 	color: #374151;
 }
+/* ── Recommended Cars ─────────────────────────────────────────────── */
+.cd-recommended-section {
+    margin-top: 40px;
+    padding: 24px 0 32px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.cd-recommended-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: #111;
+}
+
+.cd-recommended-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.cd-rec-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+    background: #fff;
+}
+
+.cd-rec-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.10);
+    transform: translateY(-2px);
+}
+
+.cd-rec-img-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+
+.cd-rec-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.cd-rec-card:hover .cd-rec-img-wrap img {
+    transform: scale(1.04);
+}
+
+.cd-rec-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #ececec;
+}
+
+.cd-rec-info {
+    padding: 12px 14px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cd-rec-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    color: #1a1a1a;
+}
+
+.cd-rec-price {
+    font-size: 0.85rem;
+    color: #666;
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    margin-top: auto;
+}
+
+.cd-rec-amount {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #111;
+}
+
+@media (max-width: 768px) {
+    .cd-recommended-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .cd-recommended-grid {
+        grid-template-columns: 1fr;
+    }
+}

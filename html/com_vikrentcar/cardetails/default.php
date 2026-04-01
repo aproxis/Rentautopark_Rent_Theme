@@ -1576,6 +1576,83 @@ jQuery(function(){
 </div><!-- /.cd-right -->
 
 </div><!-- /.cd-page-grid -->
+
+
+<?php
+/* ── Recommended Cars (similar price ±30%) ────────────────────────── */
+$recommendedCars = array();
+try {
+    $_refPrice = (float)(strlen($car['startfrom']) > 0 ? $car['startfrom'] : $car['cost']);
+    if ($_refPrice > 0) {
+        $_priceMin = $_refPrice * 0.70;
+        $_priceMax = $_refPrice * 1.30;
+        $_dboRec = JFactory::getDbo();
+        $_dboRec->setQuery(
+            "SELECT `id`, `name`, `img`, `cost`, `startfrom`"
+            . " FROM `#__vikrentcar_cars`"
+            . " WHERE `published` = 1"
+            . " AND `id` != " . (int)$car['id']
+            . " AND ("
+            .   "(CHAR_LENGTH(`startfrom`) > 0 AND CAST(`startfrom` AS DECIMAL(10,2))"
+            .       " BETWEEN " . (float)$_priceMin . " AND " . (float)$_priceMax . ")"
+            .   " OR (CHAR_LENGTH(`startfrom`) = 0 AND `cost`"
+            .       " BETWEEN " . (float)$_priceMin . " AND " . (float)$_priceMax . ")"
+            . ")"
+            . " ORDER BY ABS("
+            .   "IF(CHAR_LENGTH(`startfrom`) > 0, CAST(`startfrom` AS DECIMAL(10,2)), `cost`)"
+            .   " - " . (float)$_refPrice
+            . ") ASC"
+            . " LIMIT 3"
+        );
+        $recommendedCars = (array)$_dboRec->loadAssocList();
+    }
+} catch (Exception $_eRec) {
+    $recommendedCars = array();
+}
+?>
+
+<?php if (!empty($recommendedCars)) : ?>
+<div class="cd-recommended-section">
+    <h2 class="cd-recommended-title">Mașini recomandate</h2>
+    <div class="cd-recommended-grid">
+        <?php foreach ($recommendedCars as $_rec) :
+            $_recImg = !empty($_rec['img'])
+                ? JURI::root() . 'administrator/components/com_vikrentcar/resources/' . $_rec['img']
+                : '';
+            $_recPrice = (float)(strlen($_rec['startfrom']) > 0 ? $_rec['startfrom'] : $_rec['cost']);
+            $_recPriceDisp = floor($_recPrice) == $_recPrice
+                ? (int)$_recPrice
+                : VikRentCar::numberFormat($_recPrice);
+            $_recUrl = JRoute::_(
+                'index.php?option=com_vikrentcar&view=cardetails&cid=' . (int)$_rec['id']
+                . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')
+            );
+        ?>
+        <a href="<?php echo $_recUrl; ?>" class="cd-rec-card">
+            <div class="cd-rec-img-wrap">
+                <?php if ($_recImg) : ?>
+                <img src="<?php echo htmlspecialchars($_recImg); ?>"
+                     alt="<?php echo htmlspecialchars($_rec['name']); ?>"
+                     loading="lazy">
+                <?php else : ?>
+                <div class="cd-rec-img-placeholder"></div>
+                <?php endif; ?>
+            </div>
+            <div class="cd-rec-info">
+                <div class="cd-rec-name"><?php echo htmlspecialchars($_rec['name']); ?></div>
+                <div class="cd-rec-price">
+                    <span class="cd-rec-from">De la</span>
+                    <span class="cd-rec-amount"><?php echo $currencysymb . $_recPriceDisp; ?></span>
+                    <span class="cd-rec-per">/zi</span>
+                </div>
+            </div>
+        </a>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>
+
+
 </div><!-- /.cd-container -->
 
 <?php /* Request info modal */
