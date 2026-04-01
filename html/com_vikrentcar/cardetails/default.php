@@ -1624,7 +1624,10 @@ try {
 // Use alias-only slug — VikRentCar's router maps /cars/{alias} from this
 $_recSlug = !empty($_rec['alias']) ? $_rec['alias'] : (int)$_rec['id'];
 
-$_recUrl = rtrim($carslistUrl, '/') . '/' . $_rec['alias'];
+// Strip current car's alias from the current URL to get the base path
+$_baseCarUrl = str_replace('/' . $car['alias'], '', JURI::current());
+$_recUrl = rtrim($_baseCarUrl, '/') . '/' . $_rec['alias'];
+
 ?>
         <a href="<?php echo $_recUrl; ?>" class="cd-rec-card">
             <div class="cd-rec-img-wrap">
