@@ -1621,7 +1621,8 @@ try {
     $_recPriceDisp = floor($_recPrice) == $_recPrice
         ? (int)$_recPrice
         : VikRentCar::numberFormat($_recPrice);
-    $_recSlug = (int)$_rec['id'] . (!empty($_rec['alias']) ? ':' . $_rec['alias'] : '');
+// Use alias-only slug — VikRentCar's router maps /cars/{alias} from this
+$_recSlug = !empty($_rec['alias']) ? $_rec['alias'] : (int)$_rec['id'];
 
 $_recUrl = JRoute::_(
     'index.php?option=com_vikrentcar&view=cardetails&cid=' . $_recSlug
