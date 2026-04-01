@@ -536,3 +536,172 @@ fieldset .form-control {
         width: 44px;
     }
 }
+
+/* ══════════════════════════════════════════════════════════
+   COMPLETE STEP — append to reset-styles.css
+   Password rules checklist, strength bar, match hint,
+   and top slide-in notification.
+══════════════════════════════════════════════════════════ */
+
+/* ── Top notification ─────────────────────────────────────────────────── */
+.rc-notification {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.rc-notification[hidden] {
+    display: none;
+}
+
+/* Error state */
+.rc-notification--error {
+    background: #fef2f2;
+    border: 1.5px solid #fecaca;
+    color: #b91c1c;
+}
+
+/* Success state (autologin in progress) */
+.rc-notification--success {
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    color: #166534;
+}
+
+/* Slide-in animation — applied dynamically by JS */
+.rc-notification--animate {
+    animation: rcSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes rcSlideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Close button */
+.rc-notification-close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+    color: inherit;
+}
+
+.rc-notification-close:hover {
+    opacity: 1;
+}
+
+/* ── Strength bar (div-based — reliable in all browsers) ─────────────── */
+.rc-meter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.rc-strength-bar {
+    flex: 1;
+    height: 5px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.rc-strength-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease, background 0.3s ease;
+    width: 0;
+}
+
+.rc-strength-label {
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: right;
+    transition: color 0.3s ease;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+/* ── Rules checklist ─────────────────────────────────────────────────── */
+.password-rules {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+}
+
+.password-rules li {
+    position: relative;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 1px 0 1px 20px;
+    color: #9ca3af;
+    transition: color 0.15s;
+}
+
+.password-rules li::before {
+    position: absolute;
+    left: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    content: '○';
+}
+
+.rule-pass          { color: #16a34a !important; }
+.rule-pass::before  { content: '✓' !important; }
+.rule-fail          { color: #dc2626 !important; }
+.rule-fail::before  { content: '✗' !important; }
+.rule-neutral       { color: #9ca3af; }
+
+/* ── Match hint below confirm field ──────────────────────────────────── */
+.rc-match-hint {
+    font-size: 12px;
+    margin-top: 5px;
+    min-height: 18px;
+    line-height: 1.4;
+    transition: color 0.15s;
+}
+
+.rc-match-hint--ok    { color: #16a34a; }
+.rc-match-hint--error { color: #dc2626; }
+
+/* ── Submit button ───────────────────────────────────────────────────── */
+#reset-complete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 120px;
+    justify-content: center;
+}
+
+#reset-complete-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .rc-notification--animate { animation: none; }
+    .rc-strength-fill         { transition: none; }
+    .rc-strength-label        { transition: none; }
+    .password-rules li        { transition: none; }
+    .rc-match-hint            { transition: none; }
+}
