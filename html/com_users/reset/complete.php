@@ -123,3 +123,104 @@ $doc->addStyleSheet(Uri::root() . 'templates/rent/css/reset-styles.css');
 
 </div>
 </div>
+
+<script>
+(function () {
+    'use strict';
+
+    var form    = document.getElementById('user-reset-complete-form');
+    var btn     = form ? form.querySelector('[type="submit"]') : null;
+    var SITEURL = <?php echo json_encode(Uri::root()); ?>;
+
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // ── 1. Basic client-side validation ──────────────────────────────
+        var p1 = form.querySelector('[name="jform[password1]"]');
+        var p2 = form.querySelector('[name="jform[password2]"]');
+        if (!p1 || !p2) { form.submit(); return; }   // fallback
+
+        if (p1.value.trim() === '') {
+            p1.focus();
+            return;
+        }
+        if (p1.value !== p2.value) {
+            p2.focus();
+            return;
+        }
+
+        var plainPassword = p1.value;
+
+        if (btn) { btn.disabled = true; }
+
+        var fd = new FormData(form);
+
+        // ── 2. Submit reset.complete to Joomla ────────────────────────────
+        fetch(SITEURL + 'index.php?option=com_users', {
+            method:      'POST',
+            body:        fd,
+            credentials: 'same-origin',
+            redirect:    'manual'   // stop fetch following the redirect
+        })
+        .then(function () {
+            // ── 3. Auto-login with the new password ───────────────────────
+            // Build a Joomla login POST using the email as username
+            // (Email authentication plugin converts email → username internally)
+            var email = <?php
+                // Read email from session set by processResetConfirm()
+                $resetUserId = (int) Factory::getApplication()
+                    ->getUserState('com_users.reset.user', 0);
+                $resetEmail  = '';
+                if ($resetUserId > 0) {
+                    try {
+                        $u = Factory::getUser($resetUserId);
+                        if ($u && $u->id > 0) $resetEmail = $u->email;
+                    } catch (\Exception $e) {}
+                }
+                echo json_encode($resetEmail);
+            ?>;
+
+            if (!email) {
+                // No session email — redirect to homepage
+                window.location.href = SITEURL;
+                return;
+            }
+
+            var loginData = new URLSearchParams();
+            loginData.append('username',   email);
+            loginData.append('password',   plainPassword);
+            loginData.append('option',     'com_users');
+            loginData.append('task',       'user.login');
+            loginData.append('return',     btoa(SITEURL));   // base64-encoded return URL
+
+            // Get J-token from a meta tag Joomla injects (or from the form itself)
+            var tokenMeta = document.querySelector('meta[name="csrf-token"]');
+            if (tokenMeta) {
+                loginData.append(tokenMeta.getAttribute('content'), '1');
+            } else {
+                // Fallback: find the hidden CSRF input in our form
+                var csrfInput = form.querySelector('input[type="hidden"]:not([name^="jform"])');
+                if (csrfInput) loginData.append(csrfInput.name, '1');
+            }
+
+            return fetch(SITEURL + 'index.php', {
+                method:      'POST',
+                body:        loginData,
+                credentials: 'same-origin',
+                redirect:    'manual'
+            });
+        })
+        .then(function () {
+            // Redirect to homepage after successful login
+            window.location.href = SITEURL;
+        })
+        .catch(function () {
+            // Network error — redirect to homepage
+            window.location.href = SITEURL;
+        });
+    });
+
+}());
+</script>
