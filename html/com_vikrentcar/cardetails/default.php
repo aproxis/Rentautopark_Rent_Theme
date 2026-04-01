@@ -1624,10 +1624,7 @@ try {
 // Use alias-only slug — VikRentCar's router maps /cars/{alias} from this
 $_recSlug = !empty($_rec['alias']) ? $_rec['alias'] : (int)$_rec['id'];
 
-$_recUrl = JRoute::_(
-    'index.php?option=com_vikrentcar&view=cardetails&cid=' . $_recSlug
-    . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')
-);
+$_recUrl = rtrim($carslistUrl, '/') . '/' . $_rec['alias'];
 ?>
         <a href="<?php echo $_recUrl; ?>" class="cd-rec-card">
             <div class="cd-rec-img-wrap">
