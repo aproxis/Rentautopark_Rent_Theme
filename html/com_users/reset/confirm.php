@@ -33,6 +33,7 @@ $urlToken = $app->input->getString('token', '');
 $foundUsername = '';
 $foundEmail    = '';
 
+// Only do the expensive bcrypt scan when a token is actually present
 if ($urlToken !== '') {
     $db = Factory::getDbo();
     $q  = $db->getQuery(true)
@@ -61,15 +62,37 @@ if ($urlToken !== '') {
 <div class="reset-page">
 <div class="reset-container">
 
-<?php if ($foundUsername !== '') : ?>
+<?php if ($urlToken === '') : ?>
+    <!-- ═══════════════════════════════════════════════════════
+         STATE 1 — No token: user just submitted step 1.
+         J5 redirects here after processResetRequest().
+         The Joomla system message ("check your email") is
+         already injected above by the template; we add a
+         friendly visual to reinforce it.
+    ════════════════════════════════════════════════════════ -->
+    <div class="reset-email-sent">
+        <div class="reset-email-sent-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                <polyline points="17 17 19 19 23 15" />
+            </svg>
+        </div>
+        <h2><?php echo Text::_('COM_USERS_RESET_EMAIL_SENT_HEADING'); ?></h2>
+        <p><?php echo Text::_('COM_USERS_RESET_EMAIL_SENT_DESC'); ?></p>
+        <a href="<?php echo Route::_('index.php?option=com_users&view=reset'); ?>"
+           class="btn btn-danger">
+            <?php echo Text::_('COM_USERS_RESET_REQUEST_AGAIN'); ?>
+        </a>
+    </div>
 
-    <!--
-        Auto-submitting form — completely invisible to the user.
-        jform[username] is the real Joomla username (e.g. "user42"),
-        jform[token]    is the plain token from the URL.
-        processResetConfirm() verifies verifyPassword(token, activation)
-        and sets session state for processResetComplete().
-    -->
+<?php elseif ($foundUsername !== '') : ?>
+    <!-- ═══════════════════════════════════════════════════════
+         STATE 2 — Valid token: auto-submit to processResetConfirm().
+         User sees a spinner for ~250ms then lands on layout=complete.
+    ════════════════════════════════════════════════════════ -->
     <form action="<?php echo Route::_('index.php?option=com_users'); ?>"
           method="post"
           id="vrc-reset-confirm-form">
@@ -82,7 +105,6 @@ if ($urlToken !== '') {
         <?php echo HTMLHelper::_('form.token'); ?>
     </form>
 
-    <!-- Spinner shown during the ~200ms before form submits -->
     <div class="reset-autosubmit" role="status" aria-live="polite">
         <div class="reset-spinner" aria-hidden="true"></div>
         <p><?php echo Text::_('COM_USERS_RESET_VERIFYING'); ?></p>
@@ -93,7 +115,6 @@ if ($urlToken !== '') {
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Tiny delay so spinner paints before navigation starts
         setTimeout(function () {
             document.getElementById('vrc-reset-confirm-form').submit();
         }, 250);
@@ -101,15 +122,16 @@ if ($urlToken !== '') {
     </script>
 
 <?php else : ?>
-
-    <!-- Token not found, expired, or already used -->
+    <!-- ═══════════════════════════════════════════════════════
+         STATE 3 — Token present but no match: expired or already used.
+    ════════════════════════════════════════════════════════ -->
     <div class="reset-token-error">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
              viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              aria-hidden="true" class="reset-token-error-icon">
             <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8"  x2="12"   y2="12"/>
+            <line x1="12" y1="8"  x2="12"    y2="12"/>
             <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
         <h2><?php echo Text::_('COM_USERS_RESET_TOKEN_EXPIRED_HEADING'); ?></h2>
