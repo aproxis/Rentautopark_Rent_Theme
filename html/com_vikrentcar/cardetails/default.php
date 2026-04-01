@@ -1590,18 +1590,18 @@ try {
         $_priceMin = $_refPrice * 0.70;
         $_priceMax = $_refPrice * 1.30;
         $_dboRec = JFactory::getDbo();
-        $_dboRec->setQuery(
-            "SELECT `id`, `name`, `img`, `startfrom`"
-            . " FROM `#__vikrentcar_cars`"
-            . " WHERE `avail` = 1"
-            . " AND `id` != " . (int)$car['id']
-            . " AND CHAR_LENGTH(`startfrom`) > 0"
-            . " AND CAST(`startfrom` AS DECIMAL(10,2)) > 0"
-            . " AND CAST(`startfrom` AS DECIMAL(10,2))"
-            .     " BETWEEN " . (float)$_priceMin . " AND " . (float)$_priceMax
-            . " ORDER BY ABS(CAST(`startfrom` AS DECIMAL(10,2)) - " . (float)$_refPrice . ") ASC"
-            . " LIMIT 3"
-        );
+		$_dboRec->setQuery(
+			"SELECT `id`, `name`, `img`, `startfrom`, `alias`"   // ← added alias
+			. " FROM `#__vikrentcar_cars`"
+			. " WHERE `avail` = 1"
+			. " AND `id` != " . (int)$car['id']
+			. " AND CHAR_LENGTH(`startfrom`) > 0"
+			. " AND CAST(`startfrom` AS DECIMAL(10,2)) > 0"
+			. " AND CAST(`startfrom` AS DECIMAL(10,2))"
+			.     " BETWEEN " . (float)$_priceMin . " AND " . (float)$_priceMax
+			. " ORDER BY ABS(CAST(`startfrom` AS DECIMAL(10,2)) - " . (float)$_refPrice . ") ASC"
+			. " LIMIT 3"
+		);
         $recommendedCars = (array)$_dboRec->loadAssocList();
     }
 } catch (Exception $_eRec) {
@@ -1621,10 +1621,12 @@ try {
     $_recPriceDisp = floor($_recPrice) == $_recPrice
         ? (int)$_recPrice
         : VikRentCar::numberFormat($_recPrice);
-    $_recUrl = JRoute::_(
-        'index.php?option=com_vikrentcar&view=cardetails&cid=' . (int)$_rec['id']
-        . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')
-    );
+    $_recSlug = (int)$_rec['id'] . (!empty($_rec['alias']) ? ':' . $_rec['alias'] : '');
+
+$_recUrl = JRoute::_(
+    'index.php?option=com_vikrentcar&view=cardetails&cid=' . $_recSlug
+    . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')
+);
 ?>
         <a href="<?php echo $_recUrl; ?>" class="cd-rec-card">
             <div class="cd-rec-img-wrap">

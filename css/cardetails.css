@@ -970,8 +970,9 @@ body.vrc-modal-open {
 }
 /* ── Recommended Cars ─────────────────────────────────────────────── */
 .cd-recommended-section {
-    margin-top: 40px;
-    padding: 24px 0 32px;
+	max-width:1200px;
+    padding: 24px 50px 32px;
+	margin: 0 auto;
     border-top: 1px solid #e8e8e8;
 }
 
@@ -1071,3 +1072,4 @@ body.vrc-modal-open {
         grid-template-columns: 1fr;
     }
 }
+
