@@ -37,7 +37,8 @@
 
 /* ── Form scope ───────────────────────────────────────────────── */
 #user-reset-form,
-#user-reset-confirm-form {
+#user-reset-confirm-form,
+#user-reset-complete-form {
 
     /* Row: label + input */
     .form-group {
@@ -206,18 +207,21 @@
     }
 
     #user-reset-form .form-group,
-    #user-reset-confirm-form .form-group {
+    #user-reset-confirm-form .form-group,
+    #user-reset-complete-form .form-group {
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
     }
     #user-reset-form .form-group .control-label,
-    #user-reset-confirm-form .form-group .control-label {
+    #user-reset-confirm-form .form-group .control-label,
+    #user-reset-complete-form .form-group .control-label {
         flex: none;
         text-align: left;
     }
     #user-reset-form .form-group .controls,
-    #user-reset-confirm-form .form-group .controls {
+    #user-reset-confirm-form .form-group .controls,
+    #user-reset-complete-form .form-group .controls {
         width: 100%;
     }
 }
@@ -229,7 +233,12 @@
     #user-reset-form .btn-danger,
     #user-reset-confirm-form .form-control,
     #user-reset-confirm-form .btn-primary,
-    #user-reset-confirm-form .btn-danger {
+    #user-reset-confirm-form .btn-danger,
+    #user-reset-complete-form .form-control,
+    #user-reset-complete-form .btn-primary,
+    #user-reset-complete-form .input-password-toggle,
+    #user-reset-complete-form meter,
+    #user-reset-complete-form .password-strength-text {
         transition: none;
     }
 }
@@ -242,7 +251,8 @@
     #user-reset-form .btn-primary,
     #user-reset-form .btn-danger,
     #user-reset-confirm-form .btn-primary,
-    #user-reset-confirm-form .btn-danger {
+    #user-reset-confirm-form .btn-danger,
+    #user-reset-complete-form .btn-primary {
         border: 2px solid #fff;
     }
 }

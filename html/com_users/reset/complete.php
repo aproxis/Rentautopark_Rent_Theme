@@ -14,8 +14,7 @@ use Joomla\CMS\Uri\Uri;
 
 $wa = $this->document->getWebAssetManager();
 $wa->useScript('keepalive')
-   ->useScript('form.validate')
-   ->useScript('field.password');
+   ->useScript('form.validate');
 
 $doc = Factory::getDocument();
 $doc->addStyleSheet(Uri::root() . 'templates/rent/css/reset-styles.css');
