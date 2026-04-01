@@ -1,15 +1,22 @@
 <?php
 /**
- * AJAX endpoint: validate and save new password via J5's own model.
+ * AJAX endpoint: validate + save new password.
  * Path: templates/rent/php/reset-complete-ajax.php
  *
  * Accepts: POST JSON { password1: string, password2: string }
  * Returns: JSON { ok: true, email: string }
  *       or JSON { ok: false, error: string, error_code: string }
  *
- * Uses J5's actual com_users ResetModel + form validation so all rules
- * (minimum_length, minimum_integers, etc.) and error messages come from
- * the same source as normal Joomla form submission.
+ * Does NOT use bootComponent() / getMVCFactory() — that resolves to the
+ * Administrator UsersComponent class which is not on the autoloader path
+ * when bootstrapped as SiteApplication from a standalone file.
+ *
+ * Instead we replicate exactly what processResetComplete() does:
+ *   1. Read session state set by processResetConfirm()
+ *   2. Validate password against com_users params (same rules as UserPasswordRule)
+ *   3. UserHelper::hashPassword() + direct DB UPDATE
+ *   4. DELETE #__session rows for that user (same as core model)
+ *   5. Clear com_users.reset.* session keys
  */
 
 set_exception_handler(function (\Throwable $e) {
@@ -21,7 +28,7 @@ set_exception_handler(function (\Throwable $e) {
 
 ob_start();
 
-// ── Bootstrap Joomla ─────────────────────────────────────────────────────
+// ── Bootstrap Joomla ──────────────────────────────────────────────────────
 $joomlaBase = realpath(dirname(__FILE__) . '/../../../');
 if (!$joomlaBase || !file_exists($joomlaBase . '/includes/defines.php')) {
     ob_end_clean();
@@ -36,10 +43,12 @@ define('JPATH_BASE', $joomlaBase);
 require_once $joomlaBase . '/includes/defines.php';
 require_once $joomlaBase . '/includes/framework.php';
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\User\UserHelper;
 use Joomla\Session\SessionInterface;
+use Joomla\CMS\Application\SiteApplication;
 
 $container = Factory::getContainer();
 $container->alias(SessionInterface::class, 'session.web.site');
@@ -49,26 +58,25 @@ Factory::$application = $app;
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
 
-// ── Helpers ──────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────
 function sendJson(array $data): void
 {
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
 }
-
 function sendError(string $msg, string $code = 'GENERIC', int $status = 200): void
 {
     http_response_code($status);
     sendJson(['ok' => false, 'error' => $msg, 'error_code' => $code]);
 }
 
-// ── Method guard ─────────────────────────────────────────────────────────
+// ── Method guard ──────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendError('Method not allowed.', 'METHOD', 405);
 }
 
-// ── Parse input ──────────────────────────────────────────────────────────
-$raw = file_get_contents('php://input');
+// ── Parse body ────────────────────────────────────────────────────────────
+$raw   = file_get_contents('php://input');
 $input = json_decode($raw, true);
 if (!is_array($input)) {
     sendError('Invalid JSON.', 'BAD_REQUEST', 400);
@@ -77,73 +85,89 @@ if (!is_array($input)) {
 $password1 = (string) ($input['password1'] ?? '');
 $password2 = (string) ($input['password2'] ?? '');
 
-// ── Quick pre-checks (cheap, before loading MVC) ─────────────────────────
+// ── Quick mismatch pre-check ──────────────────────────────────────────────
 if ($password1 === '') {
-    sendError(Text::_('JGLOBAL_PASSWORD') . ' required.', 'EMPTY_PASSWORD');
+    sendError(Text::_('JGLOBAL_PASSWORD') . ' is required.', 'EMPTY_PASSWORD');
 }
-
 if ($password1 !== $password2) {
-    // Use J5's own translated string for mismatch
     sendError(Text::_('COM_USERS_PROFILES_PASSMATCH_ERROR'), 'PASSWORD_MISMATCH');
 }
 
-// ── Verify session state ─────────────────────────────────────────────────
-// processResetConfirm() set com_users.reset.user after successful token verify.
-// If it's empty, the session expired between step 2 and step 3.
-$sessionUserId = (int) $app->getUserState('com_users.reset.user', 0);
-
-if ($sessionUserId <= 0) {
+// ── Session state — set by processResetConfirm() ─────────────────────────
+$userId = (int) $app->getUserState('com_users.reset.user', 0);
+if ($userId <= 0) {
     sendError(
         Text::_('COM_USERS_RESET_STEP_ERROR') ?: 'Session expired. Please start the password reset again.',
         'SESSION_EXPIRED'
     );
 }
 
-// ── Get user email BEFORE processResetComplete clears the session ─────────
-// processResetComplete() sets com_users.reset.user = null on success,
-// so we capture the email now.
+// ── Validate password against com_users complexity rules ─────────────────
+// Mirrors J5's UserPasswordRule exactly — same Text::plural() strings.
+$params    = ComponentHelper::getParams('com_users');
+$minLen    = max(1, (int) $params->get('minimum_length',   12));
+$minInts   = (int) $params->get('minimum_integers',  0);
+$minSyms   = (int) $params->get('minimum_symbols',   0);
+$minUpper  = (int) $params->get('minimum_uppercase', 0);
+$minLower  = (int) $params->get('minimum_lowercase', 0);
+
+if (strlen($password1) < $minLen) {
+    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_LENGTH_N',    $minLen),  'RULE_LENGTH');
+}
+if ($minInts > 0 && preg_match_all('/[0-9]/', $password1) < $minInts) {
+    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_INTEGERS_N',  $minInts), 'RULE_INTEGERS');
+}
+if ($minSyms > 0 && preg_match_all('/[^a-zA-Z0-9]/', $password1) < $minSyms) {
+    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_SYMBOLS_N',   $minSyms), 'RULE_SYMBOLS');
+}
+if ($minUpper > 0 && preg_match_all('/[A-Z]/', $password1) < $minUpper) {
+    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_UPPERCASE_N', $minUpper),'RULE_UPPERCASE');
+}
+if ($minLower > 0 && preg_match_all('/[a-z]/', $password1) < $minLower) {
+    sendError(Text::plural('JLIB_USER_ERROR_MINIMUM_LOWERCASE_N', $minLower),'RULE_LOWERCASE');
+}
+
+// ── Get user email before we clear the session ────────────────────────────
 $userEmail = '';
 try {
-    $u = Factory::getUser($sessionUserId);
+    $u = Factory::getUser($userId);
     if ($u && $u->id > 0) {
         $userEmail = $u->email;
     }
-} catch (\Exception $e) {
-    // Non-fatal — autologin will fall back to homepage + modal trigger
-}
+} catch (\Exception $e) { /* non-fatal */ }
 
-// ── Load J5 com_users ResetModel and run processResetComplete ─────────────
-// This uses J5's actual form XML (reset_complete.xml) and UserPasswordRule validator,
-// so all complexity checks, translated error messages and password saving
-// are 100% native — no reimplementation needed.
+// ── Hash password + UPDATE #__users ──────────────────────────────────────
+// Exactly what processResetComplete() does: hash → store → clear activation.
+$hashedPw = UserHelper::hashPassword($password1);
+
+$db = Factory::getDbo();
+
 try {
-    $mvcFactory = $app->bootComponent('com_users')->getMVCFactory();
-    $model      = $mvcFactory->createModel('Reset', 'Site', ['ignore_request' => true]);
-} catch (\Throwable $e) {
-    sendError('Could not load password model: ' . $e->getMessage(), 'MODEL_BOOT_ERROR', 500);
+    $q = $db->getQuery(true)
+        ->update($db->quoteName('#__users'))
+        ->set($db->quoteName('password')         . ' = ' . $db->quote($hashedPw))
+        ->set($db->quoteName('activation')       . ' = ' . $db->quote(''))
+        ->set($db->quoteName('requireReset')     . ' = 0')
+        ->where($db->quoteName('id')             . ' = ' . (int) $userId);
+    $db->setQuery($q);
+    $db->execute();
+} catch (\RuntimeException $e) {
+    sendError('Could not save password: ' . $e->getMessage(), 'DB_ERROR', 500);
 }
 
-$data   = ['password1' => $password1, 'password2' => $password2];
-$result = $model->processResetComplete($data);
+// ── Invalidate all existing sessions for this user (security) ────────────
+// Same step as J5 processResetComplete() — prevents old sessions staying valid.
+try {
+    $sq = $db->getQuery(true)
+        ->delete($db->quoteName('#__session'))
+        ->where($db->quoteName('userid') . ' = ' . (int) $userId);
+    $db->setQuery($sq);
+    $db->execute();
+} catch (\RuntimeException $e) { /* non-fatal */ }
 
-// ── Handle result ─────────────────────────────────────────────────────────
-if ($result instanceof \Exception) {
-    // Hard exception from processResetComplete (e.g. DB error, missing token)
-    sendError($result->getMessage(), 'PROCESS_EXCEPTION', 500);
-}
+// ── Clear reset session keys ──────────────────────────────────────────────
+$app->setUserState('com_users.reset.token', null);
+$app->setUserState('com_users.reset.user',  null);
 
-if ($result === false) {
-    // Validation errors — collect translated messages from the model
-    $msgs = [];
-    foreach ($model->getErrors() as $modelError) {
-        $msgs[] = is_object($modelError) ? $modelError->getMessage() : (string) $modelError;
-    }
-    $errorMsg = implode(' ', array_filter($msgs));
-    sendError($errorMsg ?: Text::_('COM_USERS_RESET_COMPLETE_ERROR'), 'VALIDATION_ERROR');
-}
-
-// ── Success ───────────────────────────────────────────────────────────────
-// processResetComplete: saved hashed password, cleared activation,
-// destroyed other user sessions, cleared com_users.reset.* session keys.
-// Return email so JS can autologin.
+// ── Done ──────────────────────────────────────────────────────────────────
 sendJson(['ok' => true, 'email' => $userEmail]);
