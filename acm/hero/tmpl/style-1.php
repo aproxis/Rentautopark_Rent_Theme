@@ -326,6 +326,7 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
     z-index: 20;
     pointer-events: none;
 }
+@media (max-width: 639px) { #<?php echo $uid; ?> .hero-messengers { display: none; } }
 #<?php echo $uid; ?> .hero-messengers.is-open { pointer-events: auto; }
 
 #<?php echo $uid; ?> .hero-messenger-link {
