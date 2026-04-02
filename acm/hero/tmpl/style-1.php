@@ -258,7 +258,16 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
 #<?php echo $uid; ?> .hero-choose-btn:hover { background: #E54801; color: #fff; text-decoration: none; }
 
 /* ── Call button wrapper ─────────────────────────────────────────── */
-#<?php echo $uid; ?> .hero-call-wrap { position: relative; }
+#<?php echo $uid; ?> .hero-call-wrap {
+    position: relative;
+}
+
+/* Fade out call button when messengers are open */
+#<?php echo $uid; ?> .hero-call-wrap:has(.hero-messengers.is-open) .hero-call-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+}
 
 /* ── Call button (desktop ≥640px) ────────────────────────────────── */
 #<?php echo $uid; ?> .hero-call-btn {
@@ -383,11 +392,18 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
 /* ── Mobile messenger list ───────────────────────────────────────── */
 #<?php echo $uid; ?> .hero-mobile-messengers {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
     margin-top: 4px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity .3s ease, max-height .3s ease;
+}
+#<?php echo $uid; ?> .hero-mobile-messengers.is-open {
+    opacity: 1;
+    max-height: 300px;
 }
 @media (min-width: 640px) { #<?php echo $uid; ?> .hero-mobile-messengers { display: none; } }
 
@@ -400,14 +416,15 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
     border-radius: 6px;
     font-size: 13px;
     font-weight: 500;
-    padding: 6px 12px;
+    padding: 8px 12px;
     text-decoration: none;
     transition: opacity .2s;
     white-space: nowrap;
+    width: 100%;
 }
 #<?php echo $uid; ?> .hero-mobile-messenger-link:hover { opacity: .85; color: #fff; text-decoration: none; }
 #<?php echo $uid; ?> .hero-mobile-messenger-link svg { width: 18px; height: 18px; flex-shrink: 0; }
-#<?php echo $uid; ?> .hero-mobile-messenger-phone    { background: #000; }
+#<?php echo $uid; ?> .hero-mobile-messenger-phone    { background: #000; border: 1px solid #ffffff66; }
 #<?php echo $uid; ?> .hero-mobile-messenger-whatsapp { background: #25D366; }
 #<?php echo $uid; ?> .hero-mobile-messenger-telegram { background: #0088CC; }
 #<?php echo $uid; ?> .hero-mobile-messenger-viber    { background: #7360F2; }
@@ -790,11 +807,10 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
         });
     }
 
-    /* Mobile: toggle messenger list below buttons */
+    /* Mobile: toggle messenger list below buttons with smooth animation */
     if (mTrigger && mBubbles) {
         mTrigger.addEventListener('click', function () {
-            var hidden = mBubbles.style.display === 'none' || mBubbles.style.display === '';
-            mBubbles.style.display = hidden ? 'flex' : 'none';
+            mBubbles.classList.toggle('is-open');
         });
     }
 })();
