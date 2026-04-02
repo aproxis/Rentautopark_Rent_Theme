@@ -190,20 +190,161 @@ if (!$sitename) {
 }
 .ar-lang .dropdown-menu li a span { flex: 1; }
 
-/* ── Mobile hamburger ──────────────────────────────────────────── */
-.ar-mobile-toggle {
+/* ── Mobile Icon Navigation ────────────────────────────────────── */
+.ar-mobile-icon-nav {
 	display: none;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #fff;
+	border-top: 1px solid #e5e7eb;
+	box-shadow: 0 -4px 12px rgba(0,0,0,.08);
+	z-index: 9999;
+	padding: 8px 0;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.ar-mobile-icon-btn {
+	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	width: 40px; height: 40px;
-	border: none; background: none;
-	cursor: pointer;
+	padding: 8px 12px;
+	color: #6b7280;
+	text-decoration: none;
+	transition: color .2s, background .2s;
 	border-radius: 8px;
-	transition: background .2s;
-	color: #374151; padding: 0;
+	position: relative;
+	min-width: 60px;
 }
-.ar-mobile-toggle:hover { background: #f3f4f6; }
-.ar-mobile-toggle svg { width: 22px; height: 22px; }
+
+.ar-mobile-icon-btn:hover,
+.ar-mobile-icon-btn:focus {
+	color: #FE5001;
+	background: rgba(254,80,1,.08);
+	text-decoration: none;
+}
+
+.ar-mobile-icon-btn svg {
+	margin-bottom: 4px;
+}
+
+.ar-mobile-icon-label {
+	font-size: 10px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* Language button - hide the dropdown text, show only icon */
+.ar-mobile-lang-btn .dropdown,
+.ar-mobile-lang-btn .mod-languages {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.ar-mobile-lang-btn .dropdown-toggle,
+.ar-mobile-lang-btn a.dropdown-toggle {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.ar-mobile-lang-btn .dropdown-menu {
+	bottom: 100% !important;
+	top: auto !important;
+	left: 50% !important;
+	right: auto !important;
+	transform: translateX(-50%) !important;
+	margin-bottom: 8px;
+}
+
+/* Account button - hide module content, show only icon */
+.ar-mobile-account-btn .ja-login-form,
+.ar-mobile-account-btn .mod_jalogin,
+.ar-mobile-account-btn > div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.ar-mobile-account-btn .ar-myaccount-btn,
+.ar-mobile-account-btn .ar-account-btn {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	cursor: pointer;
+	padding: 0;
+	border: none;
+	background: none;
+}
+
+.ar-mobile-account-btn .ar-myaccount-btn .ar-myaccount-label,
+.ar-mobile-account-btn .ar-account-btn .ar-account-name,
+.ar-mobile-account-btn .ar-account-btn .ar-account-caret {
+	display: none !important;
+}
+
+.ar-mobile-account-btn .ar-myaccount-btn svg,
+.ar-mobile-account-btn .ar-account-btn svg {
+	display: none !important;
+}
+
+/* Show mobile icons on small screens */
+@media (max-width: 991px) {
+	.ar-mobile-icon-nav {
+		display: flex;
+	}
+	
+	/* Adjust body padding for fixed bottom nav */
+	body {
+		padding-bottom: 70px;
+	}
+	
+	/* Hide account dropdown username on small screens */
+	.ar-mobile-account-btn .ar-account-name {
+		display: none !important;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+	.ar-mobile-icon-btn {
+		min-width: 50px;
+		padding: 6px 8px;
+	}
+	
+	.ar-mobile-icon-btn svg {
+		width: 18px;
+		height: 18px;
+	}
+	
+	.ar-mobile-icon-label {
+		font-size: 9px;
+	}
+}
+
+/* ── Mobile hamburger (hidden on mobile) ───────────────────────── */
+.ar-mobile-toggle {
+	display: none;
+}
 
 /* ── Mobile menu panel ─────────────────────────────────────────── */
 .ar-mobile-menu {
@@ -294,11 +435,39 @@ if (!$sitename) {
 			<?php endif; ?>
 			<?php endif; ?>
 
-			<!-- Mobile Hamburger -->
-			<button class="ar-mobile-toggle" onclick="arToggleMobile()" aria-label="Menu">
-				<svg id="ar-menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-				<svg id="ar-close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-			</button>
+			<!-- Mobile Icon Navigation -->
+			<div class="ar-mobile-icon-nav">
+				<a href="<?php echo JURI::base(true); ?>/index.php?option=com_contact" class="ar-mobile-icon-btn" title="<?php echo JText::_('TPL_CONTACT'); ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M19 1.5H5a2 2 0 00-2 2v14a2 2 0 002 2h4l3 3 3-3h4c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.4 13 12 13 13.5h-2V13c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+					</svg>
+					<span class="ar-mobile-icon-label"><?php echo JText::_('TPL_CONTACT'); ?></span>
+				</a>
+				<a href="<?php echo JURI::base(true); ?>/index.php?option=com_vikrentcar&view=carslist" class="ar-mobile-icon-btn" title="<?php echo JText::_('TPL_CARS'); ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+					</svg>
+					<span class="ar-mobile-icon-label"><?php echo JText::_('TPL_CARS'); ?></span>
+				</a>
+				<div class="ar-mobile-icon-btn ar-mobile-lang-btn">
+					<?php if ($this->countModules('languageswitcherload')): ?>
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.92 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.987 7.987 0 015.08 16zm2.95-8H5.08a7.987 7.987 0 014.33-3.56A15.65 15.65 0 008.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 01-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/>
+						</svg>
+						<span class="ar-mobile-icon-label"><?php echo JText::_('TPL_LANGUAGE'); ?></span>
+						<jdoc:include type="modules" name="<?php $this->_p('languageswitcherload'); ?>" style="raw" />
+					<?php endif; ?>
+				</div>
+				<div class="ar-mobile-icon-btn ar-mobile-account-btn">
+					<?php if ($this->countModules('loginload')): ?>
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+						</svg>
+						<span class="ar-mobile-icon-label"><?php echo JText::_('TPL_ACCOUNT'); ?></span>
+						<jdoc:include type="modules" name="<?php $this->_p('loginload'); ?>" style="raw" />
+					<?php endif; ?>
+				</div>
+			</div>
 		</div>
 	</div>
 
