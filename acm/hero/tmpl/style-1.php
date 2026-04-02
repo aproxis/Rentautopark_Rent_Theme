@@ -688,7 +688,7 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
                             </div>
 
                             <!-- Mobile messenger links (shown below buttons) -->
-                            <div class="hero-mobile-messengers" id="<?php echo $uid; ?>-mobile-messengers" style="display:none;">
+                            <div class="hero-mobile-messengers" id="<?php echo $uid; ?>-mobile-messengers">
                                 <?php if (!empty($phoneLink)): ?>
                                 <a href="<?php echo htmlspecialchars($phoneLink); ?>"
                                    class="hero-mobile-messenger-link hero-mobile-messenger-phone" aria-label="Phone">
