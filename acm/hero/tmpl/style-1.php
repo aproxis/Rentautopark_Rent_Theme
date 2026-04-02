@@ -350,7 +350,7 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
 #<?php echo $uid; ?> .hero-messenger-link svg { width: 24px; height: 24px; }
 #<?php echo $uid; ?> .hero-messenger-link:hover { opacity: .85 !important; }
 
-#<?php echo $uid; ?> .hero-messenger-phone    { background: #000; }
+#<?php echo $uid; ?> .hero-messenger-phone    { background: #000;     border: 1px solid #ffffff66;}
 #<?php echo $uid; ?> .hero-messenger-whatsapp { background: #25D366; }
 #<?php echo $uid; ?> .hero-messenger-telegram { background: #0088CC; }
 #<?php echo $uid; ?> .hero-messenger-viber    { background: #7360F2; }
