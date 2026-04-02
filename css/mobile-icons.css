@@ -1,0 +1,159 @@
+/* Mobile Icon Navigation */
+.mobile-icon-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    box-shadow: 0 -4px 12px rgba(0,0,0,.08);
+    z-index: 9999;
+    padding: 8px 0;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.mobile-icon-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    color: #6b7280;
+    text-decoration: none;
+    transition: color .2s, background .2s;
+    border-radius: 8px;
+    position: relative;
+    min-width: 60px;
+}
+
+.mobile-icon-btn:hover,
+.mobile-icon-btn:focus {
+    color: #FE5001;
+    background: rgba(254,80,1,.08);
+    text-decoration: none;
+}
+
+.mobile-icon-btn svg {
+    margin-bottom: 4px;
+}
+
+.mobile-icon-label {
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Language button - hide the dropdown text, show only icon */
+.mobile-lang-btn .dropdown,
+.mobile-lang-btn .mod-languages {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.mobile-lang-btn .dropdown-toggle,
+.mobile-lang-btn a.dropdown-toggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.mobile-lang-btn .dropdown-menu {
+    bottom: 100% !important;
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    margin-bottom: 8px;
+}
+
+/* Account button - hide module content, show only icon */
+.mobile-account-btn .ja-login-form,
+.mobile-account-btn .mod_jalogin,
+.mobile-account-btn > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.mobile-account-btn .ar-myaccount-btn,
+.mobile-account-btn .ar-account-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.mobile-account-btn .ar-myaccount-btn .ar-myaccount-label,
+.mobile-account-btn .ar-account-btn .ar-account-name,
+.mobile-account-btn .ar-account-btn .ar-account-caret {
+    display: none !important;
+}
+
+.mobile-account-btn .ar-myaccount-btn svg,
+.mobile-account-btn .ar-account-btn svg {
+    display: none !important;
+}
+
+/* Hide desktop hamburger on mobile */
+.desktop-only {
+    display: block;
+}
+
+/* Show mobile icons on small screens */
+@media (max-width: 768px) {
+    .mobile-icon-nav {
+        display: flex;
+    }
+    
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* Adjust body padding for fixed bottom nav */
+    body {
+        padding-bottom: 70px;
+    }
+    
+    /* Hide account dropdown username on small screens */
+    .mobile-account-btn .ar-account-name {
+        display: none !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .mobile-icon-btn {
+        min-width: 50px;
+        padding: 6px 8px;
+    }
+    
+    .mobile-icon-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .mobile-icon-label {
+        font-size: 9px;
+    }
+}

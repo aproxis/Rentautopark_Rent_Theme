@@ -50,6 +50,9 @@ $this->addHead();
 if (is_file(T3_TEMPLATE_PATH . '/css/custom.css')) {
 	$this->addStyleSheet(T3_TEMPLATE_URL . '/css/custom.css');
 }
+
+// MOBILE ICONS CSS
+$this->addStyleSheet(T3_TEMPLATE_URL . '/css/mobile-icons.css');
 ?>
 
 <!-- Le HTML5 shim and media query for IE8 support -->
