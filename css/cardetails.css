@@ -612,6 +612,17 @@
 .ui-datepicker td a:hover { background: #FE5001 !important; color: #fff !important; }
 .ui-datepicker .ui-datepicker-current-day a { background: #FE5001 !important; color: #fff !important; font-weight: 700 !important; }
 
+
+.ui-datepicker.ui-widget-content .ui-state-default {
+	font-weight: 800;
+}
+
+.ui-datepicker-unselectable.ui-state-disabled .ui-state-default {
+	font-weight: normal;
+	opacity: 0.25;
+}
+
+
 /* ── Price tiers wrap: constrain on small screens ───────────────── */
 @media (max-width: 768px) {
 	.cd-price-tiers-wrap {

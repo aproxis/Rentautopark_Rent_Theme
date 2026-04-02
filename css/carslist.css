@@ -126,6 +126,7 @@
 	font-size: 14px; font-weight: 700;
 	cursor: pointer; transition: background .2s;
 	width: 100%;
+	margin: 20px 0;
 }
 .ar-mob-filter-btn:hover { background: #E54801; }
 .ar-mob-filter-btn i { font-size: 14px; }
