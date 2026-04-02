@@ -740,7 +740,7 @@ if (empty($callBtnLabel))   $callBtnLabel  = 'Sună acum';
                                 <div class="hero-widget hero-widget-price">
                                     <span class="hero-widget-from">from</span>
                                     <span class="hero-widget-value">
-                                        <?php echo htmlspecialchars($currencysymb . $minPrice); ?>/day
+                                        <?php echo $currencysymb . htmlspecialchars($minPrice); ?>/day
                                     </span>
                                     <span class="hero-widget-note">
                                         <?php echo htmlspecialchars($priceNote); ?>
