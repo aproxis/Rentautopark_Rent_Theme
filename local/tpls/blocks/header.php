@@ -402,8 +402,21 @@ try {
 				</div>
 				<?php endif; ?>
 
-				<!-- Account — direct link, no module overlay tricks -->
-				<a href="<?php echo htmlspecialchars($_accountUrl); ?>"
+				<!-- Account:
+				     guest       → openAuthModal('login')  same as desktop My Account btn
+				     logged-in   → direct link to orders page -->
+				<?php if ($_jUser->guest): ?>
+				<button type="button"
+				        class="ar-mobile-icon-btn"
+				        onclick="openAuthModal('login')"
+				        aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+						<circle cx="12" cy="7" r="4"/>
+					</svg>
+				</button>
+				<?php else: ?>
+				<a href="<?php echo htmlspecialchars($_ordersUrl); ?>"
 				   class="ar-mobile-icon-btn"
 				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
 					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -411,6 +424,7 @@ try {
 						<circle cx="12" cy="7" r="4"/>
 					</svg>
 				</a>
+				<?php endif; ?>
 
 			</div>
 			<!-- /MOBILE ICON ROW -->
