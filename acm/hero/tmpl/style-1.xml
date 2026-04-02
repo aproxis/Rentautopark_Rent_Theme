@@ -29,9 +29,19 @@
         <fieldset name="messengers" label="HERO_MESSENGERS_LABEL" description="HERO_MESSENGERS_DESC">
             <field name="call-btn-label" type="text" default="Sună acum" size="40" label="HERO_CALL_BTN_LABEL_LABEL" description="HERO_CALL_BTN_LABEL_DESC" />
             <field name="phone-link" type="text" default="tel:+37368123456" size="60" label="HERO_PHONE_LINK_LABEL" description="HERO_PHONE_LINK_DESC" />
+            <field name="messenger-phone-label" type="text" default="Phone" size="40" label="HERO_MESSENGER_PHONE_LABEL" description="HERO_MESSENGER_PHONE_DESC" />
             <field name="whatsapp-link" type="text" default="https://wa.me/37368123456" size="60" label="HERO_WHATSAPP_LINK_LABEL" description="HERO_WHATSAPP_LINK_DESC" />
+            <field name="messenger-whatsapp-label" type="text" default="WhatsApp" size="40" label="HERO_MESSENGER_WHATSAPP_LABEL" description="HERO_MESSENGER_WHATSAPP_DESC" />
             <field name="telegram-link" type="text" default="https://t.me/rentautopark" size="60" label="HERO_TELEGRAM_LINK_LABEL" description="HERO_TELEGRAM_LINK_DESC" />
+            <field name="messenger-telegram-label" type="text" default="Telegram" size="40" label="HERO_MESSENGER_TELEGRAM_LABEL" description="HERO_MESSENGER_TELEGRAM_DESC" />
             <field name="viber-link" type="text" default="viber://chat?number=%2B37368123456" size="60" label="HERO_VIBER_LINK_LABEL" description="HERO_VIBER_LINK_DESC" />
+            <field name="messenger-viber-label" type="text" default="Viber" size="40" label="HERO_MESSENGER_VIBER_LABEL" description="HERO_MESSENGER_VIBER_DESC" />
+        </fieldset>
+
+        <fieldset name="labels" label="HERO_LABELS_LABEL" description="HERO_LABELS_DESC">
+            <field name="price-from-label" type="text" default="from" size="40" label="HERO_PRICE_FROM_LABEL" description="HERO_PRICE_FROM_DESC" />
+            <field name="price-per-day-label" type="text" default="/day" size="40" label="HERO_PRICE_PER_DAY_LABEL" description="HERO_PRICE_PER_DAY_DESC" />
+            <field name="client-alt-text" type="text" default="Client" size="40" label="HERO_CLIENT_ALT_LABEL" description="HERO_CLIENT_ALT_DESC" />
         </fieldset>
     </fields>
 </form>
