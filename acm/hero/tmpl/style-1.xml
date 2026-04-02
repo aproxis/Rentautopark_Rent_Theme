@@ -5,43 +5,43 @@
   {":type":"ja_rent:hero","hero":{"jatools-layout-hero":"style-1","hero[heading]":["Fast booking, delivery and 24/7 support"],"hero[subheading]":["Professional car rental services for personal or business needs. We choose comfort, safety and a stress-free driving experience."],"hero[bg-image]":["images/backgrounds/hero.jpg"],"hero[choose-car-url]":["cars"],"hero[choose-car-label]":["Choose a car"],"hero[call-btn-label]":["Sună acum"],"hero[people-count]":["1000+ people"],"hero[promo-text]":["chose to rent cars from Rent AutoPark"],"hero[cars-available-label]":["Cars available"],"hero[price-note]":["More days, lower price"],"hero[phone-link]":["tel:+37368123456"],"hero[whatsapp-link]":["https://wa.me/37368123456"],"hero[telegram-link]":["https://t.me/rentautopark"],"hero[viber-link]":["viber://chat?number=%2B37368123456"],"hero[client-photo]":{"hero[client-photo][photo]":["images/clients/1.png","images/clients/2.png","images/clients/3.png","images/clients/4.png","images/clients/5.png"],"rows":1,"cols":5,"type":"list"}}}
    ]]></sampledata>
     <fields name="hero">
-        <fieldset name="basic" label="HERO_BASIC_LABEL" description="HERO_BASIC_DESC">
-            <field name="bg-image" type="media" default="images/backgrounds/hero.jpg" label="HERO_BG_IMAGE_LABEL" description="HERO_BG_IMAGE_DESC" />
-            <field name="heading" type="text" default="Fast booking, delivery and 24/7 support" size="80" label="HERO_HEADING_LABEL" description="HERO_HEADING_DESC" />
-            <field name="subheading" type="textarea" default="Professional car rental services for personal or business needs. We choose comfort, safety and a stress-free driving experience." rows="3" cols="60" label="HERO_SUBHEADING_LABEL" description="HERO_SUBHEADING_DESC" />
-            <field name="choose-car-url" type="text" default="cars" size="40" label="HERO_CHOOSE_CAR_URL_LABEL" description="HERO_CHOOSE_CAR_URL_DESC" />
-            <field name="choose-car-label" type="text" default="Choose a car" size="40" label="HERO_CHOOSE_CAR_LABEL_LABEL" description="HERO_CHOOSE_CAR_LABEL_DESC" />
+        <fieldset name="basic" label="Basic Settings" description="Configure the hero section heading, subheading and background">
+            <field name="bg-image" type="media" default="images/backgrounds/hero.jpg" label="Background Image" description="Hero section background image" />
+            <field name="heading" type="text" default="Fast booking, delivery and 24/7 support" size="80" label="Heading" description="Main headline text" />
+            <field name="subheading" type="textarea" default="Professional car rental services for personal or business needs. We choose comfort, safety and a stress-free driving experience." rows="3" cols="60" label="Subheading" description="Description text below the heading" />
+            <field name="choose-car-url" type="text" default="cars" size="40" label="Choose Car URL" description="URL for the 'Choose a car' button" />
+            <field name="choose-car-label" type="text" default="Choose a car" size="40" label="Choose Car Button Label" description="Text for the main CTA button" />
         </fieldset>
 
-        <fieldset name="widgets" label="HERO_WIDGETS_LABEL" description="HERO_WIDGETS_DESC">
-            <field name="cars-available-label" type="text" default="Cars available" size="40" label="HERO_CARS_AVAILABLE_LABEL_LABEL" description="HERO_CARS_AVAILABLE_LABEL_DESC" />
-            <field name="price-note" type="text" default="More days, lower price" size="40" label="HERO_PRICE_NOTE_LABEL" description="HERO_PRICE_NOTE_DESC" />
+        <fieldset name="widgets" label="Widget Settings" description="Configure the info widgets">
+            <field name="cars-available-label" type="text" default="Cars available" size="40" label="Cars Available Label" description="Label for the cars available widget" />
+            <field name="price-note" type="text" default="More days, lower price" size="40" label="Price Note" description="Note shown below the price widget" />
         </fieldset>
 
-        <fieldset name="social-proof" label="HERO_SOCIAL_PROOF_LABEL" description="HERO_SOCIAL_PROOF_DESC">
+        <fieldset name="social-proof" label="Social Proof" description="Configure client photos and social proof text">
             <field name="client-photo" type="jalist">
-                <item name="photo" type="media" default="" label="HERO_CLIENT_PHOTO_LABEL" description="HERO_CLIENT_PHOTO_DESC" />
+                <item name="photo" type="media" default="" label="Client Photo" description="Upload a client photo" />
             </field>
-            <field name="people-count" type="text" default="1000+ people" size="40" label="HERO_PEOPLE_COUNT_LABEL" description="HERO_PEOPLE_COUNT_DESC" />
-            <field name="promo-text" type="text" default="chose to rent cars from Rent AutoPark" size="60" label="HERO_PROMO_TEXT_LABEL" description="HERO_PROMO_TEXT_DESC" />
+            <field name="people-count" type="text" default="1000+ people" size="40" label="People Count" description="Number of people text (e.g. '1000+ people')" />
+            <field name="promo-text" type="text" default="chose to rent cars from Rent AutoPark" size="60" label="Promo Text" description="Promotional text below the people count" />
         </fieldset>
 
-        <fieldset name="messengers" label="HERO_MESSENGERS_LABEL" description="HERO_MESSENGERS_DESC">
-            <field name="call-btn-label" type="text" default="Sună acum" size="40" label="HERO_CALL_BTN_LABEL_LABEL" description="HERO_CALL_BTN_LABEL_DESC" />
-            <field name="phone-link" type="text" default="tel:+37368123456" size="60" label="HERO_PHONE_LINK_LABEL" description="HERO_PHONE_LINK_DESC" />
-            <field name="messenger-phone-label" type="text" default="Phone" size="40" label="HERO_MESSENGER_PHONE_LABEL" description="HERO_MESSENGER_PHONE_DESC" />
-            <field name="whatsapp-link" type="text" default="https://wa.me/37368123456" size="60" label="HERO_WHATSAPP_LINK_LABEL" description="HERO_WHATSAPP_LINK_DESC" />
-            <field name="messenger-whatsapp-label" type="text" default="WhatsApp" size="40" label="HERO_MESSENGER_WHATSAPP_LABEL" description="HERO_MESSENGER_WHATSAPP_DESC" />
-            <field name="telegram-link" type="text" default="https://t.me/rentautopark" size="60" label="HERO_TELEGRAM_LINK_LABEL" description="HERO_TELEGRAM_LINK_DESC" />
-            <field name="messenger-telegram-label" type="text" default="Telegram" size="40" label="HERO_MESSENGER_TELEGRAM_LABEL" description="HERO_MESSENGER_TELEGRAM_DESC" />
-            <field name="viber-link" type="text" default="viber://chat?number=%2B37368123456" size="60" label="HERO_VIBER_LINK_LABEL" description="HERO_VIBER_LINK_DESC" />
-            <field name="messenger-viber-label" type="text" default="Viber" size="40" label="HERO_MESSENGER_VIBER_LABEL" description="HERO_MESSENGER_VIBER_DESC" />
+        <fieldset name="messengers" label="Messenger Links" description="Configure call button and messenger links">
+            <field name="call-btn-label" type="text" default="Sună acum" size="40" label="Call Button Label" description="Text for the call button" />
+            <field name="phone-link" type="text" default="tel:+37368123456" size="60" label="Phone Link" description="Phone number link (tel: format)" />
+            <field name="messenger-phone-label" type="text" default="Phone" size="40" label="Phone Label" description="Tooltip/label for phone messenger" />
+            <field name="whatsapp-link" type="text" default="https://wa.me/37368123456" size="60" label="WhatsApp Link" description="WhatsApp chat link" />
+            <field name="messenger-whatsapp-label" type="text" default="WhatsApp" size="40" label="WhatsApp Label" description="Tooltip/label for WhatsApp messenger" />
+            <field name="telegram-link" type="text" default="https://t.me/rentautopark" size="60" label="Telegram Link" description="Telegram chat link" />
+            <field name="messenger-telegram-label" type="text" default="Telegram" size="40" label="Telegram Label" description="Tooltip/label for Telegram messenger" />
+            <field name="viber-link" type="text" default="viber://chat?number=%2B37368123456" size="60" label="Viber Link" description="Viber chat link" />
+            <field name="messenger-viber-label" type="text" default="Viber" size="40" label="Viber Label" description="Tooltip/label for Viber messenger" />
         </fieldset>
 
-        <fieldset name="labels" label="HERO_LABELS_LABEL" description="HERO_LABELS_DESC">
-            <field name="price-from-label" type="text" default="from" size="40" label="HERO_PRICE_FROM_LABEL" description="HERO_PRICE_FROM_DESC" />
-            <field name="price-per-day-label" type="text" default="/day" size="40" label="HERO_PRICE_PER_DAY_LABEL" description="HERO_PRICE_PER_DAY_DESC" />
-            <field name="client-alt-text" type="text" default="Client" size="40" label="HERO_CLIENT_ALT_LABEL" description="HERO_CLIENT_ALT_DESC" />
+        <fieldset name="labels" label="Label Settings" description="Configure text labels used in the widget">
+            <field name="price-from-label" type="text" default="from" size="40" label="Price 'From' Label" description="Text before the price (e.g. 'from')" />
+            <field name="price-per-day-label" type="text" default="/day" size="40" label="Price Per Day Label" description="Text after the price (e.g. '/day')" />
+            <field name="client-alt-text" type="text" default="Client" size="40" label="Client Alt Text" description="Alt text for client avatar images" />
         </fieldset>
     </fields>
 </form>
