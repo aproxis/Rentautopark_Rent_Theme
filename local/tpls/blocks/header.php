@@ -40,25 +40,25 @@ foreach ((array) $_menu->getItems('type', 'component') as $_mi) {
 	if (!$_contactUrl
 		&& strpos($_link, 'option=com_contact') !== false
 		&& $_langOk) {
-		$_contactUrl = JRoute::_($_link . '&Itemid=' . $_mi->id, false);
+		$_contactUrl = JRoute::_('index.php?Itemid=' . $_mi->id, false);
 	}
 	if (!$_carsUrl
 		&& strpos($_link, 'option=com_vikrentcar') !== false
 		&& strpos($_link, 'view=carslist') !== false
 		&& $_langOk) {
-		$_carsUrl = JRoute::_($_link . '&Itemid=' . $_mi->id, false);
+		$_carsUrl = JRoute::_('index.php?Itemid=' . $_mi->id, false);
 	}
 	if (!$_ordersUrl
 		&& strpos($_link, 'option=com_vikrentcar') !== false
 		&& strpos($_link, 'view=orderslist') !== false
 		&& $_langOk) {
-		$_ordersUrl = JRoute::_($_link . '&Itemid=' . $_mi->id, false);
+		$_ordersUrl = JRoute::_('index.php?Itemid=' . $_mi->id, false);
 	}
 	if (!$_loginUrl
 		&& strpos($_link, 'option=com_users') !== false
 		&& strpos($_link, 'view=login') !== false
 		&& $_langOk) {
-		$_loginUrl = JRoute::_($_link . '&Itemid=' . $_mi->id, false);
+		$_loginUrl = JRoute::_('index.php?Itemid=' . $_mi->id, false);
 	}
 }
 
@@ -285,6 +285,48 @@ try {
 	.ar-mobile-icon-btn svg { width: 20px; height: 20px; }
 	.ar-header-inner { padding: 0 8px; gap: 4px; }
 }
+
+/* ── Mobile account dropdown (logged-in) ─────────────────────────── */
+.ar-mob-acct-wrap { position: relative; }
+
+.ar-mob-acct-dropdown {
+	display: none;
+	position: absolute;
+	top: calc(100% + 6px); right: 0;
+	min-width: 160px; background: #fff;
+	border: 1.5px solid #e5e7eb; border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0,0,0,.12);
+	padding: 6px; z-index: 2000; list-style: none; margin: 0;
+}
+.ar-mob-acct-wrap.open .ar-mob-acct-dropdown {
+	display: block;
+	animation: arDropIn .15s ease;
+}
+@keyframes arDropIn {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+.ar-mob-acct-item {
+	display: flex; align-items: center; gap: 8px;
+	padding: 9px 12px; width: 100%;
+	font-size: 13px; font-weight: 500; color: #374151;
+	background: none; border: none; border-radius: 6px;
+	text-decoration: none; cursor: pointer; text-align: left;
+	white-space: nowrap; transition: background .15s;
+	-webkit-tap-highlight-color: transparent;
+}
+.ar-mob-acct-item:hover { background: #f3f4f6; color: #0a0a0a; }
+
+.ar-mob-logout-btn { color: #ef4444; }
+.ar-mob-logout-btn:hover { background: #fee2e2; color: #dc2626; }
+
+.ar-mob-acct-item svg {
+	width: 15px; height: 15px; flex-shrink: 0;
+	stroke: currentColor; stroke-width: 2;
+	fill: none; stroke-linecap: round; stroke-linejoin: round;
+}
+
 </style>
 
 <!-- HEADER -->
@@ -403,8 +445,8 @@ try {
 				<?php endif; ?>
 
 				<!-- Account:
-				     guest       → openAuthModal('login')  same as desktop My Account btn
-				     logged-in   → direct link to orders page -->
+				     guest      → openAuthModal('login')
+				     logged-in  → mini dropdown (Orders + Logout) -->
 				<?php if ($_jUser->guest): ?>
 				<button type="button"
 				        class="ar-mobile-icon-btn"
@@ -416,14 +458,32 @@ try {
 					</svg>
 				</button>
 				<?php else: ?>
-				<a href="<?php echo htmlspecialchars($_ordersUrl); ?>"
-				   class="ar-mobile-icon-btn"
-				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
-					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-						<circle cx="12" cy="7" r="4"/>
-					</svg>
-				</a>
+				<div class="ar-mob-acct-wrap">
+					<button type="button"
+					        class="ar-mobile-icon-btn ar-mob-acct-toggle"
+					        aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>"
+					        aria-expanded="false"
+					        aria-haspopup="true">
+						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+							<circle cx="12" cy="7" r="4"/>
+						</svg>
+					</button>
+					<div class="ar-mob-acct-dropdown" role="menu">
+						<a href="<?php echo htmlspecialchars($_ordersUrl); ?>"
+						   class="ar-mob-acct-item" role="menuitem">
+							<svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>
+							<?php echo JText::_('COM_VIKRENTCAR_ORDERS'); ?>
+						</a>
+						<button type="button"
+						        class="ar-mob-acct-item ar-mob-logout-btn"
+						        onclick="arMobileLogout()"
+						        role="menuitem">
+							<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+							<?php echo JText::_('JLOGOUT'); ?>
+						</button>
+					</div>
+				</div>
 				<?php endif; ?>
 
 			</div>
@@ -484,6 +544,20 @@ function arCloseMobileMenu() {
 	if (iconM) iconM.style.display = '';
 	if (iconC) iconC.style.display = 'none';
 }
+
+/* ── Mobile logout — reuses CSRF token from desktop module form ── */
+function arMobileLogout() {
+	// The desktop .ar-account-dropdown form already has the Joomla CSRF token
+	var form = document.querySelector('.ar-account-dropdown form');
+	if (form) { form.submit(); return; }
+	// Fallback: find any logout form on the page
+	var allForms = document.querySelectorAll('form');
+	for (var _i = 0; _i < allForms.length; _i++) {
+		var _task = allForms[_i].querySelector('input[name="task"]');
+		if (_task && _task.value === 'user.logout') { allForms[_i].submit(); return; }
+	}
+}
+
 function arToggleMobile() {
 	var menu   = document.getElementById('ar-mobile-menu');
 	var btn    = document.getElementById('ar-mobile-toggle-btn');
@@ -553,6 +627,38 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		});
 	}());
+
+
+	/* ── Mobile account dropdown (logged-in) ───────────────────── */
+	document.querySelectorAll('.ar-mob-acct-toggle').forEach(function (btn) {
+		btn.addEventListener('click', function (e) {
+			e.preventDefault(); e.stopPropagation();
+			var wrap   = btn.closest('.ar-mob-acct-wrap');
+			if (!wrap) return;
+			var isOpen = wrap.classList.contains('open');
+			// Close all mobile dropdowns first
+			document.querySelectorAll('.ar-mob-acct-wrap.open, .ar-mobile-lang-wrap.open').forEach(function (w) {
+				w.classList.remove('open');
+			});
+			if (!isOpen) {
+				wrap.classList.add('open');
+				btn.setAttribute('aria-expanded', 'true');
+			} else {
+				btn.setAttribute('aria-expanded', 'false');
+			}
+		});
+	});
+
+	// Close account dropdown on outside click
+	document.addEventListener('click', function (e) {
+		if (!e.target.closest('.ar-mob-acct-wrap')) {
+			document.querySelectorAll('.ar-mob-acct-wrap.open').forEach(function (w) {
+				w.classList.remove('open');
+				var b = w.querySelector('.ar-mob-acct-toggle');
+				if (b) b.setAttribute('aria-expanded', 'false');
+			});
+		}
+	});
 
 	/* ── Mobile globe toggle ───────────────────────────────────── */
 	document.querySelectorAll('.ar-mobile-lang-toggle').forEach(function (btn) {
