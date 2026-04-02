@@ -48,9 +48,11 @@ foreach ((array) $_menu->getItems('type', 'component') as $_mi) {
 		&& $_langOk) {
 		$_carsUrl = JRoute::_('index.php?Itemid=' . $_mi->id, false);
 	}
+	// "Orders" page = Joomla user profile (com_users, view=profile, Itemid=458)
+	// VikRentCar renders the orders list inside the profile view
 	if (!$_ordersUrl
-		&& strpos($_link, 'option=com_vikrentcar') !== false
-		&& strpos($_link, 'view=orderslist') !== false
+		&& strpos($_link, 'option=com_users') !== false
+		&& strpos($_link, 'view=profile') !== false
 		&& $_langOk) {
 		$_ordersUrl = JRoute::_('index.php?Itemid=' . $_mi->id, false);
 	}
@@ -65,7 +67,7 @@ foreach ((array) $_menu->getItems('type', 'component') as $_mi) {
 // Fallbacks if menu items not found
 if (!$_contactUrl) $_contactUrl = JRoute::_('index.php?option=com_contact', false);
 if (!$_carsUrl)    $_carsUrl    = JRoute::_('index.php?option=com_vikrentcar&view=carslist', false);
-if (!$_ordersUrl)  $_ordersUrl  = JRoute::_('index.php?option=com_vikrentcar&view=orderslist', false);
+if (!$_ordersUrl)  $_ordersUrl  = JRoute::_('index.php?option=com_users&view=profile', false);
 if (!$_loginUrl)   $_loginUrl   = JRoute::_('index.php?option=com_users&view=login', false);
 
 // ── Account URL: guest → login, logged-in → orders ───────────────
