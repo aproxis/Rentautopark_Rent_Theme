@@ -402,7 +402,7 @@ try {
 				<a href="<?php echo htmlspecialchars($_contactUrl); ?>"
 				   class="ar-mobile-icon-btn"
 				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_CONTACT')); ?>">
-					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: #fe5001; stroke: none;">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" >
 						<path d="M19 1.5H5a2 2 0 00-2 2v14a2 2 0 002 2h4l3 3 3-3h4c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.4 13 12 13 13.5h-2V13c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path>
 					</svg>
 				</a>
@@ -411,7 +411,7 @@ try {
 				<a href="<?php echo htmlspecialchars($_carsUrl); ?>"
 				   class="ar-mobile-icon-btn"
 				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_CARS')); ?>">
-					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: #fe5001; stroke: none;">
 						<path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"></path>
 					</svg>
 				</a>
@@ -474,7 +474,7 @@ try {
 				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
 					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-						<circle cx="12" cy="7" r="4"/>
+						<circle cx="12" cy="7" r="4" style="fill: #fe5001; stroke: none;"/>
 					</svg>
 				</a>
 				<!-- Logout — separate icon to the right of account -->
