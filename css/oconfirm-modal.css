@@ -379,10 +379,10 @@ body.contentpane .vrcrentalfor {
 
 /* Custom fields grid */
 .vrccustomfields {
-    display: grid;
+    /* display: grid; */
     /* grid-template-columns: 1fr 1fr; */
-    grid-template-columns: 1fr;
-
+    display: flex;
+    flex-direction: column;
     gap: 8px 12px;
 }
 
