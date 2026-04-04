@@ -1121,3 +1121,11 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 .fancybox-slide {
     padding: 0 !important;
 }
+
+.fancybox-toolbar {
+    right: 16%;
+    top: 13%;
+}
+.fancybox-button {
+    border-radius: 30px;
+}
