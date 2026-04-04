@@ -1117,3 +1117,7 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
         min-width: 120px;
     }
 }
+
+.fancybox-slide {
+    padding: 0 !important;
+}

@@ -108,9 +108,7 @@ body.modal-open .item-page {
     display: none;
 }
 
-.fancybox-slide {
-    padding: 0 !important;
-}
+
 
 </style>
 
