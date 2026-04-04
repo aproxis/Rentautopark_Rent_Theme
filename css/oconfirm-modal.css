@@ -22,7 +22,7 @@
    ══════════════════════════════════════════════════════════ */
 
 .vrc-modal-header {
-    padding: 20px 24px 16px;
+    padding: 0 24px 16px;
     border-bottom: 1px solid var(--oc-border);
     flex-shrink: 0;
 }
@@ -629,6 +629,7 @@ body.contentpane .vrcrentalfor {
 
 .vrc-register-section {
     grid-column: span 2;
+    padding: 0 15px;
     
     /* margin-top: 20px;
     padding: 14px 16px;
@@ -949,6 +950,8 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 
 .com_vikrentcar .vrccustomfields .vrcdivcustomfield {
     min-height: 50px;
+    padding: 0 15px;
+    margin: 0;
 }
 
 /* Phone input — the intl-tel-input lib adds its own wrapper */
