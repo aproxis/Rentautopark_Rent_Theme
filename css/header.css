@@ -198,8 +198,8 @@
 
 @media (max-width: 480px) {
 	/* Shrink icons so 5 fit next to logo */
-	.ar-mobile-icon-btn { width: 36px; height: 36px; }
-	.ar-mobile-icon-btn svg { width: 19px; height: 19px; }
+	/* .ar-mobile-icon-btn { width: 36px; height: 36px; } */
+	/* .ar-mobile-icon-btn svg { width: 19px; height: 19px; } */
 	.ar-mobile-actions { gap: 0; }
 	.ar-header-inner { padding: 0 8px; gap: 4px; }
 	/* Scale logo down */
