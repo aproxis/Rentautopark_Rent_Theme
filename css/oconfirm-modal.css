@@ -1129,3 +1129,13 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 .fancybox-button {
     border-radius: 30px;
 }
+
+.vrc-terms-text .vrcrequired {
+    display: none;
+}
+
+.vrc-oconfirm-cfield-entry-checkbox > div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
