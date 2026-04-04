@@ -380,7 +380,9 @@ body.contentpane .vrcrentalfor {
 /* Custom fields grid */
 .vrccustomfields {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* grid-template-columns: 1fr 1fr; */
+    grid-template-columns: 1fr;
+
     gap: 8px 12px;
 }
 
@@ -1138,4 +1140,13 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+a.vrc-terms-link.vrcmodal {
+    font-size: 14px;
+    letter-spacing: -1px;
+}
+
+.com_vikrentcar .vrccustomfields {
+    margin: 0;
 }
