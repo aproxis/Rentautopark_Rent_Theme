@@ -838,6 +838,10 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
         letter-spacing: -1px;
     }
 
+    .vrc-register-toggle-text {
+    font-size: 12px;
+    letter-spacing: -1px;
+}
 }
 
 .com_vikrentcar .vrccustomfields:before, 
