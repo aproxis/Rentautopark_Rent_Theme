@@ -832,6 +832,12 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
 
     .vrc-save-order-block input[type="submit"],
     .vrc-goback-block .btn { width: 100%; text-align: center; justify-content: center; }
+ 
+    a.vrc-terms-link.vrcmodal {
+        font-size: 14px;
+        letter-spacing: -1px;
+    }
+
 }
 
 .com_vikrentcar .vrccustomfields:before, 
@@ -1143,11 +1149,6 @@ body.contentpane .vrc-oconfirm-summary-car-wrapper table,
     display: flex;
     align-items: center;
     gap: 6px;
-}
-
-a.vrc-terms-link.vrcmodal {
-    font-size: 14px;
-    letter-spacing: -1px;
 }
 
 .com_vikrentcar .vrccustomfields {
