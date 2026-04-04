@@ -104,6 +104,14 @@ body.modal-open .item-page {
 	-webkit-overflow-scrolling: touch;
 }
 
+#ar-header {
+    display: none;
+}
+
+.fancybox-slide {
+    padding: 0 !important;
+}
+
 </style>
 
 <div class="item-page<?php echo $this->pageclass_sfx . $this->item->state ? ' item-is-unpublished' : ''; ?>" itemscope itemtype="https://schema.org/Article">
