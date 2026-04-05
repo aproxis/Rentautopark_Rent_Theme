@@ -98,10 +98,12 @@ body.contentpane > .vrc-modal-header {
     flex-shrink: 0;
 }
 
-body.contentpane > .vrc-oconfirm-two-col {
+body.contentpane > .vrc-oconfirm-two-col,
+.com_vikrentcar.view-oconfirm .vrc-oconfirm-two-col {
     flex: 1 1 auto;
     min-height: 0;
-    height: 0; /* flex child needs explicit 0 to shrink properly */
+    height: calc(100vh - 280px); /* Full page desktop scroll */
+    max-height: calc(100vh - 280px);
 }
 
 
