@@ -65,11 +65,12 @@ $document->addScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
 
 $formAction  = Route::_('index.php');
 $mapId       = 'ar-contact-map-' . $module->id;
-$contactAddr = htmlspecialchars(trim($contact->address ?? ''), ENT_QUOTES, 'UTF-8');
+// Joomla stores address in suburb field by default
+$contactAddr = htmlspecialchars(trim($contact->suburb ?? $contact->address ?? ''), ENT_QUOTES, 'UTF-8');
 
-// Always have a default address for popup
+// Fallback default
 if (empty($contactAddr)) {
-    $contactAddr = 'Strada Exemplu 123, Chișinău, Republica Moldova';
+    $contactAddr = 'Chișinău, str. Nicolae Testemițanu 29/5';
 }
 ?>
 
