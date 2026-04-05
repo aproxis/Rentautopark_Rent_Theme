@@ -1,7 +1,7 @@
 <?php
 /**
  * Template override: /templates/rent/html/com_vikrentcar/locationslist/default.php
- * AutoRent Figma Design System
+ * AutoRent Figma Design System — Dark Map Edition
  */
 
 defined('_JEXEC') OR die('Restricted Area');
@@ -121,9 +121,17 @@ $nowtf = VikRentCar::getTimeFormat();
                         </div>
                     </div>
 
-                    <!-- Right Column: Google Map -->
+                    <!-- Right Column: Map -->
                     <div class="ar-locations-col-right">
-                        <div class="ar-map-container sticky top-20 rounded-2xl overflow-hidden shadow-xl">
+                        <div class="ar-map-container sticky top-20">
+                            <!-- Overlay badge top-left of map -->
+                            <div class="ar-map-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FE5001" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                <span><?php echo count($locations); ?></span> <?php echo Text::_('VRC_LOCATIONS_COUNT') ?: 'Locații'; ?>
+                            </div>
                             <div id="vrcmapcanvas" class="ar-map-canvas"></div>
                         </div>
                     </div>
@@ -131,46 +139,80 @@ $nowtf = VikRentCar::getTimeFormat();
 
                 <script type="text/javascript">
                 document.addEventListener('DOMContentLoaded', function() {
-                    // Initialize OpenStreetMap with Leaflet
                     var map = L.map('vrcmapcanvas', {
                         zoomControl: true,
                         attributionControl: true
                     });
 
-                    // Add OpenStreetMap tiles
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19,
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    }).addTo(map);
+                    // Dark tile layer — Stadia Alidade Smooth Dark (no API key needed)
+                    // Falls back to CartoDB Dark Matter if Stadia is unavailable
+                    var darkTile = L.tileLayer(
+                        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+                        {
+                            maxZoom: 19,
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+                            subdomains: 'abcd',
+                            r: window.devicePixelRatio >= 2 ? '@2x' : ''
+                        }
+                    ).addTo(map);
 
-                    // Custom marker icon matching our brand color
-                    var customIcon = L.divIcon({
-                        className: 'ar-map-marker',
-                        html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FE5001" stroke="#fff" stroke-width="1.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>',
-                        iconSize: [36, 36],
-                        iconAnchor: [18, 36]
-                    });
+                    // Custom brand marker — orange pin, white dot, no filter needed
+                    function makeIcon(active) {
+                        var color  = active ? '#ff7a33' : '#FE5001';
+                        var size   = active ? 44 : 36;
+                        var anchor = active ? 22 : 18;
+                        return L.divIcon({
+                            className: '',   /* no class — inline svg only, avoids CSS filter */
+                            html: '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 24 24">'
+                                + '<filter id="ds"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(254,80,1,0.5)"/></filter>'
+                                + '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" fill="' + color + '" filter="url(#ds)" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>'
+                                + '<circle cx="12" cy="10" r="3.5" fill="#fff"/>'
+                                + '</svg>',
+                            iconSize:   [size,   size],
+                            iconAnchor: [anchor, size],
+                            popupAnchor:[0, -size]
+                        });
+                    }
 
-                    // Add markers
                     var bounds = [];
+                    var markers = [];
+
                     <?php foreach($locations as $l): ?>
-                        var marker = L.marker([<?php echo $l['lat']; ?>, <?php echo $l['lng']; ?>], {icon: customIcon}).addTo(map);
-                        bounds.push([<?php echo $l['lat']; ?>, <?php echo $l['lng']; ?>]);
+                    (function() {
+                        var lat = <?php echo $l['lat']; ?>;
+                        var lng = <?php echo $l['lng']; ?>;
+                        var marker = L.marker([lat, lng], { icon: makeIcon(false) }).addTo(map);
+                        bounds.push([lat, lng]);
 
                         <?php if(strlen(trim(strip_tags($l['descr']))) > 0): ?>
-                            marker.bindPopup('<div class="ar-map-popup"><h4><?php echo addslashes($l['name']); ?></h4><p><?php echo addslashes(preg_replace('/\s\s+/', ' ', $l['descr'])); ?></p></div>');
+                        marker.bindPopup(
+                            '<div class="ar-map-popup">'
+                            + '<h4><?php echo addslashes($l['name']); ?></h4>'
+                            + '<p><?php echo addslashes(preg_replace('/\s\s+/', ' ', strip_tags($l['descr']))); ?></p>'
+                            + '</div>',
+                            { maxWidth: 220 }
+                        );
+                        <?php else: ?>
+                        marker.bindPopup(
+                            '<div class="ar-map-popup"><h4><?php echo addslashes($l['name']); ?></h4></div>',
+                            { maxWidth: 220 }
+                        );
                         <?php endif; ?>
+
+                        marker.on('mouseover', function() { this.setIcon(makeIcon(true)); });
+                        marker.on('mouseout',  function() { this.setIcon(makeIcon(false)); });
+
+                        markers.push(marker);
+                    })();
                     <?php endforeach; ?>
 
-                    // Fit map to all markers
-                    if(bounds.length > 0) {
-                        map.fitBounds(bounds, {
-                            padding: [40, 40]
-                        });
+                    if (bounds.length > 0) {
+                        map.fitBounds(bounds, { padding: [50, 50] });
+                        // Don't zoom in too close for a single pin
+                        if (bounds.length === 1) { map.setZoom(14); }
                     }
                 });
                 </script>
-
 
             <?php endif; ?>
 

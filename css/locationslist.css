@@ -1,7 +1,7 @@
 /* ========================================================== */
 /**
  * /templates/rent/css/locationslist.css
- * Locations List Page Styles
+ * Locations List Page Styles — AutoRent Dark Map Edition
  */
 
 :root {
@@ -22,22 +22,95 @@
    ========================================================== */
 
 .ar-map-container {
-    border: 1px solid var(--loc-border);
-    background: #fff;
+    border: none;
+    background: #0a0a0a;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    /* Glowing orange border effect */
+    box-shadow:
+        0 0 0 1px rgba(254, 80, 1, 0.35),
+        0 0 32px rgba(254, 80, 1, 0.12),
+        0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Top accent bar */
+.ar-map-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #FE5001 40%, #ff7a33 60%, transparent 100%);
+    z-index: 1000;
+}
+
+/* Subtle corner pip */
+.ar-map-container::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    background: #FE5001;
+    border-radius: 50%;
+    z-index: 1000;
+    box-shadow: 0 0 8px 2px rgba(254, 80, 1, 0.6);
+    animation: ar-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ar-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(1.5); }
 }
 
 .ar-map-canvas {
     width: 100%;
     height: 520px;
     border-radius: 0;
+    /* Apply CSS filter to darken the default light tile layer */
+    filter: brightness(0.85) contrast(1.1) saturate(0.7) invert(1) hue-rotate(180deg);
+}
+
+/* Leaflet attribution — restyle for dark theme */
+.leaflet-control-attribution {
+    background: rgba(0, 0, 0, 0.75) !important;
+    color: #888 !important;
+    font-size: 10px !important;
+    backdrop-filter: blur(4px);
+    border-radius: 6px 0 0 0 !important;
+    border: none !important;
+}
+
+.leaflet-control-attribution a {
+    color: #FE5001 !important;
+}
+
+/* Zoom controls */
+.leaflet-control-zoom a {
+    background: #1a1a1a !important;
+    color: #fff !important;
+    border-color: #333 !important;
+    transition: background .15s, color .15s;
+}
+
+.leaflet-control-zoom a:hover {
+    background: #FE5001 !important;
+    color: #fff !important;
+    border-color: #FE5001 !important;
 }
 
 /* Leaflet Map Customization */
 .ar-map-marker {
     background: transparent !important;
     border: none !important;
+    /* Undo the CSS invert filter on the marker so orange stays orange */
+    filter: invert(1) hue-rotate(180deg) brightness(1.2) saturate(1.5);
 }
 
+/* Popup — dark card style */
 .ar-map-popup {
     font-size: 13px;
 }
@@ -46,23 +119,63 @@
     margin: 0 0 6px;
     font-size: 14px;
     font-weight: 700;
-    color: var(--loc-dark);
+    color: #fff;
 }
 
 .ar-map-popup p {
     margin: 0;
     font-size: 12px;
-    color: var(--loc-muted);
+    color: #aaa;
     line-height: 1.4;
 }
 
 .leaflet-popup-content-wrapper {
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    background: #1a1a1a !important;
+    border: 1px solid rgba(254, 80, 1, 0.4) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 16px rgba(254,80,1,.15) !important;
+    color: #fff !important;
 }
 
 .leaflet-popup-tip {
-    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    background: #1a1a1a !important;
+    box-shadow: none !important;
+}
+
+.leaflet-popup-close-button {
+    color: #888 !important;
+    transition: color .15s;
+}
+
+.leaflet-popup-close-button:hover {
+    color: #FE5001 !important;
+}
+
+/* ==========================================================
+   MAP OVERLAY LABEL (optional top-left badge on map)
+   ========================================================== */
+
+.ar-map-label {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(254, 80, 1, 0.4);
+    border-radius: 8px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    pointer-events: none;
+}
+
+.ar-map-label span {
+    color: #FE5001;
 }
 
 /* ==========================================================
@@ -94,7 +207,6 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
-    /* margin-top: 16px; */
 }
 
 /* ==========================================================
@@ -226,11 +338,10 @@
         grid-template-columns: 1fr;
         gap: 24px;
     }
-    
+
     .ar-locations-grid {
         grid-template-columns: 0.5fr 0.5fr;
     }
-        
 
     .ar-locations-col-right {
         order: -1;
@@ -263,7 +374,7 @@
 }
 
 /* ==========================================================
-   GOOGLE MAPS INFO WINDOW
+   GOOGLE MAPS INFO WINDOW (fallback)
    ========================================================== */
 
 .vrcgmapinfow {
