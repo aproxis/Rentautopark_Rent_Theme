@@ -3,9 +3,8 @@
  * ------------------------------------------------------------------------
  * JA Rent template - AutoRent Contact Style 1: Contact Form & Leaflet Map
  * ------------------------------------------------------------------------
- * ACM layout: Split layout with contact form (left) and Leaflet OSM dark map (right).
- * Leaflet map styled to match locationslist: CartoDB Dark Matter tiles, orange
- * glow border, pulsing dot, accent bar, branded marker, dark popups.
+ * ACM layout: Split layout with contact form (left) and Leaflet light map (right).
+ * Map uses OpenStreetMap light tiles to match the locationslist page style.
  *
  * Extra Fields used:
  *   map-url    (Google Maps embed URL — lat/lng extracted from it, or fallback)
@@ -171,18 +170,19 @@ $contactAddr = htmlspecialchars($contact->address ?? '', ENT_QUOTES, 'UTF-8');
 }
 .<?php echo $uid; ?>-submit:hover { background: #E54801; }
 
-/* ── Map card — dark Leaflet theme ── */
+/* ── Map card — light theme matching locations page ── */
 .<?php echo $uid; ?>-map-card {
     position: relative;
-    background: #0a0a0a;
+    background: #fff;
     border-radius: 16px;
     overflow: hidden;
     height: 100%;
     min-height: 420px;
+    border: 1px solid #e5e7eb;
     box-shadow:
         0 0 0 1px rgba(254, 80, 1, 0.35),
         0 0 32px rgba(254, 80, 1, 0.12),
-        0 20px 60px rgba(0, 0, 0, 0.5);
+        0 10px 40px rgba(0, 0, 0, 0.12);
 }
 
 /* Top orange accent bar */
@@ -222,10 +222,10 @@ $contactAddr = htmlspecialchars($contact->address ?? '', ENT_QUOTES, 'UTF-8');
     min-height: 420px;
 }
 
-/* Leaflet controls */
+/* Leaflet controls — light style */
 .<?php echo $uid; ?>-map-card .leaflet-control-attribution {
-    background: rgba(0,0,0,.75) !important;
-    color: #888 !important;
+    background: rgba(255,255,255,0.85) !important;
+    color: #6b7280 !important;
     font-size: 10px !important;
     backdrop-filter: blur(4px);
     border-radius: 6px 0 0 0 !important;
@@ -233,35 +233,36 @@ $contactAddr = htmlspecialchars($contact->address ?? '', ENT_QUOTES, 'UTF-8');
 .<?php echo $uid; ?>-map-card .leaflet-control-attribution a { color: #FE5001 !important; }
 
 .<?php echo $uid; ?>-map-card .leaflet-control-zoom a {
-    background: #1a1a1a !important;
-    color: #fff !important;
-    border-color: #333 !important;
-    transition: background .15s;
+    background: #fff !important;
+    color: #374151 !important;
+    border-color: #e5e7eb !important;
+    transition: background .15s, color .15s;
 }
 .<?php echo $uid; ?>-map-card .leaflet-control-zoom a:hover {
     background: #FE5001 !important;
+    color: #fff !important;
     border-color: #FE5001 !important;
 }
 
-/* Dark popup */
+/* Light popup — matches location card style */
 .<?php echo $uid; ?>-map-card .leaflet-popup-content-wrapper {
-    background: #1a1a1a !important;
-    border: 1px solid rgba(254,80,1,.4) !important;
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
     border-radius: 10px !important;
-    box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 16px rgba(254,80,1,.15) !important;
-    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15) !important;
+    color: #111827 !important;
 }
-.<?php echo $uid; ?>-map-card .leaflet-popup-tip        { background: #1a1a1a !important; }
-.<?php echo $uid; ?>-map-card .leaflet-popup-close-button       { color: #888 !important; }
+.<?php echo $uid; ?>-map-card .leaflet-popup-tip        { background: #fff !important; }
+.<?php echo $uid; ?>-map-card .leaflet-popup-close-button       { color: #6b7280 !important; }
 .<?php echo $uid; ?>-map-card .leaflet-popup-close-button:hover { color: #FE5001 !important; }
 
-/* Bottom-left badge */
+/* Bottom-left badge — same as locations page */
 .<?php echo $uid; ?>-map-badge {
     position: absolute;
     bottom: 16px;
     left: 16px;
     z-index: 1001;
-    background: rgba(0,0,0,.75);
+    background: rgba(10,10,10,.75);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(254,80,1,.4);
     border-radius: 8px;
@@ -370,25 +371,23 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollWheelZoom: false
     });
 
-    // CartoDB Dark Matter — identical to locationslist
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // OpenStreetMap light tiles — same as locationslist
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: 'abcd',
-        r: window.devicePixelRatio >= 2 ? '@2x' : ''
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     // Branded marker — same makeIcon pattern as locationslist
     function makeIcon(active) {
-        var color  = active ? '#ff7a33' : '#FE5001';
-        var size   = active ? 44 : 36;
-        var anchor = active ? 22 : 18;
+        var color    = active ? '#ff7a33' : '#FE5001';
+        var size     = active ? 44 : 36;
+        var anchor   = active ? 22 : 18;
         var filterId = 'ds-<?php echo $module->id; ?>';
         return L.divIcon({
             className: '',
             html: '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 24 24">'
                 + '<defs><filter id="' + filterId + '"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(254,80,1,0.5)"/></filter></defs>'
-                + '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" fill="' + color + '" filter="url(#' + filterId + ')" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>'
+                + '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" fill="' + color + '" filter="url(#' + filterId + ')" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>'
                 + '<circle cx="12" cy="10" r="3.5" fill="#fff"/>'
                 + '</svg>',
             iconSize:    [size, size],
@@ -402,9 +401,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var marker = L.marker([<?php echo $lat; ?>, <?php echo $lng; ?>], { icon: makeIcon(false) }).addTo(map);
 
     var popupHtml = '<div style="font-family:inherit;">'
-        + '<strong style="font-size:14px;color:#fff;"><?php echo addslashes($contactName); ?></strong>'
+        + '<strong style="font-size:14px;color:#111827;"><?php echo addslashes($contactName); ?></strong>'
         <?php if (!empty($contactAddr)): ?>
-        + '<br><span style="font-size:12px;color:#aaa;margin-top:4px;display:block;"><?php echo addslashes($contactAddr); ?></span>'
+        + '<br><span style="font-size:12px;color:#6b7280;margin-top:4px;display:block;"><?php echo addslashes($contactAddr); ?></span>'
         <?php endif; ?>
         + '</div>';
 
