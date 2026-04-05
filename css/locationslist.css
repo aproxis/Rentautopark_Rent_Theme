@@ -157,9 +157,9 @@
 
 .ar-map-label {
     position: absolute;
-    top: 16px;
+    bottom: 16px;
     left: 16px;
-    z-index: 999;
+    z-index: 1001;
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(254, 80, 1, 0.4);
