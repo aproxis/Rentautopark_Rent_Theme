@@ -193,7 +193,7 @@ if (empty($contactAddr)) {
 .<?php echo $uid; ?>-map-card::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: -1px; left: 0; right: 0;
     height: 3px;
     background: linear-gradient(90deg, transparent 0%, #FE5001 40%, #ff7a33 60%, transparent 100%);
     z-index: 1000;
@@ -335,28 +335,23 @@ if (empty($contactAddr)) {
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function initContactMap() {
     if (typeof L === 'undefined') {
-        console.log('❌ Leaflet not loaded yet, waiting...');
         setTimeout(initContactMap, 200);
         return;
     }
 
-    console.log('✅ Leaflet loaded, initializing contact map...');
-
     var map = L.map('<?php echo $mapId; ?>', {
         zoomControl: true,
-        attributionControl: true,
+        attributionControl: false,
         scrollWheelZoom: false
     });
 
     // Bright clean tile layer — CartoDB Voyager (identical to locations page)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        attribution: '',
         subdomains: 'abcd',
         r: window.devicePixelRatio >= 2 ? '@2x' : ''
     }).addTo(map);
-
-    console.log('✅ Map tiles loaded');
 
     // Branded marker — same makeIcon as locationslist
     function makeIcon(active) {
@@ -381,12 +376,7 @@ document.addEventListener('DOMContentLoaded', function initContactMap() {
 
     var marker = L.marker([<?php echo $lat; ?>, <?php echo $lng; ?>], { icon: makeIcon(false) }).addTo(map);
 
-    console.log('✅ Marker added');
-
 <?php if (!empty($contactAddr)): ?>
-console.log('📍 Full contact object:', <?php echo json_encode($contact); ?>);
-console.log('📍 Contact address field:', '<?php echo addslashes($contact->address); ?>');
-console.log('📍 Final contactAddr value:', '<?php echo addslashes($contactAddr); ?>');
     
     // Popup shows address only — no contact name
     marker.bindPopup(
@@ -402,12 +392,10 @@ console.log('📍 Final contactAddr value:', '<?php echo addslashes($contactAddr
     // Open popup immediately ALWAYS
     setTimeout(function() {
         marker.openPopup();
-        console.log('✅ Popup opened!');
         
         // Force z-index
         document.querySelectorAll('.leaflet-popup').forEach(function(el) {
             el.style.zIndex = '999999';
-            console.log('✅ Popup z-index forced');
         });
     }, 1000);
     
@@ -420,7 +408,6 @@ console.log('📍 Final contactAddr value:', '<?php echo addslashes($contactAddr
     });
     marker.on('click', function () {
         this.openPopup();
-        console.log('📍 Marker clicked');
     });
     
     // Keep popup always open
@@ -432,7 +419,5 @@ console.log('📍 Final contactAddr value:', '<?php echo addslashes($contactAddr
     marker.on('mouseover', function () { this.setIcon(makeIcon(true)); });
     marker.on('mouseout',  function () { this.setIcon(makeIcon(false)); });
     <?php endif; ?>
-    
-    console.log('✅ Contact map fully initialized');
 });
 </script>

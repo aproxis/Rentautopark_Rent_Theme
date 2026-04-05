@@ -76,11 +76,7 @@
 
 /* Leaflet attribution */
 .leaflet-control-attribution {
-    font-size: 10px !important;
-}
-
-.leaflet-control-attribution a {
-    color: #FE5001 !important;
+    display: none !important;
 }
 
 /* Zoom controls */
