@@ -1513,16 +1513,79 @@ jQuery(function(){
 				});
 			}
 		});
-		// Default pickup = tomorrow; sync Chosen time selects to show 12:00
+		// Default pickup: find the first available date (and a valid dropoff after it)
 		(function() {
 			if (!jQuery('#pickupdate').val()) {
-				var defPickup = new Date();
-				defPickup.setDate(defPickup.getDate() + Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>));
-				jQuery('#pickupdate').datepicker('setDate', defPickup);
-				var defDrop = new Date(defPickup.getTime());
-				defDrop.setDate(defDrop.getDate() + <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>);
-				jQuery('#releasedate').datepicker('setDate', defDrop);
-				if (typeof vrcSetMinDropoffDate !== 'undefined') { vrcSetMinDropoffDate(); }
+				var minAdvance  = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
+				var minLos      = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
+				var maxLookAhead = 365; // never scan more than a year ahead
+
+				/**
+				 * Returns true when `date` is a selectable pickup day.
+				 * Delegates to whichever beforeShowDay validator the datepicker uses
+				 * (vrcIsDayDisabled or vrcIsDayFullIn) so we honour all restrictions:
+				 * closed days, fully-booked days, CTA rules, location closing days, etc.
+				 */
+				function isPickupAvailable(date) {
+					var validator = (typeof vrcIsDayDisabled !== 'undefined')
+						? vrcIsDayDisabled
+						: (typeof vrcIsDayFullIn !== 'undefined' ? vrcIsDayFullIn : null);
+					if (!validator) return true; // no validator → assume available
+					try {
+						var result = validator(date);
+						return !!(result && result[0]);
+					} catch(e) { return true; }
+				}
+
+				/**
+				 * Returns true when `date` is a selectable dropoff day.
+				 */
+				function isDropoffAvailable(date) {
+					var validator = (typeof vrcIsDayDisabledDropoff !== 'undefined')
+						? vrcIsDayDisabledDropoff
+						: (typeof vrcIsDayFullOut !== 'undefined' ? vrcIsDayFullOut : null);
+					if (!validator) return true;
+					try {
+						var result = validator(date);
+						return !!(result && result[0]);
+					} catch(e) { return true; }
+				}
+
+				/**
+				 * Walk forward from (today + minAdvance) until we find a pickup day
+				 * whose matching dropoff day (pickup + minLos) is also available.
+				 * Returns { pickup: Date, dropoff: Date } or null if none found within maxLookAhead.
+				 */
+				function findNearestAvailableDates() {
+					var candidate = new Date();
+					candidate.setHours(0, 0, 0, 0);
+					candidate.setDate(candidate.getDate() + minAdvance);
+
+					for (var i = 0; i < maxLookAhead; i++) {
+						if (isPickupAvailable(candidate)) {
+							var dropCandidate = new Date(candidate.getTime());
+							dropCandidate.setDate(dropCandidate.getDate() + minLos);
+
+							// Walk the dropoff forward until it lands on an available day
+							for (var j = 0; j < 30; j++) {
+								if (isDropoffAvailable(dropCandidate)) {
+									return { pickup: candidate, dropoff: dropCandidate };
+								}
+								dropCandidate.setDate(dropCandidate.getDate() + 1);
+							}
+							// This pickup day has no valid dropoff within 30 days → keep searching
+						}
+						candidate.setDate(candidate.getDate() + 1);
+					}
+					return null; // no suitable pair found
+				}
+
+				var dates = findNearestAvailableDates();
+				if (dates) {
+					jQuery('#pickupdate').datepicker('setDate', dates.pickup);
+					jQuery('#releasedate').datepicker('setDate', dates.dropoff);
+					if (typeof vrcSetMinDropoffDate !== 'undefined') { vrcSetMinDropoffDate(); }
+				}
 				setTimeout(cdUpdateSummary, 200);
 			}
 			jQuery('#vrccomselph select').val(12).trigger('chosen:updated');
