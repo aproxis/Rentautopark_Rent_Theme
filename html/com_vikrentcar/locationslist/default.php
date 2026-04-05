@@ -31,7 +31,7 @@ $nowtf = VikRentCar::getTimeFormat();
 
 <div class="ar-page-wrap">
     <div class="ar-page-inner">
-        <div class="container mx-auto px-4 py-12">
+        <div class="container mx-auto px-10 py-12">
 
             <?php if(count($locations) > 0): ?>
                 <?php
