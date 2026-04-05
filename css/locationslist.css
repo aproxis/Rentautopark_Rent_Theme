@@ -32,6 +32,39 @@
     border-radius: 0;
 }
 
+/* Leaflet Map Customization */
+.ar-map-marker {
+    background: transparent !important;
+    border: none !important;
+}
+
+.ar-map-popup {
+    font-size: 13px;
+}
+
+.ar-map-popup h4 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--loc-dark);
+}
+
+.ar-map-popup p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--loc-muted);
+    line-height: 1.4;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.leaflet-popup-tip {
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
 /* ==========================================================
    TWO COLUMN LAYOUT
    ========================================================== */

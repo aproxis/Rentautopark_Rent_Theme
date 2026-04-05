@@ -42,11 +42,9 @@ $nowtf = VikRentCar::getTimeFormat();
                     $lngs[] = $l['lng'];
                 }
 
-                if(VikRentCar::loadJquery()) {
-                    JHtml::_('jquery.framework', true, true);
-                }
-                $gmap_key = VikRentCar::getGoogleMapsKey();
-                $document->addScript((strpos(JURI::root(), 'https') !== false ? 'https' : 'http').'://maps.google.com/maps/api/js'.(!empty($gmap_key) ? '?key='.$gmap_key : ''));
+                // Leaflet OpenStreetMap
+                $document->addStyleSheet('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+                $document->addScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
                 ?>
 
                 <!-- Two Column Layout -->
@@ -132,40 +130,44 @@ $nowtf = VikRentCar::getTimeFormat();
                 </div>
 
                 <script type="text/javascript">
-                jQuery.noConflict();
-                jQuery(document).ready(function(){
-                    var map = new google.maps.Map(document.getElementById("vrcmapcanvas"), {
-                        mapTypeId: google.maps.MapTypeId.ROADMAP,
-                        styles: [
-                            { featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }
-                        ]
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Initialize OpenStreetMap with Leaflet
+                    var map = L.map('vrcmapcanvas', {
+                        zoomControl: true,
+                        attributionControl: true
                     });
 
+                    // Add OpenStreetMap tiles
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    // Custom marker icon matching our brand color
+                    var customIcon = L.divIcon({
+                        className: 'ar-map-marker',
+                        html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FE5001" stroke="#fff" stroke-width="1.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>',
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 36]
+                    });
+
+                    // Add markers
+                    var bounds = [];
                     <?php foreach($locations as $l): ?>
-                        var marker<?php echo $l['id']; ?> = new google.maps.Marker({
-                            position: new google.maps.LatLng(<?php echo $l['lat']; ?>, <?php echo $l['lng']; ?>),
-                            map: map,
-                            title: '<?php echo addslashes($l['name']); ?>'
-                        });
+                        var marker = L.marker([<?php echo $l['lat']; ?>, <?php echo $l['lng']; ?>], {icon: customIcon}).addTo(map);
+                        bounds.push([<?php echo $l['lat']; ?>, <?php echo $l['lng']; ?>]);
 
                         <?php if(strlen(trim(strip_tags($l['descr']))) > 0): ?>
-                            var tooltip<?php echo $l['id']; ?> = '<div class="vrcgmapinfow"><h3><?php echo addslashes($l['name']); ?></h3><div class="vrcgmapinfowdescr"><?php echo addslashes(preg_replace('/\s\s+/', ' ', $l['descr'])); ?></div></div>';
-                            var infowindow<?php echo $l['id']; ?> = new google.maps.InfoWindow({
-                                content: tooltip<?php echo $l['id']; ?>
-                            });
-                            google.maps.event.addListener(marker<?php echo $l['id']; ?>, 'click', function() {
-                                infowindow<?php echo $l['id']; ?>.open(map, marker<?php echo $l['id']; ?>);
-                            });
+                            marker.bindPopup('<div class="ar-map-popup"><h4><?php echo addslashes($l['name']); ?></h4><p><?php echo addslashes(preg_replace('/\s\s+/', ' ', $l['descr'])); ?></p></div>');
                         <?php endif; ?>
                     <?php endforeach; ?>
 
-                    var lat_min = <?php echo min($lats); ?>;
-                    var lat_max = <?php echo max($lats); ?>;
-                    var lng_min = <?php echo min($lngs); ?>;
-                    var lng_max = <?php echo max($lngs); ?>;
-
-                    map.setCenter(new google.maps.LatLng( ((lat_max + lat_min) / 2.0), ((lng_max + lng_min) / 2.0) ));
-                    map.fitBounds(new google.maps.LatLngBounds(new google.maps.LatLng(lat_min, lng_min), new google.maps.LatLng(lat_max, lng_max)));
+                    // Fit map to all markers
+                    if(bounds.length > 0) {
+                        map.fitBounds(bounds, {
+                            padding: [40, 40]
+                        });
+                    }
                 });
                 </script>
 
