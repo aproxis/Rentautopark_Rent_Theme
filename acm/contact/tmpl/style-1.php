@@ -368,15 +368,31 @@ document.addEventListener('DOMContentLoaded', function () {
     );
     
     // Show popup on both hover AND click
+    // Debug logging
+    console.log('✅ Contact map initialized');
+    console.log('📍 Address to show:', '<?php echo addslashes($contactAddr); ?>');
+    
+    // Open popup immediately ALWAYS
+    setTimeout(function() {
+        marker.openPopup();
+        console.log('✅ Popup opened automatically');
+    }, 500);
+    
     marker.on('mouseover', function () { 
         this.setIcon(makeIcon(true)); 
-    });
-    marker.on('mouseout',  function () { 
-        this.setIcon(makeIcon(false)); 
+        this.openPopup();
     });
     marker.on('click', function (e) {
-        this.openPopup();
         L.DomEvent.stopPropagation(e);
+        marker.openPopup();
+        console.log('📍 Marker clicked - popup opened');
+        return false;
+    });
+    
+    // Prevent popup from closing when clicking map
+    map.on('click', function(e) {
+        L.DomEvent.stopPropagation(e);
+        marker.openPopup();
     });
     <?php else: ?>
     marker.on('mouseover', function () { this.setIcon(makeIcon(true)); });
