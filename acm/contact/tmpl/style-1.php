@@ -30,12 +30,20 @@ Factory::getApplication()->getLanguage()->load(
     true
 );
 
-// Extract lat/lng from a Google Maps embed URL (!3d<lat>!4d<lng> pattern)
+// Extract lat/lng from Google Maps URLs
 $lat = 47.010453;
 $lng = 28.7845654;
+
 if (!empty($mapUrl)) {
+    // Pattern 1: Standard embed URL - !2d = LONGITUDE, !3d = LATITUDE (correct order)
+    if (preg_match('/!2d(-?[\d.]+)/', $mapUrl, $mLng)) { $lng = (float) $mLng[1]; }
     if (preg_match('/!3d(-?[\d.]+)/', $mapUrl, $mLat)) { $lat = (float) $mLat[1]; }
-    if (preg_match('/!4d(-?[\d.]+)/', $mapUrl, $mLng)) { $lng = (float) $mLng[1]; }
+    
+    // Pattern 2: Direct coordinates format /dir/?api=1&destination=LAT,LNG
+    if (preg_match('/destination=([\d\.-]+),([\d\.-]+)/', $mapUrl, $matches)) {
+        $lat = (float) $matches[1];
+        $lng = (float) $matches[2];
+    }
 }
 
 if ($contactId > 0) {
