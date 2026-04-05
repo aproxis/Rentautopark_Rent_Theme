@@ -223,11 +223,23 @@ $contactAddr = htmlspecialchars(trim($contact->address ?? ''), ENT_QUOTES, 'UTF-
 
 /* Leaflet controls — light, same as locationslist */
 .<?php echo $uid; ?>-map-card .leaflet-popup-content-wrapper {
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,.15), 0 0 16px rgba(254,80,1,.10) !important;
+    color: #111827 !important;
 }
+
 .<?php echo $uid; ?>-map-card .leaflet-popup-tip {
-    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    background: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15) !important;
+}
+
+.<?php echo $uid; ?>-map-card .ar-map-popup p {
+    margin: 0;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
 }
 /* ══════════════════════════════════════════════════════════════════════ */
 </style>
@@ -352,10 +364,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // Popup shows address only — no contact name
     marker.bindPopup(
         '<div class="ar-map-popup"><p><?php echo addslashes($contactAddr); ?></p></div>',
-        { maxWidth: 220 }
+        { maxWidth: 260, autoPan: true, closeButton: true }
     );
-    marker.on('mouseover', function () { this.setIcon(makeIcon(true));  this.openPopup(); });
-    marker.on('mouseout',  function () { this.setIcon(makeIcon(false)); });
+    
+    // Show popup on both hover AND click
+    marker.on('mouseover', function () { 
+        this.setIcon(makeIcon(true)); 
+    });
+    marker.on('mouseout',  function () { 
+        this.setIcon(makeIcon(false)); 
+    });
+    marker.on('click', function (e) {
+        this.openPopup();
+        L.DomEvent.stopPropagation(e);
+    });
     <?php else: ?>
     marker.on('mouseover', function () { this.setIcon(makeIcon(true)); });
     marker.on('mouseout',  function () { this.setIcon(makeIcon(false)); });
