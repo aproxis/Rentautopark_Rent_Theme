@@ -403,6 +403,9 @@ document.addEventListener('DOMContentLoaded', function initContactMap() {
         this.setIcon(makeIcon(true)); 
         this.openPopup();
     });
+    marker.on('mouseout', function () { 
+        this.setIcon(makeIcon(false));
+    });
     marker.on('click', function () {
         this.openPopup();
         console.log('📍 Marker clicked');
@@ -419,5 +422,5 @@ document.addEventListener('DOMContentLoaded', function initContactMap() {
     <?php endif; ?>
     
     console.log('✅ Contact map fully initialized');
-};
+});
 </script>
