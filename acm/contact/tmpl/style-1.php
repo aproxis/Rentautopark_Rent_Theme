@@ -175,7 +175,6 @@ $contactAddr = htmlspecialchars(trim($contact->address ?? ''), ENT_QUOTES, 'UTF-
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
-    overflow: hidden;
     height: 100%;
     min-height: 420px;
     box-shadow:
@@ -214,11 +213,13 @@ $contactAddr = htmlspecialchars(trim($contact->address ?? ''), ENT_QUOTES, 'UTF-
     50%       { opacity: 0.5; transform: scale(1.5); }
 }
 
-/* Canvas — NO filter, same as locationslist canvas */
+/* Canvas — apply overflow clip only here, not on parent card */
 #<?php echo $mapId; ?> {
     width: 100%;
     height: 100%;
     min-height: 420px;
+    border-radius: 16px;
+    overflow: hidden;
 }
 
 /* Leaflet controls — light, same as locationslist */
@@ -322,10 +323,10 @@ $contactAddr = htmlspecialchars(trim($contact->address ?? ''), ENT_QUOTES, 'UTF-
 </section>
 
 <script type="text/javascript">
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', function initContactMap() {
     if (typeof L === 'undefined') {
         console.log('❌ Leaflet not loaded yet, waiting...');
-        setTimeout(window.onload, 200);
+        setTimeout(initContactMap, 200);
         return;
     }
 
@@ -362,7 +363,7 @@ window.onload = function() {
                 + '</svg>',
             iconSize:    [size, size],
             iconAnchor:  [anchor, size],
-            popupAnchor: [0, -size]
+            popupAnchor: [0, -(size + 6)]
         });
     }
 
@@ -382,9 +383,7 @@ window.onload = function() {
             maxWidth: 280, 
             autoPan: true, 
             closeButton: false, 
-            closeOnClick: false,
-            offset: L.point(0, -30),
-            zIndexOffset: 10000
+            closeOnClick: false
         }
     );
     
@@ -404,9 +403,8 @@ window.onload = function() {
         this.setIcon(makeIcon(true)); 
         this.openPopup();
     });
-    marker.on('click', function (e) {
+    marker.on('click', function () {
         this.openPopup();
-        L.DomEvent.stop(e);
         console.log('📍 Marker clicked');
     });
     
