@@ -1,0 +1,211 @@
+/* ========================================================== */
+/**
+ * /templates/rent/css/locationslist.css
+ * Locations List Page Styles
+ */
+
+:root {
+    --loc-primary:     #FE5001;
+    --loc-primary-h:   #E54801;
+    --loc-dark:        #111827;
+    --loc-muted:       #6b7280;
+    --loc-border:      #e5e7eb;
+    --loc-bg-soft:     #f9fafb;
+    --loc-radius:      12px;
+    --loc-radius-sm:   8px;
+    --loc-shadow:      0 1px 3px rgba(0,0,0,.08);
+    --loc-shadow-lg:   0 10px 40px rgba(0,0,0,.12);
+}
+
+/* ==========================================================
+   MAP CONTAINER
+   ========================================================== */
+
+.ar-map-container {
+    border: 1px solid var(--loc-border);
+    background: #fff;
+}
+
+.ar-map-canvas {
+    width: 100%;
+    height: 420px;
+    border-radius: 0;
+}
+
+/* ==========================================================
+   LOCATIONS GRID
+   ========================================================== */
+
+.ar-locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    margin-top: 16px;
+}
+
+/* ==========================================================
+   LOCATION CARD
+   ========================================================== */
+
+.ar-location-card {
+    background: #fff;
+    border: 1px solid var(--loc-border);
+    border-radius: var(--loc-radius);
+    padding: 24px;
+    transition: all .2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.ar-location-card:hover {
+    box-shadow: var(--loc-shadow-lg);
+    transform: translateY(-2px);
+    border-color: var(--loc-primary);
+}
+
+/* Card Header */
+.ar-location-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.ar-location-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(254, 80, 1, .08);
+    color: var(--loc-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ar-location-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--loc-dark);
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Card Info */
+.ar-location-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.ar-location-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--loc-dark);
+    line-height: 1.5;
+}
+
+.ar-location-row svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--loc-muted);
+}
+
+.ar-location-label {
+    font-weight: 500;
+    color: var(--loc-muted);
+    margin-right: 4px;
+}
+
+.ar-location-time {
+    font-weight: 600;
+    color: var(--loc-dark);
+}
+
+.ar-location-description {
+    font-size: 14px;
+    color: var(--loc-muted);
+    line-height: 1.5;
+    margin-top: 4px;
+}
+
+/* Card Footer */
+.ar-location-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--loc-border);
+}
+
+.ar-location-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--loc-primary);
+    text-decoration: none;
+    transition: color .15s;
+}
+
+.ar-location-btn:hover {
+    color: var(--loc-primary-h);
+}
+
+.ar-location-btn svg {
+    transition: transform .15s;
+}
+
+.ar-location-card:hover .ar-location-btn svg {
+    transform: translateX(3px);
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 768px) {
+    .ar-map-canvas {
+        height: 320px;
+    }
+
+    .ar-locations-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .ar-location-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ar-map-canvas {
+        height: 280px;
+    }
+}
+
+/* ==========================================================
+   GOOGLE MAPS INFO WINDOW
+   ========================================================== */
+
+.vrcgmapinfow {
+    padding: 4px;
+}
+
+.vrcgmapinfow h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--loc-dark);
+}
+
+.vrcgmapinfowdescr {
+    font-size: 12px;
+    color: var(--loc-muted);
+    margin: 0;
+    line-height: 1.4;
+}
