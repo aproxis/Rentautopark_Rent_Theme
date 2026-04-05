@@ -104,8 +104,9 @@ body.modal-open .item-page {
 	-webkit-overflow-scrolling: touch;
 }
 
-#ar-header {
-    display: none;
+#ar-header,
+footer {
+    display: none !important;
 }
 
 
