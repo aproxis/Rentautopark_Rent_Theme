@@ -70,18 +70,12 @@
     width: 100%;
     height: 520px;
     border-radius: 0;
-    /* Apply CSS filter to darken the default light tile layer */
-    filter: brightness(0.85) contrast(1.1) saturate(0.7) invert(1) hue-rotate(180deg);
+
 }
 
-/* Leaflet attribution — restyle for dark theme */
+/* Leaflet attribution */
 .leaflet-control-attribution {
-    background: rgba(0, 0, 0, 0.75) !important;
-    color: #888 !important;
     font-size: 10px !important;
-    backdrop-filter: blur(4px);
-    border-radius: 6px 0 0 0 !important;
-    border: none !important;
 }
 
 .leaflet-control-attribution a {
@@ -90,9 +84,9 @@
 
 /* Zoom controls */
 .leaflet-control-zoom a {
-    background: #1a1a1a !important;
-    color: #fff !important;
-    border-color: #333 !important;
+    background: #fff !important;
+    color: #374151 !important;
+    border-color: #e5e7eb !important;
     transition: background .15s, color .15s;
 }
 
@@ -103,13 +97,6 @@
 }
 
 /* Leaflet Map Customization */
-.ar-map-marker {
-    background: transparent !important;
-    border: none !important;
-    /* Undo the CSS invert filter on the marker so orange stays orange */
-    filter: invert(1) hue-rotate(180deg) brightness(1.2) saturate(1.5);
-}
-
 /* Popup — dark card style */
 .ar-map-popup {
     font-size: 13px;
