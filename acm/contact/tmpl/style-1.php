@@ -378,12 +378,27 @@ window.onload = function() {
     // Popup shows address only — no contact name
     marker.bindPopup(
         '<div class="ar-map-popup" style="padding: 8px;"><p><?php echo addslashes($contactAddr); ?></p></div>',
-        { maxWidth: 260, autoPan: false, closeButton: false, closeOnClick: false }
+        { 
+            maxWidth: 280, 
+            autoPan: true, 
+            closeButton: false, 
+            closeOnClick: false,
+            offset: L.point(0, -30),
+            zIndexOffset: 10000
+        }
     );
     
     // Open popup immediately ALWAYS
-    marker.openPopup();
-    console.log('✅ Popup opened!');
+    setTimeout(function() {
+        marker.openPopup();
+        console.log('✅ Popup opened!');
+        
+        // Force z-index
+        document.querySelectorAll('.leaflet-popup').forEach(function(el) {
+            el.style.zIndex = '999999';
+            console.log('✅ Popup z-index forced');
+        });
+    }, 1000);
     
     marker.on('mouseover', function () { 
         this.setIcon(makeIcon(true)); 
