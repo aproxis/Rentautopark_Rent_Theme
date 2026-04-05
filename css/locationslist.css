@@ -193,6 +193,11 @@
         grid-template-columns: 1fr;
         gap: 24px;
     }
+    
+    .ar-locations-grid {
+        grid-template-columns: 0.5fr 0.5fr;
+    }
+        
 
     .ar-locations-col-right {
         order: -1;
