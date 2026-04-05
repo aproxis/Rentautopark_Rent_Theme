@@ -49,9 +49,86 @@ $nowtf = VikRentCar::getTimeFormat();
                 $document->addScript((strpos(JURI::root(), 'https') !== false ? 'https' : 'http').'://maps.google.com/maps/api/js'.(!empty($gmap_key) ? '?key='.$gmap_key : ''));
                 ?>
 
-                <!-- Google Maps Container -->
-                <div class="ar-map-container mb-12 rounded-2xl overflow-hidden shadow-xl">
-                    <div id="vrcmapcanvas" class="ar-map-canvas"></div>
+                <!-- Two Column Layout -->
+                <div class="ar-locations-two-col">
+                    <!-- Left Column: Locations Cards -->
+                    <div class="ar-locations-col-left">
+                        <div class="ar-locations-grid">
+                            <?php foreach($alllocations as $loc): ?>
+                                <?php
+                                if(strlen($loc['opentime']) > 0) {
+                                    $parts = explode("-", $loc['opentime']);
+                                    $opent=VikRentCar::getHoursMinutes($parts[0]);
+                                    $closet=VikRentCar::getHoursMinutes($parts[1]);
+                                    $tsopen = mktime($opent[0], $opent[1], 0, 1, 1, 2012);
+                                    $tsclose = mktime($closet[0], $closet[1], 0, 1, 1, 2012);
+                                    $stropeningtime = date($nowtf, $tsopen).' - '.date($nowtf, $tsclose);
+                                } else {
+                                    $stropeningtime = "";
+                                }
+                                ?>
+
+                                <div class="ar-location-card">
+                                    <div class="ar-location-card-header">
+                                        <div class="ar-location-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                            </svg>
+                                        </div>
+                                        <h3 class="ar-location-name"><?php echo $loc['name']; ?></h3>
+                                    </div>
+
+                                    <div class="ar-location-info">
+                                        <?php if (!empty($loc['address'])): ?>
+                                            <div class="ar-location-row">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                                </svg>
+                                                <span><?php echo $loc['address']; ?></span>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if(strlen($stropeningtime) > 0): ?>
+                                            <div class="ar-location-row">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                                </svg>
+                                                <span>
+                                                    <span class="ar-location-label"><?php echo JText::_('VRCLOCLISTLOCOPENTIME'); ?>:</span>
+                                                    <span class="ar-location-time"><?php echo $stropeningtime; ?></span>
+                                                </span>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($loc['descr'])): ?>
+                                            <div class="ar-location-description">
+                                                <?php echo $loc['descr']; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="ar-location-footer">
+                                        <a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo $loc['lat']; ?>,<?php echo $loc['lng']; ?>" target="_blank" rel="noopener noreferrer" class="ar-location-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M9 18l6-6-6-6"></path>
+                                            </svg>
+                                            <?php echo Text::_('VRC_GET_DIRECTIONS') ?: 'Obține Direcții'; ?>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Google Map -->
+                    <div class="ar-locations-col-right">
+                        <div class="ar-map-container sticky top-20 rounded-2xl overflow-hidden shadow-xl">
+                            <div id="vrcmapcanvas" class="ar-map-canvas"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <script type="text/javascript">
@@ -92,75 +169,6 @@ $nowtf = VikRentCar::getTimeFormat();
                 });
                 </script>
 
-                <!-- Locations Grid -->
-                <div class="ar-locations-grid">
-                    <?php foreach($alllocations as $loc): ?>
-                        <?php
-                        if(strlen($loc['opentime']) > 0) {
-                            $parts = explode("-", $loc['opentime']);
-                            $opent=VikRentCar::getHoursMinutes($parts[0]);
-                            $closet=VikRentCar::getHoursMinutes($parts[1]);
-                            $tsopen = mktime($opent[0], $opent[1], 0, 1, 1, 2012);
-                            $tsclose = mktime($closet[0], $closet[1], 0, 1, 1, 2012);
-                            $stropeningtime = date($nowtf, $tsopen).' - '.date($nowtf, $tsclose);
-                        } else {
-                            $stropeningtime = "";
-                        }
-                        ?>
-
-                        <div class="ar-location-card">
-                            <div class="ar-location-card-header">
-                                <div class="ar-location-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                </div>
-                                <h3 class="ar-location-name"><?php echo $loc['name']; ?></h3>
-                            </div>
-
-                            <div class="ar-location-info">
-                                <?php if (!empty($loc['address'])): ?>
-                                    <div class="ar-location-row">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                                        </svg>
-                                        <span><?php echo $loc['address']; ?></span>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php if(strlen($stropeningtime) > 0): ?>
-                                    <div class="ar-location-row">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        <span>
-                                            <span class="ar-location-label"><?php echo JText::_('VRCLOCLISTLOCOPENTIME'); ?>:</span>
-                                            <span class="ar-location-time"><?php echo $stropeningtime; ?></span>
-                                        </span>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php if (!empty($loc['descr'])): ?>
-                                    <div class="ar-location-description">
-                                        <?php echo $loc['descr']; ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="ar-location-footer">
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo $loc['lat']; ?>,<?php echo $loc['lng']; ?>" target="_blank" rel="noopener noreferrer" class="ar-location-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M9 18l6-6-6-6"></path>
-                                    </svg>
-                                    <?php echo Text::_('VRC_GET_DIRECTIONS') ?: 'Obține Direcții'; ?>
-                                </a>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
 
             <?php endif; ?>
 
