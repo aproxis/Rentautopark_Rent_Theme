@@ -228,6 +228,10 @@ if (empty($contactAddr)) {
     overflow: hidden;
 }
 
+#<?php echo $mapId; ?> .leaflet-control-attribution {
+    display: none !important;
+}
+
 /* Leaflet controls — light, same as locationslist */
 .<?php echo $uid; ?>-map-card .leaflet-popup-content-wrapper {
     background: #ffffff !important;
