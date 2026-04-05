@@ -321,8 +321,16 @@ $contactAddr = htmlspecialchars(trim($contact->address ?? ''), ENT_QUOTES, 'UTF-
     </div>
 </section>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+<script type="text/javascript">
+window.onload = function() {
+    if (typeof L === 'undefined') {
+        console.log('❌ Leaflet not loaded yet, waiting...');
+        setTimeout(window.onload, 200);
+        return;
+    }
+
+    console.log('✅ Leaflet loaded, initializing contact map...');
+
     var map = L.map('<?php echo $mapId; ?>', {
         zoomControl: true,
         attributionControl: true,
@@ -336,6 +344,8 @@ document.addEventListener('DOMContentLoaded', function () {
         subdomains: 'abcd',
         r: window.devicePixelRatio >= 2 ? '@2x' : ''
     }).addTo(map);
+
+    console.log('✅ Map tiles loaded');
 
     // Branded marker — same makeIcon as locationslist
     function makeIcon(active) {
@@ -360,43 +370,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var marker = L.marker([<?php echo $lat; ?>, <?php echo $lng; ?>], { icon: makeIcon(false) }).addTo(map);
 
+    console.log('✅ Marker added');
+
     <?php if (!empty($contactAddr)): ?>
+    console.log('📍 Address found:', '<?php echo addslashes($contactAddr); ?>');
+    
     // Popup shows address only — no contact name
     marker.bindPopup(
-        '<div class="ar-map-popup"><p><?php echo addslashes($contactAddr); ?></p></div>',
-        { maxWidth: 260, autoPan: true, closeButton: true }
+        '<div class="ar-map-popup" style="padding: 8px;"><p><?php echo addslashes($contactAddr); ?></p></div>',
+        { maxWidth: 260, autoPan: false, closeButton: false, closeOnClick: false }
     );
     
-    // Show popup on both hover AND click
-    // Debug logging
-    console.log('✅ Contact map initialized');
-    console.log('📍 Address to show:', '<?php echo addslashes($contactAddr); ?>');
-    
     // Open popup immediately ALWAYS
-    setTimeout(function() {
-        marker.openPopup();
-        console.log('✅ Popup opened automatically');
-    }, 500);
+    marker.openPopup();
+    console.log('✅ Popup opened!');
     
     marker.on('mouseover', function () { 
         this.setIcon(makeIcon(true)); 
         this.openPopup();
     });
     marker.on('click', function (e) {
-        L.DomEvent.stopPropagation(e);
-        marker.openPopup();
-        console.log('📍 Marker clicked - popup opened');
-        return false;
+        this.openPopup();
+        L.DomEvent.stop(e);
+        console.log('📍 Marker clicked');
     });
     
-    // Prevent popup from closing when clicking map
-    map.on('click', function(e) {
-        L.DomEvent.stopPropagation(e);
-        marker.openPopup();
+    // Keep popup always open
+    marker.on('popupclose', function() {
+        setTimeout(function() { marker.openPopup(); }, 10);
     });
+    
     <?php else: ?>
     marker.on('mouseover', function () { this.setIcon(makeIcon(true)); });
     marker.on('mouseout',  function () { this.setIcon(makeIcon(false)); });
     <?php endif; ?>
-});
+    
+    console.log('✅ Contact map fully initialized');
+};
 </script>
