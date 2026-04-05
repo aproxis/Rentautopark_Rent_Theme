@@ -378,8 +378,10 @@ document.addEventListener('DOMContentLoaded', function initContactMap() {
 
     console.log('✅ Marker added');
 
-    <?php if (!empty($contactAddr)): ?>
-    console.log('📍 Address found:', '<?php echo addslashes($contactAddr); ?>');
+<?php if (!empty($contactAddr)): ?>
+console.log('📍 Full contact object:', <?php echo json_encode($contact); ?>);
+console.log('📍 Contact address field:', '<?php echo addslashes($contact->address); ?>');
+console.log('📍 Final contactAddr value:', '<?php echo addslashes($contactAddr); ?>');
     
     // Popup shows address only — no contact name
     marker.bindPopup(
