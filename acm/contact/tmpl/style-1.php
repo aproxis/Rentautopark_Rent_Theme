@@ -386,9 +386,9 @@ console.log('📍 Final contactAddr value:', '<?php echo addslashes($contactAddr
     
     // Popup shows address only — no contact name
     marker.bindPopup(
-        '<div class="ar-map-popup" style="padding: 8px;"><p><?php echo addslashes($contactAddr); ?></p></div>',
+        '<div class="ar-map-popup" style="padding: 8px;"><p><a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo urlencode($contactAddr); ?>&destination_place_id=ChIJfQ8N56HhJUcRbXqTfKx3rMU" target="_blank" style="color: #FE5001; text-decoration: none; font-weight: 500;"><?php echo addslashes($contactAddr); ?></a><br><small style="color: #9ca3af; font-size: 11px;">Click for directions</small></p></div>',
         { 
-            maxWidth: 280, 
+            maxWidth: 300, 
             autoPan: true, 
             closeButton: false, 
             closeOnClick: false
