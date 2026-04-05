@@ -317,10 +317,12 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollWheelZoom: false
     });
 
-    // OpenStreetMap light tiles — exactly matching locationslist/default.php
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Bright clean tile layer — CartoDB Voyager (identical to locations page)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        r: window.devicePixelRatio >= 2 ? '@2x' : ''
     }).addTo(map);
 
     // Branded marker — same makeIcon as locationslist
