@@ -1098,6 +1098,34 @@ jQuery(function(){
 			</div>
 		</div>
 
+		<!-- ═══ KM limit notice (dynamic) ═══ -->
+		<div class="cd-info-notice cd-km-notice" id="cd-km-notice" style="display:none;">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cd-notice-icon">
+				<path d="m12 14 4-4"></path>
+				<path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
+			</svg>
+			<div class="cd-notice-body">
+				<span class="cd-notice-label"><?php echo Text::_('VRCKMLIMIT_LABEL') ?: 'Limită kilometraj:'; ?></span>
+				<span class="cd-notice-value">200 <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/zi'; ?></span>
+				<span class="cd-notice-total" id="cd-km-total-wrap">
+					(<?php echo Text::_('VRCKM_TOTAL_PRE') ?: 'total'; ?> <strong id="cd-km-total"></strong> km <?php echo Text::_('VRCKM_TOTAL_FOR') ?: 'pentru'; ?> <span id="cd-km-days"></span> <?php echo Text::_('VRCSEARCHDAYS') ?: 'zile'; ?>)
+				</span>
+			</div>
+		</div>
+
+		<!-- ═══ Deposit notice (static) ═══ -->
+		<div class="cd-info-notice cd-deposit-notice">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cd-notice-icon">
+				<rect width="20" height="14" x="2" y="5" rx="2"></rect>
+				<line x1="2" x2="22" y1="10" y2="10"></line>
+			</svg>
+			<div class="cd-notice-body">
+				<span class="cd-notice-label"><?php echo Text::_('VRCDEPOSITLABEL') ?: 'Garanție auto:'; ?></span>
+				<span class="cd-notice-value">200 €</span>
+				<span class="cd-notice-hint"><?php echo Text::_('VRCDEPOSITRETURNED') ?: '— se returnează după predarea mașinii'; ?></span>
+			</div>
+		</div>
+
 		<!-- Coupon code field (applied when opening the modal) -->
 		<?php if (VikRentCar::couponsEnabled()): ?>
 		<div class="cd-coupon-row">
@@ -1324,6 +1352,18 @@ jQuery(function(){
 	function cdUpdateSummary() {
 		var days = cdGetDays();
 		var $sum = jQuery('#cd-summary');
+
+		/* ── Update KM notice ── */
+		var $kmNotice = jQuery('#cd-km-notice');
+		if (days) {
+			var totalKm = days * 200;
+			jQuery('#cd-km-total').text(totalKm);
+			jQuery('#cd-km-days').text(days);
+			$kmNotice.show();
+		} else {
+			$kmNotice.hide();
+		}
+
 		if (!days) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
 
 		var rate = cdGetRate(days);
@@ -1520,26 +1560,17 @@ jQuery(function(){
 				var minLos      = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
 				var maxLookAhead = 365; // never scan more than a year ahead
 
-				/**
-				 * Returns true when `date` is a selectable pickup day.
-				 * Delegates to whichever beforeShowDay validator the datepicker uses
-				 * (vrcIsDayDisabled or vrcIsDayFullIn) so we honour all restrictions:
-				 * closed days, fully-booked days, CTA rules, location closing days, etc.
-				 */
 				function isPickupAvailable(date) {
 					var validator = (typeof vrcIsDayDisabled !== 'undefined')
 						? vrcIsDayDisabled
 						: (typeof vrcIsDayFullIn !== 'undefined' ? vrcIsDayFullIn : null);
-					if (!validator) return true; // no validator → assume available
+					if (!validator) return true;
 					try {
 						var result = validator(date);
 						return !!(result && result[0]);
 					} catch(e) { return true; }
 				}
 
-				/**
-				 * Returns true when `date` is a selectable dropoff day.
-				 */
 				function isDropoffAvailable(date) {
 					var validator = (typeof vrcIsDayDisabledDropoff !== 'undefined')
 						? vrcIsDayDisabledDropoff
@@ -1551,11 +1582,6 @@ jQuery(function(){
 					} catch(e) { return true; }
 				}
 
-				/**
-				 * Walk forward from (today + minAdvance) until we find a pickup day
-				 * whose matching dropoff day (pickup + minLos) is also available.
-				 * Returns { pickup: Date, dropoff: Date } or null if none found within maxLookAhead.
-				 */
 				function findNearestAvailableDates() {
 					var candidate = new Date();
 					candidate.setHours(0, 0, 0, 0);
@@ -1566,18 +1592,16 @@ jQuery(function(){
 							var dropCandidate = new Date(candidate.getTime());
 							dropCandidate.setDate(dropCandidate.getDate() + minLos);
 
-							// Walk the dropoff forward until it lands on an available day
 							for (var j = 0; j < 30; j++) {
 								if (isDropoffAvailable(dropCandidate)) {
 									return { pickup: candidate, dropoff: dropCandidate };
 								}
 								dropCandidate.setDate(dropCandidate.getDate() + 1);
 							}
-							// This pickup day has no valid dropoff within 30 days → keep searching
 						}
 						candidate.setDate(candidate.getDate() + 1);
 					}
-					return null; // no suitable pair found
+					return null;
 				}
 
 				var dates = findNearestAvailableDates();
@@ -1654,7 +1678,7 @@ try {
         $_priceMax = $_refPrice * 1.30;
         $_dboRec = JFactory::getDbo();
 		$_dboRec->setQuery(
-			"SELECT `id`, `name`, `img`, `startfrom`, `alias`"   // ← added alias
+			"SELECT `id`, `name`, `img`, `startfrom`, `alias`"
 			. " FROM `#__vikrentcar_cars`"
 			. " WHERE `avail` = 1"
 			. " AND `id` != " . (int)$car['id']
@@ -1680,14 +1704,12 @@ try {
     $_recImg = !empty($_rec['img'])
         ? JURI::root() . 'administrator/components/com_vikrentcar/resources/' . $_rec['img']
         : '';
-    $_recPrice = (float)$_rec['startfrom'];  // ← was using effective_price before
+    $_recPrice = (float)$_rec['startfrom'];
     $_recPriceDisp = floor($_recPrice) == $_recPrice
         ? (int)$_recPrice
         : VikRentCar::numberFormat($_recPrice);
-// Use alias-only slug — VikRentCar's router maps /cars/{alias} from this
 $_recSlug = !empty($_rec['alias']) ? $_rec['alias'] : (int)$_rec['id'];
 
-// Strip current car's alias from the current URL to get the base path
 $_baseCarUrl = str_replace('/' . $car['alias'], '', JURI::current());
 $_recUrl = rtrim($_baseCarUrl, '/') . '/' . $_rec['alias'];
 
@@ -1883,7 +1905,6 @@ function cdSetImage(idx) {
 
 <?php
 // ── Booking modal overlay ────────────────────────────────────────────────────
-// Build the base oconfirm URL — booking-modal.js will append all booking params
 $_oconfirmUrl = JRoute::_(
 	'index.php?option=com_vikrentcar&task=oconfirm' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''),
 	false

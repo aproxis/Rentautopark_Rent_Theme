@@ -1084,3 +1084,69 @@ body.vrc-modal-open {
     }
 }
 
+/* ================================================================
+   INFO NOTICES — km limit & deposit (inside booking card)
+   ================================================================ */
+.cd-info-notice {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 11px 14px;
+	border-radius: 10px;
+	margin-top: 10px;
+	font-size: 13px;
+	line-height: 1.5;
+	border: 1.5px solid;
+}
+
+/* KM notice — orange tint (matches brand) */
+.cd-km-notice {
+	background: #fff7f2;
+	border-color: #fcd9c4;
+}
+.cd-km-notice .cd-notice-icon {
+	color: #FE5001;
+	flex-shrink: 0;
+	margin-top: 1px;
+}
+
+/* Deposit notice — blue/neutral tint */
+.cd-deposit-notice {
+	background: #f0f6ff;
+	border-color: #bfdbfe;
+}
+.cd-deposit-notice .cd-notice-icon {
+	color: #3b82f6;
+	flex-shrink: 0;
+	margin-top: 1px;
+}
+
+.cd-notice-body {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 4px;
+	color: #374151;
+}
+.cd-notice-label {
+	font-weight: 700;
+	color: #111827;
+	white-space: nowrap;
+}
+.cd-notice-value {
+	font-weight: 600;
+	color: #111827;
+	white-space: nowrap;
+}
+.cd-notice-total {
+	color: #6b7280;
+	font-size: 12px;
+}
+.cd-notice-total strong {
+	font-weight: 700;
+	color: #374151;
+}
+.cd-notice-hint {
+	color: #6b7280;
+	font-size: 12px;
+}
