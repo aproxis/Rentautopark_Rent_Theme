@@ -1108,7 +1108,7 @@ jQuery(function(){
 				<span class="cd-notice-label"><?php echo Text::_('VRCKMLIMIT_LABEL') ?: 'Limită kilometraj:'; ?></span>
 				<span class="cd-notice-value">200 <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/zi'; ?></span>
 				<span class="cd-notice-total" id="cd-km-total-wrap">
-					(<?php echo Text::_('VRCKM_TOTAL_PRE') ?: 'total'; ?> <strong id="cd-km-total"></strong> km <?php echo Text::_('VRCKM_TOTAL_FOR') ?: 'pentru'; ?> <span id="cd-km-days"></span> <?php echo Text::_('VRCSEARCHDAYS') ?: 'zile'; ?>)
+					(<?php echo Text::_('VRCKM_TOTAL_PRE') ?: 'total'; ?> <strong id="cd-km-total"></strong> <?php echo Text::_('VRCKM_TOTAL_FOR') ?: 'pentru'; ?> <span id="cd-km-days"></span> <?php echo Text::_('VRCSEARCHDAYS') ?: 'zile'; ?>)
 				</span>
 			</div>
 		</div>
