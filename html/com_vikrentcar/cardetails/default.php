@@ -403,7 +403,7 @@ try {
 
 	<!-- Desktop meta: category, name, spec pills -->
 	<div class="cd-desktop-meta">
-		<h1 class="cd-car-name-desktop"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
+		<!-- <h1 class="cd-car-name-desktop"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1> -->
 		<?php
 		$svgIcons = array(
 			'automat'=>'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>',
@@ -1630,7 +1630,7 @@ jQuery(function(){
 	<div class="cd-mobile-info-wrap" style="margin-top:16px;">
 		<div class="cd-info">
 			<?php if (!empty($categoryName)): ?><span class="cd-car-cat"><?php echo $categoryName; ?></span><?php endif; ?>
-			<!-- <h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1> -->
+			<h1 class="cd-car-name"><?php echo htmlspecialchars($car['name']); ?> — <?php echo Text::_('VRCTITLECARDESCR'); ?></h1>
 			<?php if (!empty($caratDefs)): ?>
 			<div class="cd-specs">
 			<?php foreach ($caratDefs as $cid => $carat):
