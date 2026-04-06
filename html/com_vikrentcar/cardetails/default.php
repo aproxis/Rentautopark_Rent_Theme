@@ -1110,6 +1110,9 @@ jQuery(function(){
 				<span class="cd-notice-total" id="cd-km-total-wrap">
 					(<?php echo Text::_('VRCKM_TOTAL_PRE') ?: 'total'; ?> <strong id="cd-km-total"></strong> <?php echo Text::_('VRCKM_TOTAL_FOR') ?: 'pentru'; ?> <span id="cd-km-days"></span> <?php echo Text::_('VRCSEARCHDAYS') ?: 'zile'; ?>)
 				</span>
+				<span class="cd-km-extra-fee">
+					<?php echo Text::_('VRCKM_EXTRA_FEE') ?: 'Suplimentar 0.25 € / km depășit'; ?>
+				</span>
 			</div>
 		</div>
 

@@ -451,6 +451,15 @@
 .cd-ooh-warning.is-visible { display: flex; }
 .cd-ooh-warning svg { flex-shrink: 0; margin-top: 1px; color: #FE5001; }
 
+/* ── KM extra fee label ─────────────────────────────────────────── */
+.cd-km-extra-fee {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
 /* ── Optionals ─────────────────────────────────────────────────── */
 .cd-optionals-section { margin-top: 16px; }
 .cd-optionals-title {
