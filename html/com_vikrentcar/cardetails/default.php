@@ -1282,7 +1282,7 @@ jQuery(function(){
 			var fmt = <?php if($df==='d/m/Y') echo "'dd/mm/yy'"; elseif($df==='m/d/Y') echo "'mm/dd/yy'"; else echo "'yy/mm/dd'"; ?>;
 			var d1 = jQuery.datepicker.parseDate(fmt, p);
 			var d2 = jQuery.datepicker.parseDate(fmt, r);
-			var diff = Math.round((d2 - d1) / 86400000);
+			var diff = Math.ceil((d2 - d1) / 86400000);
 			return diff > 0 ? diff : null;
 		} catch(e) { return null; }
 	}
