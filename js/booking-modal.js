@@ -43,7 +43,7 @@
 			return false;
 		}
 
-		var days = Math.round((relTs - pickTs) / 86400);
+		var days = Math.ceil((relTs - pickTs) / 86400);
 
 		// 2. Collect all booking parameters
 		var $overlay   = $('#vrc-booking-modal-overlay');
