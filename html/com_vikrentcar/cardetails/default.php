@@ -67,6 +67,39 @@ $showpartlyres  = VikRentCar::showPartlyReserved();
 $numcalendars   = VikRentCar::numCalendars();
 $carats         = VikRentCar::getCarCaratOriz($car['idcarat'], array(), $vrc_tn);
 
+// ── Conditional Deposit Notice ─────────────────────────────────────────
+$showDeposit    = false;
+$depositAmount  = 0;
+$depositCurrency = $currencysymb;
+
+try {
+    $_dbo = JFactory::getDbo();
+    $_dbo->setQuery(
+        "SELECT `id` FROM `#__vikrentcar_gpayments`
+         WHERE `file` = 'maibpayment' AND `published` = '1'
+         LIMIT 1"
+    );
+    $maibEnabled = $_dbo->loadResult();
+
+    if (!empty($maibEnabled)) {
+        $depositAmount = VikRentCar::getAccPerCent();
+        $depositType   = VikRentCar::getTypeDeposit();
+
+        if ($depositType != 'fixed' && !empty($car['cost']) && $car['cost'] > 0) {
+            $depositAmount = ($car['cost'] * $depositAmount) / 100;
+        }
+
+        $depositAmount = round($depositAmount);
+
+        if ($depositAmount > 0) {
+            $showDeposit = true;
+        }
+    }
+} catch (Exception $e) {
+    $showDeposit = false;
+}
+// ────────────────────────────────────────────────────────────────────────
+
 $pitemid        = VikRequest::getInt('Itemid', '', 'request');
 $vrcdateformat  = VikRentCar::getDateFormat();
 $nowtf          = VikRentCar::getTimeFormat();
@@ -1116,7 +1149,8 @@ jQuery(function(){
 			</div>
 		</div>
 
-		<!-- ═══ Deposit notice (static) ═══ -->
+		<?php if ($showDeposit): ?>
+		<!-- ═══ Deposit notice — shown only when maibpayment enabled AND deposit > 0 ═══ -->
 		<div class="cd-info-notice cd-deposit-notice">
 			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cd-notice-icon">
 				<rect width="20" height="14" x="2" y="5" rx="2"></rect>
@@ -1124,10 +1158,11 @@ jQuery(function(){
 			</svg>
 			<div class="cd-notice-body">
 				<span class="cd-notice-label"><?php echo Text::_('VRCDEPOSITLABEL') ?: 'Garanție auto:'; ?></span>
-				<span class="cd-notice-value">200 €</span>
+				<span class="cd-notice-value"><?php echo $depositAmount; ?> <?php echo $depositCurrency; ?></span>
 				<span class="cd-notice-hint"><?php echo Text::_('VRCDEPOSITRETURNED') ?: '— se returnează după predarea mașinii'; ?></span>
 			</div>
 		</div>
+		<?php endif; ?>
 
 		<!-- Coupon code field (applied when opening the modal) -->
 		<?php if (VikRentCar::couponsEnabled()): ?>
