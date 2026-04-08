@@ -99,6 +99,7 @@ if (empty($subheading))     $subheading    = Text::_('HERO_SUBHEADING_DEFAULT');
 if (empty($chooseCarUrl))   $chooseCarUrl  = 'cars';
 if (empty($chooseCarLabel)) $chooseCarLabel = Text::_('HERO_CHOOSE_CAR_DEFAULT');
 if (empty($carsAvailLabel)) $carsAvailLabel = Text::_('HERO_CARS_AVAILABLE_DEFAULT');
+if (empty($priceFromLabel)) $priceFromLabel = Text::_('HERO_PRICE_FROM');
 if (empty($priceNote))      $priceNote     = Text::_('HERO_PRICE_NOTE_DEFAULT');
 if (empty($peopleCount))    $peopleCount   = Text::_('HERO_PEOPLE_COUNT_DEFAULT');
 if (empty($promoText))      $promoText     = Text::_('HERO_PROMO_TEXT_DEFAULT');
