@@ -15,6 +15,7 @@
 
         <fieldset name="widgets" label="Widget Settings" description="Configure the info widgets">
             <field name="cars-available-label" type="text" default="Cars available" size="40" label="Cars Available Label" description="Label for the cars available widget" />
+            <field name="price-override" type="text" default="" size="40" label="Price Override" description="Override the dynamic cheapest car price. Leave empty to use database value. Example: 25" />
             <field name="price-note" type="text" default="More days, lower price" size="40" label="Price Note" description="Note shown below the price widget" />
         </fieldset>
 

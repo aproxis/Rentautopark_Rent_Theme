@@ -26,6 +26,7 @@ $subheading      = $helper->get('subheading');
 $chooseCarUrl    = $helper->get('choose-car-url');
 $chooseCarLabel  = $helper->get('choose-car-label');
 $carsAvailLabel  = $helper->get('cars-available-label');
+$priceOverride   = $helper->get('price-override');
 $priceNote       = $helper->get('price-note');
 $peopleCount     = $helper->get('people-count');
 $promoText       = $helper->get('promo-text');
@@ -67,8 +68,15 @@ if (class_exists('VikRentCar')) {
     $dbo->setQuery("SELECT COUNT(*) FROM `#__vikrentcar_cars` WHERE `avail`='1'");
     $availableCars = (int) $dbo->loadResult();
 
-    $dbo->setQuery("SELECT MIN(`startfrom`) FROM `#__vikrentcar_cars` WHERE `avail`='1' AND `startfrom` > 0");
-    $minPrice = (float) $dbo->loadResult();
+    /* ── Check for price override from ACM field ────────────────── */
+    if (!empty($priceOverride)) {
+        // Use the override value entered in admin
+        $minPrice = floatval($priceOverride);
+    } else {
+        // Fetch dynamic value from database
+        $dbo->setQuery("SELECT MIN(`startfrom`) FROM `#__vikrentcar_cars` WHERE `avail`='1' AND `startfrom` > 0");
+        $minPrice = (float) $dbo->loadResult();
+    }
     if ($minPrice > 0) {
         $minPrice = VikRentCar::numberFormat($minPrice);
     }
