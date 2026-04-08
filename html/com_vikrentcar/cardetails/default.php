@@ -1282,6 +1282,15 @@ jQuery(function(){
 			var fmt = <?php if($df==='d/m/Y') echo "'dd/mm/yy'"; elseif($df==='m/d/Y') echo "'mm/dd/yy'"; else echo "'yy/mm/dd'"; ?>;
 			var d1 = jQuery.datepicker.parseDate(fmt, p);
 			var d2 = jQuery.datepicker.parseDate(fmt, r);
+			
+			// Get hour values from selects
+			var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
+			var dropHour = parseInt(jQuery('#vrccomseldh select').val()) || 0;
+			
+			// Set the hours on the date objects
+			d1.setHours(pickHour, 0, 0, 0);
+			d2.setHours(dropHour, 0, 0, 0);
+			
 			var diff = Math.ceil((d2 - d1) / 86400000);
 			return diff > 0 ? diff : null;
 		} catch(e) { return null; }
