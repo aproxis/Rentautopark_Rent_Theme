@@ -769,7 +769,7 @@ if (array_key_exists('hours', $price)) {
            target="_top" → after saveorder the PARENT window navigates,
            not just the iframe.
            ══════════════════════════════════════════════════════════ */ ?>
-        <form action="<?php echo JRoute::_('index.php?option=com_vikrentcar'.(!empty($pitemid)?'&Itemid='.$pitemid:'')); ?>"
+        <form action="<?php echo JRoute::_('index.php?option=com_vikrentcar&task=oconfirm'.(!empty($pitemid)?'&Itemid='.$pitemid:''), false); ?>"
               name="vrc"
               method="post"
               target="_top"
