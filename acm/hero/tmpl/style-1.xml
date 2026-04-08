@@ -21,7 +21,7 @@
         <!-- ═══════════════════════════════════════════════════════════ -->
         <fieldset name="widgets" label="Widget Settings" description="Configure the info widgets">
             <!-- Widget 1: Cars Available -->
-            <field name="cars-override" type="text" default="" size="40" label="Number of Cars Override" description="Override the dynamic number of available cars. Leave empty to use database value. Example: 50" />
+            <field name="cars-override" type="text" default="" size="40" label="# of Cars Override" description="Override the dynamic number of available cars. Leave empty to use database value. Example: 50" />
             <field name="cars-available-label" type="text" default="Cars available" size="40" label="Cars Available Label" description="Label for the cars available widget" />
 
             <!-- Widget 2: Price -->
