@@ -25,8 +25,11 @@ $heading         = $helper->get('heading');
 $subheading      = $helper->get('subheading');
 $chooseCarUrl    = $helper->get('choose-car-url');
 $chooseCarLabel  = $helper->get('choose-car-label');
+$carsOverride    = $helper->get('cars-override');
 $carsAvailLabel  = $helper->get('cars-available-label');
+$priceFromLabel  = $helper->get('price-from-label');
 $priceOverride   = $helper->get('price-override');
+$pricePerDayLabel = $helper->get('price-per-day-label');
 $priceNote       = $helper->get('price-note');
 $peopleCount     = $helper->get('people-count');
 $promoText       = $helper->get('promo-text');
@@ -65,8 +68,15 @@ if (class_exists('VikRentCar')) {
     $dbo = JFactory::getDbo();
     $currencysymb = VikRentCar::getCurrencySymb();
 
-    $dbo->setQuery("SELECT COUNT(*) FROM `#__vikrentcar_cars` WHERE `avail`='1'");
-    $availableCars = (int) $dbo->loadResult();
+    /* ── Check for cars override from ACM field ─────────────────── */
+    if (!empty($carsOverride)) {
+        // Use the override value entered in admin
+        $availableCars = (int) $carsOverride;
+    } else {
+        // Fetch dynamic value from database
+        $dbo->setQuery("SELECT COUNT(*) FROM `#__vikrentcar_cars` WHERE `avail`='1'");
+        $availableCars = (int) $dbo->loadResult();
+    }
 
     /* ── Check for price override from ACM field ────────────────── */
     if (!empty($priceOverride)) {
@@ -99,8 +109,6 @@ $messengerPhone   = $helper->get('messenger-phone-label')   ?: Text::_('HERO_MES
 $messengerWhatsapp = $helper->get('messenger-whatsapp-label') ?: Text::_('HERO_MESSENGER_WHATSAPP');
 $messengerTelegram = $helper->get('messenger-telegram-label') ?: Text::_('HERO_MESSENGER_TELEGRAM');
 $messengerViber   = $helper->get('messenger-viber-label')    ?: Text::_('HERO_MESSENGER_VIBER');
-$priceFromLabel   = $helper->get('price-from-label')         ?: Text::_('HERO_PRICE_FROM');
-$pricePerDayLabel = $helper->get('price-per-day-label')      ?: Text::_('HERO_PRICE_PER_DAY');
 $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CLIENT_ALT');
 ?>
 

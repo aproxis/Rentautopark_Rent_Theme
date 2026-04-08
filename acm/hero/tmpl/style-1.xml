@@ -5,6 +5,9 @@
   {":type":"ja_rent:hero","hero":{"jatools-layout-hero":"style-1","hero[heading]":["Fast booking, delivery and 24/7 support"],"hero[subheading]":["Professional car rental services for personal or business needs. We choose comfort, safety and a stress-free driving experience."],"hero[bg-image]":["images/backgrounds/hero.jpg"],"hero[choose-car-url]":["cars"],"hero[choose-car-label]":["Choose a car"],"hero[call-btn-label]":["Sună acum"],"hero[people-count]":["1000+ people"],"hero[promo-text]":["chose to rent cars from Rent AutoPark"],"hero[cars-available-label]":["Cars available"],"hero[price-note]":["More days, lower price"],"hero[phone-link]":["tel:+37368123456"],"hero[whatsapp-link]":["https://wa.me/37368123456"],"hero[telegram-link]":["https://t.me/rentautopark"],"hero[viber-link]":["viber://chat?number=%2B37368123456"],"hero[client-photo]":{"hero[client-photo][photo]":["images/clients/1.png","images/clients/2.png","images/clients/3.png","images/clients/4.png","images/clients/5.png"],"rows":1,"cols":5,"type":"list"}}}
    ]]></sampledata>
     <fields name="hero">
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Basic Settings                                               -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
         <fieldset name="basic" label="Basic Settings" description="Configure the hero section heading, subheading and background">
             <field name="bg-image" type="media" default="images/backgrounds/hero.jpg" label="Background Image" description="Hero section background image" />
             <field name="heading" type="text" default="Fast booking, delivery and 24/7 support" size="80" label="Heading" description="Main headline text" />
@@ -13,20 +16,24 @@
             <field name="choose-car-label" type="text" default="Choose a car" size="40" label="Choose Car Button Label" description="Text for the main CTA button" />
         </fieldset>
 
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Widget Settings                                              -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
         <fieldset name="widgets" label="Widget Settings" description="Configure the info widgets">
+            <!-- Widget 1: Cars Available -->
+            <field name="cars-override" type="text" default="" size="40" label="Number of Cars Override" description="Override the dynamic number of available cars. Leave empty to use database value. Example: 50" />
             <field name="cars-available-label" type="text" default="Cars available" size="40" label="Cars Available Label" description="Label for the cars available widget" />
+
+            <!-- Widget 2: Price -->
+            <field name="price-from-label" type="text" default="from" size="40" label="Price 'From' Label" description="Text before the price (e.g. 'from')" />
             <field name="price-override" type="text" default="" size="40" label="Price Override" description="Override the dynamic cheapest car price. Leave empty to use database value. Example: 25" />
+            <field name="price-per-day-label" type="text" default="/day" size="40" label="Price Per Day Label" description="Text after the price (e.g. '/day')" />
             <field name="price-note" type="text" default="More days, lower price" size="40" label="Price Note" description="Note shown below the price widget" />
         </fieldset>
 
-        <fieldset name="social-proof" label="Social Proof" description="Configure client photos and social proof text">
-            <field name="client-photo" type="jalist">
-                <item name="photo" type="media" default="" label="Client Photo" description="Upload a client photo" />
-            </field>
-            <field name="people-count" type="text" default="1000+ people" size="40" label="People Count" description="Number of people text (e.g. '1000+ people')" />
-            <field name="promo-text" type="text" default="chose to rent cars from Rent AutoPark" size="60" label="Promo Text" description="Promotional text below the people count" />
-        </fieldset>
-
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Messenger Links                                              -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
         <fieldset name="messengers" label="Messenger Links" description="Configure call button and messenger links">
             <field name="call-btn-label" type="text" default="Sună acum" size="40" label="Call Button Label" description="Text for the call button" />
             <field name="phone-link" type="text" default="tel:+37368123456" size="60" label="Phone Link" description="Phone number link (tel: format)" />
@@ -39,10 +46,16 @@
             <field name="messenger-viber-label" type="text" default="Viber" size="40" label="Viber Label" description="Tooltip/label for Viber messenger" />
         </fieldset>
 
-        <fieldset name="labels" label="Label Settings" description="Configure text labels used in the widget">
-            <field name="price-from-label" type="text" default="from" size="40" label="Price 'From' Label" description="Text before the price (e.g. 'from')" />
-            <field name="price-per-day-label" type="text" default="/day" size="40" label="Price Per Day Label" description="Text after the price (e.g. '/day')" />
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- Social Proof (Clients)                                       -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <fieldset name="social-proof" label="Social Proof" description="Configure client photos and social proof text">
+            <field name="people-count" type="text" default="1000+ people" size="40" label="People Count" description="Number of people text (e.g. '1000+ people')" />
+            <field name="promo-text" type="text" default="chose to rent cars from Rent AutoPark" size="60" label="Promo Text" description="Promotional text below the people count" />
             <field name="client-alt-text" type="text" default="Client" size="40" label="Client Alt Text" description="Alt text for client avatar images" />
+            <field name="client-photo" type="jalist">
+                <item name="photo" type="media" default="" label="Client Photo" description="Upload a client photo" />
+            </field>
         </fieldset>
     </fields>
 </form>
