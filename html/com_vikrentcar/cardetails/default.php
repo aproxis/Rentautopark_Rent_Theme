@@ -75,22 +75,23 @@ $depositCurrency = $currencysymb;
 try {
     $_dbo = JFactory::getDbo();
     $_dbo->setQuery(
-        "SELECT `id` FROM `#__vikrentcar_gpayments`
+        "SELECT `charge`, `val_pcent` 
+         FROM `#__vikrentcar_gpayments`
          WHERE `file` = 'maibpayment' AND `published` = '1'
          LIMIT 1"
     );
-    $maibEnabled = $_dbo->loadResult();
+    $maibPayment = $_dbo->loadAssoc();
 
-    if (!empty($maibEnabled)) {
-        $depositAmount = VikRentCar::getAccPerCent();
-        $depositType   = VikRentCar::getTypeDeposit();
-
-        if ($depositType != 'fixed' && !empty($car['cost']) && $car['cost'] > 0) {
+    if (!empty($maibPayment) && floatval($maibPayment['charge']) > 0) {
+        $depositAmount = floatval($maibPayment['charge']);
+        
+        // If percentage-based (val_pcent = 2), calculate from car price
+        if ($maibPayment['val_pcent'] == 2 && !empty($car['cost']) && $car['cost'] > 0) {
             $depositAmount = ($car['cost'] * $depositAmount) / 100;
         }
-
+        
         $depositAmount = round($depositAmount);
-
+        
         if ($depositAmount > 0) {
             $showDeposit = true;
         }
