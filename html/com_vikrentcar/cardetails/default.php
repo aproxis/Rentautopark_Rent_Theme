@@ -1348,10 +1348,23 @@ jQuery(function(){
 			// Set the hours on the date objects
 			d1.setHours(pickHour, 0, 0, 0);
 			d2.setHours(dropHour, 0, 0, 0);
-			
-			var diff = Math.ceil((d2 - d1) / 86400000);
-			return diff > 0 ? diff : null;
+
+			var diffMs   = d2 - d1;
+			var diffDays = Math.ceil(diffMs / 86400000);
+
+			// Grace reduction: if overage beyond (diffDays-1) full days is within
+			// the grace window, bill (diffDays-1). E.g. 26h, grace=3h → bill 1 day.
+			if (cdGraceHours > 0 && diffDays > 1) {
+				var floorDays = diffDays - 1;
+				var overageMs = diffMs - (floorDays * 86400000);
+				if (overageMs <= cdGraceHours * 3600000) {
+					diffDays = floorDays;
+				}
+			}
+
+			return diffDays > 0 ? diffDays : null;
 		} catch(e) { return null; }
+	}
 	}
 
 	function cdGetRate(days) {
@@ -1463,16 +1476,15 @@ jQuery(function(){
 		if (cdGraceHours > 0) {
 			var $graceBy = jQuery('#cd-grace-returnby');
 			if (days) {
-				// Grace end = pickup time + (calcdays × 24 h) + grace hours.
-				// This is correct because calcdays already reflects the billing
-				// period — returning within graceHours after that end time is free.
+				// days is already grace-reduced (e.g. 26h with 3h grace → days=1).
+				// Grace deadline = pickup + days×24h + graceHours.
+				// Example: pickup 06:00, days=1, grace=3h → deadline 13/04 09:00 ✓
 				var pickStr  = jQuery('#pickupdate').val();
 				var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
-				var pickTs   = vrcDateToUnixTs(pickStr, pickHour); // seconds (UTC midnight + hour)
+				var pickTs   = vrcDateToUnixTs(pickStr, pickHour);
 				if (pickTs > 0) {
 					var graceEndTs = pickTs + (days * 86400) + (cdGraceHours * 3600);
 					var graceDate  = new Date(graceEndTs * 1000);
-					// Format: DD/MM/YYYY HH:00 matching site date format
 					var gd = graceDate.getUTCDate(), gm = graceDate.getUTCMonth()+1, gy = graceDate.getUTCFullYear();
 					var gh = graceDate.getUTCHours();
 					var gdStr = (gd<10?'0'+gd:gd)+'/'+(gm<10?'0'+gm:gm)+'/'+gy;
