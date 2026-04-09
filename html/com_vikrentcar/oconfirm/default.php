@@ -73,6 +73,19 @@ $document->addStyleDeclaration('
     color: #047857;
     font-size: 12px;
 }
+.vrc-grace-exceeded-static {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    margin: 12px 0 4px;
+    background: rgba(245, 158, 11, 0.08);
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+}
+.vrc-grace-exc-label { font-weight: 600; color: #92400e; display: block; }
+.vrc-grace-exc-hint  { font-size: 12px; color: #b45309; display: block; margin-top: 3px; }
 ');
 
 if (is_array($cfields)) {
@@ -253,11 +266,31 @@ if ($hasGracePeriod) {
     } else {
         $_graceDuration = $graceHours . (JText::_('VRC_GRACE_HRS') ?: ' h');
     }
-    // Exact "return by" datetime: pickup time + billing days + grace seconds.
-    // This is correct because the grace window starts at the END of the paid
-    // period (pickup + calcdays × 24 h), not at the selected return time.
-    // Example: pickup 12:00, calcdays=1, grace=3h → grace end = 15:00 same day.
-    $_graceEndTs    = (int)$first + ((int)$days * 86400) + ($graceHours * 3600);
+    // Compute grace end using actual timestamps, mirroring the JS cdGetDays logic.
+    // $second - $first gives the true rental duration in seconds.
+    // If there's a fractional-day overage within the grace window, we bill one fewer
+    // day — so grace end = $first + (billedDays × 86400) + graceHours.
+    $_actualDiffSec  = (int)$second - (int)$first;
+    $_rawDays        = (int)ceil($_actualDiffSec / 86400);
+    $_billedDays     = $_rawDays;
+    $_graceState     = 'active'; // 'active' | 'exceeded'
+
+    if ($_rawDays > 1) {
+        $_exactDays  = $_actualDiffSec / 86400.0;
+        $_hasFraction = (abs($_exactDays - round($_exactDays)) > 0.0001);
+        if ($_hasFraction) {
+            $_floorDays  = $_rawDays - 1;
+            $_overageSec = $_actualDiffSec - ($_floorDays * 86400);
+            if ($_overageSec <= $graceHours * 3600) {
+                $_billedDays = $_floorDays;
+                $_graceState = 'active';
+            } else {
+                $_graceState = 'exceeded';
+            }
+        }
+    }
+
+    $_graceEndTs    = (int)$first + ($_billedDays * 86400) + ($graceHours * 3600);
     $_graceReturnBy = date($df, $_graceEndTs) . ' ' . date($nowtf, $_graceEndTs);
 }
 // ────────────────────────────────────────────────────────────────────────────
@@ -476,6 +509,7 @@ if (array_key_exists('hours', $price)) {
 
         <?php if ($hasGracePeriod): ?>
         <!-- ═══ Grace / Gratuity period notice ═══ -->
+        <?php if ($_graceState === 'active'): ?>
         <div class="vrc-grace-notice">
             <svg class="vrc-grace-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -493,6 +527,25 @@ if (array_key_exists('hours', $price)) {
                 )); ?></span>
             </div>
         </div>
+        <?php else: ?>
+        <div class="vrc-grace-exceeded-static">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 style="flex-shrink:0;color:#f59e0b;margin-top:1px;">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div class="vrc-grace-body">
+                <span class="vrc-grace-exc-label"><?php echo htmlspecialchars(
+                    JText::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'
+                ); ?></span>
+                <span class="vrc-grace-exc-hint"><?php echo htmlspecialchars(
+                    JText::_('VRC_GRACE_EXCEEDED_HINT') ?: 'Returnați în limita perioadei de grație pentru a evita taxa suplimentară.'
+                ); ?></span>
+            </div>
+        </div>
+        <?php endif; ?>
         <?php endif; ?>
 
         
