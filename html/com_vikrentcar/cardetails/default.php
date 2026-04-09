@@ -56,6 +56,23 @@ $document->addStyleDeclaration('
     margin-top: 3px;
 }
 .cd-grace-returnby strong { font-weight: 700; }
+.cd-grace-exceeded {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    margin: 0 0 4px;
+    background: rgba(245, 158, 11, 0.08);
+    border-left: 3px solid #f59e0b;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #92400e;
+}
+.cd-grace-exceeded.is-visible { display: flex; }
+.cd-grace-exceeded .cd-grace-exc-icon { flex-shrink: 0; color: #f59e0b; margin-top: 1px; }
+.cd-grace-exceeded .cd-grace-exc-body { display: flex; flex-direction: column; gap: 3px; }
+.cd-grace-exceeded .cd-grace-exc-label { font-weight: 600; }
+.cd-grace-exceeded .cd-grace-exc-hint { font-size: 12px; color: #b45309; }
 ');
 
 $navdecl = '
@@ -1153,11 +1170,26 @@ jQuery(function(){
 					));
 				?></span>
 				<span class="cd-notice-hint cd-grace-returnby" id="cd-grace-returnby" style="display:none;"></span>
-			</div>
 		</div>
 		<?php endif; ?>
 
-		<!-- Live summary -->
+		<!-- Grace exceeded warning (shown by JS when overage > grace window) -->
+		<?php if ($hasGracePeriod): ?>
+		<div class="cd-grace-exceeded" id="cd-grace-exceeded">
+			<svg class="cd-grace-exc-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+			     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+			     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+				<line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+			</svg>
+			<div class="cd-grace-exc-body">
+				<span class="cd-grace-exc-label" id="cd-grace-exc-label"></span>
+				<span class="cd-grace-exc-hint"><?php echo htmlspecialchars(
+					Text::_('VRC_GRACE_EXCEEDED_HINT') ?: 'Returnați în limita perioadei de grație pentru a evita taxa suplimentară.'
+				); ?></span>
+			</div>
+		</div>
+		<?php endif; ?>
 		<div class="cd-summary-section" id="cd-summary">
 			<div class="cd-summary-desc" id="cd-summary-desc"></div>
 
@@ -1354,12 +1386,18 @@ jQuery(function(){
 
 			// Grace reduction: if overage beyond (diffDays-1) full days is within
 			// the grace window, bill (diffDays-1). E.g. 26h, grace=3h → bill 1 day.
+			window.cdGraceState = 'none'; // 'none' | 'active' | 'exceeded'
 			if (cdGraceHours > 0 && diffDays > 1) {
 				var floorDays = diffDays - 1;
 				var overageMs = diffMs - (floorDays * 86400000);
 				if (overageMs <= cdGraceHours * 3600000) {
 					diffDays = floorDays;
+					window.cdGraceState = 'active';
+				} else {
+					window.cdGraceState = 'exceeded';
 				}
+			} else if (cdGraceHours > 0 && diffDays >= 1) {
+				window.cdGraceState = 'active'; // within first day, grace applies on return
 			}
 
 			return diffDays > 0 ? diffDays : null;
@@ -1472,13 +1510,14 @@ jQuery(function(){
 		var days = cdGetDays();
 		var $sum = jQuery('#cd-summary');
 
-		/* ── Update grace notice return-by hint ── */
+		/* ── Update grace notice / exceeded warning ── */
 		if (cdGraceHours > 0) {
-			var $graceBy = jQuery('#cd-grace-returnby');
-			if (days) {
-				// days is already grace-reduced (e.g. 26h with 3h grace → days=1).
-				// Grace deadline = pickup + days×24h + graceHours.
-				// Example: pickup 06:00, days=1, grace=3h → deadline 13/04 09:00 ✓
+			var $graceBy  = jQuery('#cd-grace-returnby');
+			var $exceeded = jQuery('#cd-grace-exceeded');
+			var graceState = (typeof window.cdGraceState !== 'undefined') ? window.cdGraceState : 'none';
+
+			if (days && graceState !== 'none') {
+				// Compute grace deadline: pickup + days×24h + graceHours
 				var pickStr  = jQuery('#pickupdate').val();
 				var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
 				var pickTs   = vrcDateToUnixTs(pickStr, pickHour);
@@ -1489,11 +1528,23 @@ jQuery(function(){
 					var gh = graceDate.getUTCHours();
 					var gdStr = (gd<10?'0'+gd:gd)+'/'+(gm<10?'0'+gm:gm)+'/'+gy;
 					var gtStr = (gh<10?'0'+gh:gh)+':00';
-					var label = cdGraceReturnByLabel.replace('%s', '<strong>' + gdStr + ' ' + gtStr + '</strong>');
-					$graceBy.html(label).show();
+
+					if (graceState === 'active') {
+						// Show green notice with "return by" hint, hide warning
+						var label = cdGraceReturnByLabel.replace('%s', '<strong>' + gdStr + ' ' + gtStr + '</strong>');
+						$graceBy.html(label).show();
+						$exceeded.removeClass('is-visible');
+					} else {
+						// graceState === 'exceeded': hide return-by hint, show amber warning
+						$graceBy.hide();
+						var excLabel = '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>';
+						jQuery('#cd-grace-exc-label').text(excLabel);
+						$exceeded.addClass('is-visible');
+					}
 				}
 			} else {
 				$graceBy.hide();
+				$exceeded.removeClass('is-visible');
 			}
 		}
 
