@@ -1463,16 +1463,18 @@ jQuery(function(){
 		if (cdGraceHours > 0) {
 			var $graceBy = jQuery('#cd-grace-returnby');
 			if (days) {
-				// Compute return timestamp: release date + release hour + grace hours
-				var relStr  = jQuery('#releasedate').val();
-				var relHour = parseInt(jQuery('#vrccomseldh select').val()) || 0;
-				var relTs   = vrcDateToUnixTs(relStr, relHour); // seconds
-				if (relTs > 0) {
-					var graceEndTs = relTs + (cdGraceHours * 3600);
+				// Grace end = pickup time + (calcdays × 24 h) + grace hours.
+				// This is correct because calcdays already reflects the billing
+				// period — returning within graceHours after that end time is free.
+				var pickStr  = jQuery('#pickupdate').val();
+				var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
+				var pickTs   = vrcDateToUnixTs(pickStr, pickHour); // seconds (UTC midnight + hour)
+				if (pickTs > 0) {
+					var graceEndTs = pickTs + (days * 86400) + (cdGraceHours * 3600);
 					var graceDate  = new Date(graceEndTs * 1000);
 					// Format: DD/MM/YYYY HH:00 matching site date format
-					var gd = graceDate.getDate(), gm = graceDate.getMonth()+1, gy = graceDate.getFullYear();
-					var gh = graceDate.getHours();
+					var gd = graceDate.getUTCDate(), gm = graceDate.getUTCMonth()+1, gy = graceDate.getUTCFullYear();
+					var gh = graceDate.getUTCHours();
 					var gdStr = (gd<10?'0'+gd:gd)+'/'+(gm<10?'0'+gm:gm)+'/'+gy;
 					var gtStr = (gh<10?'0'+gh:gh)+':00';
 					var label = cdGraceReturnByLabel.replace('%s', '<strong>' + gdStr + ' ' + gtStr + '</strong>');

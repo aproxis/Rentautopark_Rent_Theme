@@ -253,8 +253,11 @@ if ($hasGracePeriod) {
     } else {
         $_graceDuration = $graceHours . (JText::_('VRC_GRACE_HRS') ?: ' h');
     }
-    // Exact "return by" datetime: confirmed return time + grace seconds
-    $_graceEndTs   = (int)$second + ($graceHours * 3600);
+    // Exact "return by" datetime: pickup time + billing days + grace seconds.
+    // This is correct because the grace window starts at the END of the paid
+    // period (pickup + calcdays × 24 h), not at the selected return time.
+    // Example: pickup 12:00, calcdays=1, grace=3h → grace end = 15:00 same day.
+    $_graceEndTs    = (int)$first + ((int)$days * 86400) + ($graceHours * 3600);
     $_graceReturnBy = date($df, $_graceEndTs) . ' ' . date($nowtf, $_graceEndTs);
 }
 // ────────────────────────────────────────────────────────────────────────────
