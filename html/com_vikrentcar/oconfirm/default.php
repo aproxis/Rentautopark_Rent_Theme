@@ -20,6 +20,40 @@ if ((int)$days != (int)$calcdays) {
     $origdays = $days;
     $days     = $calcdays;
 }
+// Safety: ensure $days is never zero/null after calcdays swap
+if (!(int)$days) {
+    $days = $this->days;
+}
+
+// ── Early grace correction ───────────────────────────────────────────────────
+// Apply grace reduction to $days NOW, before price calculations.
+// VikRentCar core uses Math.ceil on the raw diff, so it passes days=2 for a
+// 26h rental. If the overage fits within the grace window, correct $days to 1
+// so all downstream calculations (optionals, locfee, display) use the right count.
+{
+    $_earlyFirst  = (int)$this->first;
+    $_earlySecond = (int)$this->second;
+    $_earlyGrace  = 0;
+    if (method_exists('VikRentCar', 'getHoursMoreRb')) {
+        $_earlyGrace = (int)VikRentCar::getHoursMoreRb();
+    }
+    if ($_earlyGrace > 0 && $_earlyFirst > 0 && $_earlySecond > 0) {
+        $_earlyDiffSec  = $_earlySecond - $_earlyFirst;
+        $_earlyRawDays  = (int)ceil($_earlyDiffSec / 86400);
+        if ($_earlyRawDays > 1) {
+            $_earlyExact     = $_earlyDiffSec / 86400.0;
+            $_earlyFraction  = (abs($_earlyExact - round($_earlyExact)) > 0.0001);
+            if ($_earlyFraction) {
+                $_earlyFloor   = $_earlyRawDays - 1;
+                $_earlyOverage = $_earlyDiffSec - ($_earlyFloor * 86400);
+                if ($_earlyOverage <= $_earlyGrace * 3600) {
+                    $days = $_earlyFloor; // grace applies — reduce billed days
+                }
+            }
+        }
+    }
+}
+// ────────────────────────────────────────────────────────────────────────────
 $coupon           = $this->coupon;
 $first            = $this->first;
 $second           = $this->second;
