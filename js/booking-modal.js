@@ -43,8 +43,11 @@
 			return false;
 		}
 
-		var days = Math.ceil((relTs - pickTs) / 86400);
-
+		// Use grace-aware cdGetDays() if available, fallback to Math.ceil
+		var days = (typeof cdGetDays === 'function')
+			? cdGetDays()
+			: Math.ceil((relTs - pickTs) / 86400);
+			
 		// 2. Collect all booking parameters
 		var $overlay   = $('#vrc-booking-modal-overlay');
 		var baseUrl    = $overlay.data('oconfirm-url'); // set via data-attribute in PHP
