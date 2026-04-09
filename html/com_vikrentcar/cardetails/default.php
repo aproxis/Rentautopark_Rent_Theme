@@ -1170,6 +1170,7 @@ jQuery(function(){
 					));
 				?></span>
 				<span class="cd-notice-hint cd-grace-returnby" id="cd-grace-returnby" style="display:none;"></span>
+			</div>
 		</div>
 		<?php endif; ?>
 
