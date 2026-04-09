@@ -1414,7 +1414,7 @@ jQuery(function(){
 			return diffDays > 0 ? diffDays : null;
 		} catch(e) { return null; }
 	}
-	}
+	
 
 	function cdGetRate(days) {
 		if (!days || !cdRateByDay) return null;
