@@ -42,6 +42,22 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/cardetails.css');
 JHtml::_('script', VRC_SITE_URI . 'resources/jquery.fancybox.js');
 $document->addScript(JURI::root() . 'templates/rent/js/booking-modal.js');
 
+// Grace period inline styles (extends .cd-info-notice pattern)
+$document->addStyleDeclaration('
+.cd-grace-notice {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border-left: 3px solid #10b981 !important;
+}
+.cd-grace-notice .cd-notice-icon { color: #10b981; }
+.cd-grace-returnby {
+    display: block;
+    font-size: 12px;
+    color: #047857;
+    margin-top: 3px;
+}
+.cd-grace-returnby strong { font-weight: 700; }
+');
+
 $navdecl = '
 jQuery.noConflict();
 jQuery(document).ready(function() {
@@ -113,6 +129,16 @@ if ($vrcdateformat == "%d/%m/%Y") {
 	$df = 'Y/m/d';
 }
 $nowts = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+
+// ── Gratuity / Grace period detection ──────────────────────────────────────
+// hoursmorerentback = number of grace hours after the rental end time
+// (can be > 24; e.g. 28 = 1 day + 4 hours extra allowed return without charge)
+$graceHours = 0;
+if (method_exists('VikRentCar', 'getHoursMoreRb')) {
+	$graceHours = (int)VikRentCar::getHoursMoreRb();
+}
+$hasGracePeriod = ($graceHours > 0);
+// ────────────────────────────────────────────────────────────────────────────
 
 $categoryName = VikRentCar::sayCategory($car['idcat'], $vrc_tn);
 
@@ -1101,6 +1127,36 @@ jQuery(function(){
 		</div>
 		<?php endif; ?>
 
+		<!-- Grace / Gratuity period notice -->
+		<?php if ($hasGracePeriod): ?>
+		<div class="cd-info-notice cd-grace-notice" id="cd-grace-notice">
+			<svg class="cd-notice-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+			</svg>
+			<div class="cd-notice-body">
+				<span class="cd-notice-label"><?php
+					// Build a human-readable label: "28h" → "1 zi și 4 ore" style
+					if ($graceHours >= 24) {
+						$_gDays  = floor($graceHours / 24);
+						$_gExtra = $graceHours % 24;
+						if ($_gExtra > 0) {
+							$_graceSummary = $_gDays . (Text::_('VRC_GRACE_DAYS') ?: ' zi') . ' ' . Text::_('VRC_GRACE_AND') . ' ' . $_gExtra . (Text::_('VRC_GRACE_HRS') ?: ' h');
+						} else {
+							$_graceSummary = $_gDays . (Text::_('VRC_GRACE_DAYS') ?: ' zi');
+						}
+					} else {
+						$_graceSummary = $graceHours . (Text::_('VRC_GRACE_HRS') ?: ' h');
+					}
+					echo htmlspecialchars(sprintf(
+						Text::_('VRC_GRATUITY_PERIOD_INFO') ?: 'Perioadă de grație: %s după ora returnării',
+						$_graceSummary
+					));
+				?></span>
+				<span class="cd-notice-hint cd-grace-returnby" id="cd-grace-returnby" style="display:none;"></span>
+			</div>
+		</div>
+		<?php endif; ?>
+
 		<!-- Live summary -->
 		<div class="cd-summary-section" id="cd-summary">
 			<div class="cd-summary-desc" id="cd-summary-desc"></div>
@@ -1246,6 +1302,8 @@ jQuery(function(){
 	/* ── OOH + Optionals + Live Summary JS ───────────────────────── */
 	var cdOohFees = <?php echo json_encode($oohFees); ?>;
 	var cdCurrency = '€';
+	var cdGraceHours = <?php echo (int)$graceHours; ?>;
+	var cdGraceReturnByLabel = '<?php echo addslashes(Text::_('VRC_GRATUITY_RETURNBY') ?: 'Returnați până la %s fără costuri suplimentare'); ?>';
 	var cdCarName = '<?php echo addslashes($car['name']); ?>';
 	var cdPlacesMap = <?php
 		$_pm = array();
@@ -1400,6 +1458,30 @@ jQuery(function(){
 	function cdUpdateSummary() {
 		var days = cdGetDays();
 		var $sum = jQuery('#cd-summary');
+
+		/* ── Update grace notice return-by hint ── */
+		if (cdGraceHours > 0) {
+			var $graceBy = jQuery('#cd-grace-returnby');
+			if (days) {
+				// Compute return timestamp: release date + release hour + grace hours
+				var relStr  = jQuery('#releasedate').val();
+				var relHour = parseInt(jQuery('#vrccomseldh select').val()) || 0;
+				var relTs   = vrcDateToUnixTs(relStr, relHour); // seconds
+				if (relTs > 0) {
+					var graceEndTs = relTs + (cdGraceHours * 3600);
+					var graceDate  = new Date(graceEndTs * 1000);
+					// Format: DD/MM/YYYY HH:00 matching site date format
+					var gd = graceDate.getDate(), gm = graceDate.getMonth()+1, gy = graceDate.getFullYear();
+					var gh = graceDate.getHours();
+					var gdStr = (gd<10?'0'+gd:gd)+'/'+(gm<10?'0'+gm:gm)+'/'+gy;
+					var gtStr = (gh<10?'0'+gh:gh)+':00';
+					var label = cdGraceReturnByLabel.replace('%s', '<strong>' + gdStr + ' ' + gtStr + '</strong>');
+					$graceBy.html(label).show();
+				}
+			} else {
+				$graceBy.hide();
+			}
+		}
 
 		/* ── Update KM notice ── */
 		var $kmNotice = jQuery('#cd-km-notice');

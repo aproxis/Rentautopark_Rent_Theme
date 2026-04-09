@@ -42,6 +42,39 @@ if (VikRentCar::loadJquery()) {
 $document->addStyleSheet(VRC_SITE_URI . 'resources/jquery-ui.min.css');
 JHtml::_('script', VRC_SITE_URI . 'resources/jquery-ui.min.js');
 
+// Grace period notice styles
+$document->addStyleDeclaration('
+.vrc-grace-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    margin: 12px 0 4px;
+    background: rgba(16, 185, 129, 0.08);
+    border-left: 3px solid #10b981;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+}
+.vrc-grace-icon {
+    flex-shrink: 0;
+    color: #10b981;
+    margin-top: 1px;
+}
+.vrc-grace-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.vrc-grace-label {
+    color: #065f46;
+    font-weight: 500;
+}
+.vrc-grace-returnby {
+    color: #047857;
+    font-size: 12px;
+}
+');
+
 if (is_array($cfields)) {
     foreach ($cfields as $cf) {
         if (!empty($cf['poplink'])) {
@@ -195,6 +228,36 @@ if (count($oohfee) > 0) {
     $ooh_time .= $oohfee['dropoff'] == 1 && $oohfee['dropoff_ooh'] != $oohfee['pickup_ooh']
                  ? (!empty($ooh_time) ? ', ' : '') . $oohfee['dropoff_ooh'] : '';
 }
+
+// ── Gratuity / Grace period detection ──────────────────────────────────────
+// hoursmorerentback may exceed 24 (e.g. 28 = 1 day + 4 h).
+// $second is the confirmed return timestamp — use it to compute exact grace end.
+$graceHours = 0;
+if (method_exists('VikRentCar', 'getHoursMoreRb')) {
+    $graceHours = (int)VikRentCar::getHoursMoreRb();
+}
+$hasGracePeriod = ($graceHours > 0);
+
+if ($hasGracePeriod) {
+    // Human-readable duration label
+    if ($graceHours >= 24) {
+        $_gDays  = floor($graceHours / 24);
+        $_gExtra = $graceHours % 24;
+        if ($_gExtra > 0) {
+            $_graceDuration = $_gDays . (JText::_('VRC_GRACE_DAYS') ?: ' zi')
+                            . ' ' . (JText::_('VRC_GRACE_AND') ?: 'și')
+                            . ' ' . $_gExtra . (JText::_('VRC_GRACE_HRS') ?: ' h');
+        } else {
+            $_graceDuration = $_gDays . (JText::_('VRC_GRACE_DAYS') ?: ' zi');
+        }
+    } else {
+        $_graceDuration = $graceHours . (JText::_('VRC_GRACE_HRS') ?: ' h');
+    }
+    // Exact "return by" datetime: confirmed return time + grace seconds
+    $_graceEndTs   = (int)$second + ($graceHours * 3600);
+    $_graceReturnBy = date($df, $_graceEndTs) . ' ' . date($nowtf, $_graceEndTs);
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 // ── Place info for itinerary display
 $pickloc = VikRentCar::getPlaceInfo($place,       $vrc_tn);
@@ -408,9 +471,28 @@ if (array_key_exists('hours', $price)) {
             </div>
         </div><!-- /.vrc-price-list -->
 
-        
+        <?php if ($hasGracePeriod): ?>
+        <!-- ═══ Grace / Gratuity period notice ═══ -->
+        <div class="vrc-grace-notice">
+            <svg class="vrc-grace-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <div class="vrc-grace-body">
+                <span class="vrc-grace-label"><?php echo htmlspecialchars(sprintf(
+                    JText::_('VRC_GRATUITY_PERIOD_INFO') ?: 'Perioadă de grație: %s după ora returnării',
+                    $_graceDuration
+                )); ?></span>
+                <span class="vrc-grace-returnby"><?php echo htmlspecialchars(sprintf(
+                    JText::_('VRC_GRATUITY_RETURNBY') ?: 'Returnați până la %s fără costuri suplimentare',
+                    $_graceReturnBy
+                )); ?></span>
+            </div>
+        </div>
+        <?php endif; ?>
 
-        <?php /* ── OLD table kept for compatibility but hidden via CSS ── */ ?>
+        
         <div class="vrc-oconfirm-summary-container" style="display:none!important;">
             <div class="vrc-oconfirm-summary-car-wrapper">
                 <div class="vrc-oconfirm-summary-car-head">
