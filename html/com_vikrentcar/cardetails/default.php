@@ -1385,26 +1385,36 @@ jQuery(function(){
 			var diffMs   = d2 - d1;
 			var diffDays = Math.ceil(diffMs / 86400000);
 
-			// Grace reduction: if overage beyond (diffDays-1) full days is within
-			// the grace window, bill (diffDays-1). E.g. 26h, grace=3h → bill 1 day.
+			// Grace logic only applies when the rental duration has a fractional-day
+			// overage — i.e. diffMs is NOT an exact multiple of 24h.
+			// Exact multiples (same pickup/return hour) need no grace adjustment.
 			window.cdGraceState = 'none'; // 'none' | 'active' | 'exceeded'
-			if (cdGraceHours > 0 && diffDays > 1) {
-				var floorDays = diffDays - 1;
-				var overageMs = diffMs - (floorDays * 86400000);
-				if (overageMs <= cdGraceHours * 3600000) {
-					diffDays = floorDays;
-					window.cdGraceState = 'active';
+			if (cdGraceHours > 0 && diffDays >= 1) {
+				var exactDays = diffMs / 86400000; // e.g. 1.083 for 26h, 4.0 for 96h
+				var hasFraction = (Math.abs(exactDays - Math.round(exactDays)) > 0.0001);
+
+				if (hasFraction && diffDays > 1) {
+					// There is a fractional overage beyond a whole number of days
+					var floorDays = diffDays - 1;
+					var overageMs = diffMs - (floorDays * 86400000);
+					if (overageMs <= cdGraceHours * 3600000) {
+						// Overage fits within grace → reduce billed days by 1
+						diffDays = floorDays;
+						window.cdGraceState = 'active';
+					} else {
+						// Overage exceeds grace → warn user
+						window.cdGraceState = 'exceeded';
+					}
 				} else {
-					window.cdGraceState = 'exceeded';
+					// Exact day count or single day — grace window is available for return
+					window.cdGraceState = 'active';
 				}
-			} else if (cdGraceHours > 0 && diffDays >= 1) {
-				window.cdGraceState = 'active'; // within first day, grace applies on return
 			}
 
 			return diffDays > 0 ? diffDays : null;
 		} catch(e) { return null; }
 	}
-	
+	}
 
 	function cdGetRate(days) {
 		if (!days || !cdRateByDay) return null;
