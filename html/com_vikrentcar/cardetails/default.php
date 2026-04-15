@@ -38,7 +38,7 @@ if (VikRentCar::loadJquery()) {
 	JHtml::_('jquery.framework', true, true);
 }
 $document->addStyleSheet(VRC_SITE_URI . 'resources/jquery.fancybox.css');
-$document->addStyleSheet(JURI::root() . 'templates/rent/css/cardetails.css');
+$document->addStyleSheet(JURI::root() . 'templates/rent/css/cardetails-v3.css');
 JHtml::_('script', VRC_SITE_URI . 'resources/jquery.fancybox.js');
 $document->addScript(JURI::root() . 'templates/rent/js/booking-modal.js');
 
@@ -644,335 +644,16 @@ try {
 
 <!-- ═══════ RIGHT COLUMN (mobile order 2 — booking card) ═══════ -->
 <div class="cd-right">
-<div class="cd-booking-card">
-	<h3 class="cd-booking-title"><?php echo Text::_('VRCBOOKTHISCAR') ?: 'Забронировать'; ?> <?php echo htmlspecialchars($car['name']); ?></h3>
+<div id="vrc-bookingpart-init"></div>
+<div class="cd-booking-card v3">
 
-<?php
-$_ico_chev_sm = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow"><path d="m6 9 6 6 6-6"></path></svg>';
-
-if (VikRentCar::allowRent()) {
-	$dbo = JFactory::getDbo();
-	$calendartype = VikRentCar::calendarType();
-	$indvrcplace = 0;
-	$indvrcreturnplace = 0;
-	$restrictions = VikRentCar::loadRestrictions(true, array($car['id']));
-	$def_min_los = VikRentCar::setDropDatePlus();
-
-	if ($calendartype == "jqueryui") {
-		$document->addStyleSheet(VRC_SITE_URI . 'resources/jquery-ui.min.css');
-		JHtml::_('script', VRC_SITE_URI . 'resources/jquery-ui.min.js');
-	}
-
-	$ptmpl   = VikRequest::getString('tmpl', '', 'request');
-	$ppickup = VikRequest::getInt('pickup', 0, 'request');
-	$ppromo  = VikRequest::getInt('promo', 0, 'request');
-	$coordsplaces = array();
-
-	$places = '';
-	$diffopentime = false;
-	$closingdays = array();
-	$declclosingdays = '';
-	$plapick_ids = array();
-	$pladrop_ids = array();
-
-	if (VikRentCar::showPlacesFront()) {
-		$q = "SELECT * FROM `#__vikrentcar_places` ORDER BY `#__vikrentcar_places`.`ordering` ASC, `#__vikrentcar_places`.`name` ASC;";
-		$dbo->setQuery($q);
-		$dbo->execute();
-		if ($dbo->getNumRows() > 0) {
-			$places = $dbo->loadAssocList();
-			$vrc_tn->translateContents($places, '#__vikrentcar_places');
-			$plapick_ids = explode(';', $car['idplace']);
-			$pladrop_ids = explode(';', $car['idretplace']);
-			foreach ($places as $kpla => $pla) {
-				if (!in_array($pla['id'], $plapick_ids) && !in_array($pla['id'], $pladrop_ids)) {
-					unset($places[$kpla]);
-				}
-			}
-			if (count($places) == 0) { $places = ''; }
-		} else { $places = ''; }
-
-		if (is_array($places)) {
-			foreach ($places as $kpla => $pla) {
-				if (!empty($pla['opentime'])) { $diffopentime = true; }
-				if (!empty($pla['closingdays'])) { $closingdays[$pla['id']] = $pla['closingdays']; }
-				if (empty($indvrcplace) && !isset($places[$indvrcplace])) {
-					$indvrcplace = $kpla;
-					$indvrcreturnplace = $kpla;
-				}
-			}
-			$wopening_pick = array();
-			if (isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['wopening'])) {
-				$wopening_pick = json_decode($places[$indvrcplace]['wopening'], true);
-				$wopening_pick = !is_array($wopening_pick) ? array() : $wopening_pick;
-			}
-			$wopening_drop = array();
-			if (isset($places[$indvrcreturnplace]) && !empty($places[$indvrcreturnplace]['wopening'])) {
-				$wopening_drop = json_decode($places[$indvrcreturnplace]['wopening'], true);
-				$wopening_drop = !is_array($wopening_drop) ? array() : $wopening_drop;
-			}
-			if (count($closingdays) > 0) {
-				foreach ($closingdays as $idpla => $clostr) {
-					$jsclosingdstr = VikRentCar::formatLocationClosingDays($clostr);
-					if (count($jsclosingdstr) > 0) {
-						$declclosingdays .= 'var loc' . $idpla . 'closingdays = [' . implode(", ", $jsclosingdstr) . '];' . "\n";
-					}
-				}
-			}
-			if ($diffopentime) {
-				$ajaxUrl = method_exists('VikRentCar', 'ajaxUrl')
-					? VikRentCar::ajaxUrl(JRoute::_('index.php?option=com_vikrentcar&task=ajaxlocopentime&tmpl=component' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''), false))
-					: JRoute::_('index.php?option=com_vikrentcar&task=ajaxlocopentime&tmpl=component', false);
-				$onchangedecl = '
-var vrc_location_change = false;
-var vrc_wopening_pick = ' . json_encode($wopening_pick) . ';
-var vrc_wopening_drop = ' . json_encode($wopening_drop) . ';
-var vrc_hopening_pick = null;
-var vrc_hopening_drop = null;
-var vrc_mopening_pick = null;
-var vrc_mopening_drop = null;
-function vrcSetLocOpenTime(loc, where) {
-	if (where == "dropoff") { vrc_location_change = true; }
-	jQuery.ajax({
-		type: "POST",
-		url: "' . $ajaxUrl . '",
-		data: { idloc: loc, pickdrop: where }
-	}).done(function(res) {
-		var vrcobj = JSON.parse(res);
-		if (where == "pickup") {
-			jQuery("#vrccomselph").html(vrcobj.hours);
-			jQuery("#vrccomselpm").html(vrcobj.minutes);
-			if (vrcobj.hasOwnProperty("wopening")) { vrc_wopening_pick = vrcobj.wopening; vrc_hopening_pick = vrcobj.hours; }
-		} else {
-			jQuery("#vrccomseldh").html(vrcobj.hours);
-			jQuery("#vrccomseldm").html(vrcobj.minutes);
-			if (vrcobj.hasOwnProperty("wopening")) { vrc_wopening_drop = vrcobj.wopening; vrc_hopening_drop = vrcobj.hours; }
-		}
-		if (typeof vrcLocationWopening !== "undefined") { vrcLocationWopening(where); }
-		if (where == "pickup" && vrc_location_change === false) {
-			jQuery("#returnplace").val(loc).trigger("change");
-			vrc_location_change = false;
-		}
-	});
-}';
-				$document->addScriptDeclaration($onchangedecl);
-			}
-		}
-	}
-
-	/* ── Hours select (single, :00 minutes hidden) ──────────────── */
-	if ($diffopentime && is_array($places) && isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['opentime'])) {
-		$parts = explode("-", $places[$indvrcplace]['opentime']);
-		if (is_array($parts) && $parts[0] != $parts[1]) {
-			$opent  = VikRentCar::getHoursMinutes($parts[0]);
-			$closet = VikRentCar::getHoursMinutes($parts[1]);
-			$i = $opent[0]; $j = $closet[0];
-		} else { $i = 0; $j = 23; }
-	} else {
-		$timeopst = VikRentCar::getTimeOpenStore();
-		if (is_array($timeopst) && $timeopst[0] != $timeopst[1]) {
-			$opent  = VikRentCar::getHoursMinutes($timeopst[0]);
-			$closet = VikRentCar::getHoursMinutes($timeopst[1]);
-			$i = $opent[0]; $j = $closet[0];
-		} else { $i = 0; $j = 23; }
-	}
-
-	// Build hours-only select (minutes will be hidden input = 0)
-	$hours = "";
-	$pickhdeftime = isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['defaulttime']) ? ((int)$places[$indvrcplace]['defaulttime'] / 3600) : 12;
-	if (!($i < $j)) {
-		while (intval($i) != (int)$j) {
-			$sayi = $i < 10 ? "0".$i : $i;
-			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
-			$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
-			$i++; $i = $i > 23 ? 0 : $i;
-		}
-		$sayi = $i < 10 ? "0".$i : $i;
-		if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
-		$hours .= "<option value=\"".(int)$i."\">".$sayh."</option>\n";
-	} else {
-		while ($i <= $j) {
-			$sayi = $i < 10 ? "0".$i : $i;
-			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
-			$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
-			$i++;
-		}
-	}
-
-	/* ── jQuery UI datepicker locale & restrictions JS ──────────── */
-	if ($vrcdateformat == "%d/%m/%Y") { $juidf = 'dd/mm/yy'; }
-	elseif ($vrcdateformat == "%m/%d/%Y") { $juidf = 'mm/dd/yy'; }
-	else { $juidf = 'yy/mm/dd'; }
-
-	$ldecl = '
-jQuery(function($){
-	$.datepicker.regional["vikrentcar"] = {
-		closeText: "' . Text::_('VRCJQCALDONE') . '",
-		prevText: "' . Text::_('VRCJQCALPREV') . '",
-		nextText: "' . Text::_('VRCJQCALNEXT') . '",
-		currentText: "' . Text::_('VRCJQCALTODAY') . '",
-		monthNames: ["' . Text::_('VRMONTHONE') . '","' . Text::_('VRMONTHTWO') . '","' . Text::_('VRMONTHTHREE') . '","' . Text::_('VRMONTHFOUR') . '","' . Text::_('VRMONTHFIVE') . '","' . Text::_('VRMONTHSIX') . '","' . Text::_('VRMONTHSEVEN') . '","' . Text::_('VRMONTHEIGHT') . '","' . Text::_('VRMONTHNINE') . '","' . Text::_('VRMONTHTEN') . '","' . Text::_('VRMONTHELEVEN') . '","' . Text::_('VRMONTHTWELVE') . '"],
-		monthNamesShort: ["' . mb_substr(Text::_('VRMONTHONE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWO'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTHREE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFOUR'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFIVE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSIX'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSEVEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHEIGHT'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHNINE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHELEVEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWELVE'),0,3,'UTF-8') . '"],
-		dayNames: ["' . Text::_('VRCJQCALSUN') . '","' . Text::_('VRCJQCALMON') . '","' . Text::_('VRCJQCALTUE') . '","' . Text::_('VRCJQCALWED') . '","' . Text::_('VRCJQCALTHU') . '","' . Text::_('VRCJQCALFRI') . '","' . Text::_('VRCJQCALSAT') . '"],
-		dayNamesShort: ["' . mb_substr(Text::_('VRCJQCALSUN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'),0,3,'UTF-8') . '"],
-		dayNamesMin: ["' . mb_substr(Text::_('VRCJQCALSUN'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'),0,2,'UTF-8') . '"],
-		weekHeader: "' . Text::_('VRCJQCALWKHEADER') . '",
-		dateFormat: "' . $juidf . '",
-		firstDay: ' . VikRentCar::getFirstWeekDay() . ',
-		isRTL: false,
-		showMonthAfterYear: false,
-		yearSuffix: ""
-	};
-	$.datepicker.setDefaults($.datepicker.regional["vikrentcar"]);
-});
-function vrcGetDateObject(dstring) { var dparts = dstring.split("-"); return new Date(dparts[0], (parseInt(dparts[1]) - 1), parseInt(dparts[2]), 0, 0, 0, 0); }
-function vrcFullObject(obj) { var jk; for(jk in obj) { return obj.hasOwnProperty(jk); } }
-var vrcrestrctarange, vrcrestrctdrange, vrcrestrcta, vrcrestrctd;';
-	$document->addScriptDeclaration($ldecl);
-
-	/* ── Restrictions ───────────────────────────────────────────── */
-	$totrestrictions = count($restrictions);
-	$wdaysrestrictions = array(); $wdaystworestrictions = array(); $wdaysrestrictionsrange = array();
-	$wdaysrestrictionsmonths = array(); $ctarestrictionsrange = array(); $ctarestrictionsmonths = array();
-	$ctdrestrictionsrange = array(); $ctdrestrictionsmonths = array(); $monthscomborestr = array();
-	$minlosrestrictions = array(); $minlosrestrictionsrange = array();
-	$maxlosrestrictions = array(); $maxlosrestrictionsrange = array(); $notmultiplyminlosrestrictions = array();
-
-	if ($totrestrictions > 0) {
-		foreach ($restrictions as $rmonth => $restr) {
-			if ($rmonth != 'range') {
-				if (strlen($restr['wday']) > 0) {
-					$wdaysrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wday'] . "'";
-					$wdaysrestrictionsmonths[] = $rmonth;
-					if (strlen($restr['wdaytwo']) > 0) {
-						$wdaystworestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wdaytwo'] . "'";
-						$monthscomborestr[($rmonth - 1)] = VikRentCar::parseJsDrangeWdayCombo($restr);
-					}
-				} elseif (!empty($restr['ctad']) || !empty($restr['ctdd'])) {
-					if (!empty($restr['ctad'])) { $ctarestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctad']); }
-					if (!empty($restr['ctdd'])) { $ctdrestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctdd']); }
-				}
-				if ($restr['multiplyminlos'] == 0) { $notmultiplyminlosrestrictions[] = $rmonth; }
-				$minlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['minlos'] . "'";
-				if (!empty($restr['maxlos']) && $restr['maxlos'] > 0 && $restr['maxlos'] > $restr['minlos']) {
-					$maxlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['maxlos'] . "'";
-				}
-			} else {
-				foreach ($restr as $kr => $drestr) {
-					if (strlen($drestr['wday']) > 0) {
-						$wdaysrestrictionsrange[$kr][0] = date('Y-m-d', $drestr['dfrom']); $wdaysrestrictionsrange[$kr][1] = date('Y-m-d', $drestr['dto']);
-						$wdaysrestrictionsrange[$kr][2] = $drestr['wday']; $wdaysrestrictionsrange[$kr][3] = $drestr['multiplyminlos'];
-						$wdaysrestrictionsrange[$kr][4] = strlen($drestr['wdaytwo']) > 0 ? $drestr['wdaytwo'] : -1;
-						$wdaysrestrictionsrange[$kr][5] = VikRentCar::parseJsDrangeWdayCombo($drestr);
-					} elseif (!empty($drestr['ctad']) || !empty($drestr['ctdd'])) {
-						$ctfrom = date('Y-m-d', $drestr['dfrom']); $ctto = date('Y-m-d', $drestr['dto']);
-						if (!empty($drestr['ctad'])) { $ctarestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctad'])); }
-						if (!empty($drestr['ctdd'])) { $ctdrestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctdd'])); }
-					}
-					$minlosrestrictionsrange[$kr] = array(date('Y-m-d', $drestr['dfrom']), date('Y-m-d', $drestr['dto']), $drestr['minlos']);
-					if (!empty($drestr['maxlos']) && $drestr['maxlos'] > 0 && $drestr['maxlos'] > $drestr['minlos']) {
-						$maxlosrestrictionsrange[$kr] = $drestr['maxlos'];
-					}
-				}
-				unset($restrictions['range']);
-			}
-		}
-
-		$resdecl = "
-var vrcrestrmonthswdays = [" . implode(", ", $wdaysrestrictionsmonths) . "];
-var vrcrestrmonths = [" . implode(", ", array_keys($restrictions)) . "];
-var vrcrestrmonthscombojn = JSON.parse('" . json_encode($monthscomborestr) . "');
-var vrcrestrminlos = {" . implode(", ", $minlosrestrictions) . "};
-var vrcrestrminlosrangejn = JSON.parse('" . json_encode($minlosrestrictionsrange) . "');
-var vrcrestrmultiplyminlos = [" . implode(", ", $notmultiplyminlosrestrictions) . "];
-var vrcrestrmaxlos = {" . implode(", ", $maxlosrestrictions) . "};
-var vrcrestrmaxlosrangejn = JSON.parse('" . json_encode($maxlosrestrictionsrange) . "');
-var vrcrestrwdaysrangejn = JSON.parse('" . json_encode($wdaysrestrictionsrange) . "');
-var vrcrestrcta = JSON.parse('" . json_encode($ctarestrictionsmonths) . "');
-var vrcrestrctarange = JSON.parse('" . json_encode($ctarestrictionsrange) . "');
-var vrcrestrctd = JSON.parse('" . json_encode($ctdrestrictionsmonths) . "');
-var vrcrestrctdrange = JSON.parse('" . json_encode($ctdrestrictionsrange) . "');
-var vrccombowdays = {};
-function vrcRefreshDropoff(darrive) {
-	if (vrcFullObject(vrccombowdays)) { var vrctosort = new Array(); for(var vrci in vrccombowdays) { if (vrccombowdays.hasOwnProperty(vrci)) { var vrcusedate = darrive; vrctosort[vrci] = vrcusedate.setDate(vrcusedate.getDate() + (vrccombowdays[vrci] - 1 - vrcusedate.getDay() + 7) % 7 + 1); } } vrctosort.sort(function(da, db) { return da > db ? 1 : -1; }); for(var vrcnext in vrctosort) { if (vrctosort.hasOwnProperty(vrcnext)) { var vrcfirstnextd = new Date(vrctosort[vrcnext]); jQuery('#releasedate').datepicker('option','minDate',vrcfirstnextd); jQuery('#releasedate').datepicker('setDate',vrcfirstnextd); break; } } }
-}
-var vrcDropMaxDateSet = false;
-function vrcSetMinDropoffDate() {
-	var vrcDropMaxDateSetNow = false; var minlos = " . (intval($def_min_los) > 0 ? $def_min_los : '0') . "; var maxlosrange = 0;
-	var nowpickup = jQuery('#pickupdate').datepicker('getDate'); var nowd = nowpickup.getDay(); var nowpickupdate = new Date(nowpickup.getTime()); vrccombowdays = {};
-	if (vrcFullObject(vrcrestrminlosrangejn)) { for (var rk in vrcrestrminlosrangejn) { if (vrcrestrminlosrangejn.hasOwnProperty(rk)) { var minldrangeinit = vrcGetDateObject(vrcrestrminlosrangejn[rk][0]); if (nowpickupdate >= minldrangeinit) { var minldrangeend = vrcGetDateObject(vrcrestrminlosrangejn[rk][1]); if (nowpickupdate <= minldrangeend) { minlos = parseInt(vrcrestrminlosrangejn[rk][2]); if (vrcFullObject(vrcrestrmaxlosrangejn)) { if (rk in vrcrestrmaxlosrangejn) { maxlosrange = parseInt(vrcrestrmaxlosrangejn[rk]); } } if (rk in vrcrestrwdaysrangejn && nowd in vrcrestrwdaysrangejn[rk][5]) { vrccombowdays = vrcrestrwdaysrangejn[rk][5][nowd]; } } } } } }
-	var nowm = nowpickup.getMonth();
-	if (vrcFullObject(vrcrestrmonthscombojn) && vrcrestrmonthscombojn.hasOwnProperty(nowm)) { if (nowd in vrcrestrmonthscombojn[nowm]) { vrccombowdays = vrcrestrmonthscombojn[nowm][nowd]; } }
-	if (jQuery.inArray((nowm+1), vrcrestrmonths) != -1) { minlos = parseInt(vrcrestrminlos[nowm]); }
-	nowpickupdate.setDate(nowpickupdate.getDate() + minlos);
-	jQuery('#releasedate').datepicker('option','minDate',nowpickupdate);
-	if (maxlosrange > 0) { var diffmaxminlos = maxlosrange - minlos; var maxdropoffdate = new Date(nowpickupdate.getTime()); maxdropoffdate.setDate(maxdropoffdate.getDate() + diffmaxminlos); jQuery('#releasedate').datepicker('option','maxDate',maxdropoffdate); vrcDropMaxDateSet = true; vrcDropMaxDateSetNow = true; }
-	if (nowm in vrcrestrmaxlos) { var diffmaxminlos = parseInt(vrcrestrmaxlos[nowm]) - minlos; var maxdropoffdate = new Date(nowpickupdate.getTime()); maxdropoffdate.setDate(maxdropoffdate.getDate() + diffmaxminlos); jQuery('#releasedate').datepicker('option','maxDate',maxdropoffdate); vrcDropMaxDateSet = true; vrcDropMaxDateSetNow = true; }
-	if (!vrcFullObject(vrccombowdays)) { jQuery('#releasedate').datepicker('setDate',nowpickupdate); if (!vrcDropMaxDateSetNow && vrcDropMaxDateSet === true) { jQuery('#releasedate').datepicker('option','maxDate',null); } } else { vrcRefreshDropoff(nowpickup); }
-}";
-
-		if (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0) {
-			$resdecl .= "
-var vrcrestrwdays = {" . implode(", ", $wdaysrestrictions) . "};
-var vrcrestrwdaystwo = {" . implode(", ", $wdaystworestrictions) . "};
-function vrcIsDayDisabled(date) { if (!vrcValidateCta(date)){return [false];} var actd=jQuery.datepicker.formatDate('yy-mm-dd',date); " . (strlen($declclosingdays) > 0 ? "var loc_closing=pickupClosingDays(date); if(!loc_closing[0]){return loc_closing;}" : "") . " " . (count($push_disabled_in) ? "var vrc_fulldays=[" . implode(',', $push_disabled_in) . "]; if(jQuery.inArray(actd,vrc_fulldays)>=0){return [false];}" : "") . " var m=date.getMonth(),wd=date.getDay(); if(vrcFullObject(vrcrestrwdaysrangejn)){for(var rk in vrcrestrwdaysrangejn){if(vrcrestrwdaysrangejn.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrwdaysrangejn[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrwdaysrangejn[rk][1]);if(date<=wdrangeend){if(wd!=vrcrestrwdaysrangejn[rk][2]){if(vrcrestrwdaysrangejn[rk][4]==-1||wd!=vrcrestrwdaysrangejn[rk][4]){return [false];}}}}}}} if(vrcFullObject(vrcrestrwdays)){if(jQuery.inArray((m+1),vrcrestrmonthswdays)==-1){return [true];}if(wd==vrcrestrwdays[m]){return [true];}if(vrcFullObject(vrcrestrwdaystwo)){if(wd==vrcrestrwdaystwo[m]){return [true];}}return [false];} return [true]; }
-function vrcIsDayDisabledDropoff(date) { if(!vrcValidateCtd(date)){return [false];} var actd=jQuery.datepicker.formatDate('yy-mm-dd',date); " . (strlen($declclosingdays) > 0 ? "var loc_closing=dropoffClosingDays(date);if(!loc_closing[0]){return loc_closing;}" : "") . " " . (count($push_disabled_out) ? "var vrc_fulldays=[" . implode(',', $push_disabled_out) . "];if(jQuery.inArray(actd,vrc_fulldays)>=0){return [false];}" : "") . " var m=date.getMonth(),wd=date.getDay(); if(vrcFullObject(vrccombowdays)){if(jQuery.inArray(wd,vrccombowdays)!=-1){return [true];}else{return [false];}} if(vrcFullObject(vrcrestrwdaysrangejn)){for(var rk in vrcrestrwdaysrangejn){if(vrcrestrwdaysrangejn.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrwdaysrangejn[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrwdaysrangejn[rk][1]);if(date<=wdrangeend){if(wd!=vrcrestrwdaysrangejn[rk][2]&&vrcrestrwdaysrangejn[rk][3]==1){return [false];}}}}}} if(vrcFullObject(vrcrestrwdays)){if(jQuery.inArray((m+1),vrcrestrmonthswdays)==-1||jQuery.inArray((m+1),vrcrestrmultiplyminlos)!=-1){return [true];}if(wd==vrcrestrwdays[m]){return [true];}return [false];} return [true]; }";
-		}
-		$document->addScriptDeclaration($resdecl);
-	}
-
-	if (strlen($declclosingdays) > 0) {
-		$declclosingdays .= '
-function pickupClosingDays(date){var dmy=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();var wday=date.getDay().toString();var arrlocclosd=jQuery("#place").val();var checklocarr=window["loc"+arrlocclosd+"closingdays"];if(jQuery.inArray(dmy,checklocarr)==-1&&jQuery.inArray(wday,checklocarr)==-1){return [true,""];}else{return [false,"","' . addslashes(Text::_('VRCLOCDAYCLOSED')) . '"];}}
-function dropoffClosingDays(date){var dmy=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();var wday=date.getDay().toString();var arrlocclosd=jQuery("#returnplace").val();var checklocarr=window["loc"+arrlocclosd+"closingdays"];if(jQuery.inArray(dmy,checklocarr)==-1&&jQuery.inArray(wday,checklocarr)==-1){return [true,""];}else{return [false,"","' . addslashes(Text::_('VRCLOCDAYCLOSED')) . '"];}}';
-		$document->addScriptDeclaration($declclosingdays);
-	}
-
-	$dropdayplus = $def_min_los;
-	$forcedropday = "jQuery('#releasedate').datepicker('option','minDate',selectedDate);";
-	if (strlen($dropdayplus) > 0 && intval($dropdayplus) > 0) {
-		$forcedropday = "var nowpick=jQuery(this).datepicker('getDate');if(nowpick){var nowpickdate=new Date(nowpick.getTime());nowpickdate.setDate(nowpickdate.getDate()+" . $dropdayplus . ");jQuery('#releasedate').datepicker('option','minDate',nowpickdate);jQuery('#releasedate').datepicker('setDate',nowpickdate);}";
-	}
-
-	$sdecl = "
-var vrc_fulldays_in = [" . implode(', ', $push_disabled_in) . "];
-var vrc_fulldays_out = [" . implode(', ', $push_disabled_out) . "];
-function vrcIsDayFullIn(date){if(!vrcValidateCta(date)){return [false];}var actd=jQuery.datepicker.formatDate('yy-mm-dd',date);if(jQuery.inArray(actd,vrc_fulldays_in)==-1){return " . (strlen($declclosingdays) > 0 ? 'pickupClosingDays(date)' : '[true]') . ";}return [false];}
-function vrcIsDayFullOut(date){if(!vrcValidateCtd(date)){return [false];}var actd=jQuery.datepicker.formatDate('yy-mm-dd',date);if(jQuery.inArray(actd,vrc_fulldays_out)==-1){return " . (strlen($declclosingdays) > 0 ? 'dropoffClosingDays(date)' : '[true]') . ";}return [false];}
-function vrcLocationWopening(mode){if(typeof vrc_wopening_pick==='undefined'){return true;}if(mode=='pickup'){vrc_mopening_pick=null;}else{vrc_mopening_drop=null;}var loc_data=mode=='pickup'?vrc_wopening_pick:vrc_wopening_drop;var def_loc_hours=mode=='pickup'?vrc_hopening_pick:vrc_hopening_drop;var sel_d=jQuery((mode=='pickup'?'#pickupdate':'#releasedate')).datepicker('getDate');if(!sel_d){return true;}var sel_wday=sel_d.getDay();if(!vrcFullObject(loc_data)||!loc_data.hasOwnProperty(sel_wday)||!loc_data[sel_wday].hasOwnProperty('fh')){if(def_loc_hours!==null){jQuery((mode=='pickup'?'#vrccomselph':'#vrccomseldh')).html(def_loc_hours);}return true;}if(mode=='pickup'){vrc_mopening_pick=new Array(loc_data[sel_wday]['fh'],loc_data[sel_wday]['fm'],loc_data[sel_wday]['th'],loc_data[sel_wday]['tm']);}else{vrc_mopening_drop=new Array(loc_data[sel_wday]['th'],loc_data[sel_wday]['tm'],loc_data[sel_wday]['fh'],loc_data[sel_wday]['fm']);}var hlim=loc_data[sel_wday]['fh']<loc_data[sel_wday]['th']?loc_data[sel_wday]['th']:(24+loc_data[sel_wday]['th']);hlim=loc_data[sel_wday]['fh']==0&&loc_data[sel_wday]['th']==0?23:hlim;var hopts='';var def_hour=jQuery((mode=='pickup'?'#vrccomselph':'#vrccomseldh')).find('select').val();def_hour=def_hour&&def_hour.length>1&&def_hour.substr(0,1)=='0'?def_hour.substr(1):def_hour;def_hour=parseInt(def_hour);for(var h=loc_data[sel_wday]['fh'];h<=hlim;h++){var viewh=h>23?(h-24):h;hopts+='<option value=\"'+viewh+'\"'+(viewh==def_hour?' selected':'')+'>'+(viewh<10?'0'+viewh:viewh)+':00</option>';}jQuery((mode=='pickup'?'#vrccomselph':'#vrccomseldh')).find('select').html(hopts);if(mode=='pickup'){setTimeout(function(){vrcLocationWopening('dropoff');},750);}}
-function vrcValidateCta(date){var m=date.getMonth(),wd=date.getDay();if(vrcFullObject(vrcrestrctarange)){for(var rk in vrcrestrctarange){if(vrcrestrctarange.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrctarange[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrctarange[rk][1]);if(date<=wdrangeend){if(jQuery.inArray('-'+wd+'-',vrcrestrctarange[rk][2])>=0){return false;}}}}}}if(vrcFullObject(vrcrestrcta)){if(vrcrestrcta.hasOwnProperty(m)&&jQuery.inArray('-'+wd+'-',vrcrestrcta[m])>=0){return false;}}return true;}
-function vrcValidateCtd(date){var m=date.getMonth(),wd=date.getDay();if(vrcFullObject(vrcrestrctdrange)){for(var rk in vrcrestrctdrange){if(vrcrestrctdrange.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrctdrange[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrctdrange[rk][1]);if(date<=wdrangeend){if(jQuery.inArray('-'+wd+'-',vrcrestrctdrange[rk][2])>=0){return false;}}}}}}if(vrcFullObject(vrcrestrctd)){if(vrcrestrctd.hasOwnProperty(m)&&jQuery.inArray('-'+wd+'-',vrcrestrctd[m])>=0){return false;}}return true;}
-function vrcInitElems(){if(typeof vrc_wopening_pick==='undefined'){return true;}vrc_hopening_pick=jQuery('#vrccomselph').find('select').clone();vrc_hopening_drop=jQuery('#vrccomseldh').find('select').clone();}
-jQuery(function(){
-	vrcInitElems();
-	jQuery('#pickupdate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabled," : "beforeShowDay:vrcIsDayFullIn,") . "onSelect:function(selectedDate){" . ($totrestrictions > 0 ? "vrcSetMinDropoffDate();" : $forcedropday) . "vrcLocationWopening('pickup'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100);}});
-	jQuery('#pickupdate').datepicker('option','dateFormat','" . $juidf . "');
-	jQuery('#pickupdate').datepicker('option','minDate','" . VikRentCar::getMinDaysAdvance() . "d');
-	jQuery('#pickupdate').datepicker('option','maxDate','" . VikRentCar::getMaxDateFuture() . "');
-	jQuery('#releasedate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabledDropoff," : "beforeShowDay:vrcIsDayFullOut,") . "onSelect:function(selectedDate){vrcLocationWopening('dropoff'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100);}});
-	jQuery('#releasedate').datepicker('option','dateFormat','" . $juidf . "');
-	jQuery('#releasedate').datepicker('option','minDate','" . VikRentCar::getMinDaysAdvance() . "d');
-	jQuery('#releasedate').datepicker('option','maxDate','" . VikRentCar::getMaxDateFuture() . "');
-	jQuery('#pickupdate').datepicker('option',jQuery.datepicker.regional['vikrentcar']);
-	jQuery('#releasedate').datepicker('option',jQuery.datepicker.regional['vikrentcar']);
-	jQuery('.vr-cal-img,.vrc-caltrigger').click(function(){var jdp=jQuery(this).prev('input.hasDatepicker');if(jdp.length){jdp.focus();}});
-});";
-	$document->addScriptDeclaration($sdecl);
-
-	$forced_pickup  = $config ? $config->get('forced_pickup', '')  : '';
-	$forced_dropoff = $config ? $config->get('forced_dropoff', '') : '';
-
-	$check_pick_locs = is_array($places) && count($plapick_ids) && !empty($plapick_ids[0]);
-	$check_drop_locs = is_array($places) && count($pladrop_ids) && !empty($pladrop_ids[0]);
-	$onchangeplaces     = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'pickup');\"" : "";
-	$onchangeplacesdrop = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'dropoff');\"" : "";
-?>
+	<?php if (VikRentCar::allowRent()) { ?>
 
 	<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar' . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')); ?>"
-	      method="get"
-	      onsubmit="return vrcValidateSearch();">
-		<input type="hidden" name="option" value="com_vikrentcar"/>
-		<input type="hidden" name="task" value="oconfirm"/>
+			method="get"
+			onsubmit="return vrcValidateSearch();">
+		<input type="hidden" name="option"  value="com_vikrentcar"/>
+		<input type="hidden" name="task"    value="oconfirm"/>
 		<input type="hidden" name="carid"   value="<?php echo $car['id']; ?>"/>
 		<input type="hidden" name="priceid" id="vrc-priceid" value="<?php echo (int)$_firstIdprice; ?>"/>
 		<input type="hidden" name="pickup"  id="vrc-pickup"  value=""/>
@@ -985,850 +666,1091 @@ jQuery(function(){
 		<input type="hidden" name="Itemid" value="<?php echo $pitemid; ?>"/>
 		<?php endif; ?>
 
+		<!-- Hidden jQuery UI datepicker inputs (still initialized, used for backend validation) -->
+		<input type="hidden" name="pickupdate"  id="pickupdate"  autocomplete="off" readonly/>
+		<input type="hidden" name="releasedate" id="releasedate" autocomplete="off" readonly/>
+
+		<?php if (!strlen($forced_pickup)): ?>
+		<!-- Pickup time select (existing #vrccomselph — kept for JS hooks) -->
+		<?php else: $fp = (int)$forced_pickup; $fph = floor($fp/3600); ?>
+		<input type="hidden" name="pickuph" value="<?php echo $fph; ?>"/>
+		<input type="hidden" name="pickupm" value="0"/>
+		<?php endif; ?>
+		<?php if (!strlen($forced_dropoff)): ?>
+		<?php else: $fd = (int)$forced_dropoff; $fdh = floor($fd/3600); ?>
+		<input type="hidden" name="releaseh" value="<?php echo $fdh; ?>"/>
+		<input type="hidden" name="releasem" value="0"/>
+		<?php endif; ?>
+		<input type="hidden" name="pickupm"  id="vrccomselpm"  value="0"/>
+		<input type="hidden" name="releasem" id="vrccomseldm" value="0"/>
+
 		<?php
 		$_firstDropId = '';
 		if (is_array($places) && count($places) > 0) {
 			foreach ($places as $_pl) {
 				if (!$check_drop_locs || in_array($_pl['id'], $pladrop_ids)) {
-					$_firstDropId = $_pl['id'];
-					break;
+					$_firstDropId = $_pl['id']; break;
 				}
 			}
 		}
 		?>
 
-		<!-- Pickup row -->
-		<div class="cd-datetime-row">
-			<div class="cd-dt-date">
-				<input type="text" name="pickupdate" id="pickupdate"
-				       autocomplete="off" onfocus="this.blur();" readonly
-				       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'дд.мм.гггг':$t); ?>"/>
+		<!-- ═══ SECTION: Trip Dates ═══ -->
+		<div class="v3-section">
+		<div class="v3-section-label"><?php echo Text::_('VRCSEARCHDATES') ?: 'Trip dates'; ?></div>
+
+		<!-- Inline calendar -->
+		<div class="v3-cal-wrap">
+			<div class="v3-cal-header">
+			<button type="button" class="v3-cal-nav" id="v3-prev-m">&#8249;</button>
+			<span class="v3-cal-month" id="v3-cal-title"></span>
+			<button type="button" class="v3-cal-nav" id="v3-next-m">&#8250;</button>
 			</div>
-			<div class="cd-dt-sep" onclick="jQuery('#pickupdate').focus();"><?php echo $_ico_chev_sm; ?></div>
-			<?php if (!strlen($forced_pickup)): ?>
-			<div class="cd-dt-time">
-				<div class="cd-dt-time-inner">
-					<div class="cd-th" id="vrccomselph">
-						<select name="pickuph"><?php echo $hours; ?></select>
-					</div>
-					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomselph select').trigger('chosen:open'); jQuery('#vrccomselph select').focus();"><?php echo $_ico_chev_sm; ?></span>
-				</div>
+			<div class="v3-cal-grid">
+			<div class="v3-cal-dows" id="v3-cal-dows"></div>
+			<div class="v3-cal-days" id="v3-cal-days"></div>
 			</div>
-			<!-- Minutes fixed at 0 -->
-			<input type="hidden" name="pickupm" id="vrccomselpm" value="0"/>
-			<?php else:
-				$fp = (int)$forced_pickup; $fph = floor($fp/3600);
-			?>
-			<input type="hidden" name="pickuph" value="<?php echo $fph; ?>"/>
-			<input type="hidden" name="pickupm" value="0"/>
-			<?php endif; ?>
 		</div>
 
-		<!-- Return row -->
-		<div class="cd-datetime-row" style="margin-top:8px;">
-			<div class="cd-dt-date">
-				<input type="text" name="releasedate" id="releasedate"
-				       autocomplete="off" onfocus="this.blur();" readonly
-				       placeholder="<?php $t=Text::_('VRCHOOSEDATE'); echo ($t==='VRCHOOSEDATE'?'дд.мм.гггг':$t); ?>"/>
+		<!-- Date summary strip -->
+		<div class="v3-date-summary">
+			<div class="v3-ds-block">
+			<div class="v3-ds-label"><?php echo Text::_('VRPICKUP') ?: 'Pickup'; ?></div>
+			<div class="v3-ds-val" id="v3-ds-start"><?php echo Text::_('VRCHOOSEDATE') ?: 'Select start'; ?></div>
 			</div>
-			<div class="cd-dt-sep" onclick="jQuery('#releasedate').focus();"><?php echo $_ico_chev_sm; ?></div>
-			<?php if (!strlen($forced_dropoff)): ?>
-			<div class="cd-dt-time">
-				<div class="cd-dt-time-inner">
-					<div class="cd-th" id="vrccomseldh">
-						<select name="releaseh"><?php echo $hours; ?></select>
-					</div>
-					<span class="cd-dt-time-chevron" onclick="jQuery('#vrccomseldh select').trigger('chosen:open'); jQuery('#vrccomseldh select').focus();"><?php echo $_ico_chev_sm; ?></span>
-				</div>
+			<div class="v3-ds-sep">&#8594;</div>
+			<div class="v3-ds-block">
+			<div class="v3-ds-label"><?php echo Text::_('VRRETURN') ?: 'Return'; ?></div>
+			<div class="v3-ds-val" id="v3-ds-end"><?php echo Text::_('VRCHOOSEDATE') ?: 'Select end'; ?></div>
 			</div>
-			<!-- Minutes fixed at 0 -->
-			<input type="hidden" name="releasem" id="vrccomseldm" value="0"/>
-			<?php else:
-				$fd = (int)$forced_dropoff; $fdh = floor($fd/3600);
-			?>
-			<input type="hidden" name="releaseh" value="<?php echo $fdh; ?>"/>
-			<input type="hidden" name="releasem" value="0"/>
-			<?php endif; ?>
+			<div class="v3-dur-pill" id="v3-dur-pill" style="display:none;"></div>
 		</div>
 
-		<!-- Location -->
-		<?php if (is_array($places) && count($places) > 0): ?>
-		<div class="cd-location-row" style="margin-top:10px;">
-
-			<!-- Pickup label — changes when checkbox is ticked -->
-			<div class="cd-row-label" id="cd-pickup-label">
-				<?php echo Text::_('VRPPICKUPRETURN') ?: 'Получение и возврат'; ?>
+		<!-- Savings nudge -->
+		<div class="v3-save-nudge" id="v3-save-nudge" style="display:none;">
+			<div class="v3-sn-top">
+			<svg class="v3-sn-icon" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.5 3 3.5.5-2.5 2.5.6 3.5L7 9l-3.1 1.5.6-3.5L2 4.5l3.5-.5z" fill="#085041"/></svg>
+			<!-- Tier savings nudge — shown when 1 day short of a cheaper rate tier -->
+			<span class="v3-sn-title" id="v3-sn-title"></span>
 			</div>
-			<div class="cd-select-wrap">
-				<select name="place" id="place"><?php echo $onchangeplaces; ?>
-				<?php foreach ($places as $pla):
-					if ($check_pick_locs && !in_array($pla['id'], $plapick_ids)) continue;
-					if (!empty($pla['lat']) && !empty($pla['lng'])) $coordsplaces[] = $pla;
-				?>
-					<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
-				<?php endforeach; ?>
-				</select>
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#place').trigger('chosen:open'); jQuery('#place').focus()"><path d="m6 9 6 6 6-6"/></svg>
-			</div>
-
-			<!-- Checkbox toggle -->
-			<label class="cd-diff-return-label" style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:13px;cursor:pointer;">
-				<input type="checkbox" id="cd-diff-return-chk" style="width:15px;height:15px;cursor:pointer;">
-				<?php echo Text::_('VRPDIFFRETURN') ?: 'Вернуть в другую локацию?'; ?>
-			</label>
-
-			<!-- Return location — hidden until checkbox checked -->
-			<div id="cd-return-location-wrap" style="display:none;margin-top:10px;">
-				<div class="cd-row-label" id="cd-return-label">
-					<?php echo Text::_('VRPRETURNPLACE') ?: 'Место возврата'; ?>
-				</div>
-				<div class="cd-select-wrap">
-					<select id="returnplace_visible" name="returnplace_visible">
-					<?php foreach ($places as $pla):
-						if ($check_drop_locs && !in_array($pla['id'], $pladrop_ids)) continue;
-					?>
-						<option value="<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
-					<?php endforeach; ?>
-					</select>
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cd-arrow" onclick="jQuery('#returnplace_visible').focus()"><path d="m6 9 6 6 6-6"/></svg>
-				</div>
-			</div>
-
+			<div class="v3-sn-body" id="v3-sn-body"></div>
+			<button type="button" class="v3-sn-btn" id="v3-sn-btn"></button>
 		</div>
-		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>" />
+		</div>
+
+		<!-- ═══ SECTION: Times ═══ -->
+		<?php if (!strlen($forced_pickup) || !strlen($forced_dropoff)): ?>
+		<div class="v3-section v3-section-times">
+		<?php if (!strlen($forced_pickup)): ?>
+		<div class="v3-time-group">
+			<div class="v3-time-label"><?php echo Text::_('VRCPICKUPTIME') ?: 'Pickup time'; ?></div>
+			<div class="v3-th" id="vrccomselph">
+			<select name="pickuph" onchange="setTimeout(cdUpdateSummary,50);setTimeout(cdCheckOoh,50);"><?php echo $hours; ?></select>
+			</div>
+		</div>
+		<?php endif; ?>
+		<?php if (!strlen($forced_dropoff)): ?>
+		<div class="v3-time-group">
+			<div class="v3-time-label"><?php echo Text::_('VRCRETURNTIME') ?: 'Return time'; ?></div>
+			<div class="v3-th" id="vrccomseldh">
+			<select name="releaseh" onchange="setTimeout(cdUpdateSummary,50);setTimeout(cdCheckOoh,50);"><?php echo $hours; ?></select>
+			</div>
+		</div>
+		<?php endif; ?>
+		</div>
+		<?php endif; ?>
+
+		<!-- Grace period progress bar -->
+		<?php if ($hasGracePeriod): ?>
+		<div class="v3-grace-bar" id="v3-grace-bar" style="display:none;">
+		<div class="v3-grace-top">
+			<span class="v3-grace-label"><?php echo Text::_('VRCGRACEPERIOD') ?: 'Grace period'; ?></span>
+			<span class="v3-grace-time" id="v3-grace-time">
+			<?php echo $graceHours; ?>h <?php echo Text::_('VRCGRACEWINDOW') ?: 'window'; ?>
+			</span>
+		</div>
+		<div class="v3-grace-track"><div class="v3-grace-fill" id="v3-grace-fill"></div></div>
+		<span class="v3-grace-hint" id="cd-grace-returnby" style="display:none;"></span>
+		<div class="v3-grace-exceeded" id="cd-grace-exceeded">
+			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" class="cd-grace-exc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+			<span class="cd-grace-exc-label" id="cd-grace-exc-label"></span>
+		</div>
+		</div>
 		<?php endif; ?>
 
 		<!-- OOH warning -->
 		<?php if (!empty($oohFees)): ?>
-		<div class="cd-ooh-warning" id="cd-ooh-warning">
-			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-			<span id="cd-ooh-text"></span>
+		<div class="v3-offhours-banner" id="cd-ooh-warning" style="display:none;">
+		<span class="v3-ooh-dot"></span>
+		<span id="cd-ooh-text"></span>
 		</div>
 		<?php endif; ?>
 
-		<!-- Optionals -->
-		<?php if (!empty($carOptionals)): ?>
-		<div class="cd-optionals-section">
-			<div class="cd-optionals-title"><?php echo Text::_('VRACCOPZ') ?: 'Alte opțiuni'; ?></div>
-			<?php foreach ($carOptionals as $_opt):
-				$_optPerDay = intval($_opt['perday']) === 1;
-				$_optBaseCost = (float)$_opt['cost'];
-				$_optMax = !empty($_opt['maxprice']) && $_opt['maxprice'] > 0 ? (float)$_opt['maxprice'] : 0;
-				// No decimals in price label
-				$_optCostDisplay = (floor($_optBaseCost) == $_optBaseCost) ? (int)$_optBaseCost : $_optBaseCost;
-				$_optPriceLabel = $currencysymb . $_optCostDisplay . ($_optPerDay ? '/'.( Text::_('VRCSEARCHDAY') ?: 'день') : '');
-				$_optId = (int)$_opt['id'];
+		<!-- ═══ SECTION: Location ═══ -->
+		<?php if (is_array($places) && count($places) > 0): ?>
+		<div class="v3-section">
+		<div class="v3-section-label"><?php echo Text::_('VRPPLACE') ?: 'Location'; ?></div>
+
+		<!-- Pickup location -->
+		<div class="v3-loc-field">
+			<svg class="v3-loc-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5zm0 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="currentColor" opacity=".5"/></svg>
+			<select name="place" id="place" class="v3-loc-sel"
+			<?php echo $onchangeplaces; ?>>
+			<?php foreach ($places as $pla):
+				if ($check_pick_locs && !in_array($pla['id'], $plapick_ids)) continue;
+				if (!empty($pla['lat']) && !empty($pla['lng'])) $coordsplaces[] = $pla;
 			?>
-			<?php if ((int)$_opt['hmany'] === 1): ?>
-			<div class="cd-optional-row cd-optional-qty-row" id="cd-opt-row-<?php echo $_optId; ?>">
-				<span class="cd-optional-name"><?php echo htmlspecialchars($_opt['name']); ?></span>
-				<span class="cd-optional-price">+<?php echo $_optPriceLabel; ?></span>
-				<div class="cd-optional-qty-ctrl">
-					<button type="button" class="cd-qty-btn cd-qty-minus" onclick="cdSetOptionalQty(<?php echo $_optId; ?>, -1)">&#8722;</button>
-					<span class="cd-qty-val" id="cd-opt-qty-<?php echo $_optId; ?>">0</span>
-					<button type="button" class="cd-qty-btn cd-qty-plus" onclick="cdSetOptionalQty(<?php echo $_optId; ?>, 1)">&#43;</button>
-				</div>
-				<input type="hidden" name="optid<?php echo $_optId; ?>" id="cd-opt-input-<?php echo $_optId; ?>" value="0"/>
+			<option value="<?php echo $pla['id']; ?>" id="place<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
+			<?php endforeach; ?>
+			</select>
+		</div>
+
+		<!-- Different return toggle -->
+		<div class="v3-diff-row" onclick="v3ToggleDiffReturn();">
+			<div class="v3-diff-cb" id="v3-diff-cb">
+			<svg width="10" height="10" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</div>
+			<label class="v3-diff-label" for="cd-diff-return-chk">
+			<?php echo Text::_('VRPDIFFRETURN') ?: 'Return to a different location'; ?>
+			</label>
+			<input type="checkbox" id="cd-diff-return-chk" style="display:none;"/>
+		</div>
+
+		<!-- Return location (hidden until toggled) -->
+		<div id="cd-return-location-wrap" style="display:none; margin-top:10px;">
+			<div class="v3-loc-field">
+			<svg class="v3-loc-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5zm0 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="#FE5001" opacity=".7"/></svg>
+			<select id="returnplace_visible" name="returnplace_visible" class="v3-loc-sel"
+				<?php echo $onchangeplacesdrop ?? ''; ?>>
+				<?php foreach ($places as $pla):
+				if ($check_drop_locs && !in_array($pla['id'], $pladrop_ids)) continue;
+				?>
+				<option value="<?php echo $pla['id']; ?>"><?php echo $pla['name']; ?></option>
+				<?php endforeach; ?>
+			</select>
+			</div>
+			<div class="v3-drop-fee-hint"><?php echo Text::_('VRPDROPFEEHINT') ?: 'Different return location may incur a drop-off fee'; ?></div>
+		</div>
+		</div>
+		<input type="hidden" name="returnplace" id="returnplace" value="<?php echo htmlspecialchars($_firstDropId); ?>"/>
+		<?php endif; ?>
+
+		<!-- ═══ SECTION: Options ═══ -->
+		<?php if (!empty($carOptionals)): ?>
+		<div class="v3-section">
+		<div class="v3-section-label"><?php echo Text::_('VRACCOPZ') ?: 'Options'; ?></div>
+		<?php foreach ($carOptionals as $_opt):
+			$_optPerDay   = intval($_opt['perday']) === 1;
+			$_optBaseCost = (float)$_opt['cost'];
+			$_optMax      = !empty($_opt['maxprice']) && $_opt['maxprice'] > 0 ? (float)$_opt['maxprice'] : 0;
+			$_optCostDisp = (floor($_optBaseCost) == $_optBaseCost) ? (int)$_optBaseCost : $_optBaseCost;
+			$_optPriceLabel = $currencysymb . $_optCostDisp . ($_optPerDay ? '/' . (Text::_('VRCSEARCHDAY') ?: 'day') : '');
+			$_optId = (int)$_opt['id'];
+		?>
+		<div class="v3-opt-row" id="cd-opt-row-<?php echo $_optId; ?>">
+			<div class="v3-opt-info">
+			<div class="v3-opt-name"><?php echo htmlspecialchars($_opt['name']); ?></div>
+			<div class="v3-opt-price"><?php echo $_optPriceLabel; ?><?php echo (int)$_opt['hmany'] === 1 ? ' · <span id="cd-opt-qty-'.$_optId.'">0</span> added' : ''; ?></div>
+			</div>
+			<?php if ((int)$_opt['hmany'] === 1): ?>
+			<div class="v3-counter">
+			<button type="button" class="v3-cbtn" onclick="cdSetOptionalQty(<?php echo $_optId; ?>, -1)">&#8722;</button>
+			<span class="v3-cval" id="cd-opt-qty-<?php echo $_optId; ?>">0</span>
+			<button type="button" class="v3-cbtn" onclick="cdSetOptionalQty(<?php echo $_optId; ?>, 1)">&#43;</button>
+			</div>
+			<input type="hidden" name="optid<?php echo $_optId; ?>" id="cd-opt-input-<?php echo $_optId; ?>" value="0"/>
 			<?php else: ?>
-			<div class="cd-optional-row" id="cd-opt-row-<?php echo $_optId; ?>" onclick="cdToggleOptional(<?php echo $_optId; ?>, <?php echo $_optBaseCost; ?>, <?php echo (int)$_optPerDay; ?>, <?php echo $_optMax; ?>)">
-				<div class="cd-optional-check" id="cd-opt-check-<?php echo $_optId; ?>">
-					<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-				</div>
-				<span class="cd-optional-name"><?php echo htmlspecialchars($_opt['name']); ?></span>
-				<span class="cd-optional-price">+<?php echo $_optPriceLabel; ?></span>
-				<input type="hidden" name="optid<?php echo $_optId; ?>" id="cd-opt-input-<?php echo $_optId; ?>" value="0"/>
+			<label class="v3-toggle">
+			<input type="checkbox" id="cd-opt-toggle-<?php echo $_optId; ?>"
+				onchange="cdToggleOptional(<?php echo $_optId; ?>, <?php echo $_optBaseCost; ?>, <?php echo (int)$_optPerDay; ?>, <?php echo $_optMax; ?>)"/>
+			<span class="v3-ttrack"></span>
+			<span class="v3-tthumb"></span>
+			</label>
+			<input type="hidden" name="optid<?php echo $_optId; ?>" id="cd-opt-input-<?php echo $_optId; ?>" value="0"/>
+			<?php endif; ?>
+		</div>
+		<?php endforeach; ?>
+		</div>
+		<?php endif; ?>
+
+		<!-- ═══ Good to know ═══ -->
+		<div class="v3-section">
+		<div class="v3-section-label"><?php echo Text::_('VRCGOODTOKNOW') ?: 'Good to know'; ?></div>
+		<div class="v3-notes-grid">
+			<?php if ($hasGracePeriod): ?>
+			<div class="v3-ni">
+			<div class="v3-ni-k"><?php echo Text::_('VRCGRACEPERIOD') ?: 'Grace period'; ?></div>
+			<div class="v3-ni-v"><?php echo $graceHours; ?>h <?php echo Text::_('VRCAFTERRETURN') ?: 'after return'; ?></div>
 			</div>
 			<?php endif; ?>
-			<?php endforeach; ?>
-		</div>
-		<?php endif; ?>
-
-		<!-- Grace / Gratuity period notice -->
-		<?php if ($hasGracePeriod): ?>
-		<div class="cd-info-notice cd-grace-notice" id="cd-grace-notice">
-			<svg class="cd-notice-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-			</svg>
-			<div class="cd-notice-body">
-				<span class="cd-notice-label"><?php
-					// Build a human-readable label: "28h" → "1 zi și 4 ore" style
-					if ($graceHours >= 24) {
-						$_gDays  = floor($graceHours / 24);
-						$_gExtra = $graceHours % 24;
-						if ($_gExtra > 0) {
-							$_graceSummary = $_gDays . (Text::_('VRC_GRACE_DAYS') ?: ' zi') . ' ' . Text::_('VRC_GRACE_AND') . ' ' . $_gExtra . (Text::_('VRC_GRACE_HRS') ?: ' h');
-						} else {
-							$_graceSummary = $_gDays . (Text::_('VRC_GRACE_DAYS') ?: ' zi');
-						}
-					} else {
-						$_graceSummary = $graceHours . (Text::_('VRC_GRACE_HRS') ?: ' h');
-					}
-					echo htmlspecialchars(sprintf(
-						Text::_('VRC_GRATUITY_PERIOD_INFO') ?: 'Perioadă de grație: %s după ora returnării',
-						$_graceSummary
-					));
-				?></span>
-				<span class="cd-notice-hint cd-grace-returnby" id="cd-grace-returnby" style="display:none;"></span>
+			<div class="v3-ni" id="cd-km-notice">
+			<div class="v3-ni-k"><?php echo Text::_('VRCKMLIMIT_LABEL') ?: 'Mileage'; ?></div>
+			<div class="v3-ni-v">200 <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/day'; ?></div>
+			</div>
+			<div class="v3-ni">
+			<div class="v3-ni-k"><?php echo Text::_('VRCKM_EXTRA_LABEL') ?: 'Over limit'; ?></div>
+			<div class="v3-ni-v">€0.25/km</div>
 			</div>
 		</div>
-		<?php endif; ?>
-
-		<!-- Grace exceeded warning (shown by JS when overage > grace window) -->
-		<?php if ($hasGracePeriod): ?>
-		<div class="cd-grace-exceeded" id="cd-grace-exceeded">
-			<svg class="cd-grace-exc-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-			     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-			     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-				<line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-			</svg>
-			<div class="cd-grace-exc-body">
-				<span class="cd-grace-exc-label" id="cd-grace-exc-label"></span>
-				<span class="cd-grace-exc-hint"><?php echo htmlspecialchars(
-					Text::_('VRC_GRACE_EXCEEDED_HINT') ?: 'Returnați în limita perioadei de grație pentru a evita taxa suplimentară.'
-				); ?></span>
-			</div>
 		</div>
-		<?php endif; ?>
-		<div class="cd-summary-section" id="cd-summary">
-			<div class="cd-summary-desc" id="cd-summary-desc"></div>
 
-			<!-- Savings tip: shown when 1 day short of next tier -->
-			<div id="cd-savings-tip" style="display:none;">
-				<div class="cd-savings-tip-icon">💰</div>
-				<div class="cd-savings-tip-body">
-					<div class="cd-savings-tip-title"><?php echo Text::_('VRCSAVINGSTIP_TITLE') ?: 'Economisești mai mult!'; ?></div>
-					<div class="cd-savings-tip-text">
-						<?php echo Text::_('VRCSAVINGSTIP_PRE') ?: 'Extinde rezervarea la'; ?>
-						<strong class="cd-tip-days"></strong>
-						<?php echo Text::_('VRCSEARCHDAYS') ?: 'zile'; ?>
-						<?php echo Text::_('VRCSAVINGSTIP_MID') ?: 'și economisești'; ?>
-						<strong class="cd-tip-savings"></strong>!
-						<?php echo Text::_('VRCSAVINGSTIP_TOTAL') ?: 'Total:'; ?>
-						<strong class="cd-tip-newtotal"></strong>
-						<?php echo Text::_('VRCSAVINGSTIP_INSTEAD') ?: 'în loc de'; ?>
-						<s class="cd-tip-oldtotal"></s>.
-					</div>
-				</div>
+		<!-- ═══ SECTION: Price Breakdown ═══ -->
+		<div class="v3-section" id="cd-summary" style="display:none;">
+		<div class="v3-section-label"><?php echo Text::_('VRPRICE') ?: 'Price breakdown'; ?></div>
+		<!-- Description sentence (existing logic) -->
+		<div class="cd-summary-desc v3-summary-desc" id="cd-summary-desc"></div>
+
+		<!-- Savings tip (existing HTML — same IDs, new styling) -->
+		<div id="cd-savings-tip" style="display:none;" class="v3-savings-tip">
+			<div class="v3-sn-top">
+			<span>💰</span>
+			<span class="cd-savings-tip-title v3-sn-title"><?php echo Text::_('VRCSAVINGSTIP_TITLE') ?: 'Save more!'; ?></span>
 			</div>
-
-			<div class="cd-summary-title"><?php echo Text::_('VRPRICE') ?: 'Rezumat'; ?></div>
-			<div id="cd-summary-rows"></div>
-			<div class="cd-summary-total">
-				<span class="cd-summary-total-label"><?php echo Text::_('VRTOTAL') ?: 'Итого'; ?>:</span>
-				<span class="cd-summary-total-val" id="cd-summary-total"></span>
+			<div class="cd-savings-tip-text v3-sn-body">
+			<?php echo Text::_('VRCSAVINGSTIP_PRE') ?: 'Extend to'; ?>
+			<strong class="cd-tip-days"></strong> <?php echo Text::_('VRCSEARCHDAYS') ?: 'days'; ?>
+			<?php echo Text::_('VRCSAVINGSTIP_MID') ?: 'and save'; ?>
+			<strong class="cd-tip-savings"></strong>!
+			<?php echo Text::_('VRCSAVINGSTIP_TOTAL') ?: 'Total:'; ?>
+			<strong class="cd-tip-newtotal"></strong>
+			<?php echo Text::_('VRCSAVINGSTIP_INSTEAD') ?: 'instead of'; ?>
+			<s class="cd-tip-oldtotal"></s>.
 			</div>
 		</div>
 
-		<!-- ═══ KM limit notice (dynamic) ═══ -->
-		<div class="cd-info-notice cd-km-notice" id="cd-km-notice" style="display:none;">
-			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cd-notice-icon">
-				<path d="m12 14 4-4"></path>
-				<path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
-			</svg>
-			<div class="cd-notice-body">
-				<span class="cd-notice-label"><?php echo Text::_('VRCKMLIMIT_LABEL') ?: 'Limită kilometraj:'; ?></span>
-				<span class="cd-notice-value">200 <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/zi'; ?></span>
-				<span class="cd-notice-total" id="cd-km-total-wrap">
-					(<?php echo Text::_('VRCKM_TOTAL_PRE') ?: 'total'; ?> <strong id="cd-km-total"></strong> <?php echo Text::_('VRCKM_TOTAL_FOR') ?: 'pentru'; ?> <span id="cd-km-days"></span> <?php echo Text::_('VRCSEARCHDAYS') ?: 'zile'; ?>)
-				</span>
-				<span class="cd-km-extra-fee">
-					<?php echo Text::_('VRCKM_EXTRA_FEE') ?: 'Suplimentar 0.25 € / km depășit'; ?>
-				</span>
-			</div>
+		<div id="cd-summary-rows" class="v3-pr-rows"></div>
+		<div class="v3-pr-row v3-pr-total">
+			<span><?php echo Text::_('VRTOTAL') ?: 'Total'; ?></span>
+			<span class="v3-pr-total-amt" id="cd-summary-total"></span>
+		</div>
 		</div>
 
+		<!-- Deposit notice -->
 		<?php if ($showDeposit): ?>
-		<!-- ═══ Deposit notice — shown only when maibpayment enabled AND deposit > 0 ═══ -->
-		<div class="cd-info-notice cd-deposit-notice">
-			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cd-notice-icon">
-				<rect width="20" height="14" x="2" y="5" rx="2"></rect>
-				<line x1="2" x2="22" y1="10" y2="10"></line>
-			</svg>
-			<div class="cd-notice-body">
-				<span class="cd-notice-label"><?php echo Text::_('VRCDEPOSITLABEL') ?: 'Garanție auto:'; ?></span>
-				<span class="cd-notice-value"><?php echo $depositAmount; ?> <?php echo $depositCurrency; ?></span>
-				<span class="cd-notice-hint"><?php echo Text::_('VRCDEPOSITRETURNED') ?: '— se returnează după predarea mașinii'; ?></span>
-			</div>
+		<div class="v3-deposit-notice">
+		<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+		<span><?php echo Text::_('VRCDEPOSITLABEL') ?: 'Security deposit:'; ?> <strong><?php echo $depositAmount . ' ' . $depositCurrency; ?></strong> — <?php echo Text::_('VRCDEPOSITRETURNED') ?: 'returned on car return'; ?></span>
 		</div>
 		<?php endif; ?>
 
-		<!-- Coupon code field (applied when opening the modal) -->
+		<!-- Coupon -->
 		<?php if (VikRentCar::couponsEnabled()): ?>
-		<div class="cd-coupon-row">
-			<div class="cd-coupon-inner">
-				<input type="text" id="vrc-coupon-code" name="_couponcode"
-				       placeholder="<?php echo Text::_('VRCHAVEACOUPON') ?: 'Cod promoțional'; ?>"
-				       autocomplete="off" class="cd-coupon-input"/>
-					<button type="button" id="vrc-coupon-apply" class="cd-coupon-btn"
-				        data-original-text="<?php echo htmlspecialchars(Text::_('VRCSUBMITCOUPON') ?: 'Aplică'); ?>">
-					<?php echo Text::_('VRCSUBMITCOUPON') ?: 'Aplică'; ?>
-				</button>
+		<div class="v3-promo-row">
+		<input type="text" id="vrc-coupon-code" name="_couponcode"
+				class="v3-promo-in"
+				placeholder="<?php echo Text::_('VRCHAVEACOUPON') ?: 'Promo code'; ?>"
+				autocomplete="off"/>
+		<button type="button" id="vrc-coupon-apply" class="v3-promo-ap"
+				data-original-text="<?php echo htmlspecialchars(Text::_('VRCSUBMITCOUPON') ?: 'Apply'); ?>">
+			<?php echo Text::_('VRCSUBMITCOUPON') ?: 'Apply'; ?>
+		</button>
+		</div>
+		<div id="vrc-coupon-feedback" class="cd-coupon-feedback"></div>
+		<?php endif; ?>
+
+		<!-- ═══ SECTION: Payment method ═══ -->
+		<div class="v3-section">
+		<div class="v3-section-label"><?php echo Text::_('VRCPAYMETHOD') ?: 'Payment'; ?></div>
+		<div class="v3-pay-opt v3-pay-sel" id="v3-pay-full" onclick="v3SelPay('full')">
+			<div class="v3-pay-left">
+			<div class="v3-pay-radio"><div class="v3-pay-dot"></div></div>
+			<div>
+				<div class="v3-pay-name"><?php echo Text::_('VRCPAYFULL') ?: 'Pay in full'; ?></div>
+				<div class="v3-pay-desc"><?php echo Text::_('VRCPAYFULL_DESC') ?: 'Charged now'; ?></div>
 			</div>
-			<div id="vrc-coupon-feedback" class="cd-coupon-feedback"></div>
+			</div>
+			<span class="v3-pay-amt" id="v3-pay-full-amt">—</span>
+		</div>
+		<?php if ($showDeposit && $depositAmount > 0): ?>
+		<div class="v3-pay-opt" id="v3-pay-reserve" onclick="v3SelPay('reserve')">
+			<div class="v3-pay-left">
+			<div class="v3-pay-radio"><div class="v3-pay-dot"></div></div>
+			<div>
+				<div class="v3-pay-name"><?php echo Text::_('VRCPAYRESERVE') ?: 'Reserve'; ?> <span class="v3-pay-tag"><?php echo Text::_('VRCPAYRESERVE_TAG') ?: 'Popular'; ?></span></div>
+				<div class="v3-pay-desc" id="v3-pay-res-desc"><?php echo $depositCurrency . $depositAmount; ?> <?php echo Text::_('VRCPAYNOW_REST') ?: 'now · rest on pickup'; ?></div>
+			</div>
+			</div>
+			<span class="v3-pay-amt"><?php echo $depositCurrency . $depositAmount; ?></span>
 		</div>
 		<?php endif; ?>
+		</div>
 
 		<!-- Submit -->
-		<div class="cd-booking-submit-row">
-			<button type="button"
-			        onclick="return vrcOpenBookingModal();"
-			        class="btn vrcdetbooksubmit vrc-pref-color-btn">
-				<?php echo Text::_('VRCBOOKTHISCAR'); ?>
-			</button>
-			<div class="cd-shield-info">
-				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-				<span style="text-align:center;"><?php echo Text::_('VRCSHIELDINFO') ?: 'Anulare gratuită • Suport 24/7 • Mașini asigurate'; ?></span>
-			</div>
+		<button type="button"
+				onclick="return vrcOpenBookingModal();"
+				class="v3-book-btn btn vrcdetbooksubmit vrc-pref-color-btn">
+		<?php echo Text::_('VRCBOOKTHISCAR'); ?>
+		</button>
+
+		<!-- Trust indicators -->
+		<div class="v3-trust-row">
+		<div class="v3-ti">
+			<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+			<?php echo Text::_('VRCTRUST_CANCEL') ?: 'Free cancellation 72h'; ?>
+		</div>
+		<div class="v3-ti">
+			<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+			<?php echo Text::_('VRCTRUST_SUPPORT') ?: '24/7 support'; ?>
+		</div>
+		<div class="v3-ti">
+			<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+			<?php echo Text::_('VRCTRUST_INSURED') ?: 'Insured vehicles'; ?>
+		</div>
 		</div>
 
 	</form>
 
+	<!-- v3 Calendar JS Bridge — connects inline calendar to jQuery UI datepicker validation -->
 	<script type="text/javascript">
-	/* Sync returnplace logic */
-	jQuery(function() {
-		var labelPickupReturn = <?php echo json_encode(Text::_('VRPPICKUPRETURN') ?: 'Получение и возврат'); ?>;
-		var labelPickup       = <?php echo json_encode(Text::_('VRPPLACE') ?: 'Место получения'); ?>;
+	(function(){
+		var v3StartDate = null, v3EndDate = null, v3Selecting = false;
+		var v3ViewYear, v3ViewMonth;
+		var v3Today = new Date(); v3Today.setHours(0,0,0,0);
+		v3ViewYear = v3Today.getFullYear(); v3ViewMonth = v3Today.getMonth();
 
-		jQuery('#place').on('change', function() {
-			// Only mirror if checkbox is unchecked
-			if (!jQuery('#cd-diff-return-chk').is(':checked')) {
-				jQuery('#returnplace').val(jQuery(this).val());
+		var v3DisabledIn  = [<?php echo implode(',', $push_disabled_in); ?>];
+		var v3DisabledOut = [<?php echo implode(',', $push_disabled_out); ?>];
+
+		function v3Fmt(d){ if(!d)return''; return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
+		function v3FmtDisp(d){ if(!d)return''; var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return mo[d.getMonth()]+' '+d.getDate(); }
+		function v3YMD(d){ return d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate(); }
+
+		function v3IsDisabledIn(d){
+		var s=v3YMD(d);
+		return v3DisabledIn.indexOf('"'+s+'"')>=0 || v3DisabledIn.indexOf(s)>=0;
+		}
+		function v3IsDisabledOut(d){
+		var s=v3YMD(d);
+		return v3DisabledOut.indexOf('"'+s+'"')>=0 || v3DisabledOut.indexOf(s)>=0;
+		}
+
+		function v3RenderCal(){
+		var mn=['<?php echo Text::_("VRMONTHONE"); ?>','<?php echo Text::_("VRMONTHTWO"); ?>','<?php echo Text::_("VRMONTHTHREE"); ?>','<?php echo Text::_("VRMONTHFOUR"); ?>','<?php echo Text::_("VRMONTHFIVE"); ?>','<?php echo Text::_("VRMONTHSIX"); ?>','<?php echo Text::_("VRMONTHSEVEN"); ?>','<?php echo Text::_("VRMONTHEIGHT"); ?>','<?php echo Text::_("VRMONTHNINE"); ?>','<?php echo Text::_("VRMONTHTEN"); ?>','<?php echo Text::_("VRMONTHELEVEN"); ?>','<?php echo Text::_("VRMONTHTWELVE"); ?>'];
+		document.getElementById('v3-cal-title').textContent = mn[v3ViewMonth]+' '+v3ViewYear;
+
+		var dows = document.getElementById('v3-cal-dows');
+		dows.innerHTML = '';
+		var dowLabels = ['<?php echo mb_substr(Text::_("VRCJQCALMON"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALTUE"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALWED"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALTHU"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALFRI"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALSAT"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALSUN"),0,2,"UTF-8"); ?>'];
+		dowLabels.forEach(function(l){ var el=document.createElement('div'); el.className='v3-cal-dow'; el.textContent=l; dows.appendChild(el); });
+
+		var grid = document.getElementById('v3-cal-days');
+		grid.innerHTML = '';
+		var first = new Date(v3ViewYear, v3ViewMonth, 1);
+		var dow = first.getDay(); dow = (dow+6)%7; // Monday-first
+		for(var i=0;i<dow;i++){ var el=document.createElement('div'); el.className='v3-cal-day v3-disabled'; grid.appendChild(el); }
+		var dim = new Date(v3ViewYear, v3ViewMonth+1, 0).getDate();
+		var minAdv = <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>;
+		var minDate = new Date(v3Today.getTime()); minDate.setDate(minDate.getDate()+minAdv);
+
+		for(var d=1;d<=dim;d++){
+			var date = new Date(v3ViewYear, v3ViewMonth, d);
+			var el = document.createElement('div');
+			el.className = 'v3-cal-day';
+			el.textContent = d;
+			var isPast = date < minDate;
+			var isDisIn = v3IsDisabledIn(date);
+			var isDisOut = v3IsDisabledOut(date);
+			if(isPast || (isDisIn && isDisOut)){ el.classList.add('v3-disabled'); }
+			else {
+			if(v3StartDate && date.getTime()===v3StartDate.getTime()) el.classList.add('v3-start');
+			if(v3EndDate   && date.getTime()===v3EndDate.getTime())   el.classList.add('v3-end');
+			if(v3StartDate && v3EndDate && date>v3StartDate && date<v3EndDate) el.classList.add('v3-in-range');
+			if(date.getTime()===v3Today.getTime()) el.classList.add('v3-today');
+			(function(dt){ el.addEventListener('click', function(){ v3PickDay(dt); }); })(new Date(date));
 			}
-			cdUpdateSummary();
-			<?php if ($diffopentime): ?>
-			vrcSetLocOpenTime(jQuery(this).val(), 'pickup');
-			if (!jQuery('#cd-diff-return-chk').is(':checked')) {
-				vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
+			grid.appendChild(el);
+		}
+		}
+
+		function v3PickDay(date){
+		if(!v3StartDate || v3Selecting===false){
+			v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true;
+		} else {
+			if(date<=v3StartDate){ v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true; }
+			else { v3EndDate=new Date(date); v3Selecting=false; v3SyncToJQ(); }
+		}
+		v3RenderCal(); v3UpdateStrip();
+		}
+
+		function v3SyncToJQ(){
+		// Write to hidden jQuery UI datepicker inputs then fire onSelect callbacks
+		if(v3StartDate){
+			jQuery('#pickupdate').datepicker('setDate', v3StartDate);
+			jQuery('#pickupdate').trigger('change');
+		}
+		if(v3EndDate){
+			jQuery('#releasedate').datepicker('setDate', v3EndDate);
+			jQuery('#releasedate').trigger('change');
+		}
+		if(typeof vrcSetMinDropoffDate !== 'undefined') vrcSetMinDropoffDate();
+		if(typeof vrcLocationWopening !== 'undefined') vrcLocationWopening('pickup');
+		setTimeout(cdUpdateSummary, 100);
+		setTimeout(cdCheckOoh, 100);
+		}
+
+		function v3UpdateStrip(){
+		var startEl = document.getElementById('v3-ds-start');
+		var endEl   = document.getElementById('v3-ds-end');
+		var pill    = document.getElementById('v3-dur-pill');
+		startEl.textContent = v3StartDate ? v3FmtDisp(v3StartDate) : '<?php echo Text::_("VRCHOOSEDATE") ?: "Select start"; ?>';
+		endEl.textContent   = v3EndDate   ? v3FmtDisp(v3EndDate)   : '<?php echo Text::_("VRCHOOSEDATE") ?: "Select end"; ?>';
+		if(v3StartDate && v3EndDate){
+			var days = Math.round((v3EndDate-v3StartDate)/864e5);
+			pill.textContent = days+(days===1?' <?php echo Text::_("VRCSEARCHDAY"); ?>'  :' <?php echo Text::_("VRCSEARCHDAYS"); ?>');
+			pill.style.display='';
+			v3CheckSavingsNudge(days);
+			v3UpdateGraceBar();
+		} else {
+			pill.style.display='none';
+			document.getElementById('v3-save-nudge').style.display='none';
+			var gb = document.getElementById('v3-grace-bar');
+			if(gb) gb.style.display='none';
+		}
+		}
+
+		function v3UpdateGraceBar(){
+		<?php if ($hasGracePeriod): ?>
+		var gb = document.getElementById('v3-grace-bar');
+		if(!gb || !v3EndDate) return;
+		gb.style.display = 'block';
+		var rt = parseInt(jQuery('#vrccomseldh select').val()) || 12;
+		var graceMs = <?php echo $graceHours; ?> * 3600000;
+		var deadlineH = rt + <?php echo $graceHours; ?>;
+		var dh = deadlineH>23 ? deadlineH-24 : deadlineH;
+		var dhStr = (dh<10?'0':'')+dh+':00';
+		var graceStart = new Date(v3EndDate); graceStart.setHours(rt,0,0,0);
+		var now = new Date();
+		var elapsed = now - graceStart;
+		var pct = Math.max(0, Math.min(100, 100-(elapsed/graceMs*100)));
+		var fill = document.getElementById('v3-grace-fill');
+		if(fill){
+			fill.style.width = pct+'%';
+			fill.style.background = elapsed>graceMs ? '#E24B4A' : '#1D9E75';
+		}
+		var hint = document.getElementById('cd-grace-returnby');
+		if(hint){ hint.textContent = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s to avoid extra day"); ?>'.replace('%s', dhStr); hint.style.display='block'; }
+		<?php endif; ?>
+		}
+
+		function v3CheckSavingsNudge(days){
+		if(!window.cdRateByDay) return;
+		var keys = Object.keys(cdRateByDay).map(Number).sort(function(a,b){return a-b;});
+		var nextTier = null;
+		for(var i=0;i<keys.length;i++){ if(keys[i]>days){ nextTier={days:keys[i],price:cdRateByDay[keys[i]]}; break; } }
+		var nudge = document.getElementById('v3-save-nudge');
+		if(!nudge) return;
+		if(!nextTier){ nudge.style.display='none'; return; }
+		var extra = nextTier.days - days;
+		var curRate = cdRateByDay[keys.filter(function(k){return k<=days;}).pop()||keys[0]];
+		var curTotal = curRate * days;
+		var newTotal = nextTier.price * nextTier.days;
+		if(newTotal < curTotal){
+			document.getElementById('v3-sn-title').textContent = '<?php echo addslashes(Text::_("VRCSAVINGSTIP_TITLE") ?: "Rent more, pay less"); ?>';
+			document.getElementById('v3-sn-body').textContent = 'Add '+extra+' more day'+(extra>1?'s':'')+' — €'+nextTier.price+'/day rate. Total: €'+newTotal+' (save €'+(curTotal-newTotal)+')';
+			var btn = document.getElementById('v3-sn-btn');
+			btn.textContent = 'Add '+extra+' day'+(extra>1?'s':'')+' → €'+newTotal+' total';
+			btn.onclick = function(){ v3ApplyNudge(nextTier.days); };
+			nudge.style.display='block';
+		} else { nudge.style.display='none'; }
+		}
+
+		function v3ApplyNudge(targetDays){
+		if(!v3StartDate) return;
+		v3EndDate = new Date(v3StartDate); v3EndDate.setDate(v3EndDate.getDate()+targetDays);
+		v3Selecting = false; v3RenderCal(); v3UpdateStrip(); v3SyncToJQ();
+		}
+
+		window.v3ToggleDiffReturn = function(){
+		var cb  = document.getElementById('v3-diff-cb');
+		var chk = document.getElementById('cd-diff-return-chk');
+		var wrap = document.getElementById('cd-return-location-wrap');
+		chk.checked = !chk.checked;
+		if(chk.checked){ cb.classList.add('v3-checked'); wrap.style.display='block'; }
+		else            { cb.classList.remove('v3-checked'); wrap.style.display='none'; }
+		jQuery('#cd-diff-return-chk').trigger('change');
+		};
+
+		window.v3SelPay = function(mode){
+		document.querySelectorAll('.v3-pay-opt').forEach(function(o){ o.classList.remove('v3-pay-sel'); });
+		document.getElementById('v3-pay-'+(mode==='full'?'full':'reserve')).classList.add('v3-pay-sel');
+		};
+
+		// Init
+		document.getElementById('v3-prev-m').addEventListener('click',function(){ v3ViewMonth--; if(v3ViewMonth<0){v3ViewMonth=11;v3ViewYear--;} v3RenderCal(); });
+		document.getElementById('v3-next-m').addEventListener('click',function(){ v3ViewMonth++; if(v3ViewMonth>11){v3ViewMonth=0;v3ViewYear++;} v3RenderCal(); });
+
+		// Default dates: find first available
+		(function(){
+		var minAdv = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
+		var minLos = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
+		var cand = new Date(v3Today); cand.setDate(cand.getDate()+minAdv);
+		for(var i=0;i<365;i++){
+			if(!v3IsDisabledIn(cand)){
+			var drop = new Date(cand); drop.setDate(drop.getDate()+minLos);
+			for(var j=0;j<30;j++){
+				if(!v3IsDisabledOut(drop)){ v3StartDate=new Date(cand); v3EndDate=new Date(drop); break; }
+				drop.setDate(drop.getDate()+1);
 			}
-			<?php endif; ?>
-		});
+			if(v3StartDate) break;
+			}
+			cand.setDate(cand.getDate()+1);
+		}
+		v3RenderCal(); v3UpdateStrip();
+		if(v3StartDate && v3EndDate) setTimeout(v3SyncToJQ, 300);
+		})();
 
-		jQuery('#returnplace_visible').on('change', function() {
-			jQuery('#returnplace').val(jQuery(this).val());
-			cdUpdateSummary();
-			<?php if ($diffopentime): ?>
-			vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
-			<?php endif; ?>
-		});
+		// Hook: also update grace bar when time changes
+		jQuery(document).on('change','#vrccomseldh select',function(){ v3UpdateGraceBar(); });
+	})();
+	</script>
 
-		jQuery('#cd-diff-return-chk').on('change', function() {
-			var checked = jQuery(this).is(':checked');
-			jQuery('#cd-return-location-wrap').toggle(checked);
-			if (checked) {
-				jQuery('#cd-pickup-label').text(labelPickup);
-				// set returnplace to current drop select value
-				jQuery('#returnplace').val(jQuery('#returnplace_visible').val());
-			} else {
-				jQuery('#cd-pickup-label').text(labelPickupReturn);
-				// mirror pickup again
-				jQuery('#returnplace').val(jQuery('#place').val());
+
+		<script type="text/javascript">
+		/* Sync returnplace logic */
+		jQuery(function() {
+			var labelPickupReturn = <?php echo json_encode(Text::_('VRPPICKUPRETURN') ?: 'Получение и возврат'); ?>;
+			var labelPickup       = <?php echo json_encode(Text::_('VRPPLACE') ?: 'Место получения'); ?>;
+
+			jQuery('#place').on('change', function() {
+				// Only mirror if checkbox is unchecked
+				if (!jQuery('#cd-diff-return-chk').is(':checked')) {
+					jQuery('#returnplace').val(jQuery(this).val());
+				}
+				cdUpdateSummary();
 				<?php if ($diffopentime): ?>
-				vrcSetLocOpenTime(jQuery('#place').val(), 'dropoff');
+				vrcSetLocOpenTime(jQuery(this).val(), 'pickup');
+				if (!jQuery('#cd-diff-return-chk').is(':checked')) {
+					vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
+				}
 				<?php endif; ?>
-			}
-			cdUpdateSummary();
+			});
+
+			jQuery('#returnplace_visible').on('change', function() {
+				jQuery('#returnplace').val(jQuery(this).val());
+				cdUpdateSummary();
+				<?php if ($diffopentime): ?>
+				vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
+				<?php endif; ?>
+			});
+
+			jQuery('#cd-diff-return-chk').on('change', function() {
+				var checked = jQuery(this).is(':checked');
+				jQuery('#cd-return-location-wrap').toggle(checked);
+				if (checked) {
+					jQuery('#cd-pickup-label').text(labelPickup);
+					// set returnplace to current drop select value
+					jQuery('#returnplace').val(jQuery('#returnplace_visible').val());
+				} else {
+					jQuery('#cd-pickup-label').text(labelPickupReturn);
+					// mirror pickup again
+					jQuery('#returnplace').val(jQuery('#place').val());
+					<?php if ($diffopentime): ?>
+					vrcSetLocOpenTime(jQuery('#place').val(), 'dropoff');
+					<?php endif; ?>
+				}
+				cdUpdateSummary();
+			});
 		});
-	});
 
-	/* ── OOH + Optionals + Live Summary JS ───────────────────────── */
-	var cdOohFees = <?php echo json_encode($oohFees); ?>;
-	var cdCurrency = '€';
-	var cdGraceHours = <?php echo (int)$graceHours; ?>;
-	var cdGraceReturnByLabel = '<?php echo addslashes(Text::_('VRC_GRATUITY_RETURNBY') ?: 'Returnați până la %s fără costuri suplimentare'); ?>';
-	var cdCarName = '<?php echo addslashes($car['name']); ?>';
-	var cdPlacesMap = <?php
-		$_pm = array();
-		if (is_array($places)) { foreach ($places as $_p) { $_pm[(int)$_p['id']] = $_p['name']; } }
-		echo json_encode($_pm);
-	?>;
-	var cdCouponAjaxUrl = '<?php echo rtrim(JURI::root(), '/'); ?>/templates/rent/php/coupon-ajax.php';
-	var cdDescPrefix   = '<?php echo addslashes(Text::_('VRCSUMDESC_PREFIX')); ?>';
-	var cdDescCarInfix = '<?php echo addslashes(Text::_('VRCSUMDESC_CAR_INFIX')); ?>';
-	var cdDescLocInfix  = '<?php echo addslashes(Text::_('VRCSUMDESC_LOC_INFIX')); ?>';
-	var cdDescLocPickup = '<?php echo addslashes(Text::_('VRCSUMDESCLOC_PICKUP') ?: ', получение в'); ?>';
-	var cdDescLocReturn = '<?php echo addslashes(Text::_('VRCSUMDESCLOC_RETURN') ?: ', возврат в'); ?>';
-	var cdDescDayWord  = '<?php echo addslashes(Text::_('VRCSEARCHDAY')); ?>';
-	var cdDescDaysWord = '<?php echo addslashes(Text::_('VRCSEARCHDAYS')); ?>';
-		var cdRateByDay = <?php
-		$_jsRbd = array();
-		foreach ($_rateByDay as $_d => $_r) { $_jsRbd[(int)$_d] = $_r; }
-		echo json_encode($_jsRbd);
-	?>;
-	var cdOptionals = {};
-	<?php foreach ($carOptionals as $_opt): ?>
-	cdOptionals[<?php echo (int)$_opt['id']; ?>] = {perday: <?php echo (int)$_opt['perday']; ?>, cost: <?php echo (float)$_opt['cost']; ?>, max: <?php echo (!empty($_opt['maxprice'])?(float)$_opt['maxprice']:0); ?>, checked: false, hmany: <?php echo (int)$_opt['hmany']; ?>, qty: 0};
-	<?php endforeach; ?>
+		/* ── OOH + Optionals + Live Summary JS ───────────────────────── */
+		var cdOohFees = <?php echo json_encode($oohFees); ?>;
+		var cdCurrency = '€';
+		var cdGraceHours = <?php echo (int)$graceHours; ?>;
+		var cdGraceReturnByLabel = '<?php echo addslashes(Text::_('VRC_GRATUITY_RETURNBY') ?: 'Returnați până la %s fără costuri suplimentare'); ?>';
+		var cdCarName = '<?php echo addslashes($car['name']); ?>';
+		var cdPlacesMap = <?php
+			$_pm = array();
+			if (is_array($places)) { foreach ($places as $_p) { $_pm[(int)$_p['id']] = $_p['name']; } }
+			echo json_encode($_pm);
+		?>;
+		var cdCouponAjaxUrl = '<?php echo rtrim(JURI::root(), '/'); ?>/templates/rent/php/coupon-ajax.php';
+		var cdDescPrefix   = '<?php echo addslashes(Text::_('VRCSUMDESC_PREFIX')); ?>';
+		var cdDescCarInfix = '<?php echo addslashes(Text::_('VRCSUMDESC_CAR_INFIX')); ?>';
+		var cdDescLocInfix  = '<?php echo addslashes(Text::_('VRCSUMDESC_LOC_INFIX')); ?>';
+		var cdDescLocPickup = '<?php echo addslashes(Text::_('VRCSUMDESCLOC_PICKUP') ?: ', получение в'); ?>';
+		var cdDescLocReturn = '<?php echo addslashes(Text::_('VRCSUMDESCLOC_RETURN') ?: ', возврат в'); ?>';
+		var cdDescDayWord  = '<?php echo addslashes(Text::_('VRCSEARCHDAY')); ?>';
+		var cdDescDaysWord = '<?php echo addslashes(Text::_('VRCSEARCHDAYS')); ?>';
+			var cdRateByDay = <?php
+			$_jsRbd = array();
+			foreach ($_rateByDay as $_d => $_r) { $_jsRbd[(int)$_d] = $_r; }
+			echo json_encode($_jsRbd);
+		?>;
+		var cdOptionals = {};
+		<?php foreach ($carOptionals as $_opt): ?>
+		cdOptionals[<?php echo (int)$_opt['id']; ?>] = {perday: <?php echo (int)$_opt['perday']; ?>, cost: <?php echo (float)$_opt['cost']; ?>, max: <?php echo (!empty($_opt['maxprice'])?(float)$_opt['maxprice']:0); ?>, checked: false, hmany: <?php echo (int)$_opt['hmany']; ?>, qty: 0};
+		<?php endforeach; ?>
 
-	/* Format integer (no decimals) */
-	function cdFmt(n) {
-		return Math.round(parseFloat(n)).toString();
-	}
-
-	function cdGetDays() {
-		var p = jQuery('#pickupdate').val(), r = jQuery('#releasedate').val();
-		if (!p || !r) return null;
-		try {
-			var fmt = <?php if($df==='d/m/Y') echo "'dd/mm/yy'"; elseif($df==='m/d/Y') echo "'mm/dd/yy'"; else echo "'yy/mm/dd'"; ?>;
-			var d1 = jQuery.datepicker.parseDate(fmt, p);
-			var d2 = jQuery.datepicker.parseDate(fmt, r);
-			
-			// Get hour values from selects
-			var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
-			var dropHour = parseInt(jQuery('#vrccomseldh select').val()) || 0;
-			
-			// Set the hours on the date objects
-			d1.setHours(pickHour, 0, 0, 0);
-			d2.setHours(dropHour, 0, 0, 0);
-
-			var diffMs   = d2 - d1;
-			var diffDays = Math.ceil(diffMs / 86400000);
-
-			// Grace logic only applies when the rental duration has a fractional-day
-			// overage — i.e. diffMs is NOT an exact multiple of 24h.
-			// Exact multiples (same pickup/return hour) need no grace adjustment.
-			window.cdGraceState = 'none'; // 'none' | 'active' | 'exceeded'
-			if (cdGraceHours > 0 && diffDays >= 1) {
-				var exactDays = diffMs / 86400000; // e.g. 1.083 for 26h, 4.0 for 96h
-				var hasFraction = (Math.abs(exactDays - Math.round(exactDays)) > 0.0001);
-
-				if (hasFraction && diffDays > 1) {
-					// There is a fractional overage beyond a whole number of days
-					var floorDays = diffDays - 1;
-					var overageMs = diffMs - (floorDays * 86400000);
-					if (overageMs <= cdGraceHours * 3600000) {
-						// Overage fits within grace → reduce billed days by 1
-						diffDays = floorDays;
-						window.cdGraceState = 'active';
-					} else {
-						// Overage exceeds grace → warn user
-						window.cdGraceState = 'exceeded';
-					}
-				} else {
-					// Exact day count or single day — grace window is available for return
-					window.cdGraceState = 'active';
-				}
-			}
-
-			return diffDays > 0 ? diffDays : null;
-		} catch(e) { return null; }
-	}
-	
-
-	function cdGetRate(days) {
-		if (!days || !cdRateByDay) return null;
-		var best = null;
-		var keys = Object.keys(cdRateByDay).map(Number).sort(function(a, b) { return a - b; });
-		for (var i = 0; i < keys.length; i++) {
-			if (keys[i] <= days) { best = cdRateByDay[keys[i]]; }
+		/* Format integer (no decimals) */
+		function cdFmt(n) {
+			return Math.round(parseFloat(n)).toString();
 		}
-		return best;
-	}
 
-	/* Read hour select value → seconds since midnight */
-	function cdGetHourSecs(selectOrWrapperId) {
-		var $el = jQuery('#' + selectOrWrapperId);
-		// For the new single select inside #vrccomselph / #vrccomseldh
-		var $sel = $el.is('select') ? $el : $el.find('select');
-		if (!$sel.length) return 0;
-		return (parseInt($sel.val()) || 0) * 3600;
-	}
-
-	function cdIsOoh(secs, fee) {
-		if (fee.from > fee.to) { return secs >= fee.from || secs < fee.to; }
-		return secs >= fee.from && secs < fee.to;
-	}
-
-	function cdCheckOoh() {
-		if (!cdOohFees || !cdOohFees.length) return;
-		var pickSecs = cdGetHourSecs('vrccomselph');
-		var dropSecs = cdGetHourSecs('vrccomseldh');
-		var messages = [];
-		for (var i = 0; i < cdOohFees.length; i++) {
-			var f = cdOohFees[i];
-			var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
-			var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
-			if (pickOoh || dropOoh) {
-				var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
-				var label;
-				if (pickOoh && dropOoh) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
-				} else if (pickOoh) {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
-				} else {
-					label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
-				}
-				var parts = [];
-				if (pickOoh) parts.push(cdCurrency + cdFmt(f.pickcharge));
-				if (dropOoh) parts.push(cdCurrency + cdFmt(f.dropcharge));
-				messages.push(label + ': ' + parts.join(' + '));
-			}
-		}
-		var $w = jQuery('#cd-ooh-warning');
-		if (messages.length) {
-			jQuery('#cd-ooh-text').text(messages.join(' | '));
-			$w.addClass('is-visible');
-		} else {
-			$w.removeClass('is-visible');
-		}
-	}
-
-	function cdOohTotal() {
-		var pickSecs = cdGetHourSecs('vrccomselph');
-		var dropSecs = cdGetHourSecs('vrccomseldh');
-		var total = 0;
-		for (var i = 0; i < cdOohFees.length; i++) {
-			var f = cdOohFees[i];
-			var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
-			var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
-			var rowTotal = 0;
-			if (pickOoh) rowTotal += parseFloat(f.pickcharge);
-			if (dropOoh) rowTotal += parseFloat(f.dropcharge);
-			if (f.maxcharge > 0 && rowTotal > f.maxcharge) rowTotal = parseFloat(f.maxcharge);
-			total += rowTotal;
-		}
-		return total;
-	}
-
-	function cdToggleOptional(id, cost, perday, maxprice) {
-		cdOptionals[id].checked = !cdOptionals[id].checked;
-		var $row = jQuery('#cd-opt-row-' + id);
-		if (cdOptionals[id].checked) {
-			$row.addClass('is-checked');
-			jQuery('#cd-opt-input-' + id).val('1');
-		} else {
-			$row.removeClass('is-checked');
-			jQuery('#cd-opt-input-' + id).val('0');
-		}
-		cdUpdateSummary();
-	}
-
-	function cdSetOptionalQty(id, delta) {
-		if (!cdOptionals[id]) return;
-		var newQty = (cdOptionals[id].qty || 0) + delta;
-		if (newQty < 0) newQty = 0;
-		cdOptionals[id].qty = newQty;
-		cdOptionals[id].checked = (newQty > 0);
-		jQuery('#cd-opt-input-' + id).val(newQty);
-		jQuery('#cd-opt-qty-' + id).text(newQty);
-		var $row = jQuery('#cd-opt-row-' + id);
-		if (newQty > 0) { $row.addClass('is-checked'); } else { $row.removeClass('is-checked'); }
-		cdUpdateSummary();
-	}
-
-	function cdUpdateSummary() {
-		var days = cdGetDays();
-		var $sum = jQuery('#cd-summary');
-
-		/* ── Update grace notice / exceeded warning ── */
-		if (cdGraceHours > 0) {
-			var $graceBy  = jQuery('#cd-grace-returnby');
-			var $exceeded = jQuery('#cd-grace-exceeded');
-			var graceState = (typeof window.cdGraceState !== 'undefined') ? window.cdGraceState : 'none';
-
-			if (days && graceState !== 'none') {
-				// Compute grace deadline: pickup + days×24h + graceHours
-				var pickStr  = jQuery('#pickupdate').val();
+		function cdGetDays() {
+			var p = jQuery('#pickupdate').val(), r = jQuery('#releasedate').val();
+			if (!p || !r) return null;
+			try {
+				var fmt = <?php if($df==='d/m/Y') echo "'dd/mm/yy'"; elseif($df==='m/d/Y') echo "'mm/dd/yy'"; else echo "'yy/mm/dd'"; ?>;
+				var d1 = jQuery.datepicker.parseDate(fmt, p);
+				var d2 = jQuery.datepicker.parseDate(fmt, r);
+				
+				// Get hour values from selects
 				var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
-				var pickTs   = vrcDateToUnixTs(pickStr, pickHour);
-				if (pickTs > 0) {
-					var graceEndTs = pickTs + (days * 86400) + (cdGraceHours * 3600);
-					var graceDate  = new Date(graceEndTs * 1000);
-					var gd = graceDate.getUTCDate(), gm = graceDate.getUTCMonth()+1, gy = graceDate.getUTCFullYear();
-					var gh = graceDate.getUTCHours();
-					var gdStr = (gd<10?'0'+gd:gd)+'/'+(gm<10?'0'+gm:gm)+'/'+gy;
-					var gtStr = (gh<10?'0'+gh:gh)+':00';
+				var dropHour = parseInt(jQuery('#vrccomseldh select').val()) || 0;
+				
+				// Set the hours on the date objects
+				d1.setHours(pickHour, 0, 0, 0);
+				d2.setHours(dropHour, 0, 0, 0);
 
-					if (graceState === 'active') {
-						// Show green notice with "return by" hint, hide warning
-						var label = cdGraceReturnByLabel.replace('%s', '<strong>' + gdStr + ' ' + gtStr + '</strong>');
-						$graceBy.html(label).show();
-						$exceeded.removeClass('is-visible');
+				var diffMs   = d2 - d1;
+				var diffDays = Math.ceil(diffMs / 86400000);
+
+				// Grace logic only applies when the rental duration has a fractional-day
+				// overage — i.e. diffMs is NOT an exact multiple of 24h.
+				// Exact multiples (same pickup/return hour) need no grace adjustment.
+				window.cdGraceState = 'none'; // 'none' | 'active' | 'exceeded'
+				if (cdGraceHours > 0 && diffDays >= 1) {
+					var exactDays = diffMs / 86400000; // e.g. 1.083 for 26h, 4.0 for 96h
+					var hasFraction = (Math.abs(exactDays - Math.round(exactDays)) > 0.0001);
+
+					if (hasFraction && diffDays > 1) {
+						// There is a fractional overage beyond a whole number of days
+						var floorDays = diffDays - 1;
+						var overageMs = diffMs - (floorDays * 86400000);
+						if (overageMs <= cdGraceHours * 3600000) {
+							// Overage fits within grace → reduce billed days by 1
+							diffDays = floorDays;
+							window.cdGraceState = 'active';
+						} else {
+							// Overage exceeds grace → warn user
+							window.cdGraceState = 'exceeded';
+						}
 					} else {
-						// graceState === 'exceeded': hide return-by hint, show amber warning
-						$graceBy.hide();
-						var excLabel = '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>';
-						jQuery('#cd-grace-exc-label').text(excLabel);
-						$exceeded.addClass('is-visible');
+						// Exact day count or single day — grace window is available for return
+						window.cdGraceState = 'active';
 					}
 				}
-			} else {
-				$graceBy.hide();
-				$exceeded.removeClass('is-visible');
+
+				return diffDays > 0 ? diffDays : null;
+			} catch(e) { return null; }
+		}
+		
+
+		function cdGetRate(days) {
+			if (!days || !cdRateByDay) return null;
+			var best = null;
+			var keys = Object.keys(cdRateByDay).map(Number).sort(function(a, b) { return a - b; });
+			for (var i = 0; i < keys.length; i++) {
+				if (keys[i] <= days) { best = cdRateByDay[keys[i]]; }
 			}
+			return best;
 		}
 
-		/* ── Update KM notice ── */
-		var $kmNotice = jQuery('#cd-km-notice');
-		if (days) {
-			var totalKm = days * 200;
-			jQuery('#cd-km-total').text(totalKm);
-			jQuery('#cd-km-days').text(days);
-			$kmNotice.show();
-		} else {
-			$kmNotice.hide();
+		/* Read hour select value → seconds since midnight */
+		function cdGetHourSecs(selectOrWrapperId) {
+			var $el = jQuery('#' + selectOrWrapperId);
+			// For the new single select inside #vrccomselph / #vrccomseldh
+			var $sel = $el.is('select') ? $el : $el.find('select');
+			if (!$sel.length) return 0;
+			return (parseInt($sel.val()) || 0) * 3600;
 		}
 
-		if (!days) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
-
-		var rate = cdGetRate(days);
-		if (!rate) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
-
-		// Description sentence (i18n via cdDesc* vars)
-		var _dw2 = days === 1 ? cdDescDayWord : cdDescDaysWord;
-		var _locId = jQuery('#place').val() || '';
-		var _locName = (_locId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_locId]) ? cdPlacesMap[_locId] : '';
-		var _diffReturn = jQuery('#cd-diff-return-chk').is(':checked');
-		var _retLocName = '';
-		if (_diffReturn) {
-			var _retLocId = jQuery('#returnplace_visible').val();
-			_retLocName = (_retLocId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_retLocId]) ? cdPlacesMap[_retLocId] : '';
+		function cdIsOoh(secs, fee) {
+			if (fee.from > fee.to) { return secs >= fee.from || secs < fee.to; }
+			return secs >= fee.from && secs < fee.to;
 		}
 
-		var _desc = cdDescPrefix + ' <strong>' + days + '\u00A0' + _dw2 + '</strong>';
-		if (typeof cdCarName !== 'undefined' && cdCarName) { _desc += cdDescCarInfix + '<strong>' + cdCarName + '</strong>'; }
-
-		if (_diffReturn && _locName && _retLocName) {
-			_desc += ' ' + cdDescLocPickup + ' <strong>' + _locName + '</strong>'
-				  + ' ' + cdDescLocReturn + ' <strong>' + _retLocName + '</strong>';
-		} else if (_locName) {
-			_desc += cdDescLocInfix + '<strong>' + _locName + '</strong>';
-		}
-
-		_desc += '.';
-		jQuery('#cd-summary-desc').html(_desc);
-
-		var baseTotal = rate * days;
-		var dayWord = '<?php echo addslashes(Text::_("VRCSEARCHDAYS") ?: "дней"); ?>';
-		var rows = '<div class="cd-summary-row"><span><?php echo addslashes(Text::_("VRPRICE") ?: "Preț de bază"); ?></span>'
-			+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(rate) + ' &times; ' + days + ' ' + dayWord + '</span></div>';
-
-		var optTotal = 0;
-		for (var id in cdOptionals) {
-			var o = cdOptionals[id];
-			var qty = (o.hmany === 1) ? (o.qty || 0) : (o.checked ? 1 : 0);
-			if (!qty) continue;
-			var oc = o.perday ? o.cost * days * qty : o.cost * qty;
-			if (o.max > 0 && oc > o.max) oc = o.max;
-			optTotal += oc;
-			var name = jQuery('#cd-opt-row-' + id + ' .cd-optional-name').text();
-			var qtyLabel = (o.hmany === 1 && qty > 1) ? ' \u00d7 ' + qty : '';
-			rows += '<div class="cd-summary-row"><span>' + name + qtyLabel + '</span>'
-				+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oc) + '</span></div>';
-		}
-
-		var oohTotal = cdOohTotal();
-		if (oohTotal > 0) {
-			var oohLabel;
-			// Determine OOH label from active fees
+		function cdCheckOoh() {
+			if (!cdOohFees || !cdOohFees.length) return;
+			var pickSecs = cdGetHourSecs('vrccomselph');
+			var dropSecs = cdGetHourSecs('vrccomseldh');
+			var messages = [];
 			for (var i = 0; i < cdOohFees.length; i++) {
 				var f = cdOohFees[i];
-				var pickSecs = cdGetHourSecs('vrccomselph');
-				var dropSecs = cdGetHourSecs('vrccomseldh');
 				var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
 				var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
 				if (pickOoh || dropOoh) {
 					var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
-					if (pickOoh && dropOoh) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
-					else if (pickOoh) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
-					else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
-					break;
-				}
-			}
-			rows += '<div class="cd-summary-row"><span>' + (oohLabel || 'OOH') + '</span>'
-				+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oohTotal) + '</span></div>';
-		}
-
-		// Coupon discount row
-		var couponDiscount = 0;
-		if (window.vrcActiveCoupon) {
-			var _ac = window.vrcActiveCoupon;
-			var _subtotal = baseTotal + optTotal + oohTotal;
-			if (_ac.type === 1) {
-				couponDiscount = Math.round(_subtotal * parseFloat(_ac.value) / 100);
-			} else {
-				couponDiscount = Math.min(parseFloat(_ac.value), _subtotal);
-			}
-			if (couponDiscount > 0) {
-				rows += '<div class="cd-summary-row cd-summary-row-discount"><span>' + (_ac.label || 'Reducere') + '</span>'
-					+ '<span class="cd-summary-row-val cd-discount-val">\u2212' + cdCurrency + cdFmt(couponDiscount) + '</span></div>';
-			}
-		}
-
-		var total = baseTotal + optTotal + oohTotal - couponDiscount;
-		jQuery('#cd-summary-rows').html(rows);
-		jQuery('#cd-summary-total').text(cdCurrency + cdFmt(total));
-		$sum.addClass('is-visible');
-
-		cdHighlightTier(days);
-		cdCheckSavingsTip(days);
-	}
-
-	jQuery(function($) {
-		var _lp='', _lr='', _lph='', _ldh='';
-		function cdPoll() {
-			var p  = $('#pickupdate').val(),  r  = $('#releasedate').val();
-			var ph = $('#vrccomselph select').val() || '';
-			var dh = $('#vrccomseldh select').val() || '';
-			if (p!==_lp || r!==_lr || ph!==_lph || dh!==_ldh) {
-				_lp=p; _lr=r; _lph=ph; _ldh=dh;
-				cdUpdateSummary();
-				cdCheckOoh();
-			}
-		}
-		setInterval(cdPoll, 300);
-
-		$(document.body).on('change', '#vrccomselph select, #vrccomseldh select', function() {
-			setTimeout(cdCheckOoh, 50);
-			setTimeout(cdUpdateSummary, 50);
-		});
-
-		$(document.body).on('click', '.vrc-cdetails-cal-pickday', function() {
-			setTimeout(cdUpdateSummary, 400);
-		});
-	});
-	</script>
-
-	<script type="text/javascript">
-	function vrcCleanNumber(snum) { if (snum.length > 1 && snum.substr(0,1) == '0') { return parseInt(snum.substr(1)); } return parseInt(snum); }
-
-	/* Convert date string + hour → unix timestamp (seconds) */
-	function vrcDateToUnixTs(dateStr, hour) {
-		if (!dateStr) return 0;
-		var p = dateStr.split('/');
-		var y, m, d;
-		<?php if ($df === 'd/m/Y'): ?>
-		d = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; y = parseInt(p[2], 10);
-		<?php elseif ($df === 'm/d/Y'): ?>
-		m = parseInt(p[0], 10) - 1; d = parseInt(p[1], 10); y = parseInt(p[2], 10);
-		<?php else: ?>
-		y = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; d = parseInt(p[2], 10);
-		<?php endif; ?>
-		return Math.floor(Date.UTC(y, m, d, parseInt(hour, 10) || 0, 0, 0) / 1000);
-	}
-
-	function vrcValidateSearch() {
-		var pickDate = jQuery('#pickupdate').val();
-		var relDate  = jQuery('#releasedate').val();
-		if (!pickDate || !relDate) {
-			return false;
-		}
-
-		var pickH = parseInt(jQuery('#vrccomselph select').val(), 10) || 0;
-		var relH  = parseInt(jQuery('#vrccomseldh select').val(), 10) || 0;
-
-		var pickTs = vrcDateToUnixTs(pickDate, pickH);
-		var relTs  = vrcDateToUnixTs(relDate, relH);
-
-		if (!pickTs || !relTs || relTs <= pickTs) {
-			return false;
-		}
-
-		var days = Math.round((relTs - pickTs) / 86400);
-		jQuery('#vrc-pickup').val(pickTs);
-		jQuery('#vrc-release').val(relTs);
-		jQuery('#vrc-days').val(days);
-
-		return true;
-	}
-	jQuery(document).ready(function() {
-	<?php if (!empty($ppickup)): ?>
-		jQuery("#pickupdate").datepicker("setDate", new Date(<?php echo date('Y', $ppickup); ?>, <?php echo ((int)date('n', $ppickup) - 1); ?>, <?php echo date('j', $ppickup); ?>));
-		jQuery(".ui-datepicker-current-day").click();
-	<?php endif; ?>
-	<?php
-	$pday = VikRequest::getInt('dt', '', 'request');
-	$viewingdayts = !empty($pday) && $pday >= $nowts ? $pday : $nowts;
-	if (!empty($viewingdayts) && !empty($pday) && $viewingdayts >= $nowts) {
-		if (!count($push_disabled_in) || !in_array('"' . date('Y-m-d', $viewingdayts) . '"', $push_disabled_in)) { ?>
-		jQuery("#pickupdate").datepicker("setDate", new Date(<?php echo date('Y', $viewingdayts); ?>, <?php echo ((int)date('n', $viewingdayts) - 1); ?>, <?php echo date('j', $viewingdayts); ?>));
-		<?php } ?>
-		if (jQuery("#vrc-bookingpart-init").length) { jQuery('html,body').animate({ scrollTop: (jQuery("#vrc-bookingpart-init").offset().top - 5) }, { duration: 'slow' }); }
-	<?php } ?>
-		jQuery(document.body).on('click', '.vrc-cdetails-cal-pickday', function() {
-			if (!jQuery("#pickupdate").length) return;
-			var tdday = jQuery(this).attr('data-daydate');
-			if (!tdday || !tdday.length) return;
-			jQuery('#pickupdate').datepicker('setDate', tdday);
-			if (jQuery("#vrc-bookingpart-init").length) {
-				jQuery('html,body').animate({ scrollTop: (jQuery('#vrc-bookingpart-init').offset().top - 5) }, 600, function() {
-					if (typeof vrcSetMinDropoffDate !== "undefined") vrcSetMinDropoffDate();
-					if (typeof vrcLocationWopening !== "undefined") vrcLocationWopening('pickup');
-					jQuery('#releasedate').focus();
-				});
-			}
-		});
-		// Default pickup: find the first available date (and a valid dropoff after it)
-		(function() {
-			if (!jQuery('#pickupdate').val()) {
-				var minAdvance  = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
-				var minLos      = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
-				var maxLookAhead = 365; // never scan more than a year ahead
-
-				function isPickupAvailable(date) {
-					var validator = (typeof vrcIsDayDisabled !== 'undefined')
-						? vrcIsDayDisabled
-						: (typeof vrcIsDayFullIn !== 'undefined' ? vrcIsDayFullIn : null);
-					if (!validator) return true;
-					try {
-						var result = validator(date);
-						return !!(result && result[0]);
-					} catch(e) { return true; }
-				}
-
-				function isDropoffAvailable(date) {
-					var validator = (typeof vrcIsDayDisabledDropoff !== 'undefined')
-						? vrcIsDayDisabledDropoff
-						: (typeof vrcIsDayFullOut !== 'undefined' ? vrcIsDayFullOut : null);
-					if (!validator) return true;
-					try {
-						var result = validator(date);
-						return !!(result && result[0]);
-					} catch(e) { return true; }
-				}
-
-				function findNearestAvailableDates() {
-					var candidate = new Date();
-					candidate.setHours(0, 0, 0, 0);
-					candidate.setDate(candidate.getDate() + minAdvance);
-
-					for (var i = 0; i < maxLookAhead; i++) {
-						if (isPickupAvailable(candidate)) {
-							var dropCandidate = new Date(candidate.getTime());
-							dropCandidate.setDate(dropCandidate.getDate() + minLos);
-
-							for (var j = 0; j < 30; j++) {
-								if (isDropoffAvailable(dropCandidate)) {
-									return { pickup: candidate, dropoff: dropCandidate };
-								}
-								dropCandidate.setDate(dropCandidate.getDate() + 1);
-							}
-						}
-						candidate.setDate(candidate.getDate() + 1);
+					var label;
+					if (pickOoh && dropOoh) {
+						label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
+					} else if (pickOoh) {
+						label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
+					} else {
+						label = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
 					}
-					return null;
+					var parts = [];
+					if (pickOoh) parts.push(cdCurrency + cdFmt(f.pickcharge));
+					if (dropOoh) parts.push(cdCurrency + cdFmt(f.dropcharge));
+					messages.push(label + ': ' + parts.join(' + '));
 				}
-
-				var dates = findNearestAvailableDates();
-				if (dates) {
-					jQuery('#pickupdate').datepicker('setDate', dates.pickup);
-					jQuery('#releasedate').datepicker('setDate', dates.dropoff);
-					if (typeof vrcSetMinDropoffDate !== 'undefined') { vrcSetMinDropoffDate(); }
-				}
-				setTimeout(cdUpdateSummary, 200);
 			}
-			jQuery('#vrccomselph select').val(12).trigger('chosen:updated');
-			jQuery('#vrccomseldh select').val(12).trigger('chosen:updated');
-		})();
-	});
-	</script>
+			var $w = jQuery('#cd-ooh-warning');
+			if (messages.length) {
+				jQuery('#cd-ooh-text').text(messages.join(' | '));
+				$w.addClass('is-visible');
+			} else {
+				$w.removeClass('is-visible');
+			}
+		}
 
-<?php
-} else {
-	echo '<div class="cd-disabled-rent">' . VikRentCar::getDisabledRentMsg() . '</div>';
-}
-?>
+		function cdOohTotal() {
+			var pickSecs = cdGetHourSecs('vrccomselph');
+			var dropSecs = cdGetHourSecs('vrccomseldh');
+			var total = 0;
+			for (var i = 0; i < cdOohFees.length; i++) {
+				var f = cdOohFees[i];
+				var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
+				var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
+				var rowTotal = 0;
+				if (pickOoh) rowTotal += parseFloat(f.pickcharge);
+				if (dropOoh) rowTotal += parseFloat(f.dropcharge);
+				if (f.maxcharge > 0 && rowTotal > f.maxcharge) rowTotal = parseFloat(f.maxcharge);
+				total += rowTotal;
+			}
+			return total;
+		}
+
+		function cdToggleOptional(id, cost, perday, maxprice) {
+			cdOptionals[id].checked = !cdOptionals[id].checked;
+			var $row = jQuery('#cd-opt-row-' + id);
+			if (cdOptionals[id].checked) {
+				$row.addClass('is-checked');
+				jQuery('#cd-opt-input-' + id).val('1');
+			} else {
+				$row.removeClass('is-checked');
+				jQuery('#cd-opt-input-' + id).val('0');
+			}
+			cdUpdateSummary();
+		}
+
+		function cdSetOptionalQty(id, delta) {
+			if (!cdOptionals[id]) return;
+			var newQty = (cdOptionals[id].qty || 0) + delta;
+			if (newQty < 0) newQty = 0;
+			cdOptionals[id].qty = newQty;
+			cdOptionals[id].checked = (newQty > 0);
+			jQuery('#cd-opt-input-' + id).val(newQty);
+			jQuery('#cd-opt-qty-' + id).text(newQty);
+			var $row = jQuery('#cd-opt-row-' + id);
+			if (newQty > 0) { $row.addClass('is-checked'); } else { $row.removeClass('is-checked'); }
+			cdUpdateSummary();
+		}
+
+		function cdUpdateSummary() {
+			var days = cdGetDays();
+			var $sum = jQuery('#cd-summary');
+
+			/* ── Update grace notice / exceeded warning ── */
+			if (cdGraceHours > 0) {
+				var $graceBy  = jQuery('#cd-grace-returnby');
+				var $exceeded = jQuery('#cd-grace-exceeded');
+				var graceState = (typeof window.cdGraceState !== 'undefined') ? window.cdGraceState : 'none';
+
+				if (days && graceState !== 'none') {
+					// Compute grace deadline: pickup + days×24h + graceHours
+					var pickStr  = jQuery('#pickupdate').val();
+					var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
+					var pickTs   = vrcDateToUnixTs(pickStr, pickHour);
+					if (pickTs > 0) {
+						var graceEndTs = pickTs + (days * 86400) + (cdGraceHours * 3600);
+						var graceDate  = new Date(graceEndTs * 1000);
+						var gd = graceDate.getUTCDate(), gm = graceDate.getUTCMonth()+1, gy = graceDate.getUTCFullYear();
+						var gh = graceDate.getUTCHours();
+						var gdStr = (gd<10?'0'+gd:gd)+'/'+(gm<10?'0'+gm:gm)+'/'+gy;
+						var gtStr = (gh<10?'0'+gh:gh)+':00';
+
+						if (graceState === 'active') {
+							// Show green notice with "return by" hint, hide warning
+							var label = cdGraceReturnByLabel.replace('%s', '<strong>' + gdStr + ' ' + gtStr + '</strong>');
+							$graceBy.html(label).show();
+							$exceeded.removeClass('is-visible');
+						} else {
+							// graceState === 'exceeded': hide return-by hint, show amber warning
+							$graceBy.hide();
+							var excLabel = '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>';
+							jQuery('#cd-grace-exc-label').text(excLabel);
+							$exceeded.addClass('is-visible');
+						}
+					}
+				} else {
+					$graceBy.hide();
+					$exceeded.removeClass('is-visible');
+				}
+			}
+
+			/* ── Update KM notice ── */
+			var $kmNotice = jQuery('#cd-km-notice');
+			if (days) {
+				var totalKm = days * 200;
+				jQuery('#cd-km-total').text(totalKm);
+				jQuery('#cd-km-days').text(days);
+				$kmNotice.show();
+			} else {
+				$kmNotice.hide();
+			}
+
+			if (!days) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
+
+			var rate = cdGetRate(days);
+			if (!rate) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
+
+			// Description sentence (i18n via cdDesc* vars)
+			var _dw2 = days === 1 ? cdDescDayWord : cdDescDaysWord;
+			var _locId = jQuery('#place').val() || '';
+			var _locName = (_locId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_locId]) ? cdPlacesMap[_locId] : '';
+			var _diffReturn = jQuery('#cd-diff-return-chk').is(':checked');
+			var _retLocName = '';
+			if (_diffReturn) {
+				var _retLocId = jQuery('#returnplace_visible').val();
+				_retLocName = (_retLocId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_retLocId]) ? cdPlacesMap[_retLocId] : '';
+			}
+
+			var _desc = cdDescPrefix + ' <strong>' + days + '\u00A0' + _dw2 + '</strong>';
+			if (typeof cdCarName !== 'undefined' && cdCarName) { _desc += cdDescCarInfix + '<strong>' + cdCarName + '</strong>'; }
+
+			if (_diffReturn && _locName && _retLocName) {
+				_desc += ' ' + cdDescLocPickup + ' <strong>' + _locName + '</strong>'
+					+ ' ' + cdDescLocReturn + ' <strong>' + _retLocName + '</strong>';
+			} else if (_locName) {
+				_desc += cdDescLocInfix + '<strong>' + _locName + '</strong>';
+			}
+
+			_desc += '.';
+			jQuery('#cd-summary-desc').html(_desc);
+
+			var baseTotal = rate * days;
+			var dayWord = '<?php echo addslashes(Text::_("VRCSEARCHDAYS") ?: "дней"); ?>';
+			var rows = '<div class="cd-summary-row"><span><?php echo addslashes(Text::_("VRPRICE") ?: "Preț de bază"); ?></span>'
+				+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(rate) + ' &times; ' + days + ' ' + dayWord + '</span></div>';
+
+			var optTotal = 0;
+			for (var id in cdOptionals) {
+				var o = cdOptionals[id];
+				var qty = (o.hmany === 1) ? (o.qty || 0) : (o.checked ? 1 : 0);
+				if (!qty) continue;
+				var oc = o.perday ? o.cost * days * qty : o.cost * qty;
+				if (o.max > 0 && oc > o.max) oc = o.max;
+				optTotal += oc;
+				var name = jQuery('#cd-opt-row-' + id + ' .cd-optional-name').text();
+				var qtyLabel = (o.hmany === 1 && qty > 1) ? ' \u00d7 ' + qty : '';
+				rows += '<div class="cd-summary-row"><span>' + name + qtyLabel + '</span>'
+					+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oc) + '</span></div>';
+			}
+
+			var oohTotal = cdOohTotal();
+			if (oohTotal > 0) {
+				var oohLabel;
+				// Determine OOH label from active fees
+				for (var i = 0; i < cdOohFees.length; i++) {
+					var f = cdOohFees[i];
+					var pickSecs = cdGetHourSecs('vrccomselph');
+					var dropSecs = cdGetHourSecs('vrccomseldh');
+					var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
+					var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
+					if (pickOoh || dropOoh) {
+						var timeRange = ' (' + f.fromLabel + '\u2013' + f.toLabel + ')';
+						if (pickOoh && dropOoh) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESNINE') ?: "Получение и возврат"); ?>' + timeRange;
+						else if (pickOoh) oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFOUR') ?: "Только получение"); ?>' + timeRange;
+						else oohLabel = '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>' + timeRange;
+						break;
+					}
+				}
+				rows += '<div class="cd-summary-row"><span>' + (oohLabel || 'OOH') + '</span>'
+					+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oohTotal) + '</span></div>';
+			}
+
+			// Coupon discount row
+			var couponDiscount = 0;
+			if (window.vrcActiveCoupon) {
+				var _ac = window.vrcActiveCoupon;
+				var _subtotal = baseTotal + optTotal + oohTotal;
+				if (_ac.type === 1) {
+					couponDiscount = Math.round(_subtotal * parseFloat(_ac.value) / 100);
+				} else {
+					couponDiscount = Math.min(parseFloat(_ac.value), _subtotal);
+				}
+				if (couponDiscount > 0) {
+					rows += '<div class="cd-summary-row cd-summary-row-discount"><span>' + (_ac.label || 'Reducere') + '</span>'
+						+ '<span class="cd-summary-row-val cd-discount-val">\u2212' + cdCurrency + cdFmt(couponDiscount) + '</span></div>';
+				}
+			}
+
+			var total = baseTotal + optTotal + oohTotal - couponDiscount;
+			jQuery('#cd-summary-rows').html(rows);
+			jQuery('#cd-summary-total').text(cdCurrency + cdFmt(total));
+			$sum.addClass('is-visible');
+
+			cdHighlightTier(days);
+			cdCheckSavingsTip(days);
+		}
+
+		jQuery(function($) {
+			var _lp='', _lr='', _lph='', _ldh='';
+			function cdPoll() {
+				var p  = $('#pickupdate').val(),  r  = $('#releasedate').val();
+				var ph = $('#vrccomselph select').val() || '';
+				var dh = $('#vrccomseldh select').val() || '';
+				if (p!==_lp || r!==_lr || ph!==_lph || dh!==_ldh) {
+					_lp=p; _lr=r; _lph=ph; _ldh=dh;
+					cdUpdateSummary();
+					cdCheckOoh();
+				}
+			}
+			setInterval(cdPoll, 300);
+
+			$(document.body).on('change', '#vrccomselph select, #vrccomseldh select', function() {
+				setTimeout(cdCheckOoh, 50);
+				setTimeout(cdUpdateSummary, 50);
+			});
+
+			$(document.body).on('click', '.vrc-cdetails-cal-pickday', function() {
+				setTimeout(cdUpdateSummary, 400);
+			});
+		});
+		</script>
+
+		<script type="text/javascript">
+		function vrcCleanNumber(snum) { if (snum.length > 1 && snum.substr(0,1) == '0') { return parseInt(snum.substr(1)); } return parseInt(snum); }
+
+		/* Convert date string + hour → unix timestamp (seconds) */
+		function vrcDateToUnixTs(dateStr, hour) {
+			if (!dateStr) return 0;
+			var p = dateStr.split('/');
+			var y, m, d;
+			<?php if ($df === 'd/m/Y'): ?>
+			d = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; y = parseInt(p[2], 10);
+			<?php elseif ($df === 'm/d/Y'): ?>
+			m = parseInt(p[0], 10) - 1; d = parseInt(p[1], 10); y = parseInt(p[2], 10);
+			<?php else: ?>
+			y = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; d = parseInt(p[2], 10);
+			<?php endif; ?>
+			return Math.floor(Date.UTC(y, m, d, parseInt(hour, 10) || 0, 0, 0) / 1000);
+		}
+
+		function vrcValidateSearch() {
+			var pickDate = jQuery('#pickupdate').val();
+			var relDate  = jQuery('#releasedate').val();
+			if (!pickDate || !relDate) {
+				return false;
+			}
+
+			var pickH = parseInt(jQuery('#vrccomselph select').val(), 10) || 0;
+			var relH  = parseInt(jQuery('#vrccomseldh select').val(), 10) || 0;
+
+			var pickTs = vrcDateToUnixTs(pickDate, pickH);
+			var relTs  = vrcDateToUnixTs(relDate, relH);
+
+			if (!pickTs || !relTs || relTs <= pickTs) {
+				return false;
+			}
+
+			var days = Math.round((relTs - pickTs) / 86400);
+			jQuery('#vrc-pickup').val(pickTs);
+			jQuery('#vrc-release').val(relTs);
+			jQuery('#vrc-days').val(days);
+
+			return true;
+		}
+		jQuery(document).ready(function() {
+		<?php if (!empty($ppickup)): ?>
+			jQuery("#pickupdate").datepicker("setDate", new Date(<?php echo date('Y', $ppickup); ?>, <?php echo ((int)date('n', $ppickup) - 1); ?>, <?php echo date('j', $ppickup); ?>));
+			jQuery(".ui-datepicker-current-day").click();
+		<?php endif; ?>
+		<?php
+		$pday = VikRequest::getInt('dt', '', 'request');
+		$viewingdayts = !empty($pday) && $pday >= $nowts ? $pday : $nowts;
+		if (!empty($viewingdayts) && !empty($pday) && $viewingdayts >= $nowts) {
+			if (!count($push_disabled_in) || !in_array('"' . date('Y-m-d', $viewingdayts) . '"', $push_disabled_in)) { ?>
+			jQuery("#pickupdate").datepicker("setDate", new Date(<?php echo date('Y', $viewingdayts); ?>, <?php echo ((int)date('n', $viewingdayts) - 1); ?>, <?php echo date('j', $viewingdayts); ?>));
+			<?php } ?>
+			if (jQuery("#vrc-bookingpart-init").length) { jQuery('html,body').animate({ scrollTop: (jQuery("#vrc-bookingpart-init").offset().top - 5) }, { duration: 'slow' }); }
+		<?php } ?>
+			jQuery(document.body).on('click', '.vrc-cdetails-cal-pickday', function() {
+				if (!jQuery("#pickupdate").length) return;
+				var tdday = jQuery(this).attr('data-daydate');
+				if (!tdday || !tdday.length) return;
+				jQuery('#pickupdate').datepicker('setDate', tdday);
+				if (jQuery("#vrc-bookingpart-init").length) {
+					jQuery('html,body').animate({ scrollTop: (jQuery('#vrc-bookingpart-init').offset().top - 5) }, 600, function() {
+						if (typeof vrcSetMinDropoffDate !== "undefined") vrcSetMinDropoffDate();
+						if (typeof vrcLocationWopening !== "undefined") vrcLocationWopening('pickup');
+						jQuery('#releasedate').focus();
+					});
+				}
+			});
+			// Default pickup: find the first available date (and a valid dropoff after it)
+			(function() {
+				if (!jQuery('#pickupdate').val()) {
+					var minAdvance  = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
+					var minLos      = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
+					var maxLookAhead = 365; // never scan more than a year ahead
+
+					function isPickupAvailable(date) {
+						var validator = (typeof vrcIsDayDisabled !== 'undefined')
+							? vrcIsDayDisabled
+							: (typeof vrcIsDayFullIn !== 'undefined' ? vrcIsDayFullIn : null);
+						if (!validator) return true;
+						try {
+							var result = validator(date);
+							return !!(result && result[0]);
+						} catch(e) { return true; }
+					}
+
+					function isDropoffAvailable(date) {
+						var validator = (typeof vrcIsDayDisabledDropoff !== 'undefined')
+							? vrcIsDayDisabledDropoff
+							: (typeof vrcIsDayFullOut !== 'undefined' ? vrcIsDayFullOut : null);
+						if (!validator) return true;
+						try {
+							var result = validator(date);
+							return !!(result && result[0]);
+						} catch(e) { return true; }
+					}
+
+					function findNearestAvailableDates() {
+						var candidate = new Date();
+						candidate.setHours(0, 0, 0, 0);
+						candidate.setDate(candidate.getDate() + minAdvance);
+
+						for (var i = 0; i < maxLookAhead; i++) {
+							if (isPickupAvailable(candidate)) {
+								var dropCandidate = new Date(candidate.getTime());
+								dropCandidate.setDate(dropCandidate.getDate() + minLos);
+
+								for (var j = 0; j < 30; j++) {
+									if (isDropoffAvailable(dropCandidate)) {
+										return { pickup: candidate, dropoff: dropCandidate };
+									}
+									dropCandidate.setDate(dropCandidate.getDate() + 1);
+								}
+							}
+							candidate.setDate(candidate.getDate() + 1);
+						}
+						return null;
+					}
+
+					var dates = findNearestAvailableDates();
+					if (dates) {
+						jQuery('#pickupdate').datepicker('setDate', dates.pickup);
+						jQuery('#releasedate').datepicker('setDate', dates.dropoff);
+						if (typeof vrcSetMinDropoffDate !== 'undefined') { vrcSetMinDropoffDate(); }
+					}
+					setTimeout(cdUpdateSummary, 200);
+				}
+				jQuery('#vrccomselph select').val(12).trigger('chosen:updated');
+				jQuery('#vrccomseldh select').val(12).trigger('chosen:updated');
+			})();
+		});
+		</script>
+
+	<?php
+	} else {
+		echo '<div class="cd-disabled-rent">' . VikRentCar::getDisabledRentMsg() . '</div>';
+	}
+	?>
+
+
 </div><!-- /.cd-booking-card -->
 
 
