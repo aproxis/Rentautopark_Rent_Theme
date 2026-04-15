@@ -1341,3 +1341,15 @@ body.vrc-modal-open {
   .v3-pr-total { border-top-color: rgba(255,255,255,.1); }
   .v3-ti { color: #9ca3af; }
 }
+
+/* Datepicker text inputs — must remain type=text for jQuery UI, but hidden visually */
+.vrc-dp-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}

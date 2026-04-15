@@ -666,9 +666,12 @@ try {
 		<input type="hidden" name="Itemid" value="<?php echo $pitemid; ?>"/>
 		<?php endif; ?>
 
-		<!-- Hidden jQuery UI datepicker inputs (still initialized, used for backend validation) -->
-		<input type="hidden" name="pickupdate"  id="pickupdate"  autocomplete="off" readonly/>
-		<input type="hidden" name="releasedate" id="releasedate" autocomplete="off" readonly/>
+		<!-- Must be type="text" for jQuery UI datepicker to initialize -->
+		<!-- Visually hidden via CSS .vrc-dp-hidden -->
+		<input type="text" name="pickupdate"  id="pickupdate"  autocomplete="off" readonly
+			class="vrc-dp-hidden" aria-hidden="true" tabindex="-1"/>
+		<input type="text" name="releasedate" id="releasedate" autocomplete="off" readonly
+			class="vrc-dp-hidden" aria-hidden="true" tabindex="-1"/>
 
 		<?php if (!strlen($forced_pickup)): ?>
 		<!-- Pickup time select (existing #vrccomselph — kept for JS hooks) -->
@@ -1073,19 +1076,29 @@ try {
 		}
 
 		function v3SyncToJQ(){
-		// Write to hidden jQuery UI datepicker inputs then fire onSelect callbacks
-		if(v3StartDate){
-			jQuery('#pickupdate').datepicker('setDate', v3StartDate);
-			jQuery('#pickupdate').trigger('change');
-		}
-		if(v3EndDate){
-			jQuery('#releasedate').datepicker('setDate', v3EndDate);
-			jQuery('#releasedate').trigger('change');
-		}
-		if(typeof vrcSetMinDropoffDate !== 'undefined') vrcSetMinDropoffDate();
-		if(typeof vrcLocationWopening !== 'undefined') vrcLocationWopening('pickup');
-		setTimeout(cdUpdateSummary, 100);
-		setTimeout(cdCheckOoh, 100);
+			/* Format date string to match vrcdateformat (d/m/Y, m/d/Y, or Y-m-d) */
+			function fmtDate(d){
+				if(!d) return '';
+				var dd=(d.getDate()<10?'0':'')+d.getDate();
+				var mm=((d.getMonth()+1)<10?'0':'')+(d.getMonth()+1);
+				var yyyy=d.getFullYear();
+				var fmt=(typeof vrcdateformat!=='undefined')?vrcdateformat:'dmY';
+				if(fmt==='dmY') return dd+'/'+mm+'/'+yyyy;
+				if(fmt==='mdY') return mm+'/'+dd+'/'+yyyy;
+				return yyyy+'-'+mm+'-'+dd;
+			}
+			if(v3StartDate){
+				jQuery('#pickupdate').val(fmtDate(v3StartDate)).trigger('change');
+				try{ jQuery('#pickupdate').datepicker('setDate', v3StartDate); }catch(e){}
+			}
+			if(v3EndDate){
+				jQuery('#releasedate').val(fmtDate(v3EndDate)).trigger('change');
+				try{ jQuery('#releasedate').datepicker('setDate', v3EndDate); }catch(e){}
+			}
+			if(typeof vrcSetMinDropoffDate!=='undefined') vrcSetMinDropoffDate();
+			if(typeof vrcLocationWopening!=='undefined') vrcLocationWopening('pickup');
+			setTimeout(cdUpdateSummary, 100);
+			setTimeout(cdCheckOoh, 100);
 		}
 
 		function v3UpdateStrip(){
