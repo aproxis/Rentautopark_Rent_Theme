@@ -1189,8 +1189,26 @@ try {
 		};
 
 
-        jQuery(document).ready(function(){
+                jQuery(document).ready(function(){
+            // Find first available dates
+            var minAdv = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
+            var minLos = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
+            var cand = new Date(v3Today); cand.setDate(cand.getDate()+minAdv);
+            for(var i=0;i<365;i++){
+                if(!v3IsDisabledIn(cand)){
+                    var drop = new Date(cand); drop.setDate(drop.getDate()+minLos);
+                    for(var j=0;j<30;j++){
+                        if(!v3IsDisabledOut(drop)){ v3StartDate=new Date(cand); v3EndDate=new Date(drop); break; }
+                        drop.setDate(drop.getDate()+1);
+                    }
+                    if(v3StartDate) break;
+                }
+                cand.setDate(cand.getDate()+1);
+            }
+            // Render calendar and wire nav buttons
             v3RenderCal();
+            v3UpdateStrip();
+            if(v3StartDate && v3EndDate) setTimeout(v3SyncToJQ, 300);
             var prev = document.getElementById('v3-prev-m');
             var next = document.getElementById('v3-next-m');
             if(prev){
@@ -1204,26 +1222,6 @@ try {
                 });
             }
         });
-
-		// Default dates: find first available
-		(function(){
-		var minAdv = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
-		var minLos = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
-		var cand = new Date(v3Today); cand.setDate(cand.getDate()+minAdv);
-		for(var i=0;i<365;i++){
-			if(!v3IsDisabledIn(cand)){
-			var drop = new Date(cand); drop.setDate(drop.getDate()+minLos);
-			for(var j=0;j<30;j++){
-				if(!v3IsDisabledOut(drop)){ v3StartDate=new Date(cand); v3EndDate=new Date(drop); break; }
-				drop.setDate(drop.getDate()+1);
-			}
-			if(v3StartDate) break;
-			}
-			cand.setDate(cand.getDate()+1);
-		}
-		v3RenderCal(); v3UpdateStrip();
-		if(v3StartDate && v3EndDate) setTimeout(v3SyncToJQ, 300);
-		})();
 
 		// Hook: also update grace bar when time changes
 		jQuery(document).on('change','#vrccomseldh select',function(){ v3UpdateGraceBar(); });
