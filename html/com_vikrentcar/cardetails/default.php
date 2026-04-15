@@ -1745,8 +1745,8 @@ try {
 
 					var dates = findNearestAvailableDates();
 					if (dates) {
-						jQuery('#pickupdate').datepicker('setDate', dates.pickup);
-						jQuery('#releasedate').datepicker('setDate', dates.dropoff);
+						try{ jQuery('#pickupdate').datepicker('setDate', dates.pickup); }catch(e){}
+						try{ jQuery('#releasedate').datepicker('setDate', dates.dropoff); }catch(e){}
 						if (typeof vrcSetMinDropoffDate !== 'undefined') { vrcSetMinDropoffDate(); }
 					}
 					setTimeout(cdUpdateSummary, 200);
