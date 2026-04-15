@@ -1189,21 +1189,27 @@ try {
 		};
 
 		// Init cal nav
-		(function initCalNav(){
-			var prev = document.getElementById('v3-prev-m');
-			var next = document.getElementById('v3-next-m');
-			if(prev && next){
-				prev.addEventListener('click', function(){
-					v3ViewMonth--; if(v3ViewMonth<0){v3ViewMonth=11;v3ViewYear--;} v3RenderCal();
-				});
-				next.addEventListener('click', function(){
-					v3ViewMonth++; if(v3ViewMonth>11){v3ViewMonth=0;v3ViewYear++;} v3RenderCal();
-				});
-			} else {
-				// DOM not ready yet, defer
-				document.addEventListener('DOMContentLoaded', initCalNav);
+		function v3InitCalendar(){
+			var title = document.getElementById('v3-cal-title');
+			if(!title){
+				document.addEventListener('DOMContentLoaded', v3InitCalendar);
+				return;
 			}
-		})();
+			v3RenderCal();
+			(function initCalNav(){
+				var prev = document.getElementById('v3-prev-m');
+				var next = document.getElementById('v3-next-m');
+				if(prev && next){
+					prev.addEventListener('click', function(){
+						v3ViewMonth--; if(v3ViewMonth<0){v3ViewMonth=11;v3ViewYear--;} v3RenderCal();
+					});
+					next.addEventListener('click', function(){
+						v3ViewMonth++; if(v3ViewMonth>11){v3ViewMonth=0;v3ViewYear++;} v3RenderCal();
+					});
+				}
+			})();
+		}
+		v3InitCalendar();
 
 		// Default dates: find first available
 		(function(){
