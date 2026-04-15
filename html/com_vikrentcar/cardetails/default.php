@@ -1188,9 +1188,22 @@ try {
 		document.getElementById('v3-pay-'+(mode==='full'?'full':'reserve')).classList.add('v3-pay-sel');
 		};
 
-		// Init
-		document.getElementById('v3-prev-m').addEventListener('click',function(){ v3ViewMonth--; if(v3ViewMonth<0){v3ViewMonth=11;v3ViewYear--;} v3RenderCal(); });
-		document.getElementById('v3-next-m').addEventListener('click',function(){ v3ViewMonth++; if(v3ViewMonth>11){v3ViewMonth=0;v3ViewYear++;} v3RenderCal(); });
+		// Init cal nav
+		(function initCalNav(){
+			var prev = document.getElementById('v3-prev-m');
+			var next = document.getElementById('v3-next-m');
+			if(prev && next){
+				prev.addEventListener('click', function(){
+					v3ViewMonth--; if(v3ViewMonth<0){v3ViewMonth=11;v3ViewYear--;} v3RenderCal();
+				});
+				next.addEventListener('click', function(){
+					v3ViewMonth++; if(v3ViewMonth>11){v3ViewMonth=0;v3ViewYear++;} v3RenderCal();
+				});
+			} else {
+				// DOM not ready yet, defer
+				document.addEventListener('DOMContentLoaded', initCalNav);
+			}
+		})();
 
 		// Default dates: find first available
 		(function(){
