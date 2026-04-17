@@ -1472,8 +1472,8 @@ jQuery(function(){
 		var totalMs = returnTs - pickupTs;
 		var exactDays = totalMs / 86400000;
 		
-		var billingDays = Math.ceil(exactDays);
-		var graceWindowStart = pickupTs.getTime() + (billingDays * 86400000);
+		var floorDays = Math.floor(exactDays);
+		var graceWindowStart = pickupTs.getTime() + (floorDays * 86400000);
 		var graceWindowEnd   = graceWindowStart + (<?php echo $graceHours; ?> * 3600000);
 		
 		var deadlineDate = new Date(graceWindowEnd);
@@ -1484,14 +1484,23 @@ jQuery(function(){
 		var barColor = '#1D9E75';
 		var graceExceeded = false;
 
-		var elapsedHours = (returnTs.getTime() - graceWindowStart) / 3600000;
+		// Calculate elapsed hours since grace window start
+		var elapsedHours;
+		if (floorDays === 0) {
+			// Sub-day rental: within first billing period
+			elapsedHours = 0;
+		} else {
+			// Multi-day: measure from end of billing period
+			elapsedHours = (returnTs.getTime() - graceWindowStart) / 3600000;
+		}
 
+		// Determine progress and state
 		if (elapsedHours > <?php echo $graceHours; ?>) {
 			progressPct = 100;
 			barColor = '#E24B4A';
 			graceExceeded = true;
 		} else {
-			progressPct = Math.min(100, (elapsedHours / <?php echo $graceHours; ?>) * 100);
+			progressPct = Math.max(5, Math.min(100, (elapsedHours / <?php echo $graceHours; ?>) * 100));
 			graceExceeded = false;
 		}
 
