@@ -77,7 +77,7 @@
 }
 .ar-lang .dropdown-toggle:hover { border-color: #d1d5db; background: #e5e7eb; }
 .ar-lang .dropdown-toggle img { width: 18px; height: 14px; object-fit: cover; border-radius: 2px; }
-.ar-lang .dropdown-toggle .fa-caret-down { font-size: 10px; color: #9ca3af; margin-left: 2px; }
+.ar-lang .dropdown-toggle .fa-caret-down { display: none; font-size: 10px; color: #9ca3af; margin-left: 2px; }
 .ar-lang .dropdown-menu {
 	position: absolute; top: calc(100% + 6px); right: 5px; left: auto;
 	min-width: 60px; background: #fff; border: 1.5px solid #e5e7eb;
