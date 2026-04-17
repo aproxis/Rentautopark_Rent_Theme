@@ -1212,7 +1212,7 @@ jQuery(function(){
 		</div>
 
 		<!-- ═══ SECTION: Price Breakdown ═══ -->
-		<div class="v3-section" id="cd-summary" style="display:none;">
+		<div class="v3-section" id="cd-summary">
 		<div class="v3-section-label"><?php echo Text::_('VRPRICE') ?: 'Price breakdown'; ?></div>
 		<!-- Description sentence (existing logic) -->
 		<div class="cd-summary-desc v3-summary-desc" id="cd-summary-desc"></div>

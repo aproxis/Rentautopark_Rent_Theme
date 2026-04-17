@@ -4,6 +4,10 @@
 
 .cd-price-block { display: none !important; }
 
+/* ── Price summary section ─────────────────────────────────────── */
+#cd-summary { display: none; }
+#cd-summary.is-visible { display: block; }
+
 /* ── Price tiers strip ─────────────────────────────────────────── */
 .cd-price-tiers {
 	margin-bottom: 10px;
