@@ -221,9 +221,9 @@ try {
 							   hreflang="<?php echo htmlspecialchars($_ml['tag']); ?>"
 							   data-lang-name="<?php echo htmlspecialchars($_ml['name']); ?>">
 								<?php if (!empty($_ml['image'])): ?>
-								<img src="<?php echo $_base; ?>/media/mod_languages/images/<?php echo htmlspecialchars($_ml['image']); ?>.gif"
+								<!-- <img src="<?php echo $_base; ?>/media/mod_languages/images/<?php echo htmlspecialchars($_ml['image']); ?>.gif"
 								     alt="<?php echo htmlspecialchars($_ml['name']); ?>"
-								     width="20" height="15" loading="lazy" />
+								     width="20" height="15" loading="lazy" /> -->
 								<?php endif; ?>
 								<span><?php echo htmlspecialchars($_ml['name']); ?></span>
 							</a>
