@@ -134,6 +134,13 @@ try {
 			     Its <a href="..."> links are used by JS to populate the mobile globe dropdown -->
 			<?php if ($this->countModules('languageswitcherload')): ?>
 			<div class="ar-lang">
+				<svg class="ar-lang-globe" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true" focusable="false"
+					style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-right:4px;">
+					<circle cx="12" cy="12" r="10"/>
+					<line x1="2" y1="12" x2="22" y2="12"/>
+					<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+				</svg>
 				<jdoc:include type="modules" name="<?php $this->_p('languageswitcherload'); ?>" style="raw" />
 			</div>
 			<?php else: ?>
