@@ -1175,24 +1175,49 @@ try {
 		function v3UpdateGraceBar(){
 		<?php if ($hasGracePeriod): ?>
 		var gb = document.getElementById('v3-grace-bar');
-		if(!gb || !v3EndDate) return;
+		if(!gb || !v3EndDate || !v3StartDate) return;
 		gb.style.display = 'block';
-		var rt = parseInt(jQuery('#vrccomseldh select').val()) || 12;
-		var graceMs = <?php echo $graceHours; ?> * 3600000;
-		var deadlineH = rt + <?php echo $graceHours; ?>;
-		var dh = deadlineH>23 ? deadlineH-24 : deadlineH;
+		
+		var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 12;
+		var dropHour = parseInt(jQuery('#vrccomseldh select').val()) || 12;
+		
+		var pickupTs = new Date(v3StartDate); 
+		pickupTs.setHours(pickHour, 0, 0, 0);
+		
+		var returnTs = new Date(v3EndDate);
+		returnTs.setHours(dropHour, 0, 0, 0);
+		
+		var totalMs = returnTs - pickupTs;
+		var exactDays = totalMs / 86400000;
+		
+		var billingDays = Math.ceil(exactDays);
+		var graceWindowStart = pickupTs.getTime() + ((billingDays - 1) * 86400000);
+		var graceWindowEnd   = graceWindowStart + (<?php echo $graceHours; ?> * 3600000);
+		
+		var deadlineDate = new Date(graceWindowEnd);
+		var dh = deadlineDate.getHours();
 		var dhStr = (dh<10?'0':'')+dh+':00';
-		var graceStart = new Date(v3EndDate); graceStart.setHours(rt,0,0,0);
+		
+		var progressPct = 100;
 		var now = new Date();
-		var elapsed = now - graceStart;
-		var pct = Math.max(0, Math.min(100, 100-(elapsed/graceMs*100)));
+		
+		if (returnTs.getTime() > graceWindowEnd) {
+			progressPct = 0;
+		} else if (returnTs.getTime() > graceWindowStart) {
+			progressPct = 100 - (((returnTs.getTime() - graceWindowStart) / (<?php echo $graceHours; ?> * 3600000)) * 100);
+		}
+		
 		var fill = document.getElementById('v3-grace-fill');
 		if(fill){
-			fill.style.width = pct+'%';
-			fill.style.background = elapsed>graceMs ? '#E24B4A' : '#1D9E75';
+			fill.style.width = Math.max(0, progressPct)+'%';
+			fill.style.background = returnTs.getTime() > graceWindowEnd ? '#E24B4A' : '#1D9E75';
 		}
+		
 		var hint = document.getElementById('cd-grace-returnby');
-		if(hint){ hint.textContent = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s to avoid extra day"); ?>'.replace('%s', dhStr); hint.style.display='block'; }
+		if(hint){ 
+			hint.innerHTML = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s at no extra charge"); ?>'.replace('%s', '<strong>'+dhStr+'</strong>'); 
+			hint.style.display='block'; 
+		}
 		<?php endif; ?>
 		}
 
