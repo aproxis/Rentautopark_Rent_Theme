@@ -742,6 +742,29 @@ try {
 		</div>
 
 		<!-- ═══ SECTION: Times ═══ -->
+		<?php
+		// Build hours-only select (minutes will be hidden input = 0)
+		$hours = "";
+		$pickhdeftime = isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['defaulttime']) ? ((int)$places[$indvrcplace]['defaulttime'] / 3600) : 12;
+		if (!($i < $j)) {
+			while (intval($i) != (int)$j) {
+				$sayi = $i < 10 ? "0".$i : $i;
+				if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
+				$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
+				$i++; $i = $i > 23 ? 0 : $i;
+			}
+			$sayi = $i < 10 ? "0".$i : $i;
+			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
+			$hours .= "<option value=\"".(int)$i."\">".$sayh."</option>\n";
+		} else {
+			while ($i <= $j) {
+				$sayi = $i < 10 ? "0".$i : $i;
+				if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
+				$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
+				$i++;
+			}
+		}
+		?>
 		<?php if (!strlen($forced_pickup) || !strlen($forced_dropoff)): ?>
 		<div class="v3-section v3-section-times">
 		<?php if (!strlen($forced_pickup)): ?>
