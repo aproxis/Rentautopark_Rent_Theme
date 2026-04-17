@@ -1201,11 +1201,11 @@ try {
 		var progressPct = 100;
 		var now = new Date();
 		
-		if (returnTs.getTime() > graceWindowEnd) {
-			progressPct = 0;
-		} else if (returnTs.getTime() === graceWindowStart) {
-			// Pickup and return same hour - grace is fully available
+		if (returnTs.getTime() === graceWindowStart) {
+			// Pickup and return same hour - grace is 100% full available
 			progressPct = 100;
+		} else if (returnTs.getTime() > graceWindowEnd) {
+			progressPct = 0;
 		} else if (returnTs.getTime() > graceWindowStart) {
 			progressPct = 100 - (((returnTs.getTime() - graceWindowStart) / (<?php echo $graceHours; ?> * 3600000)) * 100);
 		}
