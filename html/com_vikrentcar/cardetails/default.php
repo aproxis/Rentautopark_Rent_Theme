@@ -1198,22 +1198,23 @@ try {
 		var dh = deadlineDate.getHours();
 		var dhStr = (dh<10?'0':'')+dh+':00';
 		
-		var progressPct = 100;
-		var now = new Date();
+		var progressPct = 5;
+		var isExceeded = false;
 		
-		if (returnTs.getTime() === graceWindowStart) {
-			// Pickup and return same hour - grace is 100% full available
+		if (returnTs.getTime() > graceWindowEnd) {
 			progressPct = 100;
-		} else if (returnTs.getTime() > graceWindowEnd) {
-			progressPct = 0;
+			isExceeded = true;
 		} else if (returnTs.getTime() > graceWindowStart) {
-			progressPct = 100 - (((returnTs.getTime() - graceWindowStart) / (<?php echo $graceHours; ?> * 3600000)) * 100);
+			progressPct = ((returnTs.getTime() - graceWindowStart) / (<?php echo $graceHours; ?> * 3600000)) * 100;
 		}
+		
+		// Always show at least 5% to indicate bar is active
+		if (progressPct < 5) progressPct = 5;
 		
 		var fill = document.getElementById('v3-grace-fill');
 		if(fill){
-			fill.style.width = Math.max(0, progressPct)+'%';
-			fill.style.background = returnTs.getTime() > graceWindowEnd ? '#E24B4A' : '#1D9E75';
+			fill.style.width = progressPct+'%';
+			fill.style.background = isExceeded ? '#E24B4A' : '#1D9E75';
 		}
 		
 		var hint = document.getElementById('cd-grace-returnby');
