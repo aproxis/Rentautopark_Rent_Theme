@@ -1079,7 +1079,7 @@ jQuery(function(){
 		</div>
 		<?php endif; ?>
 
-		<!-- Grace period progress bar -->
+		<!-- Grace period progress bar + time-related notices -->
 		<?php if ($hasGracePeriod): ?>
 		<div class="v3-grace-bar" id="v3-grace-bar">
 		<div class="v3-grace-top">
@@ -1103,12 +1103,9 @@ jQuery(function(){
 			</span>
 		</div>
 		<div class="v3-grace-track"><div class="v3-grace-fill" id="v3-grace-fill"></div></div>
+		<!-- "Return by HH:MM at no extra charge" -->
 		<span class="v3-grace-hint cd-grace-returnby" id="cd-grace-returnby" style="display:none;"></span>
-		</div>
-		<?php endif; ?>
-
-		<!-- Grace exceeded warning (shown by JS when overage > grace window) -->
-		<?php if ($hasGracePeriod): ?>
+		<!-- "One extra day will be charged" — right below return-by line -->
 		<div class="cd-grace-exceeded" id="cd-grace-exceeded" style="display:none;">
 			<svg class="cd-grace-exc-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 			     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -1123,14 +1120,22 @@ jQuery(function(){
 				); ?></span>
 			</div>
 		</div>
-		<?php endif; ?>
-
-		<!-- OOH warning -->
+		<!-- OOH / late-pickup notice — same visual group as grace messages -->
 		<?php if (!empty($oohFees)): ?>
 		<div class="v3-offhours-banner" id="cd-ooh-warning" style="display:none;">
 		<span class="v3-ooh-dot"></span>
 		<span id="cd-ooh-text"></span>
 		</div>
+		<?php endif; ?>
+		</div>
+		<?php else: ?>
+		<!-- OOH warning standalone (no grace period configured) -->
+		<?php if (!empty($oohFees)): ?>
+		<div class="v3-offhours-banner" id="cd-ooh-warning" style="display:none;">
+		<span class="v3-ooh-dot"></span>
+		<span id="cd-ooh-text"></span>
+		</div>
+		<?php endif; ?>
 		<?php endif; ?>
 
 		<!-- ═══ SECTION: Location ═══ -->
@@ -1409,12 +1414,32 @@ jQuery(function(){
 		}
 		}
 
+		// Cap the chosen end date to the last available day before any fully-booked gap
+		function v3CapEndDate(start, end) {
+			var cursor = new Date(start);
+			cursor.setDate(cursor.getDate() + 1); // begin scan day after pickup
+			while (cursor < end) {
+				if (v3IsDisabledIn(cursor)) {
+					// Found a fully-booked day inside the range — cap to day before it
+					var capped = new Date(cursor);
+					capped.setDate(capped.getDate() - 1);
+					return capped > start ? capped : null; // null = no valid range possible
+				}
+				cursor.setDate(cursor.getDate() + 1);
+			}
+			return end; // range is clean
+		}
+
 		function v3PickDay(date){
 		if(!v3StartDate || v3Selecting===false){
 			v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true;
 		} else {
 			if(date<=v3StartDate){ v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true; }
-			else { v3EndDate=new Date(date); v3Selecting=false; v3SyncToJQ(); }
+			else {
+				var capped = v3CapEndDate(v3StartDate, date);
+				if(capped){ v3EndDate=capped; v3Selecting=false; v3SyncToJQ(); }
+				else { v3StartDate=new Date(date); v3EndDate=null; } // blocked right after pickup — restart
+			}
 		}
 		v3RenderCal(); v3UpdateStrip();
 		}
@@ -1614,8 +1639,8 @@ jQuery(function(){
             }
         });
 
-		// Hook: also update grace bar when time changes
-		jQuery(document).on('change','#vrccomseldh select',function(){ v3UpdateGraceBar(); });
+		// Hook: update grace bar when either pickup OR dropoff time changes
+		jQuery(document).on('change','#vrccomselph select, #vrccomseldh select',function(){ v3UpdateGraceBar(); });
 	})();
 	</script>
 
