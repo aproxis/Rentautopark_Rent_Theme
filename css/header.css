@@ -78,8 +78,8 @@
 .ar-lang .dropdown-toggle img { width: 18px; height: 14px; object-fit: cover; border-radius: 2px; }
 .ar-lang .dropdown-toggle .fa-caret-down { font-size: 10px; color: #9ca3af; margin-left: 2px; }
 .ar-lang .dropdown-menu {
-	position: absolute; top: calc(100% + 6px); right: 0; left: auto;
-	min-width: 140px; background: #fff; border: 1.5px solid #e5e7eb;
+	position: absolute; top: calc(100% + 6px); right: 5px; left: auto;
+	min-width: 60px; background: #fff; border: 1.5px solid #e5e7eb;
 	border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.1);
 	padding: 6px; margin: 0; z-index: 1050; list-style: none; display: none;
 }
@@ -251,4 +251,15 @@
 
 footer em {
     color: #FE5001;
+}
+
+/* Hide the default flag icon from mod_languages, keep caret */
+.ar-lang .fa-flag {
+    display: none;
+}
+
+/* Align globe with the dropdown toggle */
+.ar-lang {
+    display: flex;
+    align-items: center;
 }
