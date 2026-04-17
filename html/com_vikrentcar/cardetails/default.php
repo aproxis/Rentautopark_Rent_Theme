@@ -1316,6 +1316,9 @@ jQuery(function(){
 
 	</form>
 
+	<!-- Load extracted car details functions (synchronous, must run before v3 Calendar JS Bridge) -->
+	<script type="text/javascript" src="<?php echo JURI::root(true); ?>/templates/rent/js/cardetails-v3.js"></script>
+
 	<!-- v3 Calendar JS Bridge — connects inline calendar to jQuery UI datepicker validation -->
 	<script type="text/javascript">
 	(function(){
@@ -1704,12 +1707,6 @@ jQuery(function(){
 		};
 		var cdLabelBasePrice = '<?php echo addslashes(Text::_("VRPRICE") ?: "Preț de bază"); ?>';
 		var cdTermsAlert = '<?php echo addslashes(Text::_('VRFILLALL')); ?>';
-		</script>
-
-	<!-- Load extracted car details functions (before code that uses them) -->
-	<script type="text/javascript" src="<?php echo JURI::root(true); ?>/templates/rent/js/cardetails-v3.js" defer></script>
-
-		<script type="text/javascript">
 		</script>
 
 		<script type="text/javascript">
