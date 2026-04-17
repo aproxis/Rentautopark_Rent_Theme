@@ -1552,34 +1552,14 @@ try {
 				var $exceeded = jQuery('#cd-grace-exceeded');
 				var graceState = (typeof window.cdGraceState !== 'undefined') ? window.cdGraceState : 'none';
 
-				if (days && graceState !== 'none') {
-					// Compute grace deadline: pickup + days×24h + graceHours
-					var pickStr  = jQuery('#pickupdate').val();
-					var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
-					var pickTs   = vrcDateToUnixTs(pickStr, pickHour);
-					if (pickTs > 0) {
-						var graceEndTs = pickTs + (days * 86400) + (cdGraceHours * 3600);
-						var graceDate  = new Date(graceEndTs * 1000);
-						var gd = graceDate.getUTCDate(), gm = graceDate.getUTCMonth()+1, gy = graceDate.getUTCFullYear();
-						var gh = graceDate.getUTCHours();
-						var gdStr = (gd<10?'0'+gd:gd)+'/'+(gm<10?'0'+gm:gm)+'/'+gy;
-						var gtStr = (gh<10?'0'+gh:gh)+':00';
-
-						if (graceState === 'active') {
-							// Show green notice with "return by" hint, hide warning
-							var label = cdGraceReturnByLabel.replace('%s', '<strong>' + gdStr + ' ' + gtStr + '</strong>');
-							$graceBy.html(label).show();
-							$exceeded.removeClass('is-visible');
-						} else {
-							// graceState === 'exceeded': hide return-by hint, show amber warning
-							$graceBy.hide();
-							var excLabel = '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>';
-							jQuery('#cd-grace-exc-label').text(excLabel);
-							$exceeded.addClass('is-visible');
-						}
-					}
+				// Grace bar is visible and managed by v3UpdateGraceBar()
+				// This section only manages the grace exceeded warning
+				if (days && graceState === 'exceeded') {
+					// graceState === 'exceeded': show amber warning
+					var excLabel = '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>';
+					jQuery('#cd-grace-exc-label').text(excLabel);
+					$exceeded.addClass('is-visible');
 				} else {
-					$graceBy.hide();
 					$exceeded.removeClass('is-visible');
 				}
 			}
