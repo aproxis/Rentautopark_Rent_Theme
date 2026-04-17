@@ -1706,8 +1706,8 @@ jQuery(function(){
 		var cdTermsAlert = '<?php echo addslashes(Text::_('VRFILLALL')); ?>';
 		</script>
 
-		<!-- Load extracted car details functions -->
-		<script type="text/javascript" src="<?php echo JURI::root(true); ?>/templates/rent/js/cardetails-v3.js"></script>
+	<!-- Load extracted car details functions (before code that uses them) -->
+	<script type="text/javascript" src="<?php echo JURI::root(true); ?>/templates/rent/js/cardetails-v3.js" defer></script>
 
 		<script type="text/javascript">
 		</script>
