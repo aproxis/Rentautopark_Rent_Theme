@@ -1199,22 +1199,21 @@ try {
 		var dhStr = (dh<10?'0':'')+dh+':00';
 		
 		var progressPct = 5;
-		var isExceeded = false;
-		
-		if (returnTs.getTime() > graceWindowEnd) {
+		var barColor = '#1D9E75';
+
+		var elapsedHours = (returnTs.getTime() - graceWindowStart) / 3600000;
+
+		if (elapsedHours >= <?php echo $graceHours; ?>) {
 			progressPct = 100;
-			isExceeded = true;
-		} else if (returnTs.getTime() > graceWindowStart) {
-			progressPct = ((returnTs.getTime() - graceWindowStart) / (<?php echo $graceHours; ?> * 3600000)) * 100;
+			barColor = '#E24B4A';
+		} else if (elapsedHours > 0) {
+			progressPct = (elapsedHours / <?php echo $graceHours; ?>) * 100;
 		}
-		
-		// Always show at least 5% to indicate bar is active
-		if (progressPct < 5) progressPct = 5;
 		
 		var fill = document.getElementById('v3-grace-fill');
 		if(fill){
-			fill.style.width = progressPct+'%';
-			fill.style.background = isExceeded ? '#E24B4A' : '#1D9E75';
+			fill.style.width = Math.max(5, Math.min(100, progressPct))+'%';
+			fill.style.background = barColor;
 		}
 		
 		var hint = document.getElementById('cd-grace-returnby');
