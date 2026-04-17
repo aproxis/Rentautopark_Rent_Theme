@@ -1203,6 +1203,9 @@ try {
 		
 		if (returnTs.getTime() > graceWindowEnd) {
 			progressPct = 0;
+		} else if (returnTs.getTime() === graceWindowStart) {
+			// Pickup and return same hour - grace is fully available
+			progressPct = 100;
 		} else if (returnTs.getTime() > graceWindowStart) {
 			progressPct = 100 - (((returnTs.getTime() - graceWindowStart) / (<?php echo $graceHours; ?> * 3600000)) * 100);
 		}
@@ -1216,6 +1219,8 @@ try {
 		var hint = document.getElementById('cd-grace-returnby');
 		if(hint){ 
 			hint.innerHTML = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s at no extra charge"); ?>'.replace('%s', '<strong>'+dhStr+'</strong>'); 
+			// Remove any display:none added by polling function
+			hint.style.removeProperty('display');
 			hint.style.display='block'; 
 		}
 		<?php endif; ?>
