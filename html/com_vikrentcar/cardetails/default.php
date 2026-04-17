@@ -1625,16 +1625,42 @@ jQuery(function(){
 			var labelPickupReturn = <?php echo json_encode(Text::_('VRPPICKUPRETURN') ?: 'Получение и возврат'); ?>;
 			var labelPickup       = <?php echo json_encode(Text::_('VRPPLACE') ?: 'Место получения'); ?>;
 
-			jQuery('#place').on('change', function() {
-				// Only mirror if checkbox is unchecked
-				if (!jQuery('#cd-diff-return-chk').is(':checked')) {
-					jQuery('#returnplace').val(jQuery(this).val());
+			// Helper function: disable current pickup location, auto-select first available return location
+			function updateReturnLocationOptions() {
+				var $sel = jQuery('#returnplace_visible');
+				var pickupLocId = jQuery('#place').val();
+				
+				// Reset all options: enable all and remove data attributes
+				$sel.find('option').prop('disabled', false);
+				
+				// Disable the option that matches current pickup location
+				if (pickupLocId) {
+					$sel.find('option[value="' + pickupLocId + '"]').prop('disabled', true);
 				}
+				
+				// Auto-select first non-disabled option
+				var firstEnabled = $sel.find('option:not(:disabled)').first();
+				if (firstEnabled.length) {
+					$sel.val(firstEnabled.val()).trigger('change');
+				}
+			}
+
+			jQuery('#place').on('change', function() {
+				var pickupVal = jQuery(this).val();
+				
+				// If diff-return is checked, update return location options
+				if (jQuery('#cd-diff-return-chk').is(':checked')) {
+					updateReturnLocationOptions();
+				} else {
+					// Mirror to hidden field
+					jQuery('#returnplace').val(pickupVal);
+				}
+				
 				cdUpdateSummary();
 				<?php if ($diffopentime): ?>
-				vrcSetLocOpenTime(jQuery(this).val(), 'pickup');
+				vrcSetLocOpenTime(pickupVal, 'pickup');
 				if (!jQuery('#cd-diff-return-chk').is(':checked')) {
-					vrcSetLocOpenTime(jQuery(this).val(), 'dropoff');
+					vrcSetLocOpenTime(pickupVal, 'dropoff');
 				}
 				<?php endif; ?>
 			});
@@ -1652,11 +1678,13 @@ jQuery(function(){
 				jQuery('#cd-return-location-wrap').toggle(checked);
 				if (checked) {
 					jQuery('#cd-pickup-label').text(labelPickup);
-					// set returnplace to current drop select value
-					jQuery('#returnplace').val(jQuery('#returnplace_visible').val());
+					// Initialize return location: disable current pickup, auto-select another
+					updateReturnLocationOptions();
 				} else {
 					jQuery('#cd-pickup-label').text(labelPickupReturn);
-					// mirror pickup again
+					// Re-enable all options
+					jQuery('#returnplace_visible').find('option').prop('disabled', false);
+					// Mirror pickup again
 					jQuery('#returnplace').val(jQuery('#place').val());
 					<?php if ($diffopentime): ?>
 					vrcSetLocOpenTime(jQuery('#place').val(), 'dropoff');

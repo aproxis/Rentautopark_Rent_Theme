@@ -237,7 +237,7 @@ function cdUpdateSummary() {
 		var oc = o.perday ? o.cost * days * qty : o.cost * qty;
 		if (o.max > 0 && oc > o.max) oc = o.max;
 		optTotal += oc;
-		var name = jQuery('#cd-opt-row-' + id + ' .cd-optional-name').text();
+		var name = jQuery('#cd-opt-row-' + id + ' .v3-opt-name').text();
 		var qtyLabel = (o.hmany === 1 && qty > 1) ? ' \u00d7 ' + qty : '';
 		rows += '<div class="cd-summary-row"><span>' + name + qtyLabel + '</span>'
 			+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oc) + '</span></div>';

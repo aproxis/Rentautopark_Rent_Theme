@@ -1323,6 +1323,7 @@ body.vrc-modal-open {
   .v3-section { background: #1c1b19; border-color: rgba(255,255,255,.1); }
   .v3-section-label, .v3-ds-label, .v3-time-label, .v3-grace-label { color: #9ca3af; }
   .v3-cal-day, .v3-ds-val, .v3-cal-month, .v3-opt-name, .v3-pay-name, .v3-ni-v, .v3-grace-time { color: #f0f0f0; }
+  .cd-summary-desc strong { color: #f0f0f0; }
   /* Dark calendar: disabled dates must be visually distinct (strikethrough + low opacity) */
   .v3-cal-day.v3-disabled { color: rgba(255,255,255,0.2); text-decoration: line-through; cursor: not-allowed; }
   .v3-cal-day:hover:not(.v3-disabled):not(.v3-start):not(.v3-end) { background: rgba(255,255,255,.08); }
