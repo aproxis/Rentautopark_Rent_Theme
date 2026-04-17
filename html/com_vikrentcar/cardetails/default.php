@@ -40,6 +40,7 @@ if (VikRentCar::loadJquery()) {
 $document->addStyleSheet(VRC_SITE_URI . 'resources/jquery.fancybox.css');
 $document->addStyleSheet(JURI::root() . 'templates/rent/css/cardetails-v3.css');
 JHtml::_('script', VRC_SITE_URI . 'resources/jquery.fancybox.js');
+$document->addScript(JURI::root() . 'templates/rent/js/cardetails-v3.js');
 $document->addScript(JURI::root() . 'templates/rent/js/booking-modal.js');
 
 // Grace period inline styles (extends .cd-info-notice pattern)
@@ -1315,9 +1316,6 @@ jQuery(function(){
 		</div>
 
 	</form>
-
-	<!-- Load extracted car details functions (synchronous, must run before v3 Calendar JS Bridge) -->
-	<script type="text/javascript" src="<?php echo JURI::root(true); ?>/templates/rent/js/cardetails-v3.js"></script>
 
 	<!-- v3 Calendar JS Bridge — connects inline calendar to jQuery UI datepicker validation -->
 	<script type="text/javascript">
