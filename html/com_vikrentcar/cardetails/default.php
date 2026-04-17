@@ -1525,7 +1525,6 @@ jQuery(function(){
 			window.cdGraceState = 'ok';
 		}
 			fill.style.background = barColor;
-		}
 		
 		var hint = document.getElementById('cd-grace-returnby');
 		if(hint){ 
