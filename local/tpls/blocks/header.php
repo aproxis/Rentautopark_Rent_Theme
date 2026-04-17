@@ -151,14 +151,7 @@ try {
 			     ╚══════════════════════════════════════════════════════╝ -->
 			<div class="ar-mobile-actions">
 
-				<!-- Contact — URL from real menu item for current language -->
-				<a href="<?php echo htmlspecialchars($_contactUrl); ?>"
-				   class="ar-mobile-icon-btn"
-				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_CONTACT')); ?>">
-					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" >
-						<path d="M19 1.5H5a2 2 0 00-2 2v14a2 2 0 002 2h4l3 3 3-3h4c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.4 13 12 13 13.5h-2V13c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path>
-					</svg>
-				</a>
+				
 
 				<!-- Cars — URL from real menu item for current language -->
 				<a href="<?php echo htmlspecialchars($_carsUrl); ?>"
@@ -169,6 +162,39 @@ try {
 					</svg>
 				</a>
 
+				<!-- Account:
+				     guest      → openAuthModal('login')
+				     logged-in  → direct link to orders/profile -->
+				<?php if ($_jUser->guest): ?>
+				<button type="button"
+				        class="ar-mobile-icon-btn"
+				        onclick="openAuthModal('login')"
+				        aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+						<circle cx="12" cy="7" r="4"/>
+					</svg>
+				</button>
+				<?php else: ?>
+				<!-- Account → direct link -->
+				<a href="<?php echo htmlspecialchars($_ordersUrl); ?>"
+				   class="ar-mobile-icon-btn"
+				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+						<circle cx="12" cy="7" r="4" style="fill: #fe5001;"/>
+					</svg>
+				</a>
+				<?php endif; ?>
+
+				<!-- Contact — URL from real menu item for current language -->
+				<a href="<?php echo htmlspecialchars($_contactUrl); ?>"
+				   class="ar-mobile-icon-btn"
+				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_CONTACT')); ?>">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" >
+						<path d="M19 1.5H5a2 2 0 00-2 2v14a2 2 0 002 2h4l3 3 3-3h4c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2zm-6 16h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 11.4 13 12 13 13.5h-2V13c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path>
+					</svg>
+				</a>
 				<!-- Language globe
 				     Dropdown items are built from PHP (flags + names).
 				     Their HREF values are replaced by JS after page load
@@ -207,29 +233,7 @@ try {
 				</div>
 				<?php endif; ?>
 
-				<!-- Account:
-				     guest      → openAuthModal('login')
-				     logged-in  → direct link to orders/profile -->
-				<?php if ($_jUser->guest): ?>
-				<button type="button"
-				        class="ar-mobile-icon-btn"
-				        onclick="openAuthModal('login')"
-				        aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
-					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-						<circle cx="12" cy="7" r="4"/>
-					</svg>
-				</button>
-				<?php else: ?>
-				<!-- Account → direct link -->
-				<a href="<?php echo htmlspecialchars($_ordersUrl); ?>"
-				   class="ar-mobile-icon-btn"
-				   aria-label="<?php echo htmlspecialchars(JText::_('TPL_ACCOUNT')); ?>">
-					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-						<circle cx="12" cy="7" r="4" style="fill: #fe5001;"/>
-					</svg>
-				</a>
+				<?php if (!$_jUser->guest): ?>
 				<!-- Logout — separate icon to the right of account -->
 				<button type="button"
 				        class="ar-mobile-icon-btn ar-mob-logout-icon"
