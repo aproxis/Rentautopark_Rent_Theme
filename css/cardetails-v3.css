@@ -1318,6 +1318,9 @@ body.vrc-modal-open {
   .v3-section { background: #1c1b19; border-color: rgba(255,255,255,.1); }
   .v3-section-label, .v3-ds-label, .v3-time-label, .v3-grace-label { color: #9ca3af; }
   .v3-cal-day, .v3-ds-val, .v3-cal-month, .v3-opt-name, .v3-pay-name, .v3-ni-v, .v3-grace-time { color: #f0f0f0; }
+  /* Dark calendar: disabled dates must be visually distinct (strikethrough + low opacity) */
+  .v3-cal-day.v3-disabled { color: rgba(255,255,255,0.2); text-decoration: line-through; cursor: not-allowed; }
+  .v3-cal-day:hover:not(.v3-disabled):not(.v3-start):not(.v3-end) { background: rgba(255,255,255,.08); }
   .v3-cal-nav { border-color: rgba(255,255,255,.1); color: #9ca3af; }
   .v3-cal-nav:hover { background: #242424; }
   .v3-date-summary, .v3-grace-bar, .v3-ni { background: #242424; }
@@ -1340,6 +1343,28 @@ body.vrc-modal-open {
   .cd-summary-row-val, .v3-pr-total { color: #f0f0f0; }
   .v3-pr-total { border-top-color: rgba(255,255,255,.1); }
   .v3-ti { color: #9ca3af; }
+}
+
+/* ================================================================
+   HIDE CHOSEN FOR v3 SELECTS — use native dropdowns instead
+   ================================================================ */
+#vrccomselph .chosen-container,
+#vrccomseldh .chosen-container,
+#vrccomselph_chosen,
+#vrccomseldh_chosen,
+#place + .chosen-container,
+#place_chosen,
+#returnplace_visible + .chosen-container,
+#returnplace_visible_chosen {
+	display: none !important;
+}
+
+#vrccomselph select,
+#vrccomseldh select,
+#place,
+#returnplace_visible {
+	display: block !important;
+	visibility: visible !important;
 }
 
 /* Datepicker text inputs — must remain type=text for jQuery UI, but hidden visually */

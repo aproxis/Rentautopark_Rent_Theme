@@ -1828,9 +1828,9 @@ jQuery(function(){
 			var $w = jQuery('#cd-ooh-warning');
 			if (messages.length) {
 				jQuery('#cd-ooh-text').text(messages.join(' | '));
-				$w.addClass('is-visible');
+				$w.show();
 			} else {
-				$w.removeClass('is-visible');
+				$w.hide();
 			}
 		}
 
@@ -2161,6 +2161,19 @@ jQuery(function(){
 				jQuery('#vrccomselph select').val(12).trigger('chosen:updated');
 				jQuery('#vrccomseldh select').val(12).trigger('chosen:updated');
 			})();
+			
+			// Destroy Chosen plugin instances and show native selects
+			setTimeout(function(){
+				var selectorsToFix = ['#vrccomselph select', '#vrccomseldh select', '#place', '#returnplace_visible'];
+				selectorsToFix.forEach(function(selector){
+					try {
+						jQuery(selector).chosen('destroy');
+					} catch(e) {
+						// Chosen not initialized, that's fine
+					}
+					jQuery(selector).css({ display: 'block', visibility: 'visible' });
+				});
+			}, 500);
 		});
 		</script>
 
