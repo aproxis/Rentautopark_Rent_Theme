@@ -1232,9 +1232,8 @@ body.vrc-modal-open {
 .cd-grace-exceeded { display: none; }
 .cd-grace-exceeded.is-visible { display: block; }
 
-/* OOH banner */
-.v3-offhours-banner { background: #f7f7f5; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #6b7280; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
-.v3-ooh-dot { width: 6px; height: 6px; border-radius: 50%; background: #EF9F27; flex-shrink: 0; margin-top: 3px; }
+/* OOH hint — unified with grace notices */
+.v3-ooh-hint { display: block; font-size: 11px; color: #EF9F27; margin-top: 5px; }
 
 /* Location */
 .v3-loc-field { display: flex; align-items: center; gap: 10px; padding: 4px 0; }

@@ -1092,19 +1092,13 @@ jQuery(function(){
 		<span class="v3-grace-exceeded cd-grace-exceeded" id="cd-grace-exceeded" style="display:none;"></span>
 		<!-- OOH / late-pickup notice — same visual group as grace messages -->
 		<?php if (!empty($oohFees)): ?>
-		<div class="v3-offhours-banner" id="cd-ooh-warning" style="display:none;">
-		<span class="v3-ooh-dot"></span>
-		<span id="cd-ooh-text"></span>
-		</div>
+		<span class="v3-ooh-hint" id="cd-ooh-warning" style="display:none;"></span>
 		<?php endif; ?>
 		</div>
 		<?php else: ?>
 		<!-- OOH warning standalone (no grace period configured) -->
 		<?php if (!empty($oohFees)): ?>
-		<div class="v3-offhours-banner" id="cd-ooh-warning" style="display:none;">
-		<span class="v3-ooh-dot"></span>
-		<span id="cd-ooh-text"></span>
-		</div>
+		<span class="v3-ooh-hint" id="cd-ooh-warning" style="display:none;"></span>
 		<?php endif; ?>
 		<?php endif; ?>
 
@@ -1479,7 +1473,7 @@ jQuery(function(){
 		var exactDays = totalMs / 86400000;
 		
 		var billingDays = Math.ceil(exactDays);
-		var graceWindowStart = pickupTs.getTime() + ((billingDays - 1) * 86400000);
+		var graceWindowStart = pickupTs.getTime() + (billingDays * 86400000);
 		var graceWindowEnd   = graceWindowStart + (<?php echo $graceHours; ?> * 3600000);
 		
 		var deadlineDate = new Date(graceWindowEnd);
@@ -1797,8 +1791,7 @@ jQuery(function(){
 			}
 			var $w = jQuery('#cd-ooh-warning');
 			if (messages.length) {
-				jQuery('#cd-ooh-text').text(messages.join(' | '));
-				$w.show();
+				$w.text(messages.join(' | ')).show();
 			} else {
 				$w.hide();
 			}
