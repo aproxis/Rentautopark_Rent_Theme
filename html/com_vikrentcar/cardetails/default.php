@@ -1197,7 +1197,7 @@ jQuery(function(){
 			<?php if ($hasGracePeriod): ?>
 			<div class="v3-ni">
 			<div class="v3-ni-k"><?php echo Text::_('VRCGRACEPERIOD') ?: 'Grace period'; ?></div>
-			<div class="v3-ni-v"><?php echo $graceHours; ?>h <?php echo Text::_('VRCAFTERRETURN') ?: 'after return'; ?></div>
+			<div class="v3-ni-v"><?php echo $graceHours; echo Text::_('VRC_GRACE_HRS') ?: ' h'; echo Text::_('VRCAFTERRETURN') ?: 'after return'; ?></div>
 			</div>
 			<?php endif; ?>
 			<div class="v3-ni" id="cd-km-notice">
