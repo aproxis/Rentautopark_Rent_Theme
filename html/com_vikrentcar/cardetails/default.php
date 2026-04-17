@@ -647,7 +647,323 @@ try {
 <div id="vrc-bookingpart-init"></div>
 <div class="cd-booking-card v3">
 
-	<?php if (VikRentCar::allowRent()) { ?>
+	<?php if (VikRentCar::allowRent()) {
+	$dbo = JFactory::getDbo();
+	$calendartype = VikRentCar::calendarType();
+	$indvrcplace = 0;
+	$indvrcreturnplace = 0;
+	$restrictions = VikRentCar::loadRestrictions(true, array($car['id']));
+	$def_min_los = VikRentCar::setDropDatePlus();
+
+	if ($calendartype == "jqueryui") {
+		$document->addStyleSheet(VRC_SITE_URI . 'resources/jquery-ui.min.css');
+		JHtml::_('script', VRC_SITE_URI . 'resources/jquery-ui.min.js');
+	}
+
+	$ptmpl   = VikRequest::getString('tmpl', '', 'request');
+	$ppickup = VikRequest::getInt('pickup', 0, 'request');
+	$ppromo  = VikRequest::getInt('promo', 0, 'request');
+	$coordsplaces = array();
+
+	$places = '';
+	$diffopentime = false;
+	$closingdays = array();
+	$declclosingdays = '';
+	$plapick_ids = array();
+	$pladrop_ids = array();
+
+	if (VikRentCar::showPlacesFront()) {
+		$q = "SELECT * FROM `#__vikrentcar_places` ORDER BY `#__vikrentcar_places`.`ordering` ASC, `#__vikrentcar_places`.`name` ASC;";
+		$dbo->setQuery($q);
+		$dbo->execute();
+		if ($dbo->getNumRows() > 0) {
+			$places = $dbo->loadAssocList();
+			$vrc_tn->translateContents($places, '#__vikrentcar_places');
+			$plapick_ids = explode(';', $car['idplace']);
+			$pladrop_ids = explode(';', $car['idretplace']);
+			foreach ($places as $kpla => $pla) {
+				if (!in_array($pla['id'], $plapick_ids) && !in_array($pla['id'], $pladrop_ids)) {
+					unset($places[$kpla]);
+				}
+			}
+			if (count($places) == 0) { $places = ''; }
+		} else { $places = ''; }
+
+		if (is_array($places)) {
+			foreach ($places as $kpla => $pla) {
+				if (!empty($pla['opentime'])) { $diffopentime = true; }
+				if (!empty($pla['closingdays'])) { $closingdays[$pla['id']] = $pla['closingdays']; }
+				if (empty($indvrcplace) && !isset($places[$indvrcplace])) {
+					$indvrcplace = $kpla;
+					$indvrcreturnplace = $kpla;
+				}
+			}
+			$wopening_pick = array();
+			if (isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['wopening'])) {
+				$wopening_pick = json_decode($places[$indvrcplace]['wopening'], true);
+				$wopening_pick = !is_array($wopening_pick) ? array() : $wopening_pick;
+			}
+			$wopening_drop = array();
+			if (isset($places[$indvrcreturnplace]) && !empty($places[$indvrcreturnplace]['wopening'])) {
+				$wopening_drop = json_decode($places[$indvrcreturnplace]['wopening'], true);
+				$wopening_drop = !is_array($wopening_drop) ? array() : $wopening_drop;
+			}
+			if (count($closingdays) > 0) {
+				foreach ($closingdays as $idpla => $clostr) {
+					$jsclosingdstr = VikRentCar::formatLocationClosingDays($clostr);
+					if (count($jsclosingdstr) > 0) {
+						$declclosingdays .= 'var loc' . $idpla . 'closingdays = [' . implode(", ", $jsclosingdstr) . '];' . "\n";
+					}
+				}
+			}
+			if ($diffopentime) {
+				$ajaxUrl = method_exists('VikRentCar', 'ajaxUrl')
+					? VikRentCar::ajaxUrl(JRoute::_('index.php?option=com_vikrentcar&task=ajaxlocopentime&tmpl=component' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''), false))
+					: JRoute::_('index.php?option=com_vikrentcar&task=ajaxlocopentime&tmpl=component', false);
+				$onchangedecl = '
+var vrc_location_change = false;
+var vrc_wopening_pick = ' . json_encode($wopening_pick) . ';
+var vrc_wopening_drop = ' . json_encode($wopening_drop) . ';
+var vrc_hopening_pick = null;
+var vrc_hopening_drop = null;
+var vrc_mopening_pick = null;
+var vrc_mopening_drop = null;
+function vrcSetLocOpenTime(loc, where) {
+	if (where == "dropoff") { vrc_location_change = true; }
+	jQuery.ajax({
+		type: "POST",
+		url: "' . $ajaxUrl . '",
+		data: { idloc: loc, pickdrop: where }
+	}).done(function(res) {
+		var vrcobj = JSON.parse(res);
+		if (where == "pickup") {
+			jQuery("#vrccomselph").html(vrcobj.hours);
+			jQuery("#vrccomselpm").html(vrcobj.minutes);
+			if (vrcobj.hasOwnProperty("wopening")) { vrc_wopening_pick = vrcobj.wopening; vrc_hopening_pick = vrcobj.hours; }
+		} else {
+			jQuery("#vrccomseldh").html(vrcobj.hours);
+			jQuery("#vrccomseldm").html(vrcobj.minutes);
+			if (vrcobj.hasOwnProperty("wopening")) { vrc_wopening_drop = vrcobj.wopening; vrc_hopening_drop = vrcobj.hours; }
+		}
+		if (typeof vrcLocationWopening !== "undefined") { vrcLocationWopening(where); }
+		if (where == "pickup" && vrc_location_change === false) {
+			jQuery("#returnplace").val(loc).trigger("change");
+			vrc_location_change = false;
+		}
+	});
+}';
+				$document->addScriptDeclaration($onchangedecl);
+			}
+		}
+	}
+
+	/* ── Hours select (single, :00 minutes hidden) ──────────────── */
+	if ($diffopentime && is_array($places) && isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['opentime'])) {
+		$parts = explode("-", $places[$indvrcplace]['opentime']);
+		if (is_array($parts) && $parts[0] != $parts[1]) {
+			$opent  = VikRentCar::getHoursMinutes($parts[0]);
+			$closet = VikRentCar::getHoursMinutes($parts[1]);
+			$i = $opent[0]; $j = $closet[0];
+		} else { $i = 0; $j = 23; }
+	} else {
+		$timeopst = VikRentCar::getTimeOpenStore();
+		if (is_array($timeopst) && $timeopst[0] != $timeopst[1]) {
+			$opent  = VikRentCar::getHoursMinutes($timeopst[0]);
+			$closet = VikRentCar::getHoursMinutes($timeopst[1]);
+			$i = $opent[0]; $j = $closet[0];
+		} else { $i = 0; $j = 23; }
+	}
+
+	// Build hours-only select (minutes will be hidden input = 0)
+	$hours = "";
+	$pickhdeftime = isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['defaulttime']) ? ((int)$places[$indvrcplace]['defaulttime'] / 3600) : 12;
+	if (!($i < $j)) {
+		while (intval($i) != (int)$j) {
+			$sayi = $i < 10 ? "0".$i : $i;
+			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
+			$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
+			$i++; $i = $i > 23 ? 0 : $i;
+		}
+		$sayi = $i < 10 ? "0".$i : $i;
+		if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
+		$hours .= "<option value=\"".(int)$i."\">".$sayh."</option>\n";
+	} else {
+		while ($i <= $j) {
+			$sayi = $i < 10 ? "0".$i : $i;
+			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
+			$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
+			$i++;
+		}
+	}
+
+	/* ── jQuery UI datepicker locale & restrictions JS ──────────── */
+	if ($vrcdateformat == "%d/%m/%Y") { $juidf = 'dd/mm/yy'; }
+	elseif ($vrcdateformat == "%m/%d/%Y") { $juidf = 'mm/dd/yy'; }
+	else { $juidf = 'yy/mm/dd'; }
+
+	$ldecl = '
+jQuery(function($){
+	$.datepicker.regional["vikrentcar"] = {
+		closeText: "' . Text::_('VRCJQCALDONE') . '",
+		prevText: "' . Text::_('VRCJQCALPREV') . '",
+		nextText: "' . Text::_('VRCJQCALNEXT') . '",
+		currentText: "' . Text::_('VRCJQCALTODAY') . '",
+		monthNames: ["' . Text::_('VRMONTHONE') . '","' . Text::_('VRMONTHTWO') . '","' . Text::_('VRMONTHTHREE') . '","' . Text::_('VRMONTHFOUR') . '","' . Text::_('VRMONTHFIVE') . '","' . Text::_('VRMONTHSIX') . '","' . Text::_('VRMONTHSEVEN') . '","' . Text::_('VRMONTHEIGHT') . '","' . Text::_('VRMONTHNINE') . '","' . Text::_('VRMONTHTEN') . '","' . Text::_('VRMONTHELEVEN') . '","' . Text::_('VRMONTHTWELVE') . '"],
+		monthNamesShort: ["' . mb_substr(Text::_('VRMONTHONE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWO'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTHREE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFOUR'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHFIVE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSIX'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHSEVEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHEIGHT'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHNINE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHELEVEN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRMONTHTWELVE'),0,3,'UTF-8') . '"],
+		dayNames: ["' . Text::_('VRCJQCALSUN') . '","' . Text::_('VRCJQCALMON') . '","' . Text::_('VRCJQCALTUE') . '","' . Text::_('VRCJQCALWED') . '","' . Text::_('VRCJQCALTHU') . '","' . Text::_('VRCJQCALFRI') . '","' . Text::_('VRCJQCALSAT') . '"],
+		dayNamesShort: ["' . mb_substr(Text::_('VRCJQCALSUN'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'),0,3,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'),0,3,'UTF-8') . '"],
+		dayNamesMin: ["' . mb_substr(Text::_('VRCJQCALSUN'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALMON'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTUE'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALWED'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALTHU'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALFRI'),0,2,'UTF-8') . '","' . mb_substr(Text::_('VRCJQCALSAT'),0,2,'UTF-8') . '"],
+		weekHeader: "' . Text::_('VRCJQCALWKHEADER') . '",
+		dateFormat: "' . $juidf . '",
+		firstDay: ' . VikRentCar::getFirstWeekDay() . ',
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ""
+	};
+	$.datepicker.setDefaults($.datepicker.regional["vikrentcar"]);
+});
+function vrcGetDateObject(dstring) { var dparts = dstring.split("-"); return new Date(dparts[0], (parseInt(dparts[1]) - 1), parseInt(dparts[2]), 0, 0, 0, 0); }
+function vrcFullObject(obj) { var jk; for(jk in obj) { return obj.hasOwnProperty(jk); } }
+var vrcrestrctarange, vrcrestrctdrange, vrcrestrcta, vrcrestrctd;';
+	$document->addScriptDeclaration($ldecl);
+
+	/* ── Restrictions ───────────────────────────────────────────── */
+	$totrestrictions = count($restrictions);
+	$wdaysrestrictions = array(); $wdaystworestrictions = array(); $wdaysrestrictionsrange = array();
+	$wdaysrestrictionsmonths = array(); $ctarestrictionsrange = array(); $ctarestrictionsmonths = array();
+	$ctdrestrictionsrange = array(); $ctdrestrictionsmonths = array(); $monthscomborestr = array();
+	$minlosrestrictions = array(); $minlosrestrictionsrange = array();
+	$maxlosrestrictions = array(); $maxlosrestrictionsrange = array(); $notmultiplyminlosrestrictions = array();
+
+	if ($totrestrictions > 0) {
+		foreach ($restrictions as $rmonth => $restr) {
+			if ($rmonth != 'range') {
+				if (strlen($restr['wday']) > 0) {
+					$wdaysrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wday'] . "'";
+					$wdaysrestrictionsmonths[] = $rmonth;
+					if (strlen($restr['wdaytwo']) > 0) {
+						$wdaystworestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['wdaytwo'] . "'";
+						$monthscomborestr[($rmonth - 1)] = VikRentCar::parseJsDrangeWdayCombo($restr);
+					}
+				} elseif (!empty($restr['ctad']) || !empty($restr['ctdd'])) {
+					if (!empty($restr['ctad'])) { $ctarestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctad']); }
+					if (!empty($restr['ctdd'])) { $ctdrestrictionsmonths[($rmonth - 1)] = explode(',', $restr['ctdd']); }
+				}
+				if ($restr['multiplyminlos'] == 0) { $notmultiplyminlosrestrictions[] = $rmonth; }
+				$minlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['minlos'] . "'";
+				if (!empty($restr['maxlos']) && $restr['maxlos'] > 0 && $restr['maxlos'] > $restr['minlos']) {
+					$maxlosrestrictions[] = "'" . ($rmonth - 1) . "': '" . $restr['maxlos'] . "'";
+				}
+			} else {
+				foreach ($restr as $kr => $drestr) {
+					if (strlen($drestr['wday']) > 0) {
+						$wdaysrestrictionsrange[$kr][0] = date('Y-m-d', $drestr['dfrom']); $wdaysrestrictionsrange[$kr][1] = date('Y-m-d', $drestr['dto']);
+						$wdaysrestrictionsrange[$kr][2] = $drestr['wday']; $wdaysrestrictionsrange[$kr][3] = $drestr['multiplyminlos'];
+						$wdaysrestrictionsrange[$kr][4] = strlen($drestr['wdaytwo']) > 0 ? $drestr['wdaytwo'] : -1;
+						$wdaysrestrictionsrange[$kr][5] = VikRentCar::parseJsDrangeWdayCombo($drestr);
+					} elseif (!empty($drestr['ctad']) || !empty($drestr['ctdd'])) {
+						$ctfrom = date('Y-m-d', $drestr['dfrom']); $ctto = date('Y-m-d', $drestr['dto']);
+						if (!empty($drestr['ctad'])) { $ctarestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctad'])); }
+						if (!empty($drestr['ctdd'])) { $ctdrestrictionsrange[$kr] = array($ctfrom, $ctto, explode(',', $drestr['ctdd'])); }
+					}
+					$minlosrestrictionsrange[$kr] = array(date('Y-m-d', $drestr['dfrom']), date('Y-m-d', $drestr['dto']), $drestr['minlos']);
+					if (!empty($drestr['maxlos']) && $drestr['maxlos'] > 0 && $drestr['maxlos'] > $drestr['minlos']) {
+						$maxlosrestrictionsrange[$kr] = $drestr['maxlos'];
+					}
+				}
+				unset($restrictions['range']);
+			}
+		}
+
+		$resdecl = "
+var vrcrestrmonthswdays = [" . implode(", ", $wdaysrestrictionsmonths) . "];
+var vrcrestrmonths = [" . implode(", ", array_keys($restrictions)) . "];
+var vrcrestrmonthscombojn = JSON.parse('" . json_encode($monthscomborestr) . "');
+var vrcrestrminlos = {" . implode(", ", $minlosrestrictions) . "};
+var vrcrestrminlosrangejn = JSON.parse('" . json_encode($minlosrestrictionsrange) . "');
+var vrcrestrmultiplyminlos = [" . implode(", ", $notmultiplyminlosrestrictions) . "];
+var vrcrestrmaxlos = {" . implode(", ", $maxlosrestrictions) . "};
+var vrcrestrmaxlosrangejn = JSON.parse('" . json_encode($maxlosrestrictionsrange) . "');
+var vrcrestrwdaysrangejn = JSON.parse('" . json_encode($wdaysrestrictionsrange) . "');
+var vrcrestrcta = JSON.parse('" . json_encode($ctarestrictionsmonths) . "');
+var vrcrestrctarange = JSON.parse('" . json_encode($ctarestrictionsrange) . "');
+var vrcrestrctd = JSON.parse('" . json_encode($ctdrestrictionsmonths) . "');
+var vrcrestrctdrange = JSON.parse('" . json_encode($ctdrestrictionsrange) . "');
+var vrccombowdays = {};
+function vrcRefreshDropoff(darrive) {
+	if (vrcFullObject(vrccombowdays)) { var vrctosort = new Array(); for(var vrci in vrccombowdays) { if (vrccombowdays.hasOwnProperty(vrci)) { var vrcusedate = darrive; vrctosort[vrci] = vrcusedate.setDate(vrcusedate.getDate() + (vrccombowdays[vrci] - 1 - vrcusedate.getDay() + 7) % 7 + 1); } } vrctosort.sort(function(da, db) { return da > db ? 1 : -1; }); for(var vrcnext in vrctosort) { if (vrctosort.hasOwnProperty(vrcnext)) { var vrcfirstnextd = new Date(vrctosort[vrcnext]); jQuery('#releasedate').datepicker('option','minDate',vrcfirstnextd); jQuery('#releasedate').datepicker('setDate',vrcfirstnextd); break; } } }
+}
+var vrcDropMaxDateSet = false;
+function vrcSetMinDropoffDate() {
+	var vrcDropMaxDateSetNow = false; var minlos = " . (intval($def_min_los) > 0 ? $def_min_los : '0') . "; var maxlosrange = 0;
+	var nowpickup = jQuery('#pickupdate').datepicker('getDate'); var nowd = nowpickup.getDay(); var nowpickupdate = new Date(nowpickup.getTime()); vrccombowdays = {};
+	if (vrcFullObject(vrcrestrminlosrangejn)) { for (var rk in vrcrestrminlosrangejn) { if (vrcrestrminlosrangejn.hasOwnProperty(rk)) { var minldrangeinit = vrcGetDateObject(vrcrestrminlosrangejn[rk][0]); if (nowpickupdate >= minldrangeinit) { var minldrangeend = vrcGetDateObject(vrcrestrminlosrangejn[rk][1]); if (nowpickupdate <= minldrangeend) { minlos = parseInt(vrcrestrminlosrangejn[rk][2]); if (vrcFullObject(vrcrestrmaxlosrangejn)) { if (rk in vrcrestrmaxlosrangejn) { maxlosrange = parseInt(vrcrestrmaxlosrangejn[rk]); } } if (rk in vrcrestrwdaysrangejn && nowd in vrcrestrwdaysrangejn[rk][5]) { vrccombowdays = vrcrestrwdaysrangejn[rk][5][nowd]; } } } } } }
+	var nowm = nowpickup.getMonth();
+	if (vrcFullObject(vrcrestrmonthscombojn) && vrcrestrmonthscombojn.hasOwnProperty(nowm)) { if (nowd in vrcrestrmonthscombojn[nowm]) { vrccombowdays = vrcrestrmonthscombojn[nowm][nowd]; } }
+	if (jQuery.inArray((nowm+1), vrcrestrmonths) != -1) { minlos = parseInt(vrcrestrminlos[nowm]); }
+	nowpickupdate.setDate(nowpickupdate.getDate() + minlos);
+	jQuery('#releasedate').datepicker('option','minDate',nowpickupdate);
+	if (maxlosrange > 0) { var diffmaxminlos = maxlosrange - minlos; var maxdropoffdate = new Date(nowpickupdate.getTime()); maxdropoffdate.setDate(maxdropoffdate.getDate() + diffmaxminlos); jQuery('#releasedate').datepicker('option','maxDate',maxdropoffdate); vrcDropMaxDateSet = true; vrcDropMaxDateSetNow = true; }
+	if (nowm in vrcrestrmaxlos) { var diffmaxminlos = parseInt(vrcrestrmaxlos[nowm]) - minlos; var maxdropoffdate = new Date(nowpickupdate.getTime()); maxdropoffdate.setDate(maxdropoffdate.getDate() + diffmaxminlos); jQuery('#releasedate').datepicker('option','maxDate',maxdropoffdate); vrcDropMaxDateSet = true; vrcDropMaxDateSetNow = true; }
+	if (!vrcFullObject(vrccombowdays)) { jQuery('#releasedate').datepicker('setDate',nowpickupdate); if (!vrcDropMaxDateSetNow && vrcDropMaxDateSet === true) { jQuery('#releasedate').datepicker('option','maxDate',null); } } else { vrcRefreshDropoff(nowpickup); }
+}";
+
+		if (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0) {
+			$resdecl .= "
+var vrcrestrwdays = {" . implode(", ", $wdaysrestrictions) . "};
+var vrcrestrwdaystwo = {" . implode(", ", $wdaystworestrictions) . "};
+function vrcIsDayDisabled(date) { if (!vrcValidateCta(date)){return [false];} var actd=jQuery.datepicker.formatDate('yy-mm-dd',date); " . (strlen($declclosingdays) > 0 ? "var loc_closing=pickupClosingDays(date); if(!loc_closing[0]){return loc_closing;}" : "") . " " . (count($push_disabled_in) ? "var vrc_fulldays=[" . implode(',', $push_disabled_in) . "]; if(jQuery.inArray(actd,vrc_fulldays)>=0){return [false];}" : "") . " var m=date.getMonth(),wd=date.getDay(); if(vrcFullObject(vrcrestrwdaysrangejn)){for(var rk in vrcrestrwdaysrangejn){if(vrcrestrwdaysrangejn.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrwdaysrangejn[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrwdaysrangejn[rk][1]);if(date<=wdrangeend){if(wd!=vrcrestrwdaysrangejn[rk][2]){if(vrcrestrwdaysrangejn[rk][4]==-1||wd!=vrcrestrwdaysrangejn[rk][4]){return [false];}}}}}}} if(vrcFullObject(vrcrestrwdays)){if(jQuery.inArray((m+1),vrcrestrmonthswdays)==-1){return [true];}if(wd==vrcrestrwdays[m]){return [true];}if(vrcFullObject(vrcrestrwdaystwo)){if(wd==vrcrestrwdaystwo[m]){return [true];}}return [false];} return [true]; }
+function vrcIsDayDisabledDropoff(date) { if(!vrcValidateCtd(date)){return [false];} var actd=jQuery.datepicker.formatDate('yy-mm-dd',date); " . (strlen($declclosingdays) > 0 ? "var loc_closing=dropoffClosingDays(date);if(!loc_closing[0]){return loc_closing;}" : "") . " " . (count($push_disabled_out) ? "var vrc_fulldays=[" . implode(',', $push_disabled_out) . "];if(jQuery.inArray(actd,vrc_fulldays)>=0){return [false];}" : "") . " var m=date.getMonth(),wd=date.getDay(); if(vrcFullObject(vrccombowdays)){if(jQuery.inArray(wd,vrccombowdays)!=-1){return [true];}else{return [false];}} if(vrcFullObject(vrcrestrwdaysrangejn)){for(var rk in vrcrestrwdaysrangejn){if(vrcrestrwdaysrangejn.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrwdaysrangejn[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrwdaysrangejn[rk][1]);if(date<=wdrangeend){if(wd!=vrcrestrwdaysrangejn[rk][2]&&vrcrestrwdaysrangejn[rk][3]==1){return [false];}}}}}} if(vrcFullObject(vrcrestrwdays)){if(jQuery.inArray((m+1),vrcrestrmonthswdays)==-1||jQuery.inArray((m+1),vrcrestrmultiplyminlos)!=-1){return [true];}if(wd==vrcrestrwdays[m]){return [true];}return [false];} return [true]; }";
+		}
+		$document->addScriptDeclaration($resdecl);
+	}
+
+	if (strlen($declclosingdays) > 0) {
+		$declclosingdays .= '
+function pickupClosingDays(date){var dmy=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();var wday=date.getDay().toString();var arrlocclosd=jQuery("#place").val();var checklocarr=window["loc"+arrlocclosd+"closingdays"];if(jQuery.inArray(dmy,checklocarr)==-1&&jQuery.inArray(wday,checklocarr)==-1){return [true,""];}else{return [false,"","' . addslashes(Text::_('VRCLOCDAYCLOSED')) . '"];}}
+function dropoffClosingDays(date){var dmy=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();var wday=date.getDay().toString();var arrlocclosd=jQuery("#returnplace").val();var checklocarr=window["loc"+arrlocclosd+"closingdays"];if(jQuery.inArray(dmy,checklocarr)==-1&&jQuery.inArray(wday,checklocarr)==-1){return [true,""];}else{return [false,"","' . addslashes(Text::_('VRCLOCDAYCLOSED')) . '"];}}';
+		$document->addScriptDeclaration($declclosingdays);
+	}
+
+	$dropdayplus = $def_min_los;
+	$forcedropday = "jQuery('#releasedate').datepicker('option','minDate',selectedDate);";
+	if (strlen($dropdayplus) > 0 && intval($dropdayplus) > 0) {
+		$forcedropday = "var nowpick=jQuery(this).datepicker('getDate');if(nowpick){var nowpickdate=new Date(nowpick.getTime());nowpickdate.setDate(nowpickdate.getDate()+" . $dropdayplus . ");jQuery('#releasedate').datepicker('option','minDate',nowpickdate);jQuery('#releasedate').datepicker('setDate',nowpickdate);}";
+	}
+
+	$sdecl = "
+var vrc_fulldays_in = [" . implode(', ', $push_disabled_in) . "];
+var vrc_fulldays_out = [" . implode(', ', $push_disabled_out) . "];
+function vrcIsDayFullIn(date){if(!vrcValidateCta(date)){return [false];}var actd=jQuery.datepicker.formatDate('yy-mm-dd',date);if(jQuery.inArray(actd,vrc_fulldays_in)==-1){return " . (strlen($declclosingdays) > 0 ? 'pickupClosingDays(date)' : '[true]') . ";}return [false];}
+function vrcIsDayFullOut(date){if(!vrcValidateCtd(date)){return [false];}var actd=jQuery.datepicker.formatDate('yy-mm-dd',date);if(jQuery.inArray(actd,vrc_fulldays_out)==-1){return " . (strlen($declclosingdays) > 0 ? 'dropoffClosingDays(date)' : '[true]') . ";}return [false];}
+function vrcLocationWopening(mode){if(typeof vrc_wopening_pick==='undefined'){return true;}if(mode=='pickup'){vrc_mopening_pick=null;}else{vrc_mopening_drop=null;}var loc_data=mode=='pickup'?vrc_wopening_pick:vrc_wopening_drop;var def_loc_hours=mode=='pickup'?vrc_hopening_pick:vrc_hopening_drop;var sel_d=jQuery((mode=='pickup'?'#pickupdate':'#releasedate')).datepicker('getDate');if(!sel_d){return true;}var sel_wday=sel_d.getDay();if(!vrcFullObject(loc_data)||!loc_data.hasOwnProperty(sel_wday)||!loc_data[sel_wday].hasOwnProperty('fh')){if(def_loc_hours!==null){jQuery((mode=='pickup'?'#vrccomselph':'#vrccomseldh')).html(def_loc_hours);}return true;}if(mode=='pickup'){vrc_mopening_pick=new Array(loc_data[sel_wday]['fh'],loc_data[sel_wday]['fm'],loc_data[sel_wday]['th'],loc_data[sel_wday]['tm']);}else{vrc_mopening_drop=new Array(loc_data[sel_wday]['th'],loc_data[sel_wday]['tm'],loc_data[sel_wday]['fh'],loc_data[sel_wday]['fm']);}var hlim=loc_data[sel_wday]['fh']<loc_data[sel_wday]['th']?loc_data[sel_wday]['th']:(24+loc_data[sel_wday]['th']);hlim=loc_data[sel_wday]['fh']==0&&loc_data[sel_wday]['th']==0?23:hlim;var hopts='';var def_hour=jQuery((mode=='pickup'?'#vrccomselph':'#vrccomseldh')).find('select').val();def_hour=def_hour&&def_hour.length>1&&def_hour.substr(0,1)=='0'?def_hour.substr(1):def_hour;def_hour=parseInt(def_hour);for(var h=loc_data[sel_wday]['fh'];h<=hlim;h++){var viewh=h>23?(h-24):h;hopts+='<option value=\"'+viewh+'\"'+(viewh==def_hour?' selected':'')+'>'+(viewh<10?'0'+viewh:viewh)+':00</option>';}jQuery((mode=='pickup'?'#vrccomselph':'#vrccomseldh')).find('select').html(hopts);if(mode=='pickup'){setTimeout(function(){vrcLocationWopening('dropoff');},750);}}
+function vrcValidateCta(date){var m=date.getMonth(),wd=date.getDay();if(vrcFullObject(vrcrestrctarange)){for(var rk in vrcrestrctarange){if(vrcrestrctarange.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrctarange[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrctarange[rk][1]);if(date<=wdrangeend){if(jQuery.inArray('-'+wd+'-',vrcrestrctarange[rk][2])>=0){return false;}}}}}}if(vrcFullObject(vrcrestrcta)){if(vrcrestrcta.hasOwnProperty(m)&&jQuery.inArray('-'+wd+'-',vrcrestrcta[m])>=0){return false;}}return true;}
+function vrcValidateCtd(date){var m=date.getMonth(),wd=date.getDay();if(vrcFullObject(vrcrestrctdrange)){for(var rk in vrcrestrctdrange){if(vrcrestrctdrange.hasOwnProperty(rk)){var wdrangeinit=vrcGetDateObject(vrcrestrctdrange[rk][0]);if(date>=wdrangeinit){var wdrangeend=vrcGetDateObject(vrcrestrctdrange[rk][1]);if(date<=wdrangeend){if(jQuery.inArray('-'+wd+'-',vrcrestrctdrange[rk][2])>=0){return false;}}}}}}if(vrcFullObject(vrcrestrctd)){if(vrcrestrctd.hasOwnProperty(m)&&jQuery.inArray('-'+wd+'-',vrcrestrctd[m])>=0){return false;}}return true;}
+function vrcInitElems(){if(typeof vrc_wopening_pick==='undefined'){return true;}vrc_hopening_pick=jQuery('#vrccomselph').find('select').clone();vrc_hopening_drop=jQuery('#vrccomseldh').find('select').clone();}
+jQuery(function(){
+	vrcInitElems();
+	jQuery('#pickupdate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabled," : "beforeShowDay:vrcIsDayFullIn,") . "onSelect:function(selectedDate){" . ($totrestrictions > 0 ? "vrcSetMinDropoffDate();" : $forcedropday) . "vrcLocationWopening('pickup'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100);}});
+	jQuery('#pickupdate').datepicker('option','dateFormat','" . $juidf . "');
+	jQuery('#pickupdate').datepicker('option','minDate','" . VikRentCar::getMinDaysAdvance() . "d');
+	jQuery('#pickupdate').datepicker('option','maxDate','" . VikRentCar::getMaxDateFuture() . "');
+	jQuery('#releasedate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabledDropoff," : "beforeShowDay:vrcIsDayFullOut,") . "onSelect:function(selectedDate){vrcLocationWopening('dropoff'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100);}});
+	jQuery('#releasedate').datepicker('option','dateFormat','" . $juidf . "');
+	jQuery('#releasedate').datepicker('option','minDate','" . VikRentCar::getMinDaysAdvance() . "d');
+	jQuery('#releasedate').datepicker('option','maxDate','" . VikRentCar::getMaxDateFuture() . "');
+	jQuery('#pickupdate').datepicker('option',jQuery.datepicker.regional['vikrentcar']);
+	jQuery('#releasedate').datepicker('option',jQuery.datepicker.regional['vikrentcar']);
+	jQuery('.vr-cal-img,.vrc-caltrigger').click(function(){var jdp=jQuery(this).prev('input.hasDatepicker');if(jdp.length){jdp.focus();}});
+});";
+	$document->addScriptDeclaration($sdecl);
+
+	$forced_pickup  = $config ? $config->get('forced_pickup', '')  : '';
+	$forced_dropoff = $config ? $config->get('forced_dropoff', '') : '';
+
+	$check_pick_locs = is_array($places) && count($plapick_ids) && !empty($plapick_ids[0]);
+	$check_drop_locs = is_array($places) && count($pladrop_ids) && !empty($pladrop_ids[0]);
+	$onchangeplaces     = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'pickup');\"" : "";
+	$onchangeplacesdrop = $diffopentime ? " onchange=\"javascript: vrcSetLocOpenTime(this.value, 'dropoff');\"" : "";
+	?>
 
 	<form action="<?php echo JRoute::_('index.php?option=com_vikrentcar' . (!empty($pitemid) ? '&Itemid=' . $pitemid : '')); ?>"
 			method="get"
@@ -742,29 +1058,6 @@ try {
 		</div>
 
 		<!-- ═══ SECTION: Times ═══ -->
-		<?php
-		// Build hours-only select (minutes will be hidden input = 0)
-		$hours = "";
-		$pickhdeftime = isset($places[$indvrcplace]) && !empty($places[$indvrcplace]['defaulttime']) ? ((int)$places[$indvrcplace]['defaulttime'] / 3600) : 12;
-		if (!($i < $j)) {
-			while (intval($i) != (int)$j) {
-				$sayi = $i < 10 ? "0".$i : $i;
-				if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
-				$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
-				$i++; $i = $i > 23 ? 0 : $i;
-			}
-			$sayi = $i < 10 ? "0".$i : $i;
-			if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
-			$hours .= "<option value=\"".(int)$i."\">".$sayh."</option>\n";
-		} else {
-			while ($i <= $j) {
-				$sayi = $i < 10 ? "0".$i : $i;
-				if ($nowtf != 'H:i') { $ampm = $i < 12 ? ' am' : ' pm'; $ampmh = $i > 12 ? ($i - 12) : $i; $sayh = $ampmh < 10 ? "0".$ampmh.$ampm : $ampmh.$ampm; } else { $sayh = $sayi . ':00'; }
-				$hours .= "<option value=\"".(int)$i."\"".($pickhdeftime == (int)$i ? ' selected="selected"' : '').">".$sayh."</option>\n";
-				$i++;
-			}
-		}
-		?>
 		<?php if (!strlen($forced_pickup) || !strlen($forced_dropoff)): ?>
 		<div class="v3-section v3-section-times">
 		<?php if (!strlen($forced_pickup)): ?>
@@ -1849,6 +2142,18 @@ try {
 
 	<?php
 	} else {
+		// Safe defaults — prevent PHP notices if anything outside the form references these
+		$forced_pickup      = '';
+		$forced_dropoff     = '';
+		$places             = '';
+		$plapick_ids        = array();
+		$pladrop_ids        = array();
+		$check_pick_locs    = false;
+		$check_drop_locs    = false;
+		$onchangeplaces     = '';
+		$onchangeplacesdrop = '';
+		$diffopentime       = false;
+		$def_min_los        = '';
 		echo '<div class="cd-disabled-rent">' . VikRentCar::getDisabledRentMsg() . '</div>';
 	}
 	?>
