@@ -253,13 +253,21 @@ footer em {
     color: #FE5001;
 }
 
-/* Hide the default flag icon from mod_languages, keep caret */
+/* Hide the FA flag icon */
 .ar-lang .fa-flag {
     display: none;
 }
 
-/* Align globe with the dropdown toggle */
-.ar-lang {
-    display: flex;
-    align-items: center;
+/* Inject the exact same SVG globe as mobile */
+.ar-lang .dropdown-toggle::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23fe5001' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
 }
