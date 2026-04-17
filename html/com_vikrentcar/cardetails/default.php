@@ -56,23 +56,6 @@ $document->addStyleDeclaration('
     margin-top: 3px;
 }
 .cd-grace-returnby strong { font-weight: 700; }
-.cd-grace-exceeded {
-    display: none;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 14px;
-    margin: 0 0 4px;
-    background: rgba(245, 158, 11, 0.08);
-    border-left: 3px solid #f59e0b;
-    border-radius: 4px;
-    font-size: 13px;
-    color: #92400e;
-}
-.cd-grace-exceeded.is-visible { display: flex; }
-.cd-grace-exceeded .cd-grace-exc-icon { flex-shrink: 0; color: #f59e0b; margin-top: 1px; }
-.cd-grace-exceeded .cd-grace-exc-body { display: flex; flex-direction: column; gap: 3px; }
-.cd-grace-exceeded .cd-grace-exc-label { font-weight: 600; }
-.cd-grace-exceeded .cd-grace-exc-hint { font-size: 12px; color: #b45309; }
 ');
 
 $navdecl = '
@@ -1105,21 +1088,8 @@ jQuery(function(){
 		<div class="v3-grace-track"><div class="v3-grace-fill" id="v3-grace-fill"></div></div>
 		<!-- "Return by HH:MM at no extra charge" -->
 		<span class="v3-grace-hint cd-grace-returnby" id="cd-grace-returnby" style="display:none;"></span>
-		<!-- "One extra day will be charged" — right below return-by line -->
-		<div class="cd-grace-exceeded" id="cd-grace-exceeded" style="display:none;">
-			<svg class="cd-grace-exc-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-			     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-			     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-				<line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-			</svg>
-			<div class="cd-grace-exc-body">
-				<span class="cd-grace-exc-label" id="cd-grace-exc-label"></span>
-				<span class="cd-grace-exc-hint"><?php echo htmlspecialchars(
-					Text::_('VRC_GRACE_EXCEEDED_HINT') ?: 'Returnați în limita perioadei de grație pentru a evita taxa suplimentară.'
-				); ?></span>
-			</div>
-		</div>
+		<!-- "Grace period exceeded" — right below return-by line -->
+		<span class="v3-grace-exceeded cd-grace-exceeded" id="cd-grace-exceeded" style="display:none;"></span>
 		<!-- OOH / late-pickup notice — same visual group as grace messages -->
 		<?php if (!empty($oohFees)): ?>
 		<div class="v3-offhours-banner" id="cd-ooh-warning" style="display:none;">
@@ -1887,16 +1857,16 @@ jQuery(function(){
 				var $exceeded = jQuery('#cd-grace-exceeded');
 				var graceState = (typeof window.cdGraceState !== 'undefined') ? window.cdGraceState : 'none';
 
-				// Grace bar is visible and managed by v3UpdateGraceBar()
-				// This section only manages the grace exceeded warning
-				if (days && graceState === 'exceeded') {
-					// graceState === 'exceeded': show amber warning
-					var excLabel = '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>';
-					jQuery('#cd-grace-exc-label').text(excLabel);
-					$exceeded.addClass('is-visible');
-				} else {
-					$exceeded.removeClass('is-visible');
-				}
+			// Grace bar is visible and managed by v3UpdateGraceBar()
+			// This section only manages the grace exceeded warning
+			if (days && graceState === 'exceeded') {
+				// graceState === 'exceeded': show warning
+				var excLabel = '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>';
+				jQuery('#cd-grace-exceeded').text(excLabel);
+				$exceeded.show();
+			} else {
+				$exceeded.hide();
+			}
 			}
 
 			/* ── Update KM notice ── */
