@@ -1,0 +1,380 @@
+/**
+ * Car Details Page - v3 Booking Functions
+ * Extracted from: /templates/rent/html/com_vikrentcar/cardetails/default.php
+ * 
+ * Data variables required (defined in default.php):
+ * - cdGraceHours, cdRateByDay, cdOptionals, cdCurrency, cdCarName, cdPlacesMap
+ * - cdOohFees, cdDescPrefix, cdDescCarInfix, cdDescLocInfix, cdDescLocPickup, cdDescLocReturn
+ * - cdDescDayWord, cdDescDaysWord, cdDateFormat, cdOohLabels, cdLabelBasePrice, cdTermsAlert
+ */
+
+/* Format integer (no decimals) */
+function cdFmt(n) {
+	return Math.round(parseFloat(n)).toString();
+}
+
+function cdGetDays() {
+	var p = jQuery('#pickupdate').val(), r = jQuery('#releasedate').val();
+	if (!p || !r) return null;
+	try {
+		var fmt = cdDateFormat; // e.g. 'dd/mm/yy' or 'mm/dd/yy' or 'yy/mm/dd'
+		var d1 = jQuery.datepicker.parseDate(fmt, p);
+		var d2 = jQuery.datepicker.parseDate(fmt, r);
+		
+		// Get hour values from selects
+		var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
+		var dropHour = parseInt(jQuery('#vrccomseldh select').val()) || 0;
+		
+		// Set the hours on the date objects
+		d1.setHours(pickHour, 0, 0, 0);
+		d2.setHours(dropHour, 0, 0, 0);
+
+		var diffMs   = d2 - d1;
+		var diffDays = Math.ceil(diffMs / 86400000);
+
+		// Grace logic only applies when the rental duration has a fractional-day
+		// overage — i.e. diffMs is NOT an exact multiple of 24h.
+		// Exact multiples (same pickup/return hour) need no grace adjustment.
+		window.cdGraceState = 'none'; // 'none' | 'active' | 'exceeded'
+		if (cdGraceHours > 0 && diffDays >= 1) {
+			var exactDays = diffMs / 86400000; // e.g. 1.083 for 26h, 4.0 for 96h
+			var hasFraction = (Math.abs(exactDays - Math.round(exactDays)) > 0.0001);
+
+			if (hasFraction && diffDays > 1) {
+				// There is a fractional overage beyond a whole number of days
+				var floorDays = diffDays - 1;
+				var overageMs = diffMs - (floorDays * 86400000);
+				if (overageMs <= cdGraceHours * 3600000) {
+					// Overage fits within grace → reduce billed days by 1
+					diffDays = floorDays;
+					window.cdGraceState = 'active';
+				} else {
+					// Overage exceeds grace → warn user
+					window.cdGraceState = 'exceeded';
+				}
+			} else {
+				// Exact day count or single day — grace window is available for return
+				window.cdGraceState = 'active';
+			}
+		}
+
+		return diffDays > 0 ? diffDays : null;
+	} catch(e) { return null; }
+}
+
+function cdGetRate(days) {
+	if (!days || !cdRateByDay) return null;
+	var best = null;
+	var keys = Object.keys(cdRateByDay).map(Number).sort(function(a, b) { return a - b; });
+	for (var i = 0; i < keys.length; i++) {
+		if (keys[i] <= days) { best = cdRateByDay[keys[i]]; }
+	}
+	return best;
+}
+
+/* Read hour select value → seconds since midnight */
+function cdGetHourSecs(selectOrWrapperId) {
+	var $el = jQuery('#' + selectOrWrapperId);
+	// For the new single select inside #vrccomselph / #vrccomseldh
+	var $sel = $el.is('select') ? $el : $el.find('select');
+	if (!$sel.length) return 0;
+	return (parseInt($sel.val()) || 0) * 3600;
+}
+
+function cdIsOoh(secs, fee) {
+	if (fee.from > fee.to) { return secs >= fee.from || secs < fee.to; }
+	return secs >= fee.from && secs < fee.to;
+}
+
+function cdCheckOoh() {
+	if (!cdOohFees || !cdOohFees.length) return;
+	var pickSecs = cdGetHourSecs('vrccomselph');
+	var dropSecs = cdGetHourSecs('vrccomseldh');
+	var messages = [];
+	for (var i = 0; i < cdOohFees.length; i++) {
+		var f = cdOohFees[i];
+		var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
+		var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
+		if (pickOoh || dropOoh) {
+			var timeRange = ' (' + f.fromLabel + '–' + f.toLabel + ')';
+			var label;
+			if (pickOoh && dropOoh) {
+				label = cdOohLabels.pickDrop + timeRange;
+			} else if (pickOoh) {
+				label = cdOohLabels.pick + timeRange;
+			} else {
+				label = cdOohLabels.drop + timeRange;
+			}
+			var parts = [];
+			if (pickOoh) parts.push(cdCurrency + cdFmt(f.pickcharge));
+			if (dropOoh) parts.push(cdCurrency + cdFmt(f.dropcharge));
+			messages.push(label + ': ' + parts.join(' + '));
+		}
+	}
+	var $w = jQuery('#cd-ooh-warning');
+	if (messages.length) {
+		$w.text(messages.join(' | ')).show();
+	} else {
+		$w.hide();
+	}
+}
+
+function cdOohTotal() {
+	var pickSecs = cdGetHourSecs('vrccomselph');
+	var dropSecs = cdGetHourSecs('vrccomseldh');
+	var total = 0;
+	for (var i = 0; i < cdOohFees.length; i++) {
+		var f = cdOohFees[i];
+		var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
+		var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
+		var rowTotal = 0;
+		if (pickOoh) rowTotal += parseFloat(f.pickcharge);
+		if (dropOoh) rowTotal += parseFloat(f.dropcharge);
+		if (f.maxcharge > 0 && rowTotal > f.maxcharge) rowTotal = parseFloat(f.maxcharge);
+		total += rowTotal;
+	}
+	return total;
+}
+
+function cdToggleOptional(id, cost, perday, maxprice) {
+	cdOptionals[id].checked = !cdOptionals[id].checked;
+	var $row = jQuery('#cd-opt-row-' + id);
+	if (cdOptionals[id].checked) {
+		$row.addClass('is-checked');
+		jQuery('#cd-opt-input-' + id).val('1');
+	} else {
+		$row.removeClass('is-checked');
+		jQuery('#cd-opt-input-' + id).val('0');
+	}
+	cdUpdateSummary();
+}
+
+function cdSetOptionalQty(id, delta) {
+	if (!cdOptionals[id]) return;
+	var newQty = (cdOptionals[id].qty || 0) + delta;
+	if (newQty < 0) newQty = 0;
+	cdOptionals[id].qty = newQty;
+	cdOptionals[id].checked = (newQty > 0);
+	jQuery('#cd-opt-input-' + id).val(newQty);
+	jQuery('#cd-opt-qty-' + id).text(newQty);
+	var $row = jQuery('#cd-opt-row-' + id);
+	if (newQty > 0) { $row.addClass('is-checked'); } else { $row.removeClass('is-checked'); }
+	cdUpdateSummary();
+}
+
+function cdUpdateSummary() {
+	var days = cdGetDays();
+	var $sum = jQuery('#cd-summary');
+
+	/* ── Update grace notice / exceeded warning ── */
+	if (cdGraceHours > 0) {
+		var $graceBy  = jQuery('#cd-grace-returnby');
+		var $exceeded = jQuery('#cd-grace-exceeded');
+		var graceState = (typeof window.cdGraceState !== 'undefined') ? window.cdGraceState : 'none';
+
+		// Grace bar is visible and managed by v3UpdateGraceBar()
+		// This section only manages the grace exceeded warning
+		if (days && graceState === 'exceeded') {
+			// graceState === 'exceeded': show warning
+			var excLabel = cdOohLabels.graceExceeded;
+			jQuery('#cd-grace-exceeded').text(excLabel);
+			$exceeded.show();
+		} else {
+			$exceeded.hide();
+		}
+	}
+
+	/* ── Update KM notice ── */
+	var $kmNotice = jQuery('#cd-km-notice');
+	if (days) {
+		var totalKm = days * 200;
+		jQuery('#cd-km-total').text(totalKm);
+		jQuery('#cd-km-days').text(days);
+		$kmNotice.show();
+	} else {
+		$kmNotice.hide();
+	}
+
+	if (!days) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
+
+	var rate = cdGetRate(days);
+	if (!rate) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
+
+	// Description sentence (i18n via cdDesc* vars)
+	var _dw2 = days === 1 ? cdDescDayWord : cdDescDaysWord;
+	var _locId = jQuery('#place').val() || '';
+	var _locName = (_locId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_locId]) ? cdPlacesMap[_locId] : '';
+	var _diffReturn = jQuery('#cd-diff-return-chk').is(':checked');
+	var _retLocName = '';
+	if (_diffReturn) {
+		var _retLocId = jQuery('#returnplace_visible').val();
+		_retLocName = (_retLocId && typeof cdPlacesMap !== 'undefined' && cdPlacesMap[_retLocId]) ? cdPlacesMap[_retLocId] : '';
+	}
+
+	var _desc = cdDescPrefix + ' <strong>' + days + '\u00A0' + _dw2 + '</strong>';
+	if (typeof cdCarName !== 'undefined' && cdCarName) { _desc += cdDescCarInfix + '<strong>' + cdCarName + '</strong>'; }
+
+	if (_diffReturn && _locName && _retLocName) {
+		_desc += ' ' + cdDescLocPickup + ' <strong>' + _locName + '</strong>'
+			+ ' ' + cdDescLocReturn + ' <strong>' + _retLocName + '</strong>';
+	} else if (_locName) {
+		_desc += cdDescLocInfix + '<strong>' + _locName + '</strong>';
+	}
+
+	_desc += '.';
+	jQuery('#cd-summary-desc').html(_desc);
+
+	var baseTotal = rate * days;
+	var dayWord = cdDescDaysWord;
+	var rows = '<div class="cd-summary-row"><span>' + cdLabelBasePrice + '</span>'
+		+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(rate) + ' &times; ' + days + ' ' + dayWord + '</span></div>';
+
+	var optTotal = 0;
+	for (var id in cdOptionals) {
+		var o = cdOptionals[id];
+		var qty = (o.hmany === 1) ? (o.qty || 0) : (o.checked ? 1 : 0);
+		if (!qty) continue;
+		var oc = o.perday ? o.cost * days * qty : o.cost * qty;
+		if (o.max > 0 && oc > o.max) oc = o.max;
+		optTotal += oc;
+		var name = jQuery('#cd-opt-row-' + id + ' .cd-optional-name').text();
+		var qtyLabel = (o.hmany === 1 && qty > 1) ? ' \u00d7 ' + qty : '';
+		rows += '<div class="cd-summary-row"><span>' + name + qtyLabel + '</span>'
+			+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oc) + '</span></div>';
+	}
+
+	var oohTotal = cdOohTotal();
+	if (oohTotal > 0) {
+		var oohLabel;
+		// Determine OOH label from active fees
+		for (var i = 0; i < cdOohFees.length; i++) {
+			var f = cdOohFees[i];
+			var pickSecs = cdGetHourSecs('vrccomselph');
+			var dropSecs = cdGetHourSecs('vrccomseldh');
+			var pickOoh = (f.type === 1 || f.type === 3) && cdIsOoh(pickSecs, f);
+			var dropOoh = (f.type === 2 || f.type === 3) && cdIsOoh(dropSecs, f);
+			if (pickOoh || dropOoh) {
+				var timeRange = ' (' + f.fromLabel + '–' + f.toLabel + ')';
+				if (pickOoh && dropOoh) oohLabel = cdOohLabels.pickDrop + timeRange;
+				else if (pickOoh) oohLabel = cdOohLabels.pick + timeRange;
+				else oohLabel = cdOohLabels.drop + timeRange;
+				break;
+			}
+		}
+		rows += '<div class="cd-summary-row"><span>' + (oohLabel || 'OOH') + '</span>'
+			+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(oohTotal) + '</span></div>';
+	}
+
+	// Coupon discount row
+	var couponDiscount = 0;
+	if (window.vrcActiveCoupon) {
+		var _ac = window.vrcActiveCoupon;
+		var _subtotal = baseTotal + optTotal + oohTotal;
+		if (_ac.type === 1) {
+			couponDiscount = Math.round(_subtotal * parseFloat(_ac.value) / 100);
+		} else {
+			couponDiscount = Math.min(parseFloat(_ac.value), _subtotal);
+		}
+		if (couponDiscount > 0) {
+			rows += '<div class="cd-summary-row cd-summary-row-discount"><span>' + (_ac.label || 'Reducere') + '</span>'
+				+ '<span class="cd-summary-row-val cd-discount-val">\u2212' + cdCurrency + cdFmt(couponDiscount) + '</span></div>';
+		}
+	}
+
+	var total = baseTotal + optTotal + oohTotal - couponDiscount;
+	jQuery('#cd-summary-rows').html(rows);
+	jQuery('#cd-summary-total').text(cdCurrency + cdFmt(total));
+	$sum.addClass('is-visible');
+
+	cdHighlightTier(days);
+	cdCheckSavingsTip(days);
+}
+
+jQuery(function($) {
+	var _lp='', _lr='', _lph='', _ldh='';
+	function cdPoll() {
+		var p  = $('#pickupdate').val(),  r  = $('#releasedate').val();
+		var ph = $('#vrccomselph select').val() || '';
+		var dh = $('#vrccomseldh select').val() || '';
+		if (p!==_lp || r!==_lr || ph!==_lph || dh!==_ldh) {
+			_lp=p; _lr=r; _lph=ph; _ldh=dh;
+			cdUpdateSummary();
+			cdCheckOoh();
+		}
+	}
+	setInterval(cdPoll, 300);
+
+	$(document.body).on('change', '#vrccomselph select, #vrccomseldh select', function() {
+		setTimeout(cdCheckOoh, 50);
+		setTimeout(cdUpdateSummary, 50);
+	});
+
+	$(document.body).on('click', '.vrc-cdetails-cal-pickday', function() {
+		setTimeout(cdUpdateSummary, 400);
+	});
+});
+
+/* Convert date string + hour → unix timestamp (seconds) */
+function vrcDateToUnixTs(dateStr, hour) {
+	if (!dateStr) return 0;
+	var p = dateStr.split('/');
+	var y, m, d;
+	var fmt = cdDateFormat;
+	if (fmt === 'dd/mm/yy') {
+		d = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; y = parseInt(p[2], 10);
+	} else if (fmt === 'mm/dd/yy') {
+		m = parseInt(p[0], 10) - 1; d = parseInt(p[1], 10); y = parseInt(p[2], 10);
+	} else {
+		y = parseInt(p[0], 10); m = parseInt(p[1], 10) - 1; d = parseInt(p[2], 10);
+	}
+	return Math.floor(Date.UTC(y, m, d, parseInt(hour, 10) || 0, 0, 0) / 1000);
+}
+
+function vrcCleanNumber(snum) { if (snum.length > 1 && snum.substr(0,1) == '0') { return parseInt(snum.substr(1)); } return parseInt(snum); }
+
+function vrcValidateSearch() {
+	var pickDate = jQuery('#pickupdate').val();
+	var relDate  = jQuery('#releasedate').val();
+	if (!pickDate || !relDate) {
+		return false;
+	}
+
+	var pickH = parseInt(jQuery('#vrccomselph select').val(), 10) || 0;
+	var relH  = parseInt(jQuery('#vrccomseldh select').val(), 10) || 0;
+
+	var pickTs = vrcDateToUnixTs(pickDate, pickH);
+	var relTs  = vrcDateToUnixTs(relDate, relH);
+
+	if (!pickTs || !relTs || relTs <= pickTs) {
+		return false;
+	}
+
+	var days = Math.round((relTs - pickTs) / 86400);
+	jQuery('#vrc-pickup').val(pickTs);
+	jQuery('#vrc-release').val(relTs);
+	jQuery('#vrc-days').val(days);
+
+	return true;
+}
+
+function vrcShowRequestInfo() { jQuery("#vrcdialog-overlay").fadeIn(); vrcdialog_on = true; }
+function vrcHideRequestInfo() { jQuery("#vrcdialog-overlay").fadeOut(); vrcdialog_on = false; }
+
+function vrcValidateReqInfo() { 
+	if (document.getElementById('vrcf-inp').checked) return true; 
+	alert(cdTermsAlert);
+	return false; 
+}
+
+/* Gallery */
+var cdAllImages = [];
+function cdSetImage(idx) {
+	if (idx >= cdAllImages.length) return;
+	var mainEl = document.getElementById('cd-main-img-el');
+	var mainLink = document.getElementById('cd-main-link');
+	if (mainEl) mainEl.src = cdAllImages[idx];
+	if (mainLink) mainLink.href = cdAllImages[idx];
+	document.querySelectorAll('.cd-thumb').forEach(function(t) { t.classList.remove('active'); });
+	var thumb = document.querySelector('.cd-thumb[data-idx="' + idx + '"]');
+	if (thumb) thumb.classList.add('active');
+}
