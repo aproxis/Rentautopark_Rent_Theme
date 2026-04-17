@@ -1106,7 +1106,7 @@ jQuery(function(){
 		<!-- ═══ SECTION: Location ═══ -->
 		<?php if (is_array($places) && count($places) > 0): ?>
 		<div class="v3-section">
-		<div class="v3-section-label"><?php echo Text::_('VRPPLACE') ?: 'Location'; ?></div>
+		<div class="v3-section-label" id="cd-pickup-label"><?php echo Text::_('VRPPICKUPRETURN') ?: 'Pickup & Return'; ?></div>
 
 		<!-- Pickup location -->
 		<div class="v3-loc-field">
@@ -1167,7 +1167,7 @@ jQuery(function(){
 		<div class="v3-opt-row" id="cd-opt-row-<?php echo $_optId; ?>">
 			<div class="v3-opt-info">
 			<div class="v3-opt-name"><?php echo htmlspecialchars($_opt['name']); ?></div>
-			<div class="v3-opt-price"><?php echo $_optPriceLabel; ?><?php echo (int)$_opt['hmany'] === 1 ? ' · <span id="cd-opt-qty-'.$_optId.'">0</span> added' : ''; ?></div>
+			<div class="v3-opt-price"><?php echo $_optPriceLabel; ?></div>
 			</div>
 			<?php if ((int)$_opt['hmany'] === 1): ?>
 			<div class="v3-counter">
@@ -1197,7 +1197,7 @@ jQuery(function(){
 			<?php if ($hasGracePeriod): ?>
 			<div class="v3-ni">
 			<div class="v3-ni-k"><?php echo Text::_('VRCGRACEPERIOD') ?: 'Grace period'; ?></div>
-			<div class="v3-ni-v"><?php echo $graceHours; echo Text::_('VRC_GRACE_HRS') ?: ' h'; echo Text::_('VRCAFTERRETURN') ?: 'after return'; ?></div>
+			<div class="v3-ni-v"><?php echo $graceHours; echo Text::_('VRC_GRACE_HRS') ?: ' h';?> <?php echo Text::_('VRCADDTOPICKUP') ?: 'plus to Pickup time'; ?></div>
 			</div>
 			<?php endif; ?>
 			<div class="v3-ni" id="cd-km-notice">
