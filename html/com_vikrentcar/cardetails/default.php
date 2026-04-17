@@ -788,19 +788,47 @@ try {
 
 		<!-- Grace period progress bar -->
 		<?php if ($hasGracePeriod): ?>
-		<div class="v3-grace-bar" id="v3-grace-bar" style="display:none;">
+		<div class="v3-grace-bar" id="v3-grace-bar">
 		<div class="v3-grace-top">
 			<span class="v3-grace-label"><?php echo Text::_('VRCGRACEPERIOD') ?: 'Grace period'; ?></span>
 			<span class="v3-grace-time" id="v3-grace-time">
-			<?php echo $graceHours; ?>h <?php echo Text::_('VRCGRACEWINDOW') ?: 'window'; ?>
+			<?php
+				// Build a human-readable label: "28h" → "1 zi și 4 ore" style
+				if ($graceHours >= 24) {
+					$_gDays  = floor($graceHours / 24);
+					$_gExtra = $graceHours % 24;
+					if ($_gExtra > 0) {
+						$_graceSummary = $_gDays . (Text::_('VRC_GRACE_DAYS') ?: ' zi') . ' ' . Text::_('VRC_GRACE_AND') . ' ' . $_gExtra . (Text::_('VRC_GRACE_HRS') ?: ' h');
+					} else {
+						$_graceSummary = $_gDays . (Text::_('VRC_GRACE_DAYS') ?: ' zi');
+					}
+				} else {
+					$_graceSummary = $graceHours . (Text::_('VRC_GRACE_HRS') ?: ' h');
+				}
+				echo $_graceSummary;
+			?>
 			</span>
 		</div>
 		<div class="v3-grace-track"><div class="v3-grace-fill" id="v3-grace-fill"></div></div>
-		<span class="v3-grace-hint" id="cd-grace-returnby" style="display:none;"></span>
-		<div class="v3-grace-exceeded" id="cd-grace-exceeded">
-			<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" class="cd-grace-exc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-			<span class="cd-grace-exc-label" id="cd-grace-exc-label"></span>
+		<span class="v3-grace-hint cd-grace-returnby" id="cd-grace-returnby" style="display:none;"></span>
 		</div>
+		<?php endif; ?>
+
+		<!-- Grace exceeded warning (shown by JS when overage > grace window) -->
+		<?php if ($hasGracePeriod): ?>
+		<div class="cd-grace-exceeded" id="cd-grace-exceeded" style="display:none;">
+			<svg class="cd-grace-exc-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+			     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+			     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+				<line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+			</svg>
+			<div class="cd-grace-exc-body">
+				<span class="cd-grace-exc-label" id="cd-grace-exc-label"></span>
+				<span class="cd-grace-exc-hint"><?php echo htmlspecialchars(
+					Text::_('VRC_GRACE_EXCEEDED_HINT') ?: 'Returnați în limita perioadei de grație pentru a evita taxa suplimentară.'
+				); ?></span>
+			</div>
 		</div>
 		<?php endif; ?>
 
