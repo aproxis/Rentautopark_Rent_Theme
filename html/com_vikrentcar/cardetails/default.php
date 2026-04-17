@@ -1200,19 +1200,37 @@ try {
 		
 		var progressPct = 5;
 		var barColor = '#1D9E75';
+		var isExceeded = false;
 
 		var elapsedHours = (returnTs.getTime() - graceWindowStart) / 3600000;
 
-		if (elapsedHours >= <?php echo $graceHours; ?>) {
+		if (elapsedHours > <?php echo $graceHours; ?>) {
 			progressPct = 100;
 			barColor = '#E24B4A';
-		} else if (elapsedHours > 0) {
-			progressPct = (elapsedHours / <?php echo $graceHours; ?>) * 100;
+			isExceeded = true;
+		} else {
+			progressPct = Math.min(100, (elapsedHours / <?php echo $graceHours; ?>) * 100);
+			isExceeded = false;
 		}
-		
+
 		var fill = document.getElementById('v3-grace-fill');
+		var graceHint = document.getElementById('cd-grace-returnby');
+		var exceedWarning = document.getElementById('cd-grace-exceeded');
+		
 		if(fill){
 			fill.style.width = Math.max(5, Math.min(100, progressPct))+'%';
+			fill.style.background = barColor;
+		}
+		
+		if(isExceeded){
+			if(graceHint) graceHint.style.display = 'none';
+			if(exceedWarning) exceedWarning.style.display = 'flex';
+			window.cdGraceState = 'exceeded';
+		} else {
+			if(exceedWarning) exceedWarning.style.display = 'none';
+			if(graceHint && elapsedHours > 0) graceHint.style.display = 'block';
+			window.cdGraceState = 'ok';
+		}
 			fill.style.background = barColor;
 		}
 		
