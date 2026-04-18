@@ -133,18 +133,19 @@ if ($config) {
     $vrcTypeDeposit   = $config->get('typedeposit', 'pcent');
 } else {
     // Fallback: direct DB query
+    // Note: in this VikRentCar install, `param` = key name, `setting` = value
     try {
         $_dbo2 = JFactory::getDbo();
         $_dbo2->setQuery(
-            "SELECT `setting`, `param`
+            "SELECT `param`, `setting`
              FROM `#__vikrentcar_config`
-             WHERE `setting` IN ('paytotal', 'payaccpercent', 'typedeposit')"
+             WHERE `param` IN ('paytotal', 'payaccpercent', 'typedeposit')"
         );
-        $_cfgRows = $_dbo2->loadAssocList('setting');
+        $_cfgRows = $_dbo2->loadAssocList('param');
         if (!empty($_cfgRows)) {
-            if (isset($_cfgRows['paytotal']))      { $vrcPayTotal      = $_cfgRows['paytotal']['param']; }
-            if (isset($_cfgRows['payaccpercent'])) { $vrcPayAccPercent = (float)$_cfgRows['payaccpercent']['param']; }
-            if (isset($_cfgRows['typedeposit']))   { $vrcTypeDeposit   = $_cfgRows['typedeposit']['param']; }
+            if (isset($_cfgRows['paytotal']))      { $vrcPayTotal      = $_cfgRows['paytotal']['setting']; }
+            if (isset($_cfgRows['payaccpercent'])) { $vrcPayAccPercent = (float)$_cfgRows['payaccpercent']['setting']; }
+            if (isset($_cfgRows['typedeposit']))   { $vrcTypeDeposit   = $_cfgRows['typedeposit']['setting']; }
         }
     } catch (Exception $_eP) {
         // fallback to defaults already set above
@@ -154,16 +155,6 @@ if ($config) {
 // VikRentCar stores paytotal as '1' or 'yes' = require full payment, '0'/'' = allow partial
 $showReserveOption = (!in_array($vrcPayTotal, array('1', 'yes', 'true'), true) && $vrcPayAccPercent > 0);
 // ────────────────────────────────────────────────────────────────────────
-
-// ── DEBUG: remove before production ──────────────────────────────────────
-echo '<!-- [PAY-DEBUG]'
-    . ' config=' . ($config ? 'yes' : 'no')
-    . ' paytotal=' . var_export($vrcPayTotal, true)
-    . ' payaccpercent=' . var_export($vrcPayAccPercent, true)
-    . ' typedeposit=' . var_export($vrcTypeDeposit, true)
-    . ' showReserve=' . var_export($showReserveOption, true)
-    . ' -->';
-// ─────────────────────────────────────────────────────────────────────────
 
 $pitemid        = VikRequest::getInt('Itemid', '', 'request');
 $vrcdateformat  = VikRentCar::getDateFormat();
