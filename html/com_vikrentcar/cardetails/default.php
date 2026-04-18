@@ -120,29 +120,39 @@ try {
 
 // ── VikRentCar Partial Payment Config ────────────────────────────────────
 // paytotal: 'yes' = require full payment; anything else = allow deposit
-// payaccpercent: deposit amount (number)
+// payaccpercent: deposit amount/percent
 // typedeposit: 'pcent' = percent of total, 'fixed' = fixed amount in currency
 $vrcPayTotal      = 'yes';   // default: full payment required
-$vrcPayAccPercent = 20;      // default deposit %
+$vrcPayAccPercent = 0;       // default: no partial payment configured
 $vrcTypeDeposit   = 'pcent'; // default: percentage
 
-try {
-    $_dbo2 = JFactory::getDbo();
-    $_dbo2->setQuery(
-        "SELECT `setting`, `param`
-         FROM `#__vikrentcar_config`
-         WHERE `setting` IN ('paytotal', 'payaccpercent', 'typedeposit')"
-    );
-    $_cfgRows = $_dbo2->loadAssocList('setting');
-    if (!empty($_cfgRows)) {
-        if (isset($_cfgRows['paytotal']))      { $vrcPayTotal      = $_cfgRows['paytotal']['param']; }
-        if (isset($_cfgRows['payaccpercent'])) { $vrcPayAccPercent = (float)$_cfgRows['payaccpercent']['param']; }
-        if (isset($_cfgRows['typedeposit']))   { $vrcTypeDeposit   = $_cfgRows['typedeposit']['param']; }
+if ($config) {
+    // Use VRCFactory config — same mechanism VikRentCar itself uses internally
+    $vrcPayTotal      = $config->get('paytotal', 'yes');
+    $vrcPayAccPercent = (float)$config->get('payaccpercent', 0);
+    $vrcTypeDeposit   = $config->get('typedeposit', 'pcent');
+} else {
+    // Fallback: direct DB query
+    try {
+        $_dbo2 = JFactory::getDbo();
+        $_dbo2->setQuery(
+            "SELECT `setting`, `param`
+             FROM `#__vikrentcar_config`
+             WHERE `setting` IN ('paytotal', 'payaccpercent', 'typedeposit')"
+        );
+        $_cfgRows = $_dbo2->loadAssocList('setting');
+        if (!empty($_cfgRows)) {
+            if (isset($_cfgRows['paytotal']))      { $vrcPayTotal      = $_cfgRows['paytotal']['param']; }
+            if (isset($_cfgRows['payaccpercent'])) { $vrcPayAccPercent = (float)$_cfgRows['payaccpercent']['param']; }
+            if (isset($_cfgRows['typedeposit']))   { $vrcTypeDeposit   = $_cfgRows['typedeposit']['param']; }
+        }
+    } catch (Exception $_eP) {
+        // fallback to defaults already set above
     }
-} catch (Exception $_eP) {
-    // fallback to defaults already set above
 }
-$showReserveOption = ($vrcPayTotal !== 'yes');
+// Show Reserve option when: partial payment is allowed AND payaccpercent > 0
+// VikRentCar stores paytotal as '1' or 'yes' = require full payment, '0'/'' = allow partial
+$showReserveOption = (!in_array($vrcPayTotal, array('1', 'yes', 'true'), true) && $vrcPayAccPercent > 0);
 // ────────────────────────────────────────────────────────────────────────
 
 $pitemid        = VikRequest::getInt('Itemid', '', 'request');
