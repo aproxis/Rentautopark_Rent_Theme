@@ -1498,6 +1498,8 @@ jQuery(function(){
 		setTimeout(cdUpdateSummary, 100);
 		setTimeout(cdCheckOoh, 100);
 		setTimeout(function(){ cdFilterHourSelect('pickup'); cdFilterHourSelect('dropoff'); }, 200);
+		// Re-run grace bar AFTER cdFilterHourSelect has potentially reset times to baseline (12:00)
+		setTimeout(function(){ if(window.v3UpdateGraceBar) window.v3UpdateGraceBar(); }, 350);
 	}
 
 		function v3UpdateStrip(){
@@ -1693,6 +1695,9 @@ jQuery(function(){
                 });
             }
         });
+
+		// Expose grace bar updater so v3SyncToJQ can call it after cdFilterHourSelect settles
+		window.v3UpdateGraceBar = v3UpdateGraceBar;
 
 		// Hook: update grace bar when either pickup OR dropoff time changes
 		jQuery(document).on('change','#vrccomselph select, #vrccomseldh select',function(){ v3UpdateGraceBar(); });
