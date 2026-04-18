@@ -155,6 +155,16 @@ if ($config) {
 $showReserveOption = (!in_array($vrcPayTotal, array('1', 'yes', 'true'), true) && $vrcPayAccPercent > 0);
 // ────────────────────────────────────────────────────────────────────────
 
+// ── DEBUG: remove before production ──────────────────────────────────────
+echo '<!-- [PAY-DEBUG]'
+    . ' config=' . ($config ? 'yes' : 'no')
+    . ' paytotal=' . var_export($vrcPayTotal, true)
+    . ' payaccpercent=' . var_export($vrcPayAccPercent, true)
+    . ' typedeposit=' . var_export($vrcTypeDeposit, true)
+    . ' showReserve=' . var_export($showReserveOption, true)
+    . ' -->';
+// ─────────────────────────────────────────────────────────────────────────
+
 $pitemid        = VikRequest::getInt('Itemid', '', 'request');
 $vrcdateformat  = VikRentCar::getDateFormat();
 $nowtf          = VikRentCar::getTimeFormat();
