@@ -1601,15 +1601,11 @@ jQuery(function(){
 				if(v3BasePillText) pill.textContent = v3BasePillText;
 			}
 			window.cdGraceState = 'ok';
-			// "Return by" hint: only show when inside the grace window (0 < elapsedHours <= graceHours)
-			// If elapsedHours <= 0 the user is returning on time or early — no hint needed
+			// Always show "return by" hint when dates are selected and not exceeded —
+			// informs user of their no-charge deadline regardless of chosen time
 			if(graceHint) {
-				if(elapsedHours > 0) {
-					graceHint.innerHTML = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s at no extra charge"); ?>'.replace('%s', '<strong>'+dhStr+'</strong>');
-					graceHint.style.display = 'block';
-				} else {
-					graceHint.style.display = 'none';
-				}
+				graceHint.innerHTML = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s at no extra charge"); ?>'.replace('%s', '<strong>'+dhStr+'</strong>');
+				graceHint.style.display = 'block';
 			}
 		}
 		<?php endif; ?>

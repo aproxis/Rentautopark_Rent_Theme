@@ -18,43 +18,39 @@ function cdGetDays() {
 	if (!p || !r) return null;
 	try {
 		var fmt = cdDateFormat; // e.g. 'dd/mm/yy' or 'mm/dd/yy' or 'yy/mm/dd'
-		var d1 = jQuery.datepicker.parseDate(fmt, p);
-		var d2 = jQuery.datepicker.parseDate(fmt, r);
-		
+
+		// Parse midnight dates first (no hours) for calendar-day calculation
+		var d1m = jQuery.datepicker.parseDate(fmt, p);
+		var d2m = jQuery.datepicker.parseDate(fmt, r);
+
 		// Get hour values from selects
 		var pickHour = parseInt(jQuery('#vrccomselph select').val()) || 0;
 		var dropHour = parseInt(jQuery('#vrccomseldh select').val()) || 0;
-		
-		// Set the hours on the date objects
-		d1.setHours(pickHour, 0, 0, 0);
-		d2.setHours(dropHour, 0, 0, 0);
 
-		var diffMs   = d2 - d1;
-		var diffDays = Math.ceil(diffMs / 86400000);
+		// Build hour-adjusted timestamps for overage calculation
+		var d1 = new Date(d1m); d1.setHours(pickHour, 0, 0, 0);
+		var d2 = new Date(d2m); d2.setHours(dropHour, 0, 0, 0);
 
-		// Grace logic only applies when the rental duration has a fractional-day
-		// overage — i.e. diffMs is NOT an exact multiple of 24h.
-		// Exact multiples (same pickup/return hour) need no grace adjustment.
+		// Calendar days (midnight-to-midnight) = billing base, immune to hour diffs & DST.
+		// This mirrors the logic in v3UpdateGraceBar() in default.php exactly.
+		var calendarDays = Math.round((d2m - d1m) / 86400000);
+		var diffDays = calendarDays;
+
 		window.cdGraceState = 'none'; // 'none' | 'active' | 'exceeded'
-		if (cdGraceHours > 0 && diffDays >= 1) {
-			var exactDays = diffMs / 86400000; // e.g. 1.083 for 26h, 4.0 for 96h
-			var hasFraction = (Math.abs(exactDays - Math.round(exactDays)) > 0.0001);
+		if (cdGraceHours > 0 && calendarDays >= 1) {
+			// billingEnd = same clock-hour as pickup on the return calendar date
+			var billingEndTs = d1.getTime() + (calendarDays * 86400000);
+			// overageMs: negative = early return, 0 = exact, positive = overtime
+			var overageMs = d2.getTime() - billingEndTs;
 
-			if (hasFraction && diffDays > 1) {
-				// There is a fractional overage beyond a whole number of days
-				var floorDays = diffDays - 1;
-				var overageMs = diffMs - (floorDays * 86400000);
-				if (overageMs <= cdGraceHours * 3600000) {
-					// Overage fits within grace → reduce billed days by 1
-					diffDays = floorDays;
-					window.cdGraceState = 'active';
-				} else {
-					// Overage exceeds grace → warn user
-					window.cdGraceState = 'exceeded';
-				}
+			if (overageMs > cdGraceHours * 3600000) {
+				// Overtime exceeds grace window → extra day charged
+				window.cdGraceState = 'exceeded';
+				diffDays = calendarDays + 1;
 			} else {
-				// Exact day count or single day — grace window is available for return
+				// On time, early, or within grace window — no extra charge
 				window.cdGraceState = 'active';
+				diffDays = calendarDays;
 			}
 		}
 
