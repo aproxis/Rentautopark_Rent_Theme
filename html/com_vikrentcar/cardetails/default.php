@@ -92,14 +92,14 @@ $depositCurrency = $currencysymb;
 try {
     $_dbo = JFactory::getDbo();
     $_dbo->setQuery(
-        "SELECT `charge`, `val_pcent` 
+        "SELECT `charge`, `val_pcent`, `ch_disc`
          FROM `#__vikrentcar_gpayments`
          WHERE `file` = 'maibpayment' AND `published` = '1'
          LIMIT 1"
     );
     $maibPayment = $_dbo->loadAssoc();
 
-    if (!empty($maibPayment) && floatval($maibPayment['charge']) > 0) {
+    if (!empty($maibPayment) && (int)$maibPayment['ch_disc'] === 1 && floatval($maibPayment['charge']) > 0) {
         $depositAmount = floatval($maibPayment['charge']);
         
         // If percentage-based (val_pcent = 2), calculate from car price
@@ -1545,13 +1545,16 @@ jQuery(function(){
 			fill.style.background = barColor;
 		}
 		
+		var pill = document.getElementById('v3-dur-pill');
 		if(graceExceeded){
 			if(graceHint) graceHint.style.display = 'none';
 			if(exceedWarning) exceedWarning.style.display = 'flex';
+			if(pill) pill.classList.add('v3-dur-exceeded');
 			window.cdGraceState = 'exceeded';
 		} else {
 			if(exceedWarning) exceedWarning.style.display = 'none';
 			if(graceHint && elapsedHours > 0) graceHint.style.display = 'block';
+			if(pill) pill.classList.remove('v3-dur-exceeded');
 			window.cdGraceState = 'ok';
 		}
 			fill.style.background = barColor;
