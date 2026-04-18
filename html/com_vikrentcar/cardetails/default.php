@@ -1536,10 +1536,9 @@ jQuery(function(){
 		var returnTs = new Date(v3EndDate);
 		returnTs.setHours(dropHour, 0, 0, 0);
 		
-		var totalMs = returnTs - pickupTs;
-		var exactDays = totalMs / 86400000;
-		
-		var floorDays = Math.floor(exactDays);
+		// floorDays = pure calendar days (midnight-to-midnight), immune to DST & hour diffs
+		var floorDays = Math.round((v3EndDate - v3StartDate) / 864e5);
+		// billingEnd = same clock-hour as pickup but on the return calendar date
 		var graceWindowStart = pickupTs.getTime() + (floorDays * 86400000);
 		var graceWindowEnd   = graceWindowStart + (<?php echo $graceHours; ?> * 3600000);
 		
@@ -1551,13 +1550,12 @@ jQuery(function(){
 		var barColor = '#1D9E75';
 		var graceExceeded = false;
 
-		// Calculate elapsed hours since grace window start
+		// elapsedHours: negative = returning early, 0 = on time, positive = overtime
 		var elapsedHours;
 		if (floorDays === 0) {
-			// Sub-day rental: within first billing period
+			// Same calendar day — treat as within billing period (minLos safety net)
 			elapsedHours = 0;
 		} else {
-			// Multi-day: measure from end of billing period
 			elapsedHours = (returnTs.getTime() - graceWindowStart) / 3600000;
 		}
 
@@ -1675,6 +1673,11 @@ jQuery(function(){
                     if(v3StartDate) break;
                 }
                 cand.setDate(cand.getDate()+1);
+            }
+            // Navigate to the month of the first available date (may not be current month)
+            if(v3StartDate){
+                v3ViewYear = v3StartDate.getFullYear();
+                v3ViewMonth = v3StartDate.getMonth();
             }
             // Render calendar and wire nav buttons
             v3RenderCal();
