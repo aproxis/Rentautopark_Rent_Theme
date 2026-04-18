@@ -1308,6 +1308,8 @@ jQuery(function(){
 		<?php endif; ?>
 
 		<!-- ═══ SECTION: Payment method ═══ -->
+		<!-- Only shown when partial payment is configured (showReserveOption = true) -->
+		<?php if ($showReserveOption): ?>
 		<div class="v3-section">
 		<div class="v3-section-label"><?php echo Text::_('VRCPAYMETHOD') ?: 'Payment'; ?></div>
 		<div class="v3-pay-opt v3-pay-sel" id="v3-pay-full" onclick="v3SelPay('full')">
@@ -1320,7 +1322,6 @@ jQuery(function(){
 			</div>
 			<span class="v3-pay-amt" id="v3-pay-full-amt">—</span>
 		</div>
-		<?php if ($showReserveOption): ?>
 		<div class="v3-pay-opt" id="v3-pay-reserve" onclick="v3SelPay('reserve')">
 			<div class="v3-pay-left">
 			<div class="v3-pay-radio"><div class="v3-pay-dot"></div></div>
@@ -1331,8 +1332,8 @@ jQuery(function(){
 			</div>
 			<span class="v3-pay-amt" id="v3-pay-reserve-amt">—</span>
 		</div>
-		<?php endif; ?>
 		</div>
+		<?php endif; ?>
 
 		<!-- Submit -->
 		<button type="button"
@@ -1740,10 +1741,12 @@ jQuery(function(){
 		});
 
 		/* ── Coupon toggle functionality ──────────────────────────────── */
-		jQuery('#v3-coupon-toggle').on('click', function(e) {
-			e.preventDefault();
-			jQuery('#v3-promo-row').slideToggle();
-			jQuery('#vrc-coupon-code').focus();
+		jQuery(function() {
+			jQuery(document).on('click', '#v3-coupon-toggle', function(e) {
+				e.preventDefault();
+				jQuery('#v3-promo-row').slideToggle(200);
+				jQuery('#vrc-coupon-code').focus();
+			});
 		});
 
 		/* ── OOH + Optionals + Live Summary JS ───────────────────────── */

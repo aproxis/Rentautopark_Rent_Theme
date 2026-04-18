@@ -1292,6 +1292,8 @@ body.vrc-modal-open {
 .v3-deposit-notice svg { flex-shrink: 0; color: #FE5001; }
 
 /* Coupon */
+.v3-coupon-toggle-link { font-size: 12px; color: #6b7280; text-decoration: underline; cursor: pointer; display: inline-block; }
+.v3-coupon-toggle-link:hover { color: #374151; }
 .v3-promo-row { display: flex; gap: 8px; margin-bottom: 8px; }
 .v3-promo-in { flex: 1; background: #fff; border: .5px solid rgba(0,0,0,.12); border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #1a1a1a; outline: none; font-family: inherit; }
 .v3-promo-in:focus { border-color: #FE5001; }
