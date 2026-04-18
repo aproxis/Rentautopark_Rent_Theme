@@ -288,6 +288,20 @@ function cdUpdateSummary() {
 	// Mirror total to payment button amount
 	jQuery('#v3-pay-full-amt').text(cdCurrency + cdFmt(total));
 	
+	// Compute and update Reserve payment option amount dynamically
+	if (typeof cdPayAccPercent !== 'undefined' && jQuery('#v3-pay-reserve').length) {
+		var reserveAmt;
+		if (typeof cdTypeDeposit !== 'undefined' && cdTypeDeposit === 'fixed') {
+			reserveAmt = parseFloat(cdPayAccPercent);
+		} else {
+			// percentage (default)
+			reserveAmt = Math.round(total * parseFloat(cdPayAccPercent) / 100);
+		}
+		var restLabel = (typeof cdPayNowRestLabel !== 'undefined') ? cdPayNowRestLabel : 'now · rest on pickup';
+		jQuery('#v3-pay-reserve-amt').text(cdCurrency + cdFmt(reserveAmt));
+		jQuery('#v3-pay-res-desc').text(cdCurrency + cdFmt(reserveAmt) + ' ' + restLabel);
+	}
+	
 	// Show/hide deposit notice based on whether we have a deposit
 	var $depositNotice = jQuery('#v3-deposit-notice');
 	if ($depositNotice.length && days) {

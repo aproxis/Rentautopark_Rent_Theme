@@ -118,6 +118,33 @@ try {
 }
 // ────────────────────────────────────────────────────────────────────────
 
+// ── VikRentCar Partial Payment Config ────────────────────────────────────
+// paytotal: 'yes' = require full payment; anything else = allow deposit
+// payaccpercent: deposit amount (number)
+// typedeposit: 'pcent' = percent of total, 'fixed' = fixed amount in currency
+$vrcPayTotal      = 'yes';   // default: full payment required
+$vrcPayAccPercent = 20;      // default deposit %
+$vrcTypeDeposit   = 'pcent'; // default: percentage
+
+try {
+    $_dbo2 = JFactory::getDbo();
+    $_dbo2->setQuery(
+        "SELECT `setting`, `param`
+         FROM `#__vikrentcar_config`
+         WHERE `setting` IN ('paytotal', 'payaccpercent', 'typedeposit')"
+    );
+    $_cfgRows = $_dbo2->loadAssocList('setting');
+    if (!empty($_cfgRows)) {
+        if (isset($_cfgRows['paytotal']))      { $vrcPayTotal      = $_cfgRows['paytotal']['param']; }
+        if (isset($_cfgRows['payaccpercent'])) { $vrcPayAccPercent = (float)$_cfgRows['payaccpercent']['param']; }
+        if (isset($_cfgRows['typedeposit']))   { $vrcTypeDeposit   = $_cfgRows['typedeposit']['param']; }
+    }
+} catch (Exception $_eP) {
+    // fallback to defaults already set above
+}
+$showReserveOption = ($vrcPayTotal !== 'yes');
+// ────────────────────────────────────────────────────────────────────────
+
 $pitemid        = VikRequest::getInt('Itemid', '', 'request');
 $vrcdateformat  = VikRentCar::getDateFormat();
 $nowtf          = VikRentCar::getTimeFormat();
@@ -1282,16 +1309,16 @@ jQuery(function(){
 			</div>
 			<span class="v3-pay-amt" id="v3-pay-full-amt">—</span>
 		</div>
-		<?php if ($showDeposit && $depositAmount > 0): ?>
+		<?php if ($showReserveOption): ?>
 		<div class="v3-pay-opt" id="v3-pay-reserve" onclick="v3SelPay('reserve')">
 			<div class="v3-pay-left">
 			<div class="v3-pay-radio"><div class="v3-pay-dot"></div></div>
 			<div>
 				<div class="v3-pay-name"><?php echo Text::_('VRCPAYRESERVE') ?: 'Reserve'; ?> <span class="v3-pay-tag"><?php echo Text::_('VRCPAYRESERVE_TAG') ?: 'Popular'; ?></span></div>
-				<div class="v3-pay-desc" id="v3-pay-res-desc"><?php echo $depositCurrency . $depositAmount; ?> <?php echo Text::_('VRCPAYNOW_REST') ?: 'now · rest on pickup'; ?></div>
+				<div class="v3-pay-desc" id="v3-pay-res-desc">—</div>
 			</div>
 			</div>
-			<span class="v3-pay-amt"><?php echo $depositCurrency . $depositAmount; ?></span>
+			<span class="v3-pay-amt" id="v3-pay-reserve-amt">—</span>
 		</div>
 		<?php endif; ?>
 		</div>
@@ -1744,6 +1771,10 @@ jQuery(function(){
 		};
 		var cdLabelBasePrice = '<?php echo addslashes(Text::_("VRPRICE") ?: "Preț de bază"); ?>';
 		var cdTermsAlert = '<?php echo addslashes(Text::_('VRFILLALL')); ?>';
+		/* ── Reserve / Partial payment config (from VikRentCar settings) ── */
+		var cdPayAccPercent = <?php echo (float)$vrcPayAccPercent; ?>;
+		var cdTypeDeposit   = '<?php echo addslashes($vrcTypeDeposit); ?>';
+		var cdPayNowRestLabel = '<?php echo addslashes(Text::_('VRCPAYNOW_REST') ?: 'now · rest on pickup'); ?>';
 		</script>
 
 		<script type="text/javascript">
