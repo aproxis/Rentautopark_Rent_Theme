@@ -1580,6 +1580,7 @@ jQuery(function(){
 		
 		var pill = document.getElementById('v3-dur-pill');
 		if(graceExceeded){
+			// Past grace window: show exceeded warning, hide "return by" hint
 			if(graceHint) graceHint.style.display = 'none';
 			if(exceedWarning) exceedWarning.style.display = 'flex';
 			if(pill) {
@@ -1593,23 +1594,23 @@ jQuery(function(){
 			}
 			window.cdGraceState = 'exceeded';
 		} else {
+			// Within billing period or early return — hide exceeded warning
 			if(exceedWarning) exceedWarning.style.display = 'none';
-			if(graceHint && elapsedHours > 0) graceHint.style.display = 'block';
 			if(pill) {
 				pill.classList.remove('v3-dur-exceeded');
-				// Restore base pill text (set by v3UpdateStrip or carry forward)
 				if(v3BasePillText) pill.textContent = v3BasePillText;
 			}
 			window.cdGraceState = 'ok';
-		}
-			fill.style.background = barColor;
-		
-		var hint = document.getElementById('cd-grace-returnby');
-		if(hint){ 
-			hint.innerHTML = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s at no extra charge"); ?>'.replace('%s', '<strong>'+dhStr+'</strong>'); 
-			// Remove any display:none added by polling function
-			hint.style.removeProperty('display');
-			hint.style.display='block'; 
+			// "Return by" hint: only show when inside the grace window (0 < elapsedHours <= graceHours)
+			// If elapsedHours <= 0 the user is returning on time or early — no hint needed
+			if(graceHint) {
+				if(elapsedHours > 0) {
+					graceHint.innerHTML = '<?php echo addslashes(Text::_("VRC_GRATUITY_RETURNBY") ?: "Return by %s at no extra charge"); ?>'.replace('%s', '<strong>'+dhStr+'</strong>');
+					graceHint.style.display = 'block';
+				} else {
+					graceHint.style.display = 'none';
+				}
+			}
 		}
 		<?php endif; ?>
 		}
