@@ -284,6 +284,18 @@ function cdUpdateSummary() {
 	var total = baseTotal + optTotal + oohTotal - couponDiscount;
 	jQuery('#cd-summary-rows').html(rows);
 	jQuery('#cd-summary-total').text(cdCurrency + cdFmt(total));
+	
+	// Mirror total to payment button amount
+	jQuery('#v3-pay-full-amt').text(cdCurrency + cdFmt(total));
+	
+	// Show/hide deposit notice based on whether we have a deposit
+	var $depositNotice = jQuery('#v3-deposit-notice');
+	if ($depositNotice.length && days) {
+		$depositNotice.show();
+	} else {
+		$depositNotice.hide();
+	}
+	
 	$sum.addClass('is-visible');
 
 	cdHighlightTier(days);

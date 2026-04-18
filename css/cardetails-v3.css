@@ -1207,6 +1207,7 @@ body.vrc-modal-open {
 .v3-ds-val { font-size: 14px; font-weight: 500; color: #1a1a1a; white-space: nowrap; }
 .v3-ds-sep { color: #9ca3af; font-size: 16px; }
 .v3-dur-pill { background: rgba(254,80,1,.1); border: .5px solid rgba(254,80,1,.25); border-radius: 20px; padding: 3px 10px; font-size: 12px; color: #FE5001; font-weight: 500; white-space: nowrap; }
+.v3-dur-pill.v3-dur-exceeded { background: rgba(239,68,68,.1); border-color: rgba(239,68,68,.3); color: #ef4444; }
 
 /* Savings nudge */
 .v3-save-nudge { background: #E1F5EE; border: .5px solid #9FE1CB; border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
@@ -1344,7 +1345,7 @@ body.vrc-modal-open {
   .v3-pay-radio { border-color: rgba(255,255,255,.2); }
   .v3-pay-desc, .v3-pay-amt, .v3-opt-price, .v3-ni-k, .v3-ooh-dot+span { color: #9ca3af; }
   .v3-promo-in { background: #1c1b19; border-color: rgba(255,255,255,.12); color: #f0f0f0; }
-  .v3-promo-ap { border-color: rgba(255,255,255,.2); color: #f0f0f0; }
+  .v3-promo-ap { background: #242424; border-color: rgba(255,255,255,.2); color: #f0f0f0; }
   .v3-promo-ap:hover { background: #242424; }
   .v3-offhours-banner { background: #242424; }
   .cd-summary-row { color: #9ca3af; }

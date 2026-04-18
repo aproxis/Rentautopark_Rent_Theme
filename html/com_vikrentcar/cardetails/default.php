@@ -1236,23 +1236,27 @@ jQuery(function(){
 		</div>
 
 		<div id="cd-summary-rows" class="v3-pr-rows"></div>
+		
+		<!-- Deposit notice (moved inside summary, before total) -->
+		<?php if ($showDeposit): ?>
+		<div class="v3-deposit-notice" id="v3-deposit-notice" style="display:none;">
+		<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+		<span><?php echo Text::_('VRCDEPOSITLABEL') ?: 'Security deposit:'; ?> <strong id="v3-deposit-amt"><?php echo $depositAmount . ' ' . $depositCurrency; ?></strong> — <?php echo Text::_('VRCDEPOSITRETURNED') ?: 'returned on car return'; ?></span>
+		</div>
+		<?php endif; ?>
+		
 		<div class="v3-pr-row v3-pr-total">
 			<span><?php echo Text::_('VRTOTAL') ?: 'Total'; ?></span>
 			<span class="v3-pr-total-amt" id="cd-summary-total"></span>
 		</div>
 		</div>
 
-		<!-- Deposit notice -->
-		<?php if ($showDeposit): ?>
-		<div class="v3-deposit-notice">
-		<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-		<span><?php echo Text::_('VRCDEPOSITLABEL') ?: 'Security deposit:'; ?> <strong><?php echo $depositAmount . ' ' . $depositCurrency; ?></strong> — <?php echo Text::_('VRCDEPOSITRETURNED') ?: 'returned on car return'; ?></span>
-		</div>
-		<?php endif; ?>
-
-		<!-- Coupon -->
+		<!-- Coupon (hidden by default, revealed by toggle) -->
 		<?php if (VikRentCar::couponsEnabled()): ?>
-		<div class="v3-promo-row">
+		<div style="margin-top: 8px; margin-bottom: 12px;">
+			<a href="javascript:void(0);" id="v3-coupon-toggle" class="v3-coupon-toggle-link"><?php echo Text::_('VRCHAVEACOUPON') ?: 'Have a coupon?'; ?></a>
+		</div>
+		<div class="v3-promo-row" id="v3-promo-row" style="display:none;">
 		<input type="text" id="vrc-coupon-code" name="_couponcode"
 				class="v3-promo-in"
 				placeholder="<?php echo Text::_('VRCHAVEACOUPON') ?: 'Promo code'; ?>"
@@ -1692,6 +1696,13 @@ jQuery(function(){
 				}
 				cdUpdateSummary();
 			});
+		});
+
+		/* ── Coupon toggle functionality ──────────────────────────────── */
+		jQuery('#v3-coupon-toggle').on('click', function(e) {
+			e.preventDefault();
+			jQuery('#v3-promo-row').slideToggle();
+			jQuery('#vrc-coupon-code').focus();
 		});
 
 		/* ── OOH + Optionals + Live Summary JS ───────────────────────── */
