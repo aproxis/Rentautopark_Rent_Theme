@@ -1385,6 +1385,7 @@ jQuery(function(){
 	(function(){
 		var v3StartDate = null, v3EndDate = null, v3Selecting = false;
 		var v3ViewYear, v3ViewMonth;
+		var v3BasePillText = ''; // stores pill text for the un-exceeded state (restored in v3UpdateGraceBar)
 		var v3Today = new Date(); v3Today.setHours(0,0,0,0);
 		v3ViewYear = v3Today.getFullYear(); v3ViewMonth = v3Today.getMonth();
 
@@ -1508,6 +1509,7 @@ jQuery(function(){
 		if(v3StartDate && v3EndDate){
 			var days = Math.round((v3EndDate-v3StartDate)/864e5);
 			pill.textContent = days+(days===1?' <?php echo Text::_("VRCSEARCHDAY"); ?>'  :' <?php echo Text::_("VRCSEARCHDAYS"); ?>');
+			v3BasePillText = pill.textContent;
 			pill.style.display='';
 			v3CheckSavingsNudge(days);
 			v3UpdateGraceBar();
@@ -1582,12 +1584,24 @@ jQuery(function(){
 		if(graceExceeded){
 			if(graceHint) graceHint.style.display = 'none';
 			if(exceedWarning) exceedWarning.style.display = 'flex';
-			if(pill) pill.classList.add('v3-dur-exceeded');
+			if(pill) {
+				pill.classList.add('v3-dur-exceeded');
+				// Show billable days (+1 extra day charged for exceeding grace period)
+				if(v3StartDate && v3EndDate) {
+					var _bd = Math.round((v3EndDate - v3StartDate) / 864e5) + 1;
+					var _dw = typeof cdDescDaysWord !== 'undefined' ? cdDescDaysWord : (v3BasePillText.replace(/^\d+\s*/, '') || '');
+					pill.textContent = _bd + ' ' + _dw;
+				}
+			}
 			window.cdGraceState = 'exceeded';
 		} else {
 			if(exceedWarning) exceedWarning.style.display = 'none';
 			if(graceHint && elapsedHours > 0) graceHint.style.display = 'block';
-			if(pill) pill.classList.remove('v3-dur-exceeded');
+			if(pill) {
+				pill.classList.remove('v3-dur-exceeded');
+				// Restore base pill text (set by v3UpdateStrip or carry forward)
+				if(v3BasePillText) pill.textContent = v3BasePillText;
+			}
 			window.cdGraceState = 'ok';
 		}
 			fill.style.background = barColor;
