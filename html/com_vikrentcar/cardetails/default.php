@@ -319,6 +319,26 @@ if (is_array($busy) && count($busy) > 0) {
 
 $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''));
 
+// ── Busy periods for JS hour filtering ──────────────────────────────────────
+// Each entry carries the date string (Y-m-d, server-local timezone, matching
+// how VikRentCar builds $push_disabled_in) plus the hour of pickup/return.
+// This avoids any PHP↔JS timezone mismatch because the date string is resolved
+// on the server, exactly like the disabled-dates logic above.
+$busyPeriods = array();
+if (is_array($busy)) {
+	foreach ($busy as $_bp) {
+		$_bpFromInfo = getdate($_bp['ritiro']);
+		$_bpToInfo   = getdate($_bp['realback']);
+		$busyPeriods[] = array(
+			'fromDate' => date('Y-m-d', $_bp['ritiro']),
+			'fromHour' => (int)$_bpFromInfo['hours'],
+			'toDate'   => date('Y-m-d', $_bp['realback']),
+			'toHour'   => (int)$_bpToInfo['hours'],
+		);
+	}
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 // ── Price tiers ─────────────────────────────────────────────────────────────
 $priceTiers    = array();
 $minRentalDays = 1;
@@ -964,11 +984,11 @@ function vrcValidateCtd(date){var m=date.getMonth(),wd=date.getDay();if(vrcFullO
 function vrcInitElems(){if(typeof vrc_wopening_pick==='undefined'){return true;}vrc_hopening_pick=jQuery('#vrccomselph').find('select').clone();vrc_hopening_drop=jQuery('#vrccomseldh').find('select').clone();}
 jQuery(function(){
 	vrcInitElems();
-	jQuery('#pickupdate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabled," : "beforeShowDay:vrcIsDayFullIn,") . "onSelect:function(selectedDate){" . ($totrestrictions > 0 ? "vrcSetMinDropoffDate();" : $forcedropday) . "vrcLocationWopening('pickup'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100);}});
+	jQuery('#pickupdate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabled," : "beforeShowDay:vrcIsDayFullIn,") . "onSelect:function(selectedDate){" . ($totrestrictions > 0 ? "vrcSetMinDropoffDate();" : $forcedropday) . "vrcLocationWopening('pickup'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100); setTimeout(function(){ cdFilterHourSelect('pickup'); }, 150);}});
 	jQuery('#pickupdate').datepicker('option','dateFormat','" . $juidf . "');
 	jQuery('#pickupdate').datepicker('option','minDate','" . VikRentCar::getMinDaysAdvance() . "d');
 	jQuery('#pickupdate').datepicker('option','maxDate','" . VikRentCar::getMaxDateFuture() . "');
-	jQuery('#releasedate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabledDropoff," : "beforeShowDay:vrcIsDayFullOut,") . "onSelect:function(selectedDate){vrcLocationWopening('dropoff'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100);}});
+	jQuery('#releasedate').datepicker({showOn:'focus'," . (count($wdaysrestrictions) > 0 || count($wdaysrestrictionsrange) > 0 ? "beforeShowDay:vrcIsDayDisabledDropoff," : "beforeShowDay:vrcIsDayFullOut,") . "onSelect:function(selectedDate){vrcLocationWopening('dropoff'); setTimeout(cdUpdateSummary, 100); setTimeout(cdCheckOoh, 100); setTimeout(function(){ cdFilterHourSelect('dropoff'); }, 150);}});
 	jQuery('#releasedate').datepicker('option','dateFormat','" . $juidf . "');
 	jQuery('#releasedate').datepicker('option','minDate','" . VikRentCar::getMinDaysAdvance() . "d');
 	jQuery('#releasedate').datepicker('option','maxDate','" . VikRentCar::getMaxDateFuture() . "');
@@ -1473,10 +1493,11 @@ jQuery(function(){
 				try{ jQuery('#releasedate').datepicker('setDate', v3EndDate); }catch(e){}
 			}
 			if(typeof vrcSetMinDropoffDate!=='undefined') vrcSetMinDropoffDate();
-			if(typeof vrcLocationWopening!=='undefined') vrcLocationWopening('pickup');
-			setTimeout(cdUpdateSummary, 100);
-			setTimeout(cdCheckOoh, 100);
-		}
+		if(typeof vrcLocationWopening!=='undefined') vrcLocationWopening('pickup');
+		setTimeout(cdUpdateSummary, 100);
+		setTimeout(cdCheckOoh, 100);
+		setTimeout(function(){ cdFilterHourSelect('pickup'); cdFilterHourSelect('dropoff'); }, 200);
+	}
 
 		function v3UpdateStrip(){
 		var startEl = document.getElementById('v3-ds-start');
@@ -1792,6 +1813,18 @@ jQuery(function(){
 		var cdPayAccPercent = <?php echo (float)$vrcPayAccPercent; ?>;
 		var cdTypeDeposit   = '<?php echo addslashes($vrcTypeDeposit); ?>';
 		var cdPayNowRestLabel = '<?php echo addslashes(Text::_('VRCPAYNOW_REST') ?: 'now · rest on pickup'); ?>';
+
+		/* ── Hour-filtering for booking constraints ───────────────────── */
+		// cdBusyPeriods: each entry = {fromDate:'Y-m-d', fromHour:int, toDate:'Y-m-d', toHour:int}
+		// Using server-resolved date strings avoids PHP↔JS timezone mismatch.
+		var cdBusyPeriods   = <?php echo json_encode($busyPeriods); ?>;
+		var cdCarUnits      = <?php echo (int)$car['units']; ?>;
+		// Preparation gap in hours between one booking's return and the next pickup.
+		// Change this value to adjust the buffer time required between rentals.
+		var cdPrepHours     = 2;
+		// Baseline full store-hours HTML — cdFilterHourSelect restores from this
+		// before applying constraints, so switching to a free date shows all hours.
+		var cdPickHoursHtml = <?php echo json_encode($hours); ?>;
 		</script>
 
 		<script type="text/javascript">
@@ -1921,6 +1954,7 @@ jQuery(function(){
 						if (typeof vrcSetMinDropoffDate !== 'undefined') { vrcSetMinDropoffDate(); }
 					}
 					setTimeout(cdUpdateSummary, 200);
+				setTimeout(function(){ cdFilterHourSelect('pickup'); cdFilterHourSelect('dropoff'); }, 600);
 				}
 				jQuery('#vrccomselph select').val(12).trigger('chosen:updated');
 				jQuery('#vrccomseldh select').val(12).trigger('chosen:updated');

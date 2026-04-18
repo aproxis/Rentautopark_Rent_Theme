@@ -316,6 +316,84 @@ function cdUpdateSummary() {
 	cdCheckSavingsTip(days);
 }
 
+/**
+ * cdFilterHourSelect — removes unavailable hour options from the pickup or dropoff
+ * time <select> based on existing bookings on the selected date.
+ *
+ * For pickup:  any booking returning on that day means pickup can only start
+ *              at (returnHour + cdPrepHours) or later.
+ * For dropoff: any booking starting on that day means dropoff must be at
+ *              (startHour - cdPrepHours) or earlier.
+ *
+ * When the selected date has no conflicting bookings, the full store-hours list
+ * (cdPickHoursHtml) is restored automatically.
+ *
+ * Requires (from default.php):
+ *   cdBusyPeriods   — array of {fromDate:'Y-m-d', fromHour, toDate:'Y-m-d', toHour}
+ *   cdPrepHours     — integer gap in hours between return and next pickup (default 2)
+ *   cdPickHoursHtml — full baseline <option> HTML for all store hours
+ *   cdDateFormat    — jQuery UI date format string (e.g. 'dd/mm/yy')
+ */
+function cdFilterHourSelect(mode) {
+	if (typeof cdBusyPeriods === 'undefined' || typeof cdPickHoursHtml === 'undefined') return;
+
+	var isPickup = (mode === 'pickup');
+	var $sel = jQuery(isPickup ? '#vrccomselph select' : '#vrccomseldh select');
+	if (!$sel.length) return;
+
+	// ── Always restore full baseline hours first ─────────────────────────────
+	$sel.html(cdPickHoursHtml);
+
+	var dateStr = jQuery(isPickup ? '#pickupdate' : '#releasedate').val();
+	if (!dateStr || !cdBusyPeriods.length) return; // no date or no bookings → done
+
+	// ── Parse selected date → 'Y-m-d' string (matches PHP date('Y-m-d')) ────
+	var fmt = (typeof cdDateFormat !== 'undefined') ? cdDateFormat : 'dd/mm/yy';
+	var selDate;
+	try { selDate = jQuery.datepicker.parseDate(fmt, dateStr); } catch (e) { return; }
+	var ymd = selDate.getFullYear()
+		+ '-' + ('0' + (selDate.getMonth() + 1)).slice(-2)
+		+ '-' + ('0' + selDate.getDate()).slice(-2);
+
+	var prep = parseInt(cdPrepHours, 10) || 2;
+
+	// ── Compute constraint from busy periods ─────────────────────────────────
+	var minPickupHour  = -1;  // pickup must be ≥ this (inclusive)
+	var maxDropoffHour = 24;  // dropoff must be ≤ this (inclusive)
+	var constrained    = false;
+
+	for (var i = 0; i < cdBusyPeriods.length; i++) {
+		var p = cdBusyPeriods[i];
+		if (isPickup && p.toDate === ymd) {
+			// A booking returns on this day → new pickup ≥ returnHour + prep
+			var earliest = p.toHour + prep;
+			if (earliest > minPickupHour) { minPickupHour = earliest; constrained = true; }
+		} else if (!isPickup && p.fromDate === ymd) {
+			// A booking starts on this day → new dropoff ≤ startHour - prep
+			var latest = p.fromHour - prep;
+			if (latest < maxDropoffHour) { maxDropoffHour = latest; constrained = true; }
+		}
+	}
+
+	if (!constrained) return; // date is fully free — baseline already restored above
+
+	// ── Remove unavailable <option> elements ─────────────────────────────────
+	var prevVal = parseInt($sel.val(), 10);
+
+	$sel.find('option').each(function () {
+		var h = parseInt(jQuery(this).val(), 10);
+		if (isPickup  && h < minPickupHour)  { jQuery(this).remove(); }
+		if (!isPickup && h > maxDropoffHour) { jQuery(this).remove(); }
+	});
+
+	// ── Auto-select first remaining option if previous value was removed ─────
+	if ($sel.find('option[value="' + prevVal + '"]').length === 0) {
+		$sel.find('option:first').prop('selected', true);
+		setTimeout(cdUpdateSummary, 50);
+		setTimeout(cdCheckOoh, 50);
+	}
+}
+
 jQuery(function($) {
 	var _lp='', _lr='', _lph='', _ldh='';
 	function cdPoll() {
