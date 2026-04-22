@@ -195,11 +195,12 @@ function cdUpdateSummary() {
 		$overLimitRow.removeClass('disabled');
 	}
 
-	// KM calculation ONLY - NO TEXT SETTING IN JS
+	// KM calculation ONLY - update actual number inside span
 	if (!isUnlimitedActive && days) {
 		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt(jQuery('#cd-km-value').data('km-per-day')) || 200;
-		window.currentTotalKm = days * kmPerDay;
-		// PHP renders the text, JS only provides number calculation
+		var totalKm = days * kmPerDay;
+		// Only update the number part, PHP handles all labels and translation
+		jQuery('#cd-km-value-normal').text(totalKm + ' km total');
 	}
 
 	if (!days) { $sum.removeClass('is-visible'); return; }
