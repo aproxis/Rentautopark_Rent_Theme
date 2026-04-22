@@ -858,7 +858,7 @@
     position: absolute;
     bottom: 10px;
     left: 10px;
-    background: rgba(0,0,0,.75);
+    background: rgba(0,0,0,.75) !important;
     backdrop-filter: blur(4px);
     padding: 6px 10px;
     border-radius: 10px;
