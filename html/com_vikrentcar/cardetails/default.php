@@ -1618,26 +1618,60 @@ jQuery(function(){
 		<?php endif; ?>
 		}
 
-		function v3CheckSavingsNudge(days){
-		if(!window.cdRateByDay) return;
-		var keys = Object.keys(cdRateByDay).map(Number).sort(function(a,b){return a-b;});
-		var nextTier = null;
-		for(var i=0;i<keys.length;i++){ if(keys[i]>days){ nextTier={days:keys[i],price:cdRateByDay[keys[i]]}; break; } }
-		var nudge = document.getElementById('v3-save-nudge');
-		if(!nudge) return;
-		if(!nextTier){ nudge.style.display='none'; return; }
-		var extra = nextTier.days - days;
-		var curRate = cdRateByDay[keys.filter(function(k){return k<=days;}).pop()||keys[0]];
-		var curTotal = curRate * days;
-		var newTotal = nextTier.price * nextTier.days;
-		if(newTotal < curTotal){
-			document.getElementById('v3-sn-title').textContent = '<?php echo addslashes(Text::_("VRCSAVINGSTIP_TITLE") ?: "Rent more, pay less"); ?>';
-			document.getElementById('v3-sn-body').textContent = 'Add '+extra+' more day'+(extra>1?'s':'')+' — €'+nextTier.price+'/day rate. Total: €'+newTotal+' (save €'+(curTotal-newTotal)+')';
-			var btn = document.getElementById('v3-sn-btn');
-			btn.textContent = 'Add '+extra+' day'+(extra>1?'s':'')+' → €'+newTotal+' total';
-			btn.onclick = function(){ v3ApplyNudge(nextTier.days); };
-			nudge.style.display='block';
-		} else { nudge.style.display='none'; }
+		function v3CheckSavingsNudge(days) {
+			days = parseInt(days, 10);
+			var nudgeEl = document.getElementById('v3-save-nudge');
+			if (!nudgeEl) return;
+			if (!days || !window.cdTiers || !cdTiers.length) {
+				nudgeEl.style.display = 'none';
+				return;
+			}
+
+			// Find current tier
+			var currentTierIdx = -1;
+			for (var i = 0; i < cdTiers.length; i++) {
+				if (days >= cdTiers[i].from && days <= cdTiers[i].to) {
+					currentTierIdx = i;
+					break;
+				}
+			}
+
+			// No match or already in last tier
+			if (currentTierIdx === -1 || currentTierIdx >= cdTiers.length - 1) {
+				nudgeEl.style.display = 'none';
+				return;
+			}
+
+			var nextTier = cdTiers[currentTierIdx + 1];
+
+			// Only show when exactly 1 day away from next tier
+			if (days + 1 !== nextTier.from) {
+				nudgeEl.style.display = 'none';
+				return;
+			}
+
+			var currentRate = cdTiers[currentTierIdx].rate;
+			var nextRate    = nextTier.rate;
+			// e.g. 4 days × 33 = 132  vs  4 days × 30 = 120
+			var wouldPay    = currentRate * nextTier.from;
+			var willPay     = nextRate    * nextTier.from;
+			var savings     = Math.round(wouldPay - willPay);
+
+			if (savings <= 0) {
+				nudgeEl.style.display = 'none';
+				return;
+			}
+
+			document.getElementById('v3-sn-title').textContent =
+				'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
+			document.getElementById('v3-sn-body').textContent =
+				'Preț pentru ' + nextTier.from + ' zile: ' +
+				cdCurrency + cdFmt(willPay) +
+				' (în loc de ' + cdCurrency + cdFmt(wouldPay) + ')';
+			document.getElementById('v3-sn-btn').textContent = '+1 Zi';
+			document.getElementById('v3-sn-btn').onclick = function() { v3ApplyNudge(nextTier.from); };
+
+			nudgeEl.style.display = 'block';
 		}
 
 		function v3ApplyNudge(targetDays){
@@ -2249,73 +2283,6 @@ function cdSetImage(idx) {
 		}
 	};
 
-window.v3CheckSavingsNudge = function(days) {
-    var nudgeEl = document.getElementById('v3-save-nudge');
-    if (!nudgeEl) return;
-    if (!days || !window.cdTiers || !cdTiers.length) {
-        nudgeEl.style.display = 'none';
-        return;
-    }
-
-    var currentTierIdx = -1;
-    for (var i = 0; i < cdTiers.length; i++) {
-        if (days >= cdTiers[i].from && days <= cdTiers[i].to) {
-            currentTierIdx = i;
-            break;
-        }
-    }
-
-    if (currentTierIdx === -1 || currentTierIdx >= cdTiers.length - 1) {
-        nudgeEl.style.display = 'none';
-        return;
-    }
-
-    var nextTier = cdTiers[currentTierIdx + 1];
-
-    // 🔍 ADD THIS - paste in browser console or check DevTools
-    console.log('[nudge debug]', {
-        days: days,
-        daysType: typeof days,
-        currentTierIdx: currentTierIdx,
-        currentTier: cdTiers[currentTierIdx],
-        nextTier: nextTier,
-        'days+1': days + 1,
-        'nextTier.from': nextTier.from,
-        gatePass: (days + 1 === nextTier.from)
-    });
-
-    if (days + 1 !== nextTier.from) {
-        nudgeEl.style.display = 'none';
-        return;
-    }
-
-    var currentRate = cdTiers[currentTierIdx].rate;
-    var nextRate    = nextTier.rate;
-    var wouldPay    = currentRate * nextTier.from;
-    var willPay     = nextRate * nextTier.from;
-    var savings     = Math.round(wouldPay - willPay);
-
-    console.log('[nudge calc]', {
-        currentRate: currentRate,
-        nextRate: nextRate,
-        wouldPay: wouldPay,
-        willPay: willPay,
-        savings: savings
-    });
-
-    if (savings <= 0) { nudgeEl.style.display = 'none'; return; }
-
-    document.getElementById('v3-sn-title').textContent =
-        'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
-    document.getElementById('v3-sn-body').textContent =
-        'Preț pentru ' + nextTier.from + ' zile: ' +
-        cdCurrency + cdFmt(willPay) +
-        ' (în loc de ' + cdCurrency + cdFmt(wouldPay) + ')';
-    document.getElementById('v3-sn-btn').textContent = '+1 Zi';
-    document.getElementById('v3-sn-btn').onclick = function() { v3ApplyNudge(nextTier.from); };
-
-    nudgeEl.style.display = 'block';
-};
 })(jQuery);
 </script>
 <?php endif; ?>
