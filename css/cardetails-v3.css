@@ -24,6 +24,11 @@
 	gap: 0;
 	min-width: max-content;
 	width: 100%;
+	cursor: grab;
+	user-select: none;
+}
+.cd-price-tiers-grid:active {
+	cursor: grabbing;
 }
 .cd-price-tier {
 	display: flex;
@@ -96,12 +101,48 @@
 	gap: 0;
 	overflow-y: auto;
 	padding-right: 8px;
+	scrollbar-width: none;
+}
+.cd-left::-webkit-scrollbar {
+	display: none;
 }
 
 .cd-right { 
 	position: relative;
 	overflow-y: auto;
 	padding-left: 8px;
+}
+
+.cd-right::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 60px;
+	background: linear-gradient(to top, #f9fafb 0%, transparent 100%);
+	pointer-events: none;
+	z-index: 10;
+}
+
+.cd-right::before {
+	content: '';
+	position: absolute;
+	bottom: 12px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 24px;
+	height: 24px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+	background-size: contain;
+	pointer-events: none;
+	z-index: 11;
+	animation: cdScrollHint 1.5s ease-in-out infinite;
+}
+
+@keyframes cdScrollHint {
+	0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
+	50% { transform: translateX(-50%) translateY(4px); opacity: 1; }
 }
 @media (max-width: 920px) { 
 	.cd-right { position: static; margin-top: 16px; overflow-y: visible; padding-left: 0; }

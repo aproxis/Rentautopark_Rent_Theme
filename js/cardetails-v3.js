@@ -447,6 +447,39 @@ jQuery(function($) {
 	$(document.body).on('click', '.vrc-cdetails-cal-pickday', function() {
 		setTimeout(cdUpdateSummary, 400);
 	});
+
+	// Drag scroll for price tiers grid
+	const priceTiersGrid = document.querySelector('.cd-price-tiers-grid');
+	if (priceTiersGrid) {
+		let isDown = false;
+		let startX;
+		let scrollLeft;
+
+		priceTiersGrid.addEventListener('mousedown', (e) => {
+			isDown = true;
+			priceTiersGrid.classList.add('active');
+			startX = e.pageX - priceTiersGrid.offsetLeft;
+			scrollLeft = priceTiersGrid.parentElement.scrollLeft;
+		});
+
+		priceTiersGrid.addEventListener('mouseleave', () => {
+			isDown = false;
+			priceTiersGrid.classList.remove('active');
+		});
+
+		priceTiersGrid.addEventListener('mouseup', () => {
+			isDown = false;
+			priceTiersGrid.classList.remove('active');
+		});
+
+		priceTiersGrid.addEventListener('mousemove', (e) => {
+			if (!isDown) return;
+			e.preventDefault();
+			const x = e.pageX - priceTiersGrid.offsetLeft;
+			const walk = (x - startX) * 2; // scroll speed multiplier
+			priceTiersGrid.parentElement.scrollLeft = scrollLeft - walk;
+		});
+	}
 });
 
 /* Convert date string + hour → unix timestamp (seconds) */
