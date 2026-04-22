@@ -182,7 +182,7 @@ function cdUpdateSummary() {
 
 	/* ── Update KM notice ── */
 	var $kmNotice = jQuery('#cd-km-notice');
-	var $overLimitRow = jQuery('#cd-km-overlimit').closest('.v3-ni');
+	var $overLimitRow = jQuery('.v3-ni').has('.v3-ni-value-normal').last();
 	var isUnlimitedActive = jQuery('#cd-opt-toggle-4').is(':checked');
 
 	if (isUnlimitedActive) {
@@ -195,8 +195,8 @@ function cdUpdateSummary() {
 		$overLimitRow.removeClass('disabled');
 	}
 
-	// KM calculation ONLY - update actual number inside span
-	if (!isUnlimitedActive && days) {
+	// ALWAYS calculate and update km total
+	if (days) {
 		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt(jQuery('#cd-km-value').data('km-per-day')) || 200;
 		var totalKm = days * kmPerDay;
 		// Only update the number part, PHP handles all labels and translation
