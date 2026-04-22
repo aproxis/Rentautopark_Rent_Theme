@@ -188,11 +188,11 @@ function cdUpdateSummary() {
 
 	if (isUnlimitedActive) {
 		$kmNotice.addClass('unlimited disabled');
-		$kmValue.text('∞ Unlimited');
+		$kmValue.text( window.vrcLang ? window.vrcLang.VRCKM_UNLIMITED : '∞ Unlimited' );
 		
 		// Set €0/km and disable over limit row when unlimited is active
 		if ($kmOverLimit.length) {
-			$kmOverLimit.text('€0/km');
+			$kmOverLimit.text( window.vrcLang ? window.vrcLang.VRCKM_ZERO_PER_KM : '€0/km' );
 			$kmOverLimit.closest('.v3-ni').addClass('disabled');
 		}
 	} else {
@@ -200,10 +200,10 @@ function cdUpdateSummary() {
 		if (days && $kmValue.length) {
 			var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmValue.data('km-per-day')) || 200;
 			var totalKm = days * kmPerDay;
-			$kmValue.text(totalKm + ' km total');
+			$kmValue.text( (window.vrcLang ? window.vrcLang.VRCKM_TOTAL : '%d km total').replace('%d', totalKm) );
 		} else {
 			if (window.vrcKmLimit && $kmValue.length) {
-				$kmValue.text(window.vrcKmLimit.kmPerDay + ' km/day');
+				$kmValue.text( (window.vrcLang ? window.vrcLang.VRCKM_PERDAY_LABEL : '%d km/day').replace('%d', window.vrcKmLimit.kmPerDay) );
 			}
 		}
 		
