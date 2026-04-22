@@ -8,6 +8,18 @@
 #cd-summary { display: none; }
 #cd-summary.is-visible { display: block; }
 
+/* ── KM Notice State Switching ─────────────────────────────────── */
+#cd-km-value-unlimited { display: none; }
+.v3-ni-value-disabled { display: none; }
+
+#cd-km-notice.disabled #cd-km-value-normal { display: none; }
+#cd-km-notice.disabled #cd-km-value-unlimited { display: inline; }
+
+#cd-km-notice.disabled .v3-ni-value-normal { display: none; }
+#cd-km-notice.disabled .v3-ni-value-disabled { display: inline; }
+/* Gray out disabled state */
+#cd-km-notice.disabled .v3-ni-v { color: #9ca3af; }
+
 /* ── Price tiers strip ─────────────────────────────────────────── */
 .cd-price-tiers {
 	margin-bottom: 10px;
