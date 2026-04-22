@@ -182,13 +182,24 @@ function cdUpdateSummary() {
 
 	/* ── Update KM notice ── */
 	var $kmValue = jQuery('#cd-km-value');
-	if (days && $kmValue.length) {
-		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmValue.data('km-per-day')) || 200;
-		var totalKm = days * kmPerDay;
-		$kmValue.text(totalKm + ' km total');
+	var $kmNotice = jQuery('#cd-km-notice');
+	var isUnlimitedActive = jQuery('#cd-opt-toggle-4').is(':checked');
+
+	if (isUnlimitedActive) {
+		// Preserve unlimited state, do not overwrite
+		$kmNotice.addClass('unlimited');
+		$kmValue.text('∞ Unlimited');
 	} else {
-		if (window.vrcKmLimit && $kmValue.length) {
-			$kmValue.text(window.vrcKmLimit.kmPerDay + ' km/day');
+		// Normal km calculation
+		$kmNotice.removeClass('unlimited');
+		if (days && $kmValue.length) {
+			var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmValue.data('km-per-day')) || 200;
+			var totalKm = days * kmPerDay;
+			$kmValue.text(totalKm + ' km total');
+		} else {
+			if (window.vrcKmLimit && $kmValue.length) {
+				$kmValue.text(window.vrcKmLimit.kmPerDay + ' km/day');
+			}
 		}
 	}
 
