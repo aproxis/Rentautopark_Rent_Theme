@@ -181,37 +181,25 @@ function cdUpdateSummary() {
 	}
 
 	/* ── Update KM notice ── */
-	var $kmValue = jQuery('#cd-km-value');
 	var $kmNotice = jQuery('#cd-km-notice');
-	var $kmOverLimit = jQuery('#cd-km-overlimit');
+	var $overLimitRow = jQuery('#cd-km-overlimit').closest('.v3-ni');
 	var isUnlimitedActive = jQuery('#cd-opt-toggle-4').is(':checked');
 
 	if (isUnlimitedActive) {
+		// JS ONLY adds classes - ALL TEXT is rendered in PHP
 		$kmNotice.addClass('unlimited disabled');
-		$kmValue.text( window.vrcLang ? window.vrcLang.VRCKM_UNLIMITED : '∞ Unlimited' );
-		
-		// Set €0/km and disable over limit row when unlimited is active
-		if ($kmOverLimit.length) {
-			$kmOverLimit.text( window.vrcLang ? window.vrcLang.VRCKM_ZERO_PER_KM : '€0/km' );
-			$kmOverLimit.closest('.v3-ni').addClass('disabled');
-		}
+		$overLimitRow.addClass('disabled');
 	} else {
+		// JS ONLY removes classes - PHP handles all text
 		$kmNotice.removeClass('unlimited disabled');
-		if (days && $kmValue.length) {
-			var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmValue.data('km-per-day')) || 200;
-			var totalKm = days * kmPerDay;
-			$kmValue.text( (window.vrcLang ? window.vrcLang.VRCKM_TOTAL : '%d km total').replace('%d', totalKm) );
-		} else {
-			if (window.vrcKmLimit && $kmValue.length) {
-				$kmValue.text( (window.vrcLang ? window.vrcLang.VRCKM_PERDAY_LABEL : '%d km/day').replace('%d', window.vrcKmLimit.kmPerDay) );
-			}
-		}
-		
-		// Restore over limit price and enable row
-		if ($kmOverLimit.length && window.vrcKmLimit) {
-			$kmOverLimit.text(cdCurrency + vrcKmLimit.overPrice + '/km');
-			$kmOverLimit.closest('.v3-ni').removeClass('disabled');
-		}
+		$overLimitRow.removeClass('disabled');
+	}
+
+	// KM calculation ONLY - NO TEXT SETTING IN JS
+	if (!isUnlimitedActive && days) {
+		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt(jQuery('#cd-km-value').data('km-per-day')) || 200;
+		window.currentTotalKm = days * kmPerDay;
+		// PHP renders the text, JS only provides number calculation
 	}
 
 	if (!days) { $sum.removeClass('is-visible'); return; }

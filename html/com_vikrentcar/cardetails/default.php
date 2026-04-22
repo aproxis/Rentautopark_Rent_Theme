@@ -1265,12 +1265,16 @@ jQuery(function(){
 			<div class="v3-ni" id="cd-km-notice">
 			<div class="v3-ni-k"><?php echo Text::_('VRCKMLIMIT_LABEL') ?: 'Mileage'; ?></div>
 			<div class="v3-ni-v" id="cd-km-value" data-km-per-day="<?php echo $kmConfig->km_per_day; ?>">
-				<?php echo $kmConfig->km_per_day; ?> <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/day'; ?>
+				<span id="cd-km-value-normal"><?php echo $kmConfig->km_per_day; ?> <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/day'; ?></span>
+				<span id="cd-km-value-unlimited"><?php echo Text::_('VRCKM_UNLIMITED'); ?></span>
 			</div>
 			</div>
 			<div class="v3-ni">
 			<div class="v3-ni-k"><?php echo Text::_('VRCKM_EXTRA_LABEL') ?: 'Over limit'; ?></div>
-			<div class="v3-ni-v">€<?php echo number_format($kmConfig->km_extra, 2); ?>/km</div>
+			<div class="v3-ni-v">
+				<span class="v3-ni-value-normal"><?php echo $this->currSymb; ?><?php echo number_format($kmConfig->km_extra, 2); ?>/km</span>
+				<span class="v3-ni-value-disabled"><?php echo Text::_('VRCKM_ZERO_PER_KM'); ?></span>
+			</div>
 			</div>
 		</div>
 		</div>

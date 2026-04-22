@@ -746,6 +746,15 @@
 }
 .vrcdialog-reqinfo-formsubmit button:hover { background: #E54801 !important; }
 
+/* ── KM Notice States ───────────────────────────────────────────── */
+.v3-ni.disabled .v3-ni-value-normal { display: none; }
+.v3-ni.disabled .v3-ni-value-disabled { display: block; }
+.v3-ni .v3-ni-value-disabled { display: none; color: #9ca3af; }
+
+.cd-km-notice.disabled #cd-km-value-normal { display: none; }
+.cd-km-notice.disabled #cd-km-value-unlimited { display: block; }
+.cd-km-notice #cd-km-value-unlimited { display: none; }
+
 /* jQuery UI overrides */
 .ui-datepicker { border-radius: 12px !important; border: 2px solid #e5e7eb !important; box-shadow: 0 8px 30px rgba(0,0,0,.1) !important; padding: 12px !important; font-family: inherit !important; }
 .ui-datepicker-header { background: none !important; border: none !important; border-bottom: 1px solid #f3f4f6 !important; padding-bottom: 10px !important; margin-bottom: 8px !important; }
