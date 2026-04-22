@@ -2257,7 +2257,7 @@ function cdSetImage(idx) {
 			return;
 		}
 
-		// Find which tier the current day count falls in
+		// Find current tier
 		var currentTierIdx = -1;
 		for (var i = 0; i < cdTiers.length; i++) {
 			if (days >= cdTiers[i].from && days <= cdTiers[i].to) {
@@ -2266,7 +2266,7 @@ function cdSetImage(idx) {
 			}
 		}
 
-		// No match or already in the last tier
+		// No match or already in last tier
 		if (currentTierIdx === -1 || currentTierIdx >= cdTiers.length - 1) {
 			nudgeEl.style.display = 'none';
 			return;
@@ -2280,23 +2280,32 @@ function cdSetImage(idx) {
 			return;
 		}
 
-		var currentRate = cdGetRate(days);
-		var nextRate = nextTier.rate;
-		
-		// ✅ CORRECT REAL WORLD CALCULATION
-		var currentTotalIfStaying = currentRate * days;        // what user pays at current days
-		var currentTotalIfExtend = currentRate * nextTier.from;// what user WOULD pay if they keep same rate
-		var newTotal = nextRate * nextTier.from;               // what user ACTUALLY pays with new rate
-		var savings = Math.round(currentTotalIfExtend - newTotal); // actual savings
+		var currentRate = cdTiers[currentTierIdx].rate; // ← use tier directly, no cdGetRate dependency
+		var nextRate    = nextTier.rate;
 
-		if (savings <= 0) { nudgeEl.style.display = 'none'; return; }
+		// What user WOULD pay for (days+1) at current rate
+		var wouldPay = currentRate * nextTier.from;   // e.g. 33 × 4 = 132
+		// What user ACTUALLY pays at next tier rate
+		var willPay  = nextRate * nextTier.from;       // e.g. 30 × 4 = 120
 
-		// Now fill in the TOP nudge block with the correct values
-		document.getElementById('v3-sn-title').textContent = 'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
-		document.getElementById('v3-sn-body').textContent = 'Preț pentru ' + nextTier.from + ' zile: ' + cdCurrency + cdFmt(Math.round(newTotal)) + ' (în loc de ' + cdCurrency + cdFmt(Math.round(currentTotalIfExtend)) + ')';
+		var savings = Math.round(wouldPay - willPay);  // e.g. 132 - 120 = 12
+
+		if (savings <= 0) {
+			nudgeEl.style.display = 'none';
+			return;
+		}
+
+		document.getElementById('v3-sn-title').textContent =
+			'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
+
+		document.getElementById('v3-sn-body').textContent =
+			'Preț pentru ' + nextTier.from + ' zile: ' +
+			cdCurrency + cdFmt(willPay) +
+			' (în loc de ' + cdCurrency + cdFmt(wouldPay) + ')';
+
 		document.getElementById('v3-sn-btn').textContent = '+1 Zi';
-	document.getElementById('v3-sn-btn').onclick = function(){ v3ApplyNudge(nextTier.from); };
-		
+		document.getElementById('v3-sn-btn').onclick = function() { v3ApplyNudge(nextTier.from); };
+
 		nudgeEl.style.display = 'block';
 	};
 })(jQuery);
