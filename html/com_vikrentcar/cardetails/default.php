@@ -2295,6 +2295,7 @@ function cdSetImage(idx) {
 		document.getElementById('v3-sn-title').textContent = 'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
 		document.getElementById('v3-sn-body').textContent = 'Preț pentru ' + nextTier.from + ' zile: ' + cdCurrency + cdFmt(Math.round(newTotal)) + ' (în loc de ' + cdCurrency + cdFmt(Math.round(currentTotalIfExtend)) + ')';
 		document.getElementById('v3-sn-btn').textContent = '+1 Zi';
+	document.getElementById('v3-sn-btn').onclick = function(){ v3ApplyNudge(nextTier.from); };
 		
 		nudgeEl.style.display = 'block';
 	};
