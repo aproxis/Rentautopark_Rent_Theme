@@ -153,6 +153,12 @@
 @media (max-width: 920px) { 
 	.cd-right { position: static; margin-top: 16px; overflow-y: visible; padding-left: 0; }
 	.cd-left { overflow-y: visible; padding-right: 0; }
+	
+	/* Hide scroll indicator on mobile */
+	.cd-right::before,
+	.cd-right::after {
+		display: none !important;
+	}
 }
 
 @media (min-width: 921px) {
