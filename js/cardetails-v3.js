@@ -402,6 +402,17 @@ function cdFilterHourSelect(mode) {
 }
 
 jQuery(function($) {
+    // Auto-hide scroll indicator when scrolled to bottom
+    const scrollInner = document.querySelector('.cd-right-inner');
+    const scrollOuter = document.querySelector('.cd-right');
+    
+    if (scrollInner && scrollOuter) {
+        scrollInner.addEventListener('scroll', () => {
+            const atBottom = scrollInner.scrollTop + scrollInner.clientHeight >= scrollInner.scrollHeight - 4;
+            scrollOuter.classList.toggle('is-scrolled-end', atBottom);
+        });
+    }
+
 	// Unlimited KM toggle handler
 	function handleUnlimitedKmToggle() {
 		var isUnlimited = $('#cd-opt-toggle-4').is(':checked');

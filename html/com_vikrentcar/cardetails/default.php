@@ -686,6 +686,7 @@ try {
 
 <!-- ═══════ RIGHT COLUMN (mobile order 2 — booking card) ═══════ -->
 <div class="cd-right">
+<div class="cd-right-inner">
 <div id="vrc-bookingpart-init"></div>
 <div class="cd-booking-card v3">
 
@@ -2092,8 +2093,7 @@ jQuery(function(){
 	<?php endif; ?>
 </div>
 
-
-
+</div>
 </div><!-- /.cd-right -->
 
 </div><!-- /.cd-page-grid -->
