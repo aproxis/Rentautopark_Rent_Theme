@@ -2282,15 +2282,18 @@ function cdSetImage(idx) {
 
 		var currentRate = cdGetRate(days);
 		var nextRate = nextTier.rate;
-		var currentTotal = currentRate * nextTier.from;  // same days as nextTier for fair comparison
-		var nextTotal = nextRate * nextTier.from;
-		var savings = Math.round(currentTotal - nextTotal);
+		
+		// ✅ CORRECT REAL WORLD CALCULATION
+		var currentTotalIfStaying = currentRate * days;        // what user pays at current days
+		var currentTotalIfExtend = currentRate * nextTier.from;// what user WOULD pay if they keep same rate
+		var newTotal = nextRate * nextTier.from;               // what user ACTUALLY pays with new rate
+		var savings = Math.round(currentTotalIfExtend - newTotal); // actual savings
 
 		if (savings <= 0) { nudgeEl.style.display = 'none'; return; }
 
 		// Now fill in the TOP nudge block with the correct values
 		document.getElementById('v3-sn-title').textContent = 'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
-		document.getElementById('v3-sn-body').textContent = 'Preț pentru ' + nextTier.from + ' zile: ' + cdCurrency + cdFmt(Math.round(nextTotal)) + ' (în loc de ' + cdCurrency + cdFmt(Math.round(currentTotal)) + ')';
+		document.getElementById('v3-sn-body').textContent = 'Preț pentru ' + nextTier.from + ' zile: ' + cdCurrency + cdFmt(Math.round(newTotal)) + ' (în loc de ' + cdCurrency + cdFmt(Math.round(currentTotalIfExtend)) + ')';
 		document.getElementById('v3-sn-btn').textContent = '+1 Zi';
 		
 		nudgeEl.style.display = 'block';
