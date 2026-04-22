@@ -2134,7 +2134,7 @@ try {
 
 <?php if (!empty($recommendedCars)) : ?>
 <div class="cd-recommended-section">
-    <h2 class="cd-recommended-title">Mașini recomandate</h2>
+    <h2 class="cd-recommended-title"><?php echo Text::_('VR_RECOMMENDED_CARS'); ?></h2>
     <div class="cd-recommended-grid">
         <?php foreach ($recommendedCars as $_rec) :
     $_recImg = !empty($_rec['img'])
@@ -2159,14 +2159,16 @@ $_recUrl = rtrim($_baseCarUrl, '/') . '/' . $_rec['alias'];
                 <?php else : ?>
                 <div class="cd-rec-img-placeholder"></div>
                 <?php endif; ?>
+                
+				<div class="ar-badge">
+					<span class="ar-badge-from"><?php echo Text::_('VRCLISTSFROM') ?: 'DE LA'; ?></span>
+					<span class="ar-badge-val"><?php echo $currencysymb . $_recPriceDisp; ?></span>
+					<span class="ar-badge-per"><?php echo '/ ' . (Text::_('VRCPERDAY') ?: 'zi'); ?></span>
+				</div>
             </div>
             <div class="cd-rec-info">
                 <div class="cd-rec-name"><?php echo htmlspecialchars($_rec['name']); ?></div>
-                <div class="cd-rec-price">
-                    <span class="cd-rec-from">De la</span>
-                    <span class="cd-rec-amount"><?php echo $currencysymb . $_recPriceDisp; ?></span>
-                    <span class="cd-rec-per">/zi</span>
-                </div>
+                <button class="cd-rec-book-btn"><?php echo Text::_('VRCBOOKTHISCAR'); ?></button>
             </div>
         </a>
         <?php endforeach; ?>
