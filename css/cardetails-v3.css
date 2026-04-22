@@ -1265,7 +1265,9 @@ body.vrc-modal-open {
 .v3-toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; display: inline-block; }
 .v3-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
 .v3-ttrack { position: absolute; inset: 0; border-radius: 20px; background: rgba(0,0,0,.2); cursor: pointer; transition: background .2s; }
-.v3-toggle input:checked + .v3-ttrack { background: #1D9E75; }
+.v3-toggle input:checked + .v3-ttrack { background: #FE5001; }
+.v3-toggle:hover .v3-ttrack { background: rgba(254, 80, 1, 0.3); }
+.v3-toggle input:checked:hover + .v3-ttrack { background: #E54801; }
 .v3-tthumb { position: absolute; left: 3px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform .2s; pointer-events: none; }
 .v3-toggle input:checked ~ .v3-tthumb { transform: translateX(16px); }
 
