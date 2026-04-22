@@ -84,15 +84,59 @@
 	display: grid;
 	grid-template-columns: 1fr 420px;
 	gap: 32px;
-	align-items: start;
+	align-items: stretch;
+	height: 100%;
 }
 @media (max-width: 1120px) { .cd-page-grid { grid-template-columns: 1fr 264px; gap: 24px; } }
-@media (max-width: 920px)  { .cd-page-grid { grid-template-columns: 1fr; gap: 0; } }
+@media (max-width: 920px)  { .cd-page-grid { grid-template-columns: 1fr; gap: 0; height: auto; } }
 
-.cd-left { display: flex; flex-direction: column; gap: 0; }
+.cd-left { 
+	display: flex; 
+	flex-direction: column; 
+	gap: 0;
+	overflow-y: auto;
+	padding-right: 8px;
+}
 
-.cd-right { position: sticky; top: 20px; }
-@media (max-width: 920px) { .cd-right { position: static; margin-top: 16px; } }
+.cd-right { 
+	position: relative;
+	overflow-y: auto;
+	padding-left: 8px;
+}
+@media (max-width: 920px) { 
+	.cd-right { position: static; margin-top: 16px; overflow-y: visible; padding-left: 0; }
+	.cd-left { overflow-y: visible; padding-right: 0; }
+}
+
+@media (min-width: 921px) {
+	.cd-container {
+		height: calc(100vh - 130px);
+		overflow: hidden;
+		padding-bottom: 0;
+		margin-bottom: 0;
+	}
+
+	.cd-left::-webkit-scrollbar,
+	.cd-right::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.cd-left::-webkit-scrollbar-track,
+	.cd-right::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.cd-left::-webkit-scrollbar-thumb,
+	.cd-right::-webkit-scrollbar-thumb {
+		background: #d1d5db;
+		border-radius: 3px;
+	}
+
+	.cd-left::-webkit-scrollbar-thumb:hover,
+	.cd-right::-webkit-scrollbar-thumb:hover {
+		background: #FE5001;
+	}
+}
 
 /* On mobile reorder: gallery (1) → booking card (2) → specs/info (3) → desc/calendars (4) */
 @media (max-width: 920px) {
