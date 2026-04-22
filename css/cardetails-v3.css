@@ -1115,24 +1115,45 @@ body.vrc-modal-open {
 	border: 1.5px solid;
 }
 
-/* KM notice — yellow tint */
-.cd-km-notice {
-	background: #fffbeb;
-	border-color: #fef08a;
+/* Good to know notes color coding */
+.v3-ni:nth-child(1) {
+	/* Grace period - Blue */
+	background: #eff6ff;
+	border: .5px solid #bfdbfe;
 }
-.cd-km-notice .cd-notice-icon {
-	color: #eab308;
-	flex-shrink: 0;
-	margin-top: 1px;
+.v3-ni:nth-child(1) .v3-ni-k {
+	color: #1d4ed8;
 }
 
-/* Unlimited KM activated — green tint */
-.cd-km-notice.unlimited {
-	background: #f0fdf4;
-	border-color: #bbf7d0;
+.v3-ni:nth-child(2), #cd-km-notice {
+	/* KM Limit - Yellow */
+	background: #fffbeb;
+	border: .5px solid #fef08a;
 }
-.cd-km-notice.unlimited .cd-notice-icon {
-	color: #22c55e;
+.v3-ni:nth-child(2) .v3-ni-k, #cd-km-notice .v3-ni-k {
+	color: #ca8a04;
+}
+
+.v3-ni:nth-child(3) {
+	/* Over limit fee - Orange */
+	background: #fff7ed;
+	border: .5px solid #fed7aa;
+}
+.v3-ni:nth-child(3) .v3-ni-k {
+	color: #c2410c;
+}
+
+/* Unlimited KM activated state - Green */
+#cd-km-notice.unlimited {
+	background: #f0fdf4;
+	border: .5px solid #bbf7d0;
+}
+#cd-km-notice.unlimited .v3-ni-k {
+	color: #166534;
+}
+#cd-km-notice.unlimited .v3-ni-v {
+	color: #15803d;
+	font-weight: 600;
 }
 
 /* Deposit notice — blue/neutral tint */
