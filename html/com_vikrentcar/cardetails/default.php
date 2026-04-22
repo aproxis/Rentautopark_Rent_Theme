@@ -1258,13 +1258,18 @@ jQuery(function(){
 			<div class="v3-ni-v"><?php echo $graceHours; echo Text::_('VRC_GRACE_HRS') ?: ' h';?> <?php echo Text::_('VRCADDTOPICKUP') ?: 'plus to Pickup time'; ?></div>
 			</div>
 			<?php endif; ?>
+			<?php
+			$kmConfig = class_exists('PlgSystemVrckmlimit') ? PlgSystemVrckmlimit::getConfig() : (object)['km_per_day' => 200, 'km_extra' => 0.25];
+			?>
 			<div class="v3-ni" id="cd-km-notice">
 			<div class="v3-ni-k"><?php echo Text::_('VRCKMLIMIT_LABEL') ?: 'Mileage'; ?></div>
-			<div class="v3-ni-v">200 <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/day'; ?></div>
+			<div class="v3-ni-v" id="cd-km-value" data-km-per-day="<?php echo $kmConfig->km_per_day; ?>">
+				<?php echo $kmConfig->km_per_day; ?> <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/day'; ?>
+			</div>
 			</div>
 			<div class="v3-ni">
 			<div class="v3-ni-k"><?php echo Text::_('VRCKM_EXTRA_LABEL') ?: 'Over limit'; ?></div>
-			<div class="v3-ni-v">€0.25/km</div>
+			<div class="v3-ni-v">€<?php echo number_format($kmConfig->km_extra, 2); ?>/km</div>
 			</div>
 		</div>
 		</div>

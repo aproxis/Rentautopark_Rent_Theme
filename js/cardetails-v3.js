@@ -181,14 +181,15 @@ function cdUpdateSummary() {
 	}
 
 	/* ── Update KM notice ── */
-	var $kmNotice = jQuery('#cd-km-notice');
-	if (days) {
-		var totalKm = days * 200;
-		jQuery('#cd-km-total').text(totalKm);
-		jQuery('#cd-km-days').text(days);
-		$kmNotice.show();
+	var $kmValue = jQuery('#cd-km-value');
+	if (days && $kmValue.length) {
+		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmValue.data('km-per-day')) || 200;
+		var totalKm = days * kmPerDay;
+		$kmValue.text(totalKm + ' km total');
 	} else {
-		$kmNotice.hide();
+		if (window.vrcKmLimit && $kmValue.length) {
+			$kmValue.text(window.vrcKmLimit.kmPerDay + ' km/day');
+		}
 	}
 
 	if (!days) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
