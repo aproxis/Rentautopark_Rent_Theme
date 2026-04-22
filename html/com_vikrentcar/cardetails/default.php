@@ -1664,7 +1664,7 @@ jQuery(function(){
 
 			document.getElementById('v3-sn-title').textContent =
 				'<?php echo addslashes(Text::_("VRCSAVINGSTIP_PRE")); ?> ' + nextTier.from +
-				' <?php echo addslashes(Text::_("VRCSEARCHDAY")); ?> ' +
+				' <?php echo addslashes(Text::_("VRCSEARCHDAYS")); ?> ' +
 				'<?php echo addslashes(Text::_("VRCSAVINGSTIP_MID")); ?> ' + cdCurrency + cdFmt(savings);
 
 			document.getElementById('v3-sn-body').textContent =
@@ -1673,7 +1673,7 @@ jQuery(function(){
 				' <?php echo addslashes(Text::_("VRCSAVINGSTIP_INSTEAD")); ?> ' +
 				cdCurrency + cdFmt(wouldPay);
 				
-			document.getElementById('v3-sn-btn').textContent = '+1';
+			document.getElementById('v3-sn-btn').textContent = '+1' + '<?php echo addslashes(Text::_("VRCSEARCHDAY")); ?> ';
 			document.getElementById('v3-sn-btn').onclick = function() { v3ApplyNudge(nextTier.from); };
 
 			nudgeEl.style.display = 'block';
