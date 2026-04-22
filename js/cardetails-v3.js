@@ -183,37 +183,17 @@ function cdUpdateSummary() {
 	/* ── Update KM notice ── */
 	var $kmValue = jQuery('#cd-km-value');
 	var $kmNotice = jQuery('#cd-km-notice');
-	var $kmOverLimit = jQuery('#cd-km-overlimit');
 	var isUnlimitedActive = jQuery('#cd-opt-toggle-4').is(':checked');
 
 	if (isUnlimitedActive) {
-		// Unlimited mileage active
-		$kmNotice.addClass('unlimited disabled');
-		$kmValue.text( cdKmUnlimitedLabel );
-		
-		// Update over limit notice
-		if ($kmOverLimit.length) {
-			$kmOverLimit.text( cdKmZeroPerKm );
-		}
+		$kmNotice.addClass('unlimited');
+		$kmValue.text(window.cdLabels.kmUnlimited);
 	} else {
-		// Normal km calculation - JS only does calculation, text comes from PHP translations
-		$kmNotice.removeClass('unlimited disabled');
-		
+		$kmNotice.removeClass('unlimited');
 		if (days && $kmValue.length) {
 			var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmValue.data('km-per-day')) || 200;
 			var totalKm = days * kmPerDay;
-			// Use translatable string format from PHP
-			$kmValue.text( cdKmTotalLabel.replace('%d', totalKm) );
-		} else {
-			if (window.vrcKmLimit && $kmValue.length) {
-				// Use translatable string format from PHP
-				$kmValue.text( cdKmPerDayLabel.replace('%d', window.vrcKmLimit.kmPerDay) );
-			}
-		}
-		
-		// Restore over limit notice if it exists
-		if ($kmOverLimit.length && window.vrcKmOverPrice) {
-			$kmOverLimit.text( cdKmOverLimitLabel.replace('%s', cdCurrency + vrcKmLimit.overPrice) );
+			$kmValue.text(totalKm + window.cdLabels.kmTotalSuffix);
 		}
 	}
 
@@ -429,30 +409,7 @@ jQuery(function($) {
 
 	// Unlimited KM toggle handler
 	function handleUnlimitedKmToggle() {
-		var isUnlimited = $('#cd-opt-toggle-4').is(':checked');
-		var $kmNotice = $('.cd-km-notice');
-		var $kmValue = $('#cd-km-value');
-		var $kmOverLimit = $('#cd-km-overlimit');
-		
-		if (isUnlimited) {
-			$kmNotice.addClass('unlimited disabled');
-			$kmValue.text( cdKmUnlimitedLabel );
-			
-			// Update over limit to €0/km when unlimited is active
-			if ($kmOverLimit.length) {
-				$kmOverLimit.text( cdKmZeroPerKm );
-			}
-		} else {
-			$kmNotice.removeClass('unlimited disabled');
-			
-			// Restore over limit price
-			if ($kmOverLimit.length && window.vrcKmLimit) {
-				$kmOverLimit.text( cdKmOverLimitLabel.replace('%s', cdCurrency + vrcKmLimit.overPrice) );
-			}
-			
-			// Restore normal km calculation
-			cdUpdateSummary();
-		}
+		cdUpdateSummary();
 	}
 	
 	// Bind toggle change event
