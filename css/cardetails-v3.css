@@ -113,41 +113,45 @@
 	padding-left: 8px;
 }
 
+.cd-right {
+	position: relative;
+	overflow-y: auto;
+	padding-left: 8px;
+	padding-bottom: 64px;
+}
+
 .cd-right::after {
 	content: '';
-	position: sticky;
+	position: absolute;
 	display: block;
 	bottom: 0;
 	left: 0;
 	right: 0;
 	height: 64px;
-	margin-top: -64px;
 	background: radial-gradient(ellipse at bottom center, rgba(254, 80, 1, 0.18) 0%, rgba(254, 80, 1, 0.06) 40%, transparent 70%);
 	pointer-events: none;
-	z-index: 10;
+	z-index: 100;
 }
 
 .cd-right::before {
 	content: '';
-	position: sticky;
+	position: absolute;
 	display: block;
 	bottom: 16px;
 	left: 50%;
 	transform: translateX(-50%);
 	width: 24px;
 	height: 24px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: -24px;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23FE5001' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
 	background-size: contain;
+	background-repeat: no-repeat;
 	pointer-events: none;
-	z-index: 11;
+	z-index: 101;
 	animation: cdScrollHint 1.5s ease-in-out infinite;
 }
 
 @keyframes cdScrollHint {
-	0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
+	0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
 	50% { transform: translateX(-50%) translateY(5px); opacity: 1; }
 }
 @media (max-width: 920px) { 
