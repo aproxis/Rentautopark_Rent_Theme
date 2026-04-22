@@ -2249,65 +2249,73 @@ function cdSetImage(idx) {
 		}
 	};
 
-	window.v3CheckSavingsNudge = function(days) {
-		var nudgeEl = document.getElementById('v3-save-nudge');
-		if (!nudgeEl) return;
-		if (!days || !window.cdTiers || !cdTiers.length) {
-			nudgeEl.style.display = 'none';
-			return;
-		}
+window.v3CheckSavingsNudge = function(days) {
+    var nudgeEl = document.getElementById('v3-save-nudge');
+    if (!nudgeEl) return;
+    if (!days || !window.cdTiers || !cdTiers.length) {
+        nudgeEl.style.display = 'none';
+        return;
+    }
 
-		// Find current tier
-		var currentTierIdx = -1;
-		for (var i = 0; i < cdTiers.length; i++) {
-			if (days >= cdTiers[i].from && days <= cdTiers[i].to) {
-				currentTierIdx = i;
-				break;
-			}
-		}
+    var currentTierIdx = -1;
+    for (var i = 0; i < cdTiers.length; i++) {
+        if (days >= cdTiers[i].from && days <= cdTiers[i].to) {
+            currentTierIdx = i;
+            break;
+        }
+    }
 
-		// No match or already in last tier
-		if (currentTierIdx === -1 || currentTierIdx >= cdTiers.length - 1) {
-			nudgeEl.style.display = 'none';
-			return;
-		}
+    if (currentTierIdx === -1 || currentTierIdx >= cdTiers.length - 1) {
+        nudgeEl.style.display = 'none';
+        return;
+    }
 
-		var nextTier = cdTiers[currentTierIdx + 1];
+    var nextTier = cdTiers[currentTierIdx + 1];
 
-		// Only show when exactly 1 day away from next tier boundary
-		if (days + 1 !== nextTier.from) {
-			nudgeEl.style.display = 'none';
-			return;
-		}
+    // 🔍 ADD THIS - paste in browser console or check DevTools
+    console.log('[nudge debug]', {
+        days: days,
+        daysType: typeof days,
+        currentTierIdx: currentTierIdx,
+        currentTier: cdTiers[currentTierIdx],
+        nextTier: nextTier,
+        'days+1': days + 1,
+        'nextTier.from': nextTier.from,
+        gatePass: (days + 1 === nextTier.from)
+    });
 
-		var currentRate = cdTiers[currentTierIdx].rate; // ← use tier directly, no cdGetRate dependency
-		var nextRate    = nextTier.rate;
+    if (days + 1 !== nextTier.from) {
+        nudgeEl.style.display = 'none';
+        return;
+    }
 
-		// What user WOULD pay for (days+1) at current rate
-		var wouldPay = currentRate * nextTier.from;   // e.g. 33 × 4 = 132
-		// What user ACTUALLY pays at next tier rate
-		var willPay  = nextRate * nextTier.from;       // e.g. 30 × 4 = 120
+    var currentRate = cdTiers[currentTierIdx].rate;
+    var nextRate    = nextTier.rate;
+    var wouldPay    = currentRate * nextTier.from;
+    var willPay     = nextRate * nextTier.from;
+    var savings     = Math.round(wouldPay - willPay);
 
-		var savings = Math.round(wouldPay - willPay);  // e.g. 132 - 120 = 12
+    console.log('[nudge calc]', {
+        currentRate: currentRate,
+        nextRate: nextRate,
+        wouldPay: wouldPay,
+        willPay: willPay,
+        savings: savings
+    });
 
-		if (savings <= 0) {
-			nudgeEl.style.display = 'none';
-			return;
-		}
+    if (savings <= 0) { nudgeEl.style.display = 'none'; return; }
 
-		document.getElementById('v3-sn-title').textContent =
-			'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
+    document.getElementById('v3-sn-title').textContent =
+        'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
+    document.getElementById('v3-sn-body').textContent =
+        'Preț pentru ' + nextTier.from + ' zile: ' +
+        cdCurrency + cdFmt(willPay) +
+        ' (în loc de ' + cdCurrency + cdFmt(wouldPay) + ')';
+    document.getElementById('v3-sn-btn').textContent = '+1 Zi';
+    document.getElementById('v3-sn-btn').onclick = function() { v3ApplyNudge(nextTier.from); };
 
-		document.getElementById('v3-sn-body').textContent =
-			'Preț pentru ' + nextTier.from + ' zile: ' +
-			cdCurrency + cdFmt(willPay) +
-			' (în loc de ' + cdCurrency + cdFmt(wouldPay) + ')';
-
-		document.getElementById('v3-sn-btn').textContent = '+1 Zi';
-		document.getElementById('v3-sn-btn').onclick = function() { v3ApplyNudge(nextTier.from); };
-
-		nudgeEl.style.display = 'block';
-	};
+    nudgeEl.style.display = 'block';
+};
 })(jQuery);
 </script>
 <?php endif; ?>
