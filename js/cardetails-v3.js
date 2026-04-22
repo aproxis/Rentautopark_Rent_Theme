@@ -183,17 +183,32 @@ function cdUpdateSummary() {
 	/* ── Update KM notice ── */
 	var $kmValue = jQuery('#cd-km-value');
 	var $kmNotice = jQuery('#cd-km-notice');
+	var $kmOverLimit = jQuery('#cd-km-overlimit');
 	var isUnlimitedActive = jQuery('#cd-opt-toggle-4').is(':checked');
 
 	if (isUnlimitedActive) {
-		$kmNotice.addClass('unlimited');
-		$kmValue.text(window.cdLabels.kmUnlimited);
+		$kmNotice.addClass('unlimited disabled');
+		$kmValue.text('∞ Unlimited');
+		
+		// Set €0/km when unlimited is active
+		if ($kmOverLimit.length) {
+			$kmOverLimit.text('€0/km');
+		}
 	} else {
-		$kmNotice.removeClass('unlimited');
+		$kmNotice.removeClass('unlimited disabled');
 		if (days && $kmValue.length) {
 			var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmValue.data('km-per-day')) || 200;
 			var totalKm = days * kmPerDay;
-			$kmValue.text(totalKm + window.cdLabels.kmTotalSuffix);
+			$kmValue.text(totalKm + ' km total');
+		} else {
+			if (window.vrcKmLimit && $kmValue.length) {
+				$kmValue.text(window.vrcKmLimit.kmPerDay + ' km/day');
+			}
+		}
+		
+		// Restore over limit price
+		if ($kmOverLimit.length && window.vrcKmLimit) {
+			$kmOverLimit.text(cdCurrency + vrcKmLimit.overPrice + '/km');
 		}
 	}
 
