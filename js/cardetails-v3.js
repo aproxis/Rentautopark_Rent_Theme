@@ -392,6 +392,30 @@ function cdFilterHourSelect(mode) {
 }
 
 jQuery(function($) {
+	// Unlimited KM toggle handler
+	function handleUnlimitedKmToggle() {
+		var isUnlimited = $('#cd-opt-toggle-4').is(':checked');
+		var $kmNotice = $('.cd-km-notice');
+		var $kmValue = $('#cd-km-value');
+		
+		if (isUnlimited) {
+			$kmNotice.addClass('unlimited');
+			$kmValue.text('∞ Unlimited');
+		} else {
+			$kmNotice.removeClass('unlimited');
+			// Restore normal km calculation
+			cdUpdateSummary();
+		}
+	}
+	
+	// Bind toggle change event
+	$(document.body).on('change', '#cd-opt-toggle-4', function() {
+		handleUnlimitedKmToggle();
+	});
+	
+	// Check initial state on page load
+	setTimeout(handleUnlimitedKmToggle, 100);
+
 	var _lp='', _lr='', _lph='', _ldh='';
 	function cdPoll() {
 		var p  = $('#pickupdate').val(),  r  = $('#releasedate').val();

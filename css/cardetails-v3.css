@@ -1115,15 +1115,24 @@ body.vrc-modal-open {
 	border: 1.5px solid;
 }
 
-/* KM notice — orange tint (matches brand) */
+/* KM notice — yellow tint */
 .cd-km-notice {
-	background: #fff7f2;
-	border-color: #fcd9c4;
+	background: #fffbeb;
+	border-color: #fef08a;
 }
 .cd-km-notice .cd-notice-icon {
-	color: #FE5001;
+	color: #eab308;
 	flex-shrink: 0;
 	margin-top: 1px;
+}
+
+/* Unlimited KM activated — green tint */
+.cd-km-notice.unlimited {
+	background: #f0fdf4;
+	border-color: #bbf7d0;
+}
+.cd-km-notice.unlimited .cd-notice-icon {
+	color: #22c55e;
 }
 
 /* Deposit notice — blue/neutral tint */
