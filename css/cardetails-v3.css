@@ -184,6 +184,21 @@
 		margin-bottom: 0;
 	}
 
+    /* Fix: complete height chain propagation */
+    .cd-page-grid {
+        height: 100%;
+    }
+
+    .cd-right {
+        min-height: 0;
+        height: 100%;
+    }
+
+    .cd-left {
+        min-height: 0;
+        height: 100%;
+    }
+
 	.cd-left::-webkit-scrollbar,
 	.cd-right-inner::-webkit-scrollbar {
 		width: 6px;
