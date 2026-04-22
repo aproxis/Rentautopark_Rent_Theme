@@ -1663,12 +1663,17 @@ jQuery(function(){
 			}
 
 			document.getElementById('v3-sn-title').textContent =
-				'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
+				'<?php echo addslashes(Text::_("VRCSAVINGSTIP_PRE")); ?> ' + nextTier.from +
+				' <?php echo addslashes(Text::_("VRCSEARCHDAY")); ?> ' +
+				'<?php echo addslashes(Text::_("VRCSAVINGSTIP_MID")); ?> ' + cdCurrency + cdFmt(savings);
+
 			document.getElementById('v3-sn-body').textContent =
-				'Preț pentru ' + nextTier.from + ' zile: ' +
+				'<?php echo addslashes(Text::_("VRCSAVINGSTIP_TOTAL")); ?> ' +
 				cdCurrency + cdFmt(willPay) +
-				' (în loc de ' + cdCurrency + cdFmt(wouldPay) + ')';
-			document.getElementById('v3-sn-btn').textContent = '+1 Zi';
+				' <?php echo addslashes(Text::_("VRCSAVINGSTIP_INSTEAD")); ?> ' +
+				cdCurrency + cdFmt(wouldPay);
+				
+			document.getElementById('v3-sn-btn').textContent = '+1';
 			document.getElementById('v3-sn-btn').onclick = function() { v3ApplyNudge(nextTier.from); };
 
 			nudgeEl.style.display = 'block';
