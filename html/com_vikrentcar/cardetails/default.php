@@ -2249,11 +2249,11 @@ function cdSetImage(idx) {
 		}
 	};
 
-	window.cdCheckSavingsTip = function(days) {
-		var tipEl = document.getElementById('cd-savings-tip');
-		if (!tipEl) return;
+	window.v3CheckSavingsNudge = function(days) {
+		var nudgeEl = document.getElementById('v3-save-nudge');
+		if (!nudgeEl) return;
 		if (!days || !window.cdTiers || !cdTiers.length) {
-			tipEl.style.display = 'none';
+			nudgeEl.style.display = 'none';
 			return;
 		}
 
@@ -2268,7 +2268,7 @@ function cdSetImage(idx) {
 
 		// No match or already in the last tier
 		if (currentTierIdx === -1 || currentTierIdx >= cdTiers.length - 1) {
-			tipEl.style.display = 'none';
+			nudgeEl.style.display = 'none';
 			return;
 		}
 
@@ -2276,7 +2276,7 @@ function cdSetImage(idx) {
 
 		// Only show when exactly 1 day away from next tier boundary
 		if (days + 1 !== nextTier.from) {
-			tipEl.style.display = 'none';
+			nudgeEl.style.display = 'none';
 			return;
 		}
 
@@ -2286,13 +2286,14 @@ function cdSetImage(idx) {
 		var nextTotal = nextRate * nextTier.from;
 		var savings = Math.round(currentTotal - nextTotal);
 
-		if (savings <= 0) { tipEl.style.display = 'none'; return; }
+		if (savings <= 0) { nudgeEl.style.display = 'none'; return; }
 
-		tipEl.querySelector('.cd-tip-days').textContent     = nextTier.from;
-		tipEl.querySelector('.cd-tip-savings').textContent  = cdCurrency + cdFmt(savings);
-		tipEl.querySelector('.cd-tip-newtotal').textContent = cdCurrency + cdFmt(Math.round(nextTotal));
-		tipEl.querySelector('.cd-tip-oldtotal').textContent = cdCurrency + cdFmt(Math.round(currentTotal));
-		tipEl.style.display = 'flex';
+		// Now fill in the TOP nudge block with the correct values
+		document.getElementById('v3-sn-title').textContent = 'Adaugă 1 zi și economisești ' + cdCurrency + cdFmt(savings);
+		document.getElementById('v3-sn-body').textContent = 'Preț pentru ' + nextTier.from + ' zile: ' + cdCurrency + cdFmt(Math.round(nextTotal)) + ' (în loc de ' + cdCurrency + cdFmt(Math.round(currentTotal)) + ')';
+		document.getElementById('v3-sn-btn').textContent = '+1 Zi';
+		
+		nudgeEl.style.display = 'block';
 	};
 })(jQuery);
 </script>

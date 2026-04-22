@@ -203,10 +203,10 @@ function cdUpdateSummary() {
 		}
 	}
 
-	if (!days) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
+	if (!days) { $sum.removeClass('is-visible'); return; }
 
 	var rate = cdGetRate(days);
-	if (!rate) { $sum.removeClass('is-visible'); cdCheckSavingsTip(null); return; }
+	if (!rate) { $sum.removeClass('is-visible'); return; }
 
 	// Description sentence (i18n via cdDesc* vars)
 	var _dw2 = days === 1 ? cdDescDayWord : cdDescDaysWord;
@@ -321,7 +321,6 @@ function cdUpdateSummary() {
 	$sum.addClass('is-visible');
 
 	cdHighlightTier(days);
-	cdCheckSavingsTip(days);
 }
 
 /**
