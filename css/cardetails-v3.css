@@ -162,8 +162,10 @@
 /* Auto hide when scrolled to bottom */
 .cd-right.is-scrolled-end::before,
 .cd-right.is-scrolled-end::after {
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
 }
 @media (max-width: 920px) { 
 	.cd-right { position: static; margin-top: 16px; overflow-y: visible; padding-left: 0; }
@@ -1391,6 +1393,8 @@ body.vrc-modal-open {
 .v3-grace-fill { height: 4px; border-radius: 4px; background: #1D9E75; transition: width .3s; }
 .v3-grace-hint { display: block; font-size: 11px; color: #0F6E56; margin-top: 5px; }
 .v3-grace-exceeded { display: block; font-size: 11px; color: #A32D2D; margin-top: 5px; }
+.cd-grace-returnby { display: block; font-size: 11px; color: #0F6E56; margin-top: 5px; }
+.cd-grace-returnby strong { font-weight: 700; }
 .cd-grace-exceeded { display: none; }
 .cd-grace-exceeded.is-visible { display: block; }
 

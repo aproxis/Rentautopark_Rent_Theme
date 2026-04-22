@@ -1551,8 +1551,10 @@ jQuery(function(){
 		var graceWindowEnd   = graceWindowStart + (<?php echo $graceHours; ?> * 3600000);
 		
 		var deadlineDate = new Date(graceWindowEnd);
+		var dd = deadlineDate.getDate();
+		var dm = deadlineDate.getMonth()+1;
 		var dh = deadlineDate.getHours();
-		var dhStr = (dh<10?'0':'')+dh+':00';
+		var dhStr = dd + '/' + dm + ' ' + (dh<10?'0':'')+dh+':00';
 		
 		var progressPct = 5;
 		var barColor = '#1D9E75';
