@@ -190,9 +190,10 @@ function cdUpdateSummary() {
 		$kmNotice.addClass('unlimited disabled');
 		$kmValue.text('∞ Unlimited');
 		
-		// Set €0/km when unlimited is active
+		// Set €0/km and disable over limit row when unlimited is active
 		if ($kmOverLimit.length) {
 			$kmOverLimit.text('€0/km');
+			$kmOverLimit.closest('.v3-ni').addClass('disabled');
 		}
 	} else {
 		$kmNotice.removeClass('unlimited disabled');
@@ -206,9 +207,10 @@ function cdUpdateSummary() {
 			}
 		}
 		
-		// Restore over limit price
+		// Restore over limit price and enable row
 		if ($kmOverLimit.length && window.vrcKmLimit) {
 			$kmOverLimit.text(cdCurrency + vrcKmLimit.overPrice + '/km');
+			$kmOverLimit.closest('.v3-ni').removeClass('disabled');
 		}
 	}
 
