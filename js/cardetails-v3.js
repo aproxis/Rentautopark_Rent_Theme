@@ -186,13 +186,13 @@ function cdUpdateSummary() {
 	var isUnlimitedActive = jQuery('#cd-opt-toggle-4').is(':checked');
 
 	if (isUnlimitedActive) {
-		$kmNotice.addClass('unlimited disabled');
+		$kmNotice.addClass('unlimited');
 		$overLimitRow.addClass('disabled');
 		// Switch overlimit label to €0/km
 		$overLimitRow.find('.v3-ni-value-normal').hide();
 		$overLimitRow.find('.v3-ni-value-disabled').show();
 	} else {
-		$kmNotice.removeClass('unlimited disabled');
+		$kmNotice.removeClass('unlimited');
 		$overLimitRow.removeClass('disabled');
 		// Restore normal overlimit label
 		$overLimitRow.find('.v3-ni-value-normal').show();
