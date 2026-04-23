@@ -759,6 +759,24 @@
 .vrcdialog-reqinfo-formsubmit button:hover { background: #E54801 !important; }
 
 /* ── KM Notice States ───────────────────────────────────────────── */
+/* Over-limit row — normal state */
+.v3-ni-value-disabled {
+    display: none;
+}
+
+/* When unlimited mileage is active — grey out km notice and switch overlimit text */
+#cd-km-notice.disabled,
+.v3-ni.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+#cd-km-notice.unlimited #cd-km-value-normal {
+    display: none;
+}
+#cd-km-notice.unlimited #cd-km-value-unlimited {
+    display: inline;
+}
+
 .v3-ni.disabled .v3-ni-value-normal { display: none; }
 .v3-ni.disabled .v3-ni-value-disabled { display: block; }
 .v3-ni .v3-ni-value-disabled { display: none; color: #9ca3af; }

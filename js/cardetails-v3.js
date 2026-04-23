@@ -181,26 +181,42 @@ function cdUpdateSummary() {
 	}
 
 	/* ── Update KM notice ── */
-	var $kmNotice = jQuery('#cd-km-notice');
-	var $overLimitRow = jQuery('.v3-ni').has('.v3-ni-value-normal').last();
+	var $kmNotice      = jQuery('#cd-km-notice');
+	var $overLimitRow  = jQuery('.v3-ni:has(.v3-ni-value-normal)').last();
 	var isUnlimitedActive = jQuery('#cd-opt-toggle-4').is(':checked');
 
 	if (isUnlimitedActive) {
-		// JS ONLY adds classes - ALL TEXT is rendered in PHP
 		$kmNotice.addClass('unlimited disabled');
 		$overLimitRow.addClass('disabled');
+		// Switch overlimit label to €0/km
+		$overLimitRow.find('.v3-ni-value-normal').hide();
+		$overLimitRow.find('.v3-ni-value-disabled').show();
 	} else {
-		// JS ONLY removes classes - PHP handles all text
 		$kmNotice.removeClass('unlimited disabled');
 		$overLimitRow.removeClass('disabled');
+		// Restore normal overlimit label
+		$overLimitRow.find('.v3-ni-value-normal').show();
+		$overLimitRow.find('.v3-ni-value-disabled').hide();
 	}
 
 	// ALWAYS calculate and update km total
 	if (days) {
-		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt(jQuery('#cd-km-value').data('km-per-day')) || 200;
-		var totalKm = days * kmPerDay;
-		// Only update the number part, PHP handles all labels and translation
-		jQuery('#cd-km-value-normal').text(totalKm + ' km total');
+		var $kmEl    = jQuery('#cd-km-value');
+		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmEl.data('km-per-day')) || 200;
+		var totalKm  = days * kmPerDay;
+
+		var fmtTotal  = $kmEl.data('fmt-total')  || '%d km total';
+		var fmtPerDay = $kmEl.data('fmt-perday') || '%d km/day';
+
+		// Show "X km total" when dates selected, "X km/day" when no dates
+		var label = fmtTotal.replace('%d', totalKm);
+		jQuery('#cd-km-value-normal').text(label);
+	} else {
+		// No dates selected — fall back to per-day label
+		var $kmEl     = jQuery('#cd-km-value');
+		var kmPerDay = window.vrcKmLimit ? window.vrcKmLimit.kmPerDay : parseInt($kmEl.data('km-per-day')) || 200;
+		var fmtPerDay = $kmEl.data('fmt-perday') || '%d km/day';
+		jQuery('#cd-km-value-normal').text(fmtPerDay.replace('%d', kmPerDay));
 	}
 
 	if (!days) { $sum.removeClass('is-visible'); return; }

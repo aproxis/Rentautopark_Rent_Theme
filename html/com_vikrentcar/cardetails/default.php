@@ -1263,11 +1263,14 @@ jQuery(function(){
 			$kmConfig = class_exists('PlgSystemVrckmlimit') ? PlgSystemVrckmlimit::getConfig() : (object)['km_per_day' => 200, 'km_extra' => 0.25];
 			?>
 			<div class="v3-ni" id="cd-km-notice">
-			<div class="v3-ni-k"><?php echo Text::_('VRCKMLIMIT_LABEL') ?: 'Mileage'; ?></div>
-			<div class="v3-ni-v" id="cd-km-value" data-km-per-day="<?php echo $kmConfig->km_per_day; ?>">
-				<span id="cd-km-value-normal"><?php echo $kmConfig->km_per_day; ?> <?php echo Text::_('VRCKM_PER_DAY') ?: 'km/day'; ?></span>
-				<span id="cd-km-value-unlimited"><?php echo Text::_('VRCKM_UNLIMITED'); ?></span>
-			</div>
+			    <div class="v3-ni-k"><?php echo Text::_('VRCKMLIMITLABEL'); ?></div>
+			    <div class="v3-ni-v" id="cd-km-value"
+			        data-km-per-day="<?php echo (int)$kmConfig->km_per_day; ?>"
+			        data-fmt-total="<?php echo addslashes(Text::_('VRCKM_TOTAL')); ?>"
+			        data-fmt-perday="<?php echo addslashes(Text::_('VRCKM_PERDAY_LABEL')); ?>">
+			        <span id="cd-km-value-normal"><?php echo sprintf(Text::_('VRCKM_PERDAY_LABEL'), (int)$kmConfig->km_per_day); ?></span>
+			        <span id="cd-km-value-unlimited"><?php echo Text::_('VRCKM_UNLIMITED'); ?></span>
+			    </div>
 			</div>
 			<div class="v3-ni">
 			<div class="v3-ni-k"><?php echo Text::_('VRCKM_EXTRA_LABEL') ?: 'Over limit'; ?></div>
