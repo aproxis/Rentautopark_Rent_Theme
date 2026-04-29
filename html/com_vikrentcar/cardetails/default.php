@@ -84,37 +84,46 @@ $showpartlyres  = VikRentCar::showPartlyReserved();
 $numcalendars   = VikRentCar::numCalendars();
 $carats         = VikRentCar::getCarCaratOriz($car['idcarat'], array(), $vrc_tn);
 
-// ── Conditional Deposit Notice ─────────────────────────────────────────
+// ── Security Deposit (Hybrid: per-car → global fallback) ──────────────
 $showDeposit    = false;
 $depositAmount  = 0;
 $depositCurrency = $currencysymb;
 
-try {
-    $_dbo = JFactory::getDbo();
-    $_dbo->setQuery(
-        "SELECT `charge`, `val_pcent`, `ch_disc`
-         FROM `#__vikrentcar_gpayments`
-         WHERE `file` = 'maibpayment' AND `published` = '1'
-         LIMIT 1"
-    );
-    $maibPayment = $_dbo->loadAssoc();
+// Tier 1: Per-car deposit (from #__vikrentcar_cars.deposit)
+if (isset($car['deposit']) && floatval($car['deposit']) > 0) {
+    $depositAmount = floatval($car['deposit']);
+    $showDeposit = true;
+}
 
-    if (!empty($maibPayment) && (int)$maibPayment['ch_disc'] === 1 && floatval($maibPayment['charge']) > 0) {
-        $depositAmount = floatval($maibPayment['charge']);
-        
-        // If percentage-based (val_pcent = 2), calculate from car price
-        if ($maibPayment['val_pcent'] == 2 && !empty($car['cost']) && $car['cost'] > 0) {
-            $depositAmount = ($car['cost'] * $depositAmount) / 100;
+// Tier 2: Global fallback (maibpayment gpayments) when per-car deposit is 0
+if (!$showDeposit) {
+    try {
+        $_dbo = JFactory::getDbo();
+        $_dbo->setQuery(
+            "SELECT `charge`, `val_pcent`, `ch_disc`
+             FROM `#__vikrentcar_gpayments`
+             WHERE `file` = 'maibpayment' AND `published` = '1'
+             LIMIT 1"
+        );
+        $maibPayment = $_dbo->loadAssoc();
+
+        if (!empty($maibPayment) && (int)$maibPayment['ch_disc'] === 1 && floatval($maibPayment['charge']) > 0) {
+            $depositAmount = floatval($maibPayment['charge']);
+
+            // If percentage-based (val_pcent = 2), calculate from car price
+            if ($maibPayment['val_pcent'] == 2 && !empty($car['cost']) && $car['cost'] > 0) {
+                $depositAmount = ($car['cost'] * $depositAmount) / 100;
+            }
+
+            $depositAmount = round($depositAmount);
+
+            if ($depositAmount > 0) {
+                $showDeposit = true;
+            }
         }
-        
-        $depositAmount = round($depositAmount);
-        
-        if ($depositAmount > 0) {
-            $showDeposit = true;
-        }
+    } catch (Exception $e) {
+        $showDeposit = false;
     }
-} catch (Exception $e) {
-    $showDeposit = false;
 }
 // ────────────────────────────────────────────────────────────────────────
 

@@ -534,6 +534,56 @@ if (array_key_exists('hours', $price)) {
             </div>
             <?php endif; ?>
 
+            <!-- Security deposit (informational, not added to total) -->
+            <?php
+            // Hybrid deposit: per-car → global fallback (maibpayment)
+            $__depositAmount = 0;
+            $__showDeposit = false;
+
+            // Tier 1: Per-car deposit
+            if (isset($car['deposit']) && floatval($car['deposit']) > 0) {
+                $__depositAmount = floatval($car['deposit']);
+                $__showDeposit = true;
+            }
+
+            // Tier 2: Global fallback (maibpayment gpayments) when per-car deposit is 0
+            if (!$__showDeposit) {
+                try {
+                    $_dbo = JFactory::getDbo();
+                    $_dbo->setQuery(
+                        "SELECT `charge`, `val_pcent`, `ch_disc`
+                         FROM `#__vikrentcar_gpayments`
+                         WHERE `file` = 'maibpayment' AND `published` = '1'
+                         LIMIT 1"
+                    );
+                    $maibPayment = $_dbo->loadAssoc();
+
+                    if (!empty($maibPayment) && (int)$maibPayment['ch_disc'] === 1 && floatval($maibPayment['charge']) > 0) {
+                        $__depositAmount = floatval($maibPayment['charge']);
+
+                        // If percentage-based (val_pcent = 2), calculate from car price
+                        if ($maibPayment['val_pcent'] == 2 && !empty($car['cost']) && $car['cost'] > 0) {
+                            $__depositAmount = ($car['cost'] * $__depositAmount) / 100;
+                        }
+
+                        $__depositAmount = round($__depositAmount);
+
+                        if ($__depositAmount > 0) {
+                            $__showDeposit = true;
+                        }
+                    }
+                } catch (Exception $e) {
+                    $__showDeposit = false;
+                }
+            }
+            ?>
+            <?php if ($__showDeposit): ?>
+            <div class="vrc-price-row vrc-price-row-deposit">
+                <span class="vrc-price-row-label"><?php echo JText::_('VRCDEPOSITLABEL'); ?></span>
+                <span class="vrc-price-row-value"><?php echo $currencysymb; ?><?php echo VikRentCar::numberFormat($__depositAmount); ?></span>
+            </div>
+            <?php endif; ?>
+
             <!-- Total -->
             <div class="vrc-price-row vrc-price-row-total">
                 <span class="vrc-price-row-label"><?php echo $usedcoupon ? JText::_('VRCNEWTOTAL') : JText::_('VRTOTAL'); ?></span>
