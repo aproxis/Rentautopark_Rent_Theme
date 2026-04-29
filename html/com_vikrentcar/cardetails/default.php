@@ -1317,14 +1317,6 @@ jQuery(function(){
 
 		<div id="cd-summary-rows" class="v3-pr-rows"></div>
 		
-		<!-- Deposit notice (moved inside summary, before total) -->
-		<?php if ($showDeposit): ?>
-		<div class="v3-deposit-notice" id="v3-deposit-notice" style="display:none;">
-		<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
-		<span><?php echo Text::_('VRCDEPOSITLABEL') ?: 'Security deposit:'; ?> <strong id="v3-deposit-amt"><?php echo $depositAmount . ' ' . $depositCurrency; ?></strong> — <?php echo Text::_('VRCDEPOSITRETURNED') ?: 'returned on car return'; ?></span>
-		</div>
-		<?php endif; ?>
-		
 		<div class="v3-pr-row v3-pr-total">
 			<span><?php echo Text::_('VRTOTAL') ?: 'Total'; ?></span>
 			<span class="v3-pr-total-amt" id="cd-summary-total"></span>
@@ -1890,6 +1882,8 @@ jQuery(function(){
 			graceExceeded: '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>'
 		};
 		var cdLabelBasePrice = '<?php echo addslashes(Text::_("VRPRICE") ?: "Preț de bază"); ?>';
+		var cdDepositAmount = <?php echo (int)$depositAmount; ?>;
+		var cdLabelDeposit = '<?php echo addslashes(Text::_('VRCDEPOSITLABEL') ?: 'Garanție'); ?>';
 		var cdTermsAlert = '<?php echo addslashes(Text::_('VRFILLALL')); ?>';
 		/* ── Reserve / Partial payment config (from VikRentCar settings) ── */
 		var cdPayAccPercent = <?php echo (float)$vrcPayAccPercent; ?>;

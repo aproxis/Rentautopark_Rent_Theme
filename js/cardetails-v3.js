@@ -305,7 +305,14 @@ function cdUpdateSummary() {
 		}
 	}
 
-	var total = baseTotal + optTotal + oohTotal - couponDiscount;
+	// Security deposit row (added to total)
+	var depositAmount = (typeof cdDepositAmount !== 'undefined' && cdDepositAmount > 0) ? cdDepositAmount : 0;
+	if (depositAmount > 0) {
+		rows += '<div class="cd-summary-row"><span>' + (cdLabelDeposit || 'Garanție') + '</span>'
+			+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(depositAmount) + '</span></div>';
+	}
+
+	var total = baseTotal + optTotal + oohTotal - couponDiscount + depositAmount;
 	jQuery('#cd-summary-rows').html(rows);
 	jQuery('#cd-summary-total').text(cdCurrency + cdFmt(total));
 	
@@ -324,14 +331,6 @@ function cdUpdateSummary() {
 		var restLabel = (typeof cdPayNowRestLabel !== 'undefined') ? cdPayNowRestLabel : 'now · rest on pickup';
 		jQuery('#v3-pay-reserve-amt').text(cdCurrency + cdFmt(reserveAmt));
 		jQuery('#v3-pay-res-desc').text(cdCurrency + cdFmt(reserveAmt) + ' ' + restLabel);
-	}
-	
-	// Show/hide deposit notice based on whether we have a deposit
-	var $depositNotice = jQuery('#v3-deposit-notice');
-	if ($depositNotice.length && days) {
-		$depositNotice.show();
-	} else {
-		$depositNotice.hide();
 	}
 	
 	$sum.addClass('is-visible');

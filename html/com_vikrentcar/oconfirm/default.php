@@ -534,7 +534,7 @@ if (array_key_exists('hours', $price)) {
             </div>
             <?php endif; ?>
 
-            <!-- Security deposit (informational, not added to total) -->
+            <!-- Security deposit (added to total) -->
             <?php
             // Hybrid deposit: per-car → global fallback (maibpayment)
             $__depositAmount = 0;
@@ -575,6 +575,11 @@ if (array_key_exists('hours', $price)) {
                 } catch (Exception $e) {
                     $__showDeposit = false;
                 }
+            }
+
+            // Add deposit to total
+            if ($__showDeposit && $__depositAmount > 0) {
+                $totdue += $__depositAmount;
             }
             ?>
             <?php if ($__showDeposit): ?>
