@@ -1284,7 +1284,7 @@ jQuery(function(){
 			<div class="v3-ni">
 			<div class="v3-ni-k"><?php echo Text::_('VRCKM_EXTRA_LABEL') ?: 'Over limit'; ?></div>
 			<div class="v3-ni-v">
-				<span class="v3-ni-value-normal"><?php echo $this->currSymb; ?><?php echo number_format($kmConfig->km_extra, 2); ?>/km</span>
+				<span class="v3-ni-value-normal">€<?php echo number_format($kmConfig->km_extra, 2); ?>/km</span>
 				<span class="v3-ni-value-disabled"><?php echo Text::_('VRCKM_ZERO_PER_KM'); ?></span>
 			</div>
 			</div>
