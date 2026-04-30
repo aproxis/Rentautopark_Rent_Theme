@@ -723,7 +723,7 @@ function arTogglePw(btn) {
 						function (loggedUser, loggedName) {
 							// Login success — close modal and redirect to profile page
 							closeAuthModal();
-							window.location.href = 'index.php?option=com_users&view=profile';
+							window.location.href = '<?php echo $profileUrl; ?>';
 						},
 						function (msg) {
 							// Login failed — still created, reload anyway (pending-login cookie will handle it)
@@ -762,6 +762,8 @@ function arTogglePw(btn) {
 $returnLogin  = base64_encode(Uri::current());
 // Logout: always go to homepage — avoids landing on ?view=login URLs
 $returnLogout = base64_encode(Uri::root());
+// Profile page SEF URL — used in JS redirect after auto-login
+$profileUrl   = Route::_('index.php?option=com_users&view=profile');
 ?>
 
 <?php if($type == 'logout') : ?>
