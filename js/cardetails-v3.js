@@ -308,7 +308,7 @@ function cdUpdateSummary() {
 	// Security deposit row (added to total)
 	var depositAmount = (typeof cdDepositAmount !== 'undefined' && cdDepositAmount > 0) ? cdDepositAmount : 0;
 	if (depositAmount > 0) {
-		rows += '<div class="cd-summary-row"><span>' + (cdLabelDeposit || 'Garanție') + '</span>'
+		rows += '<div class="cd-summary-row cd-summary-row-deposit"><span>' + (cdLabelDeposit || 'Garanție') + '</span>'
 			+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(depositAmount) + '</span></div>';
 	}
 

@@ -1051,6 +1051,13 @@
 /* ── Discount row value ────────────────────────────────────────── */
 .cd-discount-val { color: #16a34a !important; }
 
+/* ── Deposit row (summary) ─────────────────────────────────────── */
+.cd-summary-row-deposit span,
+.cd-summary-row-deposit .cd-summary-row-val {
+    color: #15803d;
+    font-weight: 600;
+}
+
 /* ================================================================
    COUPON ROW (inside booking card)
    ================================================================ */

@@ -361,6 +361,13 @@ body.contentpane .vrcrentalfor {
     color: #16a34a;
 }
 
+/* Deposit row */
+.vrc-price-row-deposit .vrc-price-row-label,
+.vrc-price-row-deposit .vrc-price-row-value {
+    color: #15803d;
+    font-weight: 600;
+}
+
 .vrc-price-row-coupon .vrc-price-row-label {
     display: flex;
     align-items: center;
