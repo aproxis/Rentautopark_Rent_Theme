@@ -13,7 +13,7 @@
 (function($){
 
 	//Add grayscale image for partners 
-	$(window).load(function() {
+	$(window).on('load', function() {
 		$('.img-grayscale img').each(function() {
 			$(this).wrap('<span style="display:inline-block;width:' + this.width + 'px;height:' + this.height + 'px;">').clone().addClass('gotcolors').css({'position': 'absolute', 'opacity' : 0 }).insertBefore(this);
 			this.src = grayscale(this.src);

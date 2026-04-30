@@ -438,6 +438,14 @@ if (version_compare(JVERSION, 4, 'ge')) {
 	</div><!-- /#ja-login-box -->
 </div><!-- /#ja-login-form -->
 
+<?php
+// Login:  redirect back to current page (preserves language prefix /ru, /ro, /en)
+$returnLogin  = base64_encode(Uri::current());
+// Logout: always go to homepage — avoids landing on ?view=login URLs
+$returnLogout = base64_encode(Uri::root());
+// Profile page SEF URL — used in JS redirect after auto-login
+$profileUrl   = Route::_('index.php?option=com_users&view=profile');
+?>
 <script>
 // ============================================================
 // Auth Modal — open / close / tab switching
@@ -757,15 +765,6 @@ function arTogglePw(btn) {
 </script>
 
 <!-- Auth output — single "My Account" button -->
-<?php
-// Login:  redirect back to current page (preserves language prefix /ru, /ro, /en)
-$returnLogin  = base64_encode(Uri::current());
-// Logout: always go to homepage — avoids landing on ?view=login URLs
-$returnLogout = base64_encode(Uri::root());
-// Profile page SEF URL — used in JS redirect after auto-login
-$profileUrl   = Route::_('index.php?option=com_users&view=profile');
-?>
-
 <?php if($type == 'logout') : ?>
 	<?php
 	// Show part of email before @ sign
