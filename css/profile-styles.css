@@ -742,6 +742,15 @@
         font-size: 16px;
     }
     
+    .profile-name-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .profile-phone-sep {
+        display: none;
+    }
+    
     .profile-meta-row {
         gap: 10px;
     }
@@ -780,6 +789,15 @@
     
     .profile-name {
         font-size: 16px;
+    }
+    
+    .profile-name-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .profile-phone-sep {
+        display: none;
     }
     
     .profile-meta-row {
