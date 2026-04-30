@@ -731,7 +731,7 @@ function arTogglePw(btn) {
 						function (loggedUser, loggedName) {
 							// Login success — close modal and redirect to profile page
 							closeAuthModal();
-							window.location.href = '<?php echo $profileUrl; ?>';
+							window.location.href = '<?php echo $profileUrl; ?>' + '?edit=1';
 						},
 						function (msg) {
 							// Login failed — still created, reload anyway (pending-login cookie will handle it)

@@ -34,7 +34,7 @@ $doc->addStyleSheet(Uri::root() . 'templates/rent/css/profile-edit.css');
 $getProfileUrl = Uri::root() . 'templates/rent/php/get-customer-profile.php';
 $saveProfileUrl = Uri::root() . 'templates/rent/php/save-customer-profile.php';
 ?>
-<form id="member-profile-edit" action="<?php echo Uri::base(); ?>index.php" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
+    <form id="member-profile-edit" action="<?php echo Uri::base(); ?>index.php" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
 
     <!-- ════════════════════════════════════════════════════════════════════
          VIKRENTCAR CUSTOMER PROFILE FIELDS
@@ -72,9 +72,14 @@ $saveProfileUrl = Uri::root() . 'templates/rent/php/save-customer-profile.php';
             </svg>
             <span><?php echo Text::_('VRC_SAVE_PROFILE') ?: 'Salvează datele'; ?></span>
         </button>
-
-        <hr style="margin:16px 0;border:none;border-top:1px solid #e5e7eb;" />
     </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         PASSWORD CHANGE SECTION
+         Saved to #__users via standard Joomla form submit
+         ════════════════════════════════════════════════════════════════════ -->
+    <div class="vrc-profile-section" style="margin-top:24px;">
+        <h4 class="vrc-profile-section-title"><?php echo Text::_('VRC_CHANGE_PASSWORD') ?: 'Schimbare parolă'; ?></h4>
 
     <?php foreach ($this->form->getFieldsets() as $group => $fieldset): ?>
         <?php $fields = $this->form->getFieldset($group); ?>

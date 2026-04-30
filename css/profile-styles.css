@@ -640,6 +640,25 @@
     color: #1a1a1a;
 }
 
+.profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.profile-phone {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.profile-phone-sep {
+    color: #ccc;
+    font-size: 14px;
+}
+
 .profile-username {
     font-size: 14px;
     color: #888;

@@ -37,6 +37,22 @@ $document    = Factory::getDocument();
 $document->addStyleSheet(Uri::root() . 'templates/rent/css/profile-styles.css');
 $document->addStyleSheet(Uri::root() . 'templates/rent/css/orders-styles.css');
 
+// ── Fetch VikRentCar customer data (first_name, last_name, phone) ─────────
+$customerData = null;
+if ($currentUser && $user->id > 0) {
+    try {
+        $db = Factory::getDbo();
+        $query = $db->getQuery(true)
+            ->select(['first_name', 'last_name', 'phone'])
+            ->from($db->quoteName('#__vikrentcar_customers'))
+            ->where($db->quoteName('ujid') . ' = ' . (int)$user->id);
+        $db->setQuery($query);
+        $customerData = $db->loadObject();
+    } catch (\Exception $e) {
+        $customerData = null;
+    }
+}
+
 // ── Fetch VikRentCar orders ───────────────────────────────────────────────
 //
 // Confirmed DB structure from mb1ii_vikrentcar_orders:
@@ -143,6 +159,17 @@ if (class_exists('VikRentCar')) {
                 </div>
 
                 <div class="profile-identity">
+                    <?php if ($customerData && ($customerData->first_name || $customerData->last_name)): ?>
+                    <div class="profile-name-row">
+                        <span class="profile-name">
+                            <?php echo htmlspecialchars(trim(($customerData->first_name ?? '') . ' ' . ($customerData->last_name ?? '')), ENT_QUOTES, 'UTF-8'); ?>
+                        </span>
+                        <?php if (!empty($customerData->phone)): ?>
+                        <span class="profile-phone-sep">·</span>
+                        <span class="profile-phone"><?php echo htmlspecialchars($customerData->phone, ENT_QUOTES, 'UTF-8'); ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
                     <div class="profile-identity-row">
                         <span class="profile-email"><?php echo $this->escape($this->data->email); ?></span>
                     </div>
@@ -337,6 +364,12 @@ if (class_exists('VikRentCar')) {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeEditModal();
     });
+    // Auto-open edit modal if ?edit=1 is in URL (after auto-login redirect)
+    if (window.location.search.indexOf('edit=1') !== -1) {
+        document.addEventListener('DOMContentLoaded', function() {
+            openEditModal();
+        });
+    }
     </script>
     <?php endif; ?>
 
