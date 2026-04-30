@@ -149,12 +149,19 @@ if (class_exists('VikRentCar')) {
 
                 <div class="profile-avatar">
                     <?php
-                    $nameParts = explode(' ', trim($this->data->name));
-                    $initials  = strtoupper(
-                        (isset($nameParts[0]) ? mb_substr($nameParts[0], 0, 1) : '') .
-                        (isset($nameParts[1]) ? mb_substr($nameParts[1], 0, 1) : '')
-                    );
-                    echo $initials ?: strtoupper(mb_substr($this->data->username, 0, 2));
+                    if ($customerData && ($customerData->first_name || $customerData->last_name)) {
+                        $first = $customerData->first_name ?? '';
+                        $last  = $customerData->last_name ?? '';
+                        $initials = strtoupper(mb_substr($first, 0, 1) . mb_substr($last, 0, 1));
+                        echo $initials ?: '?';
+                    } else {
+                        $nameParts = explode(' ', trim($this->data->name));
+                        $initials  = strtoupper(
+                            (isset($nameParts[0]) ? mb_substr($nameParts[0], 0, 1) : '') .
+                            (isset($nameParts[1]) ? mb_substr($nameParts[1], 0, 1) : '')
+                        );
+                        echo $initials ?: strtoupper(mb_substr($this->data->username, 0, 2));
+                    }
                     ?>
                 </div>
 

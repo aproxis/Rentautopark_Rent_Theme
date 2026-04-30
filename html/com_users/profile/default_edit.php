@@ -240,6 +240,7 @@ $saveProfileUrl = Uri::root() . 'templates/rent/php/save-customer-profile.php';
                     closeEditModal();
                     var u = new URL(window.location.href);
                     u.searchParams.delete('edit');
+                    u.searchParams.delete('new_account');
                     window.location.href = u.toString();
                 } else {
                     showFeedback(res && res.error ? res.error : 'Eroare la salvare.', true);

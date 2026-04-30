@@ -797,7 +797,7 @@
     }
     
     .profile-edit-btn {
-        align-self: center;
+        align-self: flex-start;
         margin-top: 0;
         white-space: nowrap;
     }
