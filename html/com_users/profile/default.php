@@ -370,8 +370,45 @@ if (class_exists('VikRentCar')) {
             openEditModal();
         });
     }
+
+    // ── Show "Account created" toast if ?new_account=1 is in URL ──────────
+    if (window.location.search.indexOf('new_account=1') !== -1) {
+        document.addEventListener('DOMContentLoaded', function() {
+            var toast = document.getElementById('vrc-account-created-toast');
+            if (toast) {
+                toast.style.display = 'flex';
+                // Auto-hide after 6 seconds
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-20px)';
+                    setTimeout(function() {
+                        toast.style.display = 'none';
+                    }, 400);
+                }, 6000);
+            }
+        });
+    }
     </script>
     <?php endif; ?>
+
+    <!-- ── Account Created Toast Notification ─────────────────────────────── -->
+    <div id="vrc-account-created-toast" class="vrc-toast" style="display:none;">
+        <div class="vrc-toast-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        <div class="vrc-toast-body">
+            <span class="vrc-toast-title"><?php echo Text::_('VRC_REG_ACCOUNT_CREATED'); ?></span>
+        </div>
+        <button class="vrc-toast-close" onclick="this.parentElement.style.display='none'" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
 
 </div><!-- /.profile-page -->
 

@@ -242,3 +242,94 @@
     color: #0a0a0a;
     margin-bottom: 24px;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TAB NAVIGATION — Edit Modal (default_edit.php)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Tab bar ───────────────────────────────────────────────────────────── */
+.vrc-edit-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 24px;
+    padding: 0;
+    list-style: none;
+}
+
+/* ── Individual tab button ─────────────────────────────────────────────── */
+.vrc-edit-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background .15s;
+    white-space: nowrap;
+    font-family: inherit;
+    line-height: 1.2;
+}
+
+.vrc-edit-tab svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.vrc-edit-tab:hover {
+    color: #374151;
+    background: #f9fafb;
+}
+
+.vrc-edit-tab.active {
+    color: #FE5001;
+    border-bottom-color: #FE5001;
+    background: transparent;
+}
+
+/* ── Tab content panels ────────────────────────────────────────────────── */
+.vrc-edit-tab-content {
+    display: none;
+}
+
+.vrc-edit-tab-content.active {
+    display: block;
+}
+
+/* ── Section title inside tab content ──────────────────────────────────── */
+.vrc-profile-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0a0a0a;
+    margin: 0 0 16px 0;
+    padding: 0;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .vrc-edit-tabs {
+        flex-direction: column;
+        border-bottom: none;
+        gap: 4px;
+    }
+    .vrc-edit-tab {
+        border-bottom: none;
+        border-left: 3px solid transparent;
+        margin-bottom: 0;
+        padding: 10px 16px;
+        border-radius: 6px;
+    }
+    .vrc-edit-tab.active {
+        border-bottom: none;
+        border-left-color: #FE5001;
+        background: #fff5f0;
+    }
+}
