@@ -721,9 +721,9 @@ function arTogglePw(btn) {
 					setSubmitBtnLoading(true);
 					doAjaxLogin(username, password,
 						function (loggedUser, loggedName) {
-							// Login success — close modal and reload
+							// Login success — close modal and redirect to profile page
 							closeAuthModal();
-							window.location.reload();
+							window.location.href = 'index.php?option=com_users&view=profile';
 						},
 						function (msg) {
 							// Login failed — still created, reload anyway (pending-login cookie will handle it)
@@ -776,6 +776,10 @@ $returnLogout = base64_encode(Uri::root());
 			<svg class="ar-account-caret" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
 		</button>
 		<div class="ar-account-dropdown" role="menu">
+			<a href="<?php echo Route::_('index.php?option=com_users&view=profile'); ?>" class="ar-account-profile-link">
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+				<?php echo Text::_('MY_PROFILE') ?: 'Profilul meu'; ?>
+			</a>
 			<form action="<?php echo Route::_('index.php', true, $params->get('usesecure')); ?>" method="post">
 				<button type="submit" class="ar-account-logout-btn">
 					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -895,6 +899,29 @@ $returnLogout = base64_encode(Uri::root());
 @keyframes arDropIn {
 	from { opacity: 0; transform: translateY(-4px); }
 	to   { opacity: 1; transform: translateY(0); }
+}
+.ar-account-profile-link {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 9px 12px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #374151;
+	background: none;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	text-align: left;
+	transition: background .15s;
+	white-space: nowrap;
+	text-decoration: none;
+	box-sizing: border-box;
+}
+.ar-account-profile-link:hover {
+	background: #f3f4f6;
+	color: #FE5001;
 }
 .ar-account-logout-btn {
 	display: flex;
