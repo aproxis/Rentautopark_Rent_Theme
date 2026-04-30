@@ -1756,9 +1756,31 @@ jQuery(document).ready(function ($) {
             $checkbox.prop('disabled', false);
 
             if (res && res.ok) {
-                // New account created, auto-password emailed
-                registrationDone = true;
-                showSuccess(OK_LABEL);
+                // New account created — auto-login immediately
+                var username = res.username || '';
+                var password = res.password || '';
+                if (username && password) {
+                    $submitBtn.prop('disabled', true).val(CREATING_LABEL);
+                    doAjaxLogin(username, password,
+                        function (loggedUser, loggedName) {
+                            registrationDone = true;
+                            clearFeedback();
+                            showSuccess('✓ ' + MSG_LOGGED_IN + ' <strong>' +
+                                $('<span>').text(loggedName || loggedUser).html() +
+                                '</strong>. ' + OK_LABEL);
+                            $submitBtn.prop('disabled', false).val(ORIG_SUBMIT_VAL);
+                        },
+                        function () {
+                            // Login failed — still allow booking as registered user
+                            registrationDone = true;
+                            showSuccess(OK_LABEL);
+                            $submitBtn.prop('disabled', false).val(ORIG_SUBMIT_VAL);
+                        }
+                    );
+                } else {
+                    registrationDone = true;
+                    showSuccess(OK_LABEL);
+                }
             } else if (res && res.error_code === 'EMAIL_EXISTS') {
                 // Account exists — ask for password to log in
                 registrationBlocked = true;

@@ -341,6 +341,7 @@ sendJson([
     'ok'          => true,
     'user_id'     => $newUserId,
     'username'    => $username,
+    'password'    => $password,
     'first_name'  => $firstName,
     'last_name'   => $lastName,
     'email_sent'  => $emailSent,

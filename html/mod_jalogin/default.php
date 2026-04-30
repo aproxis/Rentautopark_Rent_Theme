@@ -574,6 +574,186 @@ function arTogglePw(btn) {
 	emailInput.addEventListener('input',  syncFromEmail);
 	emailInput.addEventListener('change', syncFromEmail);
 })();
+
+// ══════════════════════════════════════════════════════════════════════════
+// AUTO-LOGIN after header registration
+// Intercept the registration form submit → AJAX to register-ajax.php →
+// auto-login via doAjaxLogin() → close modal + reload page.
+// ══════════════════════════════════════════════════════════════════════════
+(function () {
+	'use strict';
+
+	var REGISTER_AJAX = '<?php echo JURI::root(); ?>templates/rent/php/register-ajax.php';
+	var WHOAMI_URL    = REGISTER_AJAX.replace('register-ajax.php', 'whoami.php');
+
+	var regForm = document.getElementById('member-registration');
+	if (!regForm) return;
+
+	// ── Helpers ─────────────────────────────────────────────────────────
+	function getEmail() {
+		var el = document.getElementById('jformemail1');
+		return el ? el.value.trim() : '';
+	}
+
+	function showRegError(msg) {
+		// Remove any existing error element first
+		var old = document.getElementById('vrc-header-reg-error');
+		if (old) old.remove();
+
+		var err = document.createElement('div');
+		err.id = 'vrc-header-reg-error';
+		err.style.cssText = 'margin-top:12px;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;color:#dc2626;font-size:13px;';
+		err.textContent = msg;
+		regForm.appendChild(err);
+	}
+
+	function clearRegError() {
+		var old = document.getElementById('vrc-header-reg-error');
+		if (old) old.remove();
+	}
+
+	function showRegSuccess(msg) {
+		var old = document.getElementById('vrc-header-reg-success');
+		if (old) old.remove();
+
+		var suc = document.createElement('div');
+		suc.id = 'vrc-header-reg-success';
+		suc.style.cssText = 'margin-top:12px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;color:#16a34a;font-size:13px;';
+		suc.textContent = msg;
+		regForm.appendChild(suc);
+	}
+
+	function setSubmitBtnLoading(loading) {
+		var btn = regForm.querySelector('.auth-submit-btn');
+		if (!btn) return;
+		if (loading) {
+			btn._origText = btn.textContent;
+			btn.textContent = '<?php echo addslashes(JText::_('VRC_CREATING_ACCOUNT') ?: 'Se creează contul…'); ?>';
+			btn.disabled = true;
+		} else {
+			btn.textContent = btn._origText || '<?php echo addslashes(JText::_('JAREGISTER')); ?>';
+			btn.disabled = false;
+		}
+	}
+
+	// ── Session check via whoami.php ────────────────────────────────────
+	function checkSession(onSuccess, onFail) {
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', WHOAMI_URL, true);
+		xhr.setRequestHeader('Accept', 'application/json');
+		xhr.onload = function () {
+			try {
+				var res = JSON.parse(xhr.responseText);
+				if (res && res.logged_in) { onSuccess(res.username, res.name); }
+				else { onFail('Autentificare eșuată.'); }
+			} catch (e) { onFail('Eroare la verificarea sesiunii.'); }
+		};
+		xhr.onerror = function () { onFail('Eroare de rețea.'); };
+		xhr.send();
+	}
+
+	// ── AJAX login ──────────────────────────────────────────────────────
+	function doAjaxLogin(user, pass, onSuccess, onFail) {
+		var loginForm = document.getElementById('modal-login-form');
+		if (!loginForm) { onFail('Login form not available.'); return; }
+
+		// Extract CSRF token
+		var token = '';
+		var hiddenInputs = loginForm.querySelectorAll('input[type="hidden"]');
+		for (var i = 0; i < hiddenInputs.length; i++) {
+			var n = hiddenInputs[i].name;
+			if (n !== 'option' && n !== 'task' && n !== 'return') { token = n; break; }
+		}
+		if (!token) { onFail('CSRF token missing.'); return; }
+
+		var action = loginForm.action;
+		var data = 'username=' + encodeURIComponent(user) +
+			'&password=' + encodeURIComponent(pass) +
+			'&option=com_users&task=user.login' +
+			'&return=' + encodeURIComponent(btoa(window.location.href)) +
+			'&' + encodeURIComponent(token) + '=1';
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', action, true);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.onload = function () {
+			// Joomla redirects — we don't follow, just check session
+			checkSession(onSuccess, onFail);
+		};
+		xhr.onerror = function () { onFail('Eroare de rețea.'); };
+		xhr.send(data);
+	}
+
+	// ── Intercept registration form submit ──────────────────────────────
+	regForm.addEventListener('submit', function (e) {
+		var email = getEmail();
+		if (!email || !/[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}/.test(email)) {
+			showRegError('<?php echo addslashes(JText::_('JGLOBAL_VALID_EMAIL') ?: 'Introduceți o adresă de email validă.'); ?>');
+			e.preventDefault();
+			return;
+		}
+
+		// Prevent standard Joomla form submission
+		e.preventDefault();
+
+		clearRegError();
+		setSubmitBtnLoading(true);
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', REGISTER_AJAX, true);
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.setRequestHeader('Accept', 'application/json');
+		xhr.onload = function () {
+			setSubmitBtnLoading(false);
+
+			try {
+				var res = JSON.parse(xhr.responseText);
+			} catch (e) {
+				showRegError('<?php echo addslashes(JText::_('VRC_REG_ERR_NETWORK') ?: 'Eroare de rețea.'); ?>');
+				return;
+			}
+
+			if (res && res.ok) {
+				// Account created — auto-login
+				var username = res.username || '';
+				var password = res.password || '';
+				if (username && password) {
+					setSubmitBtnLoading(true);
+					doAjaxLogin(username, password,
+						function (loggedUser, loggedName) {
+							// Login success — close modal and reload
+							closeAuthModal();
+							window.location.reload();
+						},
+						function (msg) {
+							// Login failed — still created, reload anyway (pending-login cookie will handle it)
+							closeAuthModal();
+							window.location.reload();
+						}
+					);
+				} else {
+					// No credentials returned — reload, pending-login cookie will handle it
+					closeAuthModal();
+					window.location.reload();
+				}
+			} else if (res && res.error_code === 'EMAIL_EXISTS') {
+				showRegError('<?php echo addslashes(JText::_('VRC_REG_EMAIL_EXISTS_INFO') ?: 'Există deja un cont cu această adresă de email.') . ' ' . addslashes(JText::_('TXT_LOGIN')); ?>');
+			} else {
+				showRegError(res && res.error ? res.error : '<?php echo addslashes(JText::_('VRC_REG_ERR_NETWORK') ?: 'Eroare de rețea.'); ?>');
+			}
+		};
+
+		xhr.onerror = function () {
+			setSubmitBtnLoading(false);
+			showRegError('<?php echo addslashes(JText::_('VRC_REG_ERR_NETWORK') ?: 'Eroare de rețea.'); ?>');
+		};
+
+		xhr.send(JSON.stringify({
+			reg_email: email,
+			reg_username: email.split('@')[0].replace(/[^a-zA-Z0-9._\-]/g, '').toLowerCase().substring(0, 60) || 'user'
+		}));
+	});
+})();
 </script>
 
 <!-- Auth output — single "My Account" button -->
