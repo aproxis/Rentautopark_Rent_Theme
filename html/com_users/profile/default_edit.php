@@ -65,21 +65,21 @@ $saveProfileUrl = Uri::root() . 'templates/rent/php/save-customer-profile.php';
             <div class="form-group">
                 <label class="control-label" for="vrc-first-name"><?php echo Text::_('VRC_FIRST_NAME') ?: 'Prenume'; ?> <span class="star">&nbsp;*</span></label>
                 <div class="controls">
-                    <input type="text" id="vrc-first-name" class="inputbox" value="" placeholder="Prenume" />
+                    <input type="text" id="vrc-first-name" class="inputbox form-control" value="" placeholder="Prenume" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label" for="vrc-last-name"><?php echo Text::_('VRC_LAST_NAME') ?: 'Nume'; ?> <span class="star">&nbsp;*</span></label>
                 <div class="controls">
-                    <input type="text" id="vrc-last-name" class="inputbox" value="" placeholder="Nume" />
+                    <input type="text" id="vrc-last-name" class="inputbox form-control" value="" placeholder="Nume" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label" for="vrc-phone"><?php echo Text::_('VRC_PHONE') ?: 'Telefon'; ?> <span class="star">&nbsp;*</span></label>
                 <div class="controls">
-                    <input type="tel" id="vrc-phone" class="inputbox" value="" placeholder="+373XXXXXXXX" />
+                    <input type="tel" id="vrc-phone" class="inputbox form-control" value="" placeholder="+373XXXXXXXX" />
                 </div>
             </div>
 
@@ -237,7 +237,10 @@ $saveProfileUrl = Uri::root() . 'templates/rent/php/save-customer-profile.php';
             try {
                 var res = JSON.parse(xhr.responseText);
                 if (res && res.ok) {
-                    showFeedback('Datele au fost salvate cu succes.', false);
+                    closeEditModal();
+                    var u = new URL(window.location.href);
+                    u.searchParams.delete('edit');
+                    window.location.href = u.toString();
                 } else {
                     showFeedback(res && res.error ? res.error : 'Eroare la salvare.', true);
                 }
