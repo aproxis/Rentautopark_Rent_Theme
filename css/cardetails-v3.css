@@ -225,13 +225,13 @@
 
 	.cd-left::-webkit-scrollbar-thumb,
 	.cd-right-inner::-webkit-scrollbar-thumb {
-		background: #d1d5db;
+		background: #FE5001;
 		border-radius: 3px;
 	}
 
 	.cd-left::-webkit-scrollbar-thumb:hover,
 	.cd-right-inner::-webkit-scrollbar-thumb:hover {
-		background: #FE5001;
+		background: #ff7a3d;
 	}
 }
 
