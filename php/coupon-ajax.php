@@ -108,6 +108,7 @@ try {
 		'type'  => $percentot,  // 1=percentage, 2=fixed (matches cdUpdateSummary JS)
 		'value' => $value,
 		'label' => $label,
+		'code'  => $coupon['code'],
 	]);
 
 } catch (Exception $_e) {

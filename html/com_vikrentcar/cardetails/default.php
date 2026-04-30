@@ -31,6 +31,7 @@ if (method_exists('Joomla\CMS\Language\Text', 'script')) {
 	Text::script('VRC_LOC_WILL_CLOSE_TIME');
 	Text::script('VRC_PICKLOC_IS_ON_BREAK_TIME_FROM_TO');
 	Text::script('VRC_DROPLOC_IS_ON_BREAK_TIME_FROM_TO');
+	Text::script('VRCCOUPON');
 }
 
 $document = JFactory::getDocument();

@@ -300,7 +300,11 @@ function cdUpdateSummary() {
 			couponDiscount = Math.min(parseFloat(_ac.value), _subtotal);
 		}
 		if (couponDiscount > 0) {
-			rows += '<div class="cd-summary-row cd-summary-row-discount"><span>' + (_ac.label || 'Reducere') + '</span>'
+			var coupLabel = (typeof Joomla !== 'undefined' && Joomla.Text && Joomla.Text._('VRCCOUPON'))
+				? Joomla.Text._('VRCCOUPON')
+				: 'Reducere';
+			var coupCode = _ac.code ? ' <strong>' + _ac.code + '</strong>' : '';
+			rows += '<div class="cd-summary-row cd-summary-row-discount"><span>' + coupLabel + coupCode + '</span>'
 				+ '<span class="cd-summary-row-val cd-discount-val">\u2212' + cdCurrency + cdFmt(couponDiscount) + '</span></div>';
 		}
 	}

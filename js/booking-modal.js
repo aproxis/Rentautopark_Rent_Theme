@@ -164,7 +164,7 @@
 				timeout: 8000
 			}).done(function (res) {
 				if (res && res.valid) {
-					window.vrcActiveCoupon = { type: res.type, value: res.value, label: res.label };
+					window.vrcActiveCoupon = { type: res.type, value: res.value, label: res.label, code: code };
 					$feedback.html('<span class="cd-coupon-feedback-ok">\u2713 ' + (res.label || 'Reducere aplicată') + '</span>');
 				} else {
 					window.vrcActiveCoupon = null;
