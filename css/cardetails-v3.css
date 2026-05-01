@@ -8,6 +8,24 @@
 #cd-summary { display: none; }
 #cd-summary.is-visible { display: block; }
 
+/* ── Base price row with sub-label breakdown ───────────────────── */
+.cd-summary-row-baseprice {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.cd-summary-row-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.cd-summary-row-sub {
+    font-size: 11px;
+    color: #9ca3af;
+    line-height: 1.3;
+}
+
 /* ── KM Notice State Switching ─────────────────────────────────── */
 #cd-km-value-unlimited { display: none; }
 .v3-ni-value-disabled { display: none; }

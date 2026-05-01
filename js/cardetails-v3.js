@@ -250,8 +250,13 @@ function cdUpdateSummary() {
 
 	var baseTotal = rate * days;
 	var dayWord = cdDescDaysWord;
-	var rows = '<div class="cd-summary-row"><span>' + cdLabelBasePrice + '</span>'
-		+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(rate) + ' &times; ' + days + ' ' + dayWord + '</span></div>';
+	var rows = '<div class="cd-summary-row cd-summary-row-baseprice">'
+		+ '<div class="cd-summary-row-inner">'
+		+ '<span>' + cdLabelRental + '</span>'
+		+ '<span class="cd-summary-row-val">' + cdCurrency + cdFmt(baseTotal) + '</span>'
+		+ '</div>'
+		+ '<div class="cd-summary-row-sub">' + cdCurrency + cdFmt(rate) + '/' + cdDescDayWord + ' &times; ' + days + ' ' + dayWord + '</div>'
+		+ '</div>';
 
 	var optTotal = 0;
 	for (var id in cdOptionals) {

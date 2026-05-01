@@ -1882,6 +1882,7 @@ jQuery(function(){
 			drop: '<?php echo addslashes(Text::_('VRCPVIEWOOHFEESFIVE') ?: "Только возврат"); ?>',
 			graceExceeded: '<?php echo addslashes(Text::_('VRC_GRACE_EXCEEDED_LABEL') ?: 'Perioadă de grație depășită — se adaugă o zi suplimentară'); ?>'
 		};
+		var cdLabelRental = '<?php echo addslashes(Text::_("VRRENTAL") ?: "Аренда"); ?>';
 		var cdLabelBasePrice = '<?php echo addslashes(Text::_("VRPRICE") ?: "Preț de bază"); ?>';
 		var cdDepositAmount = <?php echo (int)$depositAmount; ?>;
 		var cdLabelDeposit = '<?php echo addslashes(Text::_('VRCDEPOSITLABEL') ?: 'Garanție'); ?>';
