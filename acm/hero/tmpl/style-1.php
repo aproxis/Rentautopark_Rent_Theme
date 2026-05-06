@@ -365,7 +365,7 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
     opacity: 1;
     transform: translateX(0) scale(1);
 }
-#<?php echo $uid; ?> .hero-messenger-link svg { width: 24px; height: 24px; }
+#<?php echo $uid; ?> .hero-messenger-link svg { width: 24px; height: 24px; pointer-events: none; }
 #<?php echo $uid; ?> .hero-messenger-link:hover { opacity: .85 !important; }
 
 #<?php echo $uid; ?> .hero-messenger-phone    { background: #000;     border: 1px solid #ffffff66;}
@@ -441,7 +441,7 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
     width: 100%;
 }
 #<?php echo $uid; ?> .hero-mobile-messenger-link:hover { opacity: .85; color: #fff; text-decoration: none; }
-#<?php echo $uid; ?> .hero-mobile-messenger-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+#<?php echo $uid; ?> .hero-mobile-messenger-link svg { width: 18px; height: 18px; flex-shrink: 0; pointer-events: none; }
 #<?php echo $uid; ?> .hero-mobile-messenger-phone    { background: #000; border: 1px solid #ffffff66; }
 #<?php echo $uid; ?> .hero-mobile-messenger-whatsapp { background: #25D366; }
 #<?php echo $uid; ?> .hero-mobile-messenger-telegram { background: #0088CC; }
