@@ -157,6 +157,19 @@ $pitemid = VikRequest::getInt('Itemid', '', 'request');
 $ptmpl   = VikRequest::getString('tmpl', '', 'request');
 $isModal = ($ptmpl === 'component');
 
+// ── Inject GTM directly when loading as modal/iframe (bypasses plugin restrictions) ──
+if ($isModal):
+?>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5Z6P45DC');</script>
+<!-- End Google Tag Manager -->
+<?php
+endif;
+
 // ── Phase 2: Coupon is applied upstream (cardetails) and passed via URL.
 //    No coupon input shown in oconfirm — only a read-only badge if one is applied.
 $preAppliedCoupon = VikRequest::getString('couponcode', '', 'request');
