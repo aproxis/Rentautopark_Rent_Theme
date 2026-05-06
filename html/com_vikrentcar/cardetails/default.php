@@ -685,8 +685,8 @@ try {
 		while($newarr2[0]<$max_ts2){
 			$tf2=0;$icd=false;$iod=false;$lfr=0;$lfc=-1;$ltf=0;
 			foreach($busy as $b){$ii=getdate($b['ritiro']);$ci=mktime(0,0,0,$ii['mon'],$ii['mday'],$ii['year']);$io=getdate($b['realback']);$co=mktime(0,0,0,$io['mon'],$io['mday'],$io['year']);
-				if($newarr2[0]>=$ci&&$newarr2[0]<$co){$tf2++;if($newarr2[0]==$ci){$lfr=$ci;$lfc=$co;if($ci!=$co)$ltf++;$icd=true;}elseif($newarr2[0]==$co){$iod=true;$ld2=$b['realback'];}if($icd&&!empty($ld2)&&$ld2<=$b['ritiro']){$ua2++;}if($b['stop_sales']==1){$tf2=$car['units'];$ua2=0;break;}}}
-			if($tf2>=$car['units']){if($icd||!$iod){if($ltf>1||$lfr!=$lfc){if(($tf2-$ua2)>=$car['units']){$push_disabled_in[]='"'.date('Y-m-d',$newarr2[0]).'"';}}}if(!$icd&&!$iod){$push_disabled_out[]='"'.date('Y-m-d',$newarr2[0]).'"';}}
+				if($newarr2[0]>=$ci&&$newarr2[0]<=$co){$tf2++;if($newarr2[0]==$ci){$lfr=$ci;$lfc=$co;if($ci!=$co)$ltf++;$icd=true;}elseif($newarr2[0]==$co){$iod=true;$ld2=$b['realback'];}if($icd&&!empty($ld2)&&$ld2<=$b['ritiro']){$ua2++;}if($b['stop_sales']==1){$tf2=$car['units'];$ua2=0;break;}}}
+			if($tf2>=$car['units']){if($icd&&!$iod){if($ltf>1||$lfr!=$lfc){if(($tf2-$ua2)>=$car['units']){$push_disabled_in[]='"'.date('Y-m-d',$newarr2[0]).'"';}}}elseif(!$icd&&$iod){/* checkout day: let JS hour filtering handle it — don't push to disabled */}elseif(!$icd&&!$iod){$push_disabled_out[]='"'.date('Y-m-d',$newarr2[0]).'"';}}
 			$newarr2=getdate(mktime(0,0,0,$newarr2['mon'],($newarr2['mday']+1),$newarr2['year']));
 		}
 	}
@@ -1717,7 +1717,7 @@ jQuery(function(){
 
                 jQuery(document).ready(function(){
             // Find first available dates
-            var minAdv = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
+            var minAdv = <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>;
             var minLos = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
             var cand = new Date(v3Today); cand.setDate(cand.getDate()+minAdv);
             for(var i=0;i<365;i++){
@@ -1979,7 +1979,7 @@ jQuery(function(){
 			// Default pickup: find the first available date (and a valid dropoff after it)
 			(function() {
 				if (!jQuery('#pickupdate').val()) {
-					var minAdvance  = Math.max(1, <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>);
+					var minAdvance  = <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>;
 					var minLos      = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
 					var maxLookAhead = 365; // never scan more than a year ahead
 

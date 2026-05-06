@@ -721,7 +721,7 @@
 .cd-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6b7280; }
 .cd-leg-dot { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
 .cd-leg-free { background: #22c55e; }
-.cd-leg-warn { background: #f59e0b; }
+.cd-leg-warn { background: linear-gradient(135deg, #22c55e 50%, #ef4444 50%); }
 .cd-leg-busy { background: #ef4444; }
 .cd-cals-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 @media (max-width: 900px) { .cd-cals-grid { grid-template-columns: repeat(2,1fr); } }
@@ -735,7 +735,7 @@
 .cd-cals-grid .vrccal tr:first-child td { font-size: 13px; font-weight: 700; color: #0a0a0a; padding-bottom: 10px; border-bottom: 1px solid #f3f4f6; }
 .cd-cals-grid .vrccaldays td { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; padding: 8px 2px 4px; }
 .cd-cals-grid .vrctdfree { color: #0a0a0a; background: #f0fdf4; }
-.cd-cals-grid .vrctdwarning { color: #92400e; background: #fef3c7; }
+.cd-cals-grid .vrctdwarning { color: #92400e; background: linear-gradient(135deg, #f0fdf4 50%, #fee2e2 50%); }
 .cd-cals-grid .vrctdbusy { color: #991b1b; background: #fee2e2; }
 .cd-cals-grid .vrctdbusy.vrctdbusyforcheckin { background: linear-gradient(135deg,#fef3c7 50%,#fee2e2 50%); }
 .cd-cals-grid .vrc-cdetails-cal-pickday { cursor: pointer; text-decoration: underline; transition: color .15s; }
