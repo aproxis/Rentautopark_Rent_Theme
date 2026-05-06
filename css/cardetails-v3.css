@@ -1775,6 +1775,17 @@ body.vrc-modal-open {
   .cd-right::after {
 	background: radial-gradient(ellipse at bottom center, rgb(254 80 1) 0%, rgb(254 80 1 / 30%) 40%, #00000000 70%);
   }
+
+  /* Dark mode for half-booked (warning) calendar cells */
+  .cd-cals-grid .vrctdwarning {
+    color: #fbbf24;
+    background: linear-gradient(135deg, #064e3b 50%, #7f1d1d 50%);
+  }
+
+  /* Dark mode for half-booked legend dot */
+  .cd-leg-warn {
+    background: linear-gradient(135deg, #059669 50%, #dc2626 50%);
+  }
 }
 
 /* ================================================================
