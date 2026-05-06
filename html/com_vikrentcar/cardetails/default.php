@@ -1446,7 +1446,9 @@ jQuery(function(){
 			var isPast = date < minDate;
 			var isDisIn = v3IsDisabledIn(date);
 			var isDisOut = v3IsDisabledOut(date);
-			if(isPast || (isDisIn && isDisOut)){ el.classList.add('v3-disabled'); }
+			var selectingPickup = (!v3StartDate || v3Selecting === false);
+			var isBlocked = isPast || (selectingPickup ? isDisIn : (date <= v3StartDate || isDisOut));
+			if(isBlocked){ el.classList.add('v3-disabled'); }
 			else {
 			if(v3StartDate && date.getTime()===v3StartDate.getTime()) el.classList.add('v3-start');
 			if(v3EndDate   && date.getTime()===v3EndDate.getTime())   el.classList.add('v3-end');
