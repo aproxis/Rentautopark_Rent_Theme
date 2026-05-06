@@ -621,6 +621,9 @@ try {
 			<div class="cd-legend-items">
 				<span class="cd-legend-item"><span class="cd-leg-dot cd-leg-free"></span> <?php echo Text::_('VRLEGFREE'); ?></span>
 				<?php if($showpartlyres): ?><span class="cd-legend-item"><span class="cd-leg-dot cd-leg-warn"></span> <?php echo Text::_('VRLEGWARNING'); ?></span><?php endif; ?>
+				<span class="cd-legend-item"><span class="cd-leg-dot cd-leg-checkin"></span> <?php echo Text::_('VRLEGCHECKIN'); ?></span>
+				<span class="cd-legend-item"><span class="cd-leg-dot cd-leg-checkout"></span> <?php echo Text::_('VRLEGCHECKOUT'); ?></span>
+				<span class="cd-legend-item"><span class="cd-leg-dot cd-leg-preparation"></span> <?php echo Text::_('VRLEGPREPARATION'); ?></span>
 				<span class="cd-legend-item"><span class="cd-leg-dot cd-leg-busy"></span> <?php echo Text::_($show_hourly_cal?'VRLEGBUSYCHECKH':'VRLEGBUSY'); ?></span>
 			</div>
 		</div>
@@ -647,7 +650,7 @@ try {
 				if($check){$ischeckinday=false;$ischeckoutday=false;$lastfoundritts=0;$lastfoundconts=-1;$lasttotfound=0;
 					foreach($busy as $b){$to=getdate($b['ritiro']);$rt=mktime(0,0,0,$to['mon'],$to['mday'],$to['year']);$tw=getdate($b['realback']);$ct=mktime(0,0,0,$tw['mon'],$tw['mday'],$tw['year']);
 						if($newarr[0]>=$rt&&$newarr[0]<=$ct){$totfound++;if($newarr[0]==$rt){$lastfoundritts=$rt;$lastfoundconts=$ct;if($rt!=$ct)$lasttotfound++;$ischeckinday=true;}elseif($newarr[0]==$ct){$ischeckoutday=true;$lastdropoff=$b['realback'];}if($ischeckinday&&!empty($lastdropoff)&&$lastdropoff<=$b['ritiro']){$unitsadjuster++;}if($b['stop_sales']==1){$totfound=$car['units'];$unitsadjuster=0;break;}}}
-					if($totfound>=$car['units']){$dclass="vrctdbusy";if($ischeckinday&&$previousdayclass!="vrctdbusy"){$dclass="vrctdbusy vrctdbusyforcheckin";}}elseif($totfound>0&&$showpartlyres){$dclass="vrctdwarning";}}
+					if($totfound>=$car['units']){$dclass="vrctdbusy";if($ischeckinday&&$previousdayclass!="vrctdbusy"){$dclass="vrctdbusy vrctdbusyforcheckin";}elseif($ischeckoutday){$dclass="vrctdbusy vrctdbusyforcheckout";}}elseif($totfound>0&&$showpartlyres){$dclass="vrctdwarning";}}
 				$previousdayclass=$dclass;$useday=($newarr['mday']<10?"0".$newarr['mday']:$newarr['mday']);
 				if($newarr[0]>=$nowts){if($show_hourly_cal){$useday='<a href="'.JRoute::_('index.php?option=com_vikrentcar&view=cardetails&carid='.$car['id'].'&dt='.$newarr[0].(!empty($pmonth)&&$validmonth?'&month='.$pmonth:'').(!empty($pitemid)?'&Itemid='.$pitemid:'')).'">'.$useday.'</a>';}else{$useday='<span class="vrc-cdetails-cal-pickday" data-daydate="'.date($df,$newarr[0]).'">'.$useday.'</span>';}}
 				$cal.="<td class=\"".$dclass."\">".$useday."</td>\n";

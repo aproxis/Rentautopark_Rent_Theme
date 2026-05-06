@@ -723,6 +723,9 @@
 .cd-leg-free { background: #22c55e; }
 .cd-leg-warn { background: linear-gradient(135deg, #22c55e 50%, #ef4444 50%); }
 .cd-leg-busy { background: #ef4444; }
+.cd-leg-checkin { background: linear-gradient(135deg, #22c55e 50%, #ef4444 50%); }
+.cd-leg-checkout { background: linear-gradient(135deg, #ef4444 50%, #22c55e 50%); }
+.cd-leg-preparation { background: #eab308; }
 .cd-cals-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 @media (max-width: 900px) { .cd-cals-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 600px) { .cd-cals-grid { grid-template-columns: 1fr; } }
@@ -737,7 +740,9 @@
 .cd-cals-grid .vrctdfree { color: #0a0a0a; background: #f0fdf4; }
 .cd-cals-grid .vrctdwarning { color: #92400e; background: linear-gradient(135deg, #f0fdf4 50%, #fee2e2 50%); }
 .cd-cals-grid .vrctdbusy { color: #991b1b; background: #fee2e2; }
-.cd-cals-grid .vrctdbusy.vrctdbusyforcheckin { background: linear-gradient(135deg,#fef3c7 50%,#fee2e2 50%); }
+.cd-cals-grid .vrctdbusy.vrctdbusyforcheckin { background: linear-gradient(135deg,#f0fdf4 50%,#fee2e2 50%); }
+.cd-cals-grid .vrctdbusy.vrctdbusyforcheckout { background: linear-gradient(135deg,#fee2e2 50%,#f0fdf4 50%); }
+.cd-cals-grid .vrctdpreparation { background: #fef3c7; color: #92400e; }
 .cd-cals-grid .vrc-cdetails-cal-pickday { cursor: pointer; text-decoration: underline; transition: color .15s; }
 .cd-cals-grid .vrc-cdetails-cal-pickday:hover { color: #FE5001; }
 .cd-hourly-cal { margin-top: 20px; overflow-x: auto; }
@@ -1785,6 +1790,35 @@ body.vrc-modal-open {
   /* Dark mode for half-booked legend dot */
   .cd-leg-warn {
     background: linear-gradient(135deg, #059669 50%, #dc2626 50%);
+  }
+
+  /* Dark mode for check-in day (green→red) */
+  .cd-cals-grid .vrctdbusy.vrctdbusyforcheckin {
+    color: #f0f0f0;
+    background: linear-gradient(135deg, #064e3b 50%, #7f1d1d 50%);
+  }
+
+  /* Dark mode for check-out day (red→green) */
+  .cd-cals-grid .vrctdbusy.vrctdbusyforcheckout {
+    color: #f0f0f0;
+    background: linear-gradient(135deg, #7f1d1d 50%, #064e3b 50%);
+  }
+
+  /* Dark mode for preparation day (yellow) */
+  .cd-cals-grid .vrctdpreparation {
+    color: #fbbf24;
+    background: #422006;
+  }
+
+  /* Dark mode legend dots for check-in, check-out, preparation */
+  .cd-leg-checkin {
+    background: linear-gradient(135deg, #059669 50%, #dc2626 50%);
+  }
+  .cd-leg-checkout {
+    background: linear-gradient(135deg, #dc2626 50%, #059669 50%);
+  }
+  .cd-leg-preparation {
+    background: #eab308;
   }
 }
 
