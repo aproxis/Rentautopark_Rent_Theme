@@ -280,7 +280,14 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										<path d="M21 10c0 6-9 13-9 13s-9-7-9-13a9 9 0 1 1 18 0z"></path>
 										<polyline points="12 2 12 12 16 16"></polyline>
 									</svg>
-									<span><?php echo VikRentCar::getPlaceName($ord['idplace'], $vrc_tn); ?></span>
+									<span><?php echo JText::_('VRCPICKUP') ?: 'Pickup'; ?>: <?php echo VikRentCar::getPlaceName($ord['idplace'], $vrc_tn); ?></span>
+								</div>
+								<div class="order-car-detail">
+									<svg class="order-car-detail-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M21 10c0 6-9 13-9 13s-9-7-9-13a9 9 0 1 1 18 0z"></path>
+										<polyline points="12 2 12 12 16 16"></polyline>
+									</svg>
+									<span><?php echo JText::_('VRCRETURN') ?: 'Return' ?>: <?php echo VikRentCar::getPlaceName($ord['idreturnplace'], $vrc_tn); ?></span>
 								</div>
 							</div>
 						</div>
