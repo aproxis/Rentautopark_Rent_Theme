@@ -1508,12 +1508,22 @@ jQuery(function(){
 			var isDisIn = v3IsDisabledIn(date);
 			var isDisOut = v3IsDisabledOut(date);
 			var isDeprioritized = v3IsDeprioritizedIn(date);
-			var selectingPickup = (!v3StartDate || v3Selecting === false);
-			if(!selectingPickup && isDeprioritized) depWallHit = true;
-			var isBlocked = isPast || (selectingPickup ? isDisIn : (date <= v3StartDate || isDisOut || depWallHit));
+			// Are we in dropoff-selection mode? (pickup chosen, waiting for dropoff)
+			var selectingDropoff = !!(v3StartDate && v3Selecting);
+			var isBlocked;
+			if(!selectingDropoff){
+				// ── Pickup phase ────────────────────────────
+				// Past days and fully-disabled pickups are blocked. Deprioritized are clickable.
+				isBlocked = isPast || isDisIn;
+			}else{
+				// ── Dropoff phase ───────────────────────────
+				// Once we hit a fully-disabled dropoff day, everything after is also blocked.
+				if(isDisOut && date > v3StartDate) depWallHit = true;
+				isBlocked = isPast || (date <= v3StartDate) || isDisOut || depWallHit;
+			}
 			if(isBlocked){ el.classList.add('v3-disabled'); }
 			else {
-			if(isDeprioritized && selectingPickup) el.classList.add('v3-deprioritized');
+			if(isDeprioritized && !selectingDropoff) el.classList.add('v3-deprioritized');
 			if(v3StartDate && date.getTime()===v3StartDate.getTime()) el.classList.add('v3-start');
 			if(v3EndDate   && date.getTime()===v3EndDate.getTime())   el.classList.add('v3-end');
 			if(v3StartDate && v3EndDate && date>v3StartDate && date<v3EndDate) el.classList.add('v3-in-range');
@@ -1531,9 +1541,10 @@ jQuery(function(){
 		function v3CapEndDate(start, end) {
 			var cursor = new Date(start);
 			cursor.setDate(cursor.getDate() + 1); // begin scan day after pickup
-			while (cursor < end) {
-				if (v3IsDisabledOut(cursor) || v3IsDeprioritizedIn(cursor)) {
-					// Found a fully-booked or deprioritized day inside the range — cap to day before it
+			while (cursor <= end) {
+				// Only hard-blocked dropoff days form a wall — deprioritized days are valid dropoffs
+				if (v3IsDisabledOut(cursor)) {
+					// Found a fully-booked day inside the range — cap to day before it
 					var capped = new Date(cursor);
 					capped.setDate(capped.getDate() - 1);
 					return capped > start ? capped : null; // null = no valid range possible
