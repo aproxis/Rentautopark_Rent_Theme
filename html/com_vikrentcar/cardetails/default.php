@@ -1413,27 +1413,69 @@ jQuery(function(){
 		var v3Today = new Date(); v3Today.setHours(0,0,0,0);
 		v3ViewYear = v3Today.getFullYear(); v3ViewMonth = v3Today.getMonth();
 
-		var v3DisabledIn  = [<?php echo implode(',', $push_disabled_in); ?>];
-		var v3DisabledOut = [<?php echo implode(',', $push_disabled_out); ?>];
-		var v3DeprioritizedIn = [<?php echo implode(',', $push_deprioritized_in); ?>];
+		// ---- Set-based date blocking (lazy-parsed from PHP arrays) ----
+		var _v3SetsParsed = false;
+		var _v3DisInSet, _v3DisOutSet, _v3DepInSet;
+
+		function _v3Ymd(d) {
+			var y = d.getFullYear();
+			var m = d.getMonth() + 1; if (m < 10) m = '0' + m;
+			var dd = d.getDate(); if (dd < 10) dd = '0' + dd;
+			return y + '-' + m + '-' + dd;
+		}
+
+		function _v3ParseSets() {
+			if (_v3SetsParsed) return;
+			_v3SetsParsed = true;
+			// The PHP arrays may contain quoted strings (from json_encode) or bare strings.
+			// We normalise each entry by stripping surrounding quotes.
+			function norm(arr) {
+				var s = new Set();
+				for (var i = 0; i < arr.length; i++) {
+					var v = arr[i];
+					if (typeof v === 'string') {
+						v = v.replace(/^["']|["']$/g, '');
+						if (v) s.add(v);
+					}
+				}
+				return s;
+			}
+			_v3DisInSet  = norm(v3DisabledIn);
+			_v3DisOutSet = norm(v3DisabledOut);
+			_v3DepInSet  = norm(v3DeprioritizedIn);
+		}
+
+		function v3IsDisabledIn(date) {
+			_v3ParseSets();
+			if (_v3DisInSet.has(_v3Ymd(date))) return true;
+			if (typeof vrcIsDayDisabled !== 'undefined') {
+				var r = vrcIsDayDisabled(date);
+				if (r === true || (Array.isArray(r) && r[0] === false)) return true;
+			}
+			if (typeof vrcIsDayFullIn !== 'undefined') {
+				var r2 = vrcIsDayFullIn(date);
+				if (r2 === true || (Array.isArray(r2) && r2[0] === false)) return true;
+			}
+			return false;
+		}
+		function v3IsDisabledOut(date) {
+			_v3ParseSets();
+			if (_v3DisOutSet.has(_v3Ymd(date))) return true;
+			if (typeof vrcIsDayDisabledDropoff !== 'undefined') {
+				var r = vrcIsDayDisabledDropoff(date);
+				if (r === true || (Array.isArray(r) && r[0] === false)) return true;
+			}
+			if (typeof vrcIsDayFullOut !== 'undefined') {
+				var r2 = vrcIsDayFullOut(date);
+				if (r2 === true || (Array.isArray(r2) && r2[0] === false)) return true;
+			}
+			return false;
+		}
+		function v3IsDeprioritizedIn(d) { _v3ParseSets(); return _v3DepInSet.has(_v3Ymd(d)); }
 
 		function v3Fmt(d){ if(!d)return''; return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
 		function v3FmtDisp(d){ if(!d)return''; var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return mo[d.getMonth()]+' '+d.getDate(); }
 		function v3YMD(d){ return d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate(); }
-
-		function v3IsDisabledIn(d){
-		var s=v3YMD(d);
-		return v3DisabledIn.indexOf('"'+s+'"')>=0 || v3DisabledIn.indexOf(s)>=0;
-		}
-		function v3IsDisabledOut(d){
-		var s=v3YMD(d);
-		return v3DisabledOut.indexOf('"'+s+'"')>=0 || v3DisabledOut.indexOf(s)>=0;
-		}
-
-		function v3IsDeprioritizedIn(d){
-		var s=v3YMD(d);
-		return v3DeprioritizedIn.indexOf('"'+s+'"')>=0 || v3DeprioritizedIn.indexOf(s)>=0;
-		}
 
 		function v3RenderCal(){
 		var mn=['<?php echo Text::_("VRMONTHONE"); ?>','<?php echo Text::_("VRMONTHTWO"); ?>','<?php echo Text::_("VRMONTHTHREE"); ?>','<?php echo Text::_("VRMONTHFOUR"); ?>','<?php echo Text::_("VRMONTHFIVE"); ?>','<?php echo Text::_("VRMONTHSIX"); ?>','<?php echo Text::_("VRMONTHSEVEN"); ?>','<?php echo Text::_("VRMONTHEIGHT"); ?>','<?php echo Text::_("VRMONTHNINE"); ?>','<?php echo Text::_("VRMONTHTEN"); ?>','<?php echo Text::_("VRMONTHELEVEN"); ?>','<?php echo Text::_("VRMONTHTWELVE"); ?>'];
@@ -1465,28 +1507,26 @@ jQuery(function(){
 			var selectingPickup = (!v3StartDate || v3Selecting === false);
 			var isBlocked = isPast || (selectingPickup ? isDisIn : (date <= v3StartDate || isDisOut));
 			if(isBlocked){ el.classList.add('v3-disabled'); }
-			else if(isDeprioritized && selectingPickup){ el.classList.add('v3-deprioritized'); }
 			else {
+			if(isDeprioritized && selectingPickup) el.classList.add('v3-deprioritized');
 			if(v3StartDate && date.getTime()===v3StartDate.getTime()) el.classList.add('v3-start');
 			if(v3EndDate   && date.getTime()===v3EndDate.getTime())   el.classList.add('v3-end');
 			if(v3StartDate && v3EndDate && date>v3StartDate && date<v3EndDate) el.classList.add('v3-in-range');
 			if(date.getTime()===v3Today.getTime()) el.classList.add('v3-today');
 			(function(dt){ el.addEventListener('click', function(){ v3PickDay(dt); }); })(new Date(date));
 			}
-			// Deprioritized dates are still clickable (not blocked)
-			if(isDeprioritized && selectingPickup){
-				(function(dt){ el.addEventListener('click', function(){ v3PickDay(dt); }); })(new Date(date));
-			}
 			grid.appendChild(el);
 		}
 		}
 
 		// Cap the chosen end date to the last available day before any fully-booked gap
+		// Uses v3IsDisabledOut (dropoff-disabled) to detect gaps — a day that is blocked
+		// for dropoff cannot be the last day of a rental, so we cap to the day before it.
 		function v3CapEndDate(start, end) {
 			var cursor = new Date(start);
 			cursor.setDate(cursor.getDate() + 1); // begin scan day after pickup
 			while (cursor < end) {
-				if (v3IsDisabledIn(cursor)) {
+				if (v3IsDisabledOut(cursor)) {
 					// Found a fully-booked day inside the range — cap to day before it
 					var capped = new Date(cursor);
 					capped.setDate(capped.getDate() - 1);
@@ -1505,7 +1545,7 @@ jQuery(function(){
 			else {
 				var capped = v3CapEndDate(v3StartDate, date);
 				if(capped){ v3EndDate=capped; v3Selecting=false; v3SyncToJQ(); }
-				else { v3StartDate=new Date(date); v3EndDate=null; } // blocked right after pickup — restart
+				else { v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true; } // blocked right after pickup — restart
 			}
 		}
 		v3RenderCal(); v3UpdateStrip();
@@ -1737,7 +1777,7 @@ jQuery(function(){
 
 
                 jQuery(document).ready(function(){
-            // Find first available dates
+            // Find first available two consecutive days using v3CapEndDate to verify gap safety
             var minAdv = <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>;
             var minLos = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
             var cand = new Date(v3Today); cand.setDate(cand.getDate()+minAdv);
@@ -1745,7 +1785,13 @@ jQuery(function(){
                 if(!v3IsDisabledIn(cand) && !v3IsDeprioritizedIn(cand)){
                     var drop = new Date(cand); drop.setDate(drop.getDate()+minLos);
                     for(var j=0;j<30;j++){
-                        if(!v3IsDisabledOut(drop)){ v3StartDate=new Date(cand); v3EndDate=new Date(drop); break; }
+                        if(!v3IsDisabledOut(drop)){
+                            // Verify the gap is safe using v3CapEndDate
+                            var capped = v3CapEndDate(cand, drop);
+                            if(capped && capped >= drop){
+                                v3StartDate=new Date(cand); v3EndDate=new Date(drop); v3Selecting=false; break;
+                            }
+                        }
                         drop.setDate(drop.getDate()+1);
                     }
                     if(v3StartDate) break;
