@@ -1480,92 +1480,196 @@ jQuery(function(){
 		function v3FmtDisp(d){ if(!d)return''; var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return mo[d.getMonth()]+' '+d.getDate(); }
 		function v3YMD(d){ return d.getFullYear()+'-'+(d.getMonth()<9?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate(); }
 
-		function v3RenderCal(){
-		var mn=['<?php echo Text::_("VRMONTHONE"); ?>','<?php echo Text::_("VRMONTHTWO"); ?>','<?php echo Text::_("VRMONTHTHREE"); ?>','<?php echo Text::_("VRMONTHFOUR"); ?>','<?php echo Text::_("VRMONTHFIVE"); ?>','<?php echo Text::_("VRMONTHSIX"); ?>','<?php echo Text::_("VRMONTHSEVEN"); ?>','<?php echo Text::_("VRMONTHEIGHT"); ?>','<?php echo Text::_("VRMONTHNINE"); ?>','<?php echo Text::_("VRMONTHTEN"); ?>','<?php echo Text::_("VRMONTHELEVEN"); ?>','<?php echo Text::_("VRMONTHTWELVE"); ?>'];
-		document.getElementById('v3-cal-title').textContent = mn[v3ViewMonth]+' '+v3ViewYear;
+		function v3RenderCal() {
+		if(typeof _v3ParseSets === 'function') _v3ParseSets();
+
+		var mn = [
+			'<?php echo Text::_("VRMONTHONE"); ?>',
+			'<?php echo Text::_("VRMONTHTWO"); ?>',
+			'<?php echo Text::_("VRMONTHTHREE"); ?>',
+			'<?php echo Text::_("VRMONTHFOUR"); ?>',
+			'<?php echo Text::_("VRMONTHFIVE"); ?>',
+			'<?php echo Text::_("VRMONTHSIX"); ?>',
+			'<?php echo Text::_("VRMONTHSEVEN"); ?>',
+			'<?php echo Text::_("VRMONTHEIGHT"); ?>',
+			'<?php echo Text::_("VRMONTHNINE"); ?>',
+			'<?php echo Text::_("VRMONTHTEN"); ?>',
+			'<?php echo Text::_("VRMONTHELEVEN"); ?>',
+			'<?php echo Text::_("VRMONTHTWELVE"); ?>'
+		];
+
+		var titleEl = document.getElementById('v3-cal-title');
+		if(titleEl) titleEl.textContent = mn[v3ViewMonth] + ' ' + v3ViewYear;
 
 		var dows = document.getElementById('v3-cal-dows');
-		dows.innerHTML = '';
-		var dowLabels = ['<?php echo mb_substr(Text::_("VRCJQCALMON"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALTUE"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALWED"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALTHU"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALFRI"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALSAT"),0,2,"UTF-8"); ?>','<?php echo mb_substr(Text::_("VRCJQCALSUN"),0,2,"UTF-8"); ?>'];
-		dowLabels.forEach(function(l){ var el=document.createElement('div'); el.className='v3-cal-dow'; el.textContent=l; dows.appendChild(el); });
+		if(dows) {
+			dows.innerHTML = '';
+			var dowLabels = [
+				'<?php echo mb_substr(Text::_("VRCJQCALMON"),0,2,"UTF-8"); ?>',
+				'<?php echo mb_substr(Text::_("VRCJQCALTUE"),0,2,"UTF-8"); ?>',
+				'<?php echo mb_substr(Text::_("VRCJQCALWED"),0,2,"UTF-8"); ?>',
+				'<?php echo mb_substr(Text::_("VRCJQCALTHU"),0,2,"UTF-8"); ?>',
+				'<?php echo mb_substr(Text::_("VRCJQCALFRI"),0,2,"UTF-8"); ?>',
+				'<?php echo mb_substr(Text::_("VRCJQCALSAT"),0,2,"UTF-8"); ?>',
+				'<?php echo mb_substr(Text::_("VRCJQCALSUN"),0,2,"UTF-8"); ?>'
+			];
+			dowLabels.forEach(function(l) {
+				var el = document.createElement('div');
+				el.className = 'v3-cal-dow';
+				el.textContent = l;
+				dows.appendChild(el);
+			});
+		}
 
 		var grid = document.getElementById('v3-cal-days');
+		if(!grid) return;
 		grid.innerHTML = '';
+
 		var first = new Date(v3ViewYear, v3ViewMonth, 1);
-		var dow = first.getDay(); dow = (dow+6)%7; // Monday-first
-		for(var i=0;i<dow;i++){ var el=document.createElement('div'); el.className='v3-cal-day v3-disabled'; grid.appendChild(el); }
-		var dim = new Date(v3ViewYear, v3ViewMonth+1, 0).getDate();
+		var dow = first.getDay();
+		dow = (dow + 6) % 7; // Monday-first
+
+		for (var i = 0; i < dow; i++) {
+			var el = document.createElement('div');
+			el.className = 'v3-cal-day v3-disabled';
+			grid.appendChild(el);
+		}
+
+		var dim = new Date(v3ViewYear, v3ViewMonth + 1, 0).getDate();
 		var minAdv = <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>;
-		var minDate = new Date(v3Today.getTime()); minDate.setDate(minDate.getDate()+minAdv);
+		var minDate = new Date(v3Today.getTime());
+		minDate.setDate(minDate.getDate() + minAdv);
+		minDate.setHours(0,0,0,0);
 
 		var depWallHit = false;
-		for(var d=1;d<=dim;d++){
+
+		// Standardize selected dates for precise timestamp matching
+		var sTs = v3StartDate ? new Date(v3StartDate).setHours(0,0,0,0) : null;
+		var eTs = v3EndDate ? new Date(v3EndDate).setHours(0,0,0,0) : null;
+		var tTs = new Date(v3Today).setHours(0,0,0,0);
+
+		for (var d = 1; d <= dim; d++) {
 			var date = new Date(v3ViewYear, v3ViewMonth, d);
+			date.setHours(0,0,0,0);
+			var cTs = date.getTime();
+
 			var el = document.createElement('div');
 			el.className = 'v3-cal-day';
 			el.textContent = d;
+
 			var isPast = date < minDate;
 			var isDisIn = v3IsDisabledIn(date);
 			var isDisOut = v3IsDisabledOut(date);
 			var isDeprioritized = v3IsDeprioritizedIn(date);
-			// Are we in dropoff-selection mode? (pickup chosen, waiting for dropoff)
+
 			var selectingDropoff = !!(v3StartDate && v3Selecting);
-			var isBlocked;
-			if(!selectingDropoff){
-				// ── Pickup phase ────────────────────────────
-				// Past days and fully-disabled pickups are blocked. Deprioritized are clickable.
+			var isBlocked = false;
+
+			if (!selectingDropoff) {
+				// PHASE 1: Looking for Pickup
 				isBlocked = isPast || isDisIn;
-			}else{
-				// ── Dropoff phase ───────────────────────────
-				// Once we hit a fully-disabled dropoff day, everything after is also blocked.
-				if(isDisOut && date > v3StartDate) depWallHit = true;
-				isBlocked = isPast || (date <= v3StartDate) || isDisOut || depWallHit;
+			} else {
+				// PHASE 2: Looking for Dropoff
+				// Check wall state globally, so jumping months doesn't lose the wall
+				if (sTs && cTs > sTs && isDisOut) {
+					depWallHit = true;
+				}
+
+				isBlocked = isPast ||
+							cTs <= sTs ||
+							isDisOut ||
+							depWallHit;
 			}
-			if(isBlocked){ el.classList.add('v3-disabled'); }
-			else {
-			if(isDeprioritized && !selectingDropoff) el.classList.add('v3-deprioritized');
-			if(v3StartDate && date.getTime()===v3StartDate.getTime()) el.classList.add('v3-start');
-			if(v3EndDate   && date.getTime()===v3EndDate.getTime())   el.classList.add('v3-end');
-			if(v3StartDate && v3EndDate && date>v3StartDate && date<v3EndDate) el.classList.add('v3-in-range');
-			if(date.getTime()===v3Today.getTime()) el.classList.add('v3-today');
-			(function(dt){ el.addEventListener('click', function(){ v3PickDay(dt); }); })(new Date(date));
+
+			if (isBlocked) {
+				el.classList.add('v3-disabled');
+			} else {
+				// Playable Day
+				if (isDeprioritized && !selectingDropoff) el.classList.add('v3-deprioritized');
+				if (sTs && cTs === sTs) el.classList.add('v3-start');
+				if (eTs && cTs === eTs) el.classList.add('v3-end');
+				if (sTs && eTs && cTs > sTs && cTs < eTs) el.classList.add('v3-in-range');
+				if (cTs === tTs) el.classList.add('v3-today');
+
+				// Explicit closure binding for the loop variable
+				el.onclick = (function(dt) {
+					return function() { v3PickDay(dt); };
+				})(new Date(date));
 			}
 			grid.appendChild(el);
 		}
 		}
 
-		// Cap the chosen end date to the last available day before any fully-booked gap
-		// Uses v3IsDisabledOut (dropoff-disabled) and v3IsDeprioritizedIn (checkout-only days)
-		// to detect gaps — a day that is blocked for dropoff cannot be the last day of a
-		// rental, so we cap to the day before it.
+		/**
+		 * Scan forward from start to end. If we hit a fully disabled dropoff day (v3IsDisabledOut),
+		 * cap the end date to the day before it.
+		 */
 		function v3CapEndDate(start, end) {
 			var cursor = new Date(start);
-			cursor.setDate(cursor.getDate() + 1); // begin scan day after pickup
+			cursor.setDate(cursor.getDate() + 1); // check starts day AFTER pickup
+
 			while (cursor <= end) {
-				// Only hard-blocked dropoff days form a wall — deprioritized days are valid dropoffs
 				if (v3IsDisabledOut(cursor)) {
-					// Found a fully-booked day inside the range — cap to day before it
+					// Wall hit! Cap to the day before this blocked day
 					var capped = new Date(cursor);
 					capped.setDate(capped.getDate() - 1);
-					return capped > start ? capped : null; // null = no valid range possible
+					return capped >= start ? capped : null;
 				}
 				cursor.setDate(cursor.getDate() + 1);
 			}
-			return end; // range is clean
+			return end;
 		}
 
-		function v3PickDay(date){
-		if(!v3StartDate || v3Selecting===false){
-			v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true;
-		} else {
-			if(date<=v3StartDate){ v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true; }
-			else {
-				var capped = v3CapEndDate(v3StartDate, date);
-				if(capped){ v3EndDate=capped; v3Selecting=false; v3SyncToJQ(); }
-				else { v3StartDate=new Date(date); v3EndDate=null; v3Selecting=true; } // blocked right after pickup — restart
+		/**
+		 * Handles clicks on the calendar grid.
+		 */
+		function v3PickDay(dateObj) {
+			var clicked = new Date(dateObj);
+			clicked.setHours(0,0,0,0);
+
+			// 1. Idle or completed -> Start fresh pickup
+			if (!v3StartDate || !v3Selecting) {
+				v3StartDate = clicked;
+				v3EndDate = null;
+				v3Selecting = true;
+				v3RenderCal();
+				v3UpdateStrip();
+				return;
 			}
-		}
-		v3RenderCal(); v3UpdateStrip();
+
+			// 2. We are waiting for a dropoff...
+			if (clicked <= v3StartDate) {
+				// Clicked before or on pickup date -> Restart pickup
+				v3StartDate = clicked;
+				v3EndDate = null;
+				v3Selecting = true;
+				v3RenderCal();
+				v3UpdateStrip();
+				return;
+			}
+
+			// 3. Clicked a future date. Check if there's a wall between pickup and clicked.
+			var capped = v3CapEndDate(v3StartDate, clicked);
+
+			if (!capped || capped < clicked) {
+				// The user clicked PAST a fully-booked gap.
+				// Behavior: Treat this as a new PICKUP selection instead.
+				v3StartDate = clicked;
+				v3EndDate = null;
+				v3Selecting = true;
+
+				// If clicking this moved us to a new month logically, ensure view matches
+				v3ViewYear = clicked.getFullYear();
+				v3ViewMonth = clicked.getMonth();
+			} else {
+				// Valid dropoff selected
+				v3EndDate = clicked;
+				v3Selecting = false; // Phase complete
+				v3SyncToJQ();
+			}
+
+			v3RenderCal();
+			v3UpdateStrip();
 		}
 
 		function v3SyncToJQ(){
