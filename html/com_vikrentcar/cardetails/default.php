@@ -1415,6 +1415,9 @@ jQuery(function(){
 
 		// ---- Set-based date blocking (lazy-parsed from PHP arrays) ----
 		var _v3SetsParsed = false;
+		var v3DisabledIn = [<?php echo implode(',', $push_disabled_in); ?>];
+		var v3DisabledOut = [<?php echo implode(',', $push_disabled_out); ?>];
+		var v3DeprioritizedIn = [<?php echo implode(',', $push_deprioritized_in); ?>];
 		var _v3DisInSet, _v3DisOutSet, _v3DepInSet;
 
 		function _v3Ymd(d) {
