@@ -270,62 +270,68 @@ if (!empty($caratDefs)) {
 	} catch (Exception $e) {}
 }
 
-$push_disabled_in = array();
-$push_disabled_out = array();
-if (is_array($busy) && count($busy) > 0) {
-	$now_info_pre = getdate();
-	$pre_newarr = getdate(mktime(0, 0, 0, $now_info_pre['mon'], $now_info_pre['mday'], $now_info_pre['year']));
-	$pre_max_ts = mktime(23, 59, 59, $pre_newarr['mon'], $pre_newarr['mday'], ($pre_newarr['year'] + 1));
-	$pre_lastdropoff = 0;
-	$pre_unitsadjuster = 0;
-	while ($pre_newarr[0] < $pre_max_ts) {
-		$totfound = 0;
-		$ischeckinday = false;
-		$ischeckoutday = false;
-		$lastfoundritts = 0;
-		$lastfoundconts = -1;
-		$lasttotfound = 0;
-		foreach ($busy as $b) {
-			$info_in = getdate($b['ritiro']);
-			$checkin_ts = mktime(0, 0, 0, $info_in['mon'], $info_in['mday'], $info_in['year']);
-			$info_out = getdate($b['realback']);
-			$checkout_ts = mktime(0, 0, 0, $info_out['mon'], $info_out['mday'], $info_out['year']);
-			if ($pre_newarr[0] >= $checkin_ts && $pre_newarr[0] <= $checkout_ts) {
-				$totfound++;
-				if ($pre_newarr[0] == $checkin_ts) {
-					$lastfoundritts = $checkin_ts;
-					$lastfoundconts = $checkout_ts;
-					if ($lastfoundritts != $lastfoundconts) $lasttotfound++;
-					$ischeckinday = true;
-				} elseif ($pre_newarr[0] == $checkout_ts) {
-					$ischeckoutday = true;
-					$pre_lastdropoff = $b['realback'];
-				}
-				if ($ischeckinday && !empty($pre_lastdropoff) && $pre_lastdropoff <= $b['ritiro']) {
-					$pre_unitsadjuster++;
-				}
-				if ($b['stop_sales'] == 1) {
-					$totfound = $car['units'];
-					$pre_unitsadjuster = 0;
-					break;
-				}
-			}
-		}
-		if ($totfound >= $car['units']) {
-			if ($ischeckinday || !$ischeckoutday) {
-				if ($lasttotfound > 1 || $lastfoundritts != $lastfoundconts) {
-					if (($totfound - $pre_unitsadjuster) >= $car['units']) {
-						$push_disabled_in[] = '"' . date('Y-m-d', $pre_newarr[0]) . '"';
+		$push_disabled_in = array();
+		$push_disabled_out = array();
+		$push_deprioritized_in = array(); // check-out days: selectable but deprioritized
+		if (is_array($busy) && count($busy) > 0) {
+			$now_info_pre = getdate();
+			$pre_newarr = getdate(mktime(0, 0, 0, $now_info_pre['mon'], $now_info_pre['mday'], $now_info_pre['year']));
+			$pre_max_ts = mktime(23, 59, 59, $pre_newarr['mon'], $pre_newarr['mday'], ($pre_newarr['year'] + 1));
+			$pre_lastdropoff = 0;
+			$pre_unitsadjuster = 0;
+			while ($pre_newarr[0] < $pre_max_ts) {
+				$totfound = 0;
+				$ischeckinday = false;
+				$ischeckoutday = false;
+				$lastfoundritts = 0;
+				$lastfoundconts = -1;
+				$lasttotfound = 0;
+				foreach ($busy as $b) {
+					$info_in = getdate($b['ritiro']);
+					$checkin_ts = mktime(0, 0, 0, $info_in['mon'], $info_in['mday'], $info_in['year']);
+					$info_out = getdate($b['realback']);
+					$checkout_ts = mktime(0, 0, 0, $info_out['mon'], $info_out['mday'], $info_out['year']);
+					if ($pre_newarr[0] >= $checkin_ts && $pre_newarr[0] <= $checkout_ts) {
+						$totfound++;
+						if ($pre_newarr[0] == $checkin_ts) {
+							$lastfoundritts = $checkin_ts;
+							$lastfoundconts = $checkout_ts;
+							if ($lastfoundritts != $lastfoundconts) $lasttotfound++;
+							$ischeckinday = true;
+						} elseif ($pre_newarr[0] == $checkout_ts) {
+							$ischeckoutday = true;
+							$pre_lastdropoff = $b['realback'];
+						}
+						if ($ischeckinday && !empty($pre_lastdropoff) && $pre_lastdropoff <= $b['ritiro']) {
+							$pre_unitsadjuster++;
+						}
+						if ($b['stop_sales'] == 1) {
+							$totfound = $car['units'];
+							$pre_unitsadjuster = 0;
+							break;
+						}
 					}
 				}
-			}
-			if (!$ischeckinday && !$ischeckoutday) {
-				$push_disabled_out[] = '"' . date('Y-m-d', $pre_newarr[0]) . '"';
+				if ($totfound >= $car['units']) {
+					if ($ischeckinday || !$ischeckoutday) {
+						if ($lasttotfound > 1 || $lastfoundritts != $lastfoundconts) {
+							if (($totfound - $pre_unitsadjuster) >= $car['units']) {
+								// Check-out days: deprioritize instead of fully disabling
+								if ($ischeckoutday) {
+									$push_deprioritized_in[] = '"' . date('Y-m-d', $pre_newarr[0]) . '"';
+								} else {
+									$push_disabled_in[] = '"' . date('Y-m-d', $pre_newarr[0]) . '"';
+								}
+							}
+						}
+					}
+					if (!$ischeckinday && !$ischeckoutday) {
+						$push_disabled_out[] = '"' . date('Y-m-d', $pre_newarr[0]) . '"';
+					}
+				}
+				$pre_newarr = getdate(mktime(0, 0, 0, $pre_newarr['mon'], ($pre_newarr['mday'] + 1), $pre_newarr['year']));
 			}
 		}
-		$pre_newarr = getdate(mktime(0, 0, 0, $pre_newarr['mon'], ($pre_newarr['mday'] + 1), $pre_newarr['year']));
-	}
-}
 
 $carslistUrl = JRoute::_('index.php?option=com_vikrentcar&view=carslist' . (!empty($pitemid) ? '&Itemid=' . $pitemid : ''));
 
@@ -689,7 +695,7 @@ try {
 			$tf2=0;$icd=false;$iod=false;$lfr=0;$lfc=-1;$ltf=0;
 			foreach($busy as $b){$ii=getdate($b['ritiro']);$ci=mktime(0,0,0,$ii['mon'],$ii['mday'],$ii['year']);$io=getdate($b['realback']);$co=mktime(0,0,0,$io['mon'],$io['mday'],$io['year']);
 				if($newarr2[0]>=$ci&&$newarr2[0]<=$co){$tf2++;if($newarr2[0]==$ci){$lfr=$ci;$lfc=$co;if($ci!=$co)$ltf++;$icd=true;}elseif($newarr2[0]==$co){$iod=true;$ld2=$b['realback'];}if($icd&&!empty($ld2)&&$ld2<=$b['ritiro']){$ua2++;}if($b['stop_sales']==1){$tf2=$car['units'];$ua2=0;break;}}}
-			if($tf2>=$car['units']){if($icd&&!$iod){if($ltf>1||$lfr!=$lfc){if(($tf2-$ua2)>=$car['units']){$push_disabled_in[]='"'.date('Y-m-d',$newarr2[0]).'"';}}}elseif(!$icd&&$iod){/* checkout day: let JS hour filtering handle it — don't push to disabled */}elseif(!$icd&&!$iod){$push_disabled_out[]='"'.date('Y-m-d',$newarr2[0]).'"';}}
+			if($tf2>=$car['units']){if($icd&&!$iod){if($ltf>1||$lfr!=$lfc){if(($tf2-$ua2)>=$car['units']){$push_disabled_in[]='"'.date('Y-m-d',$newarr2[0]).'"';}}}elseif(!$icd&&$iod){/* checkout day: deprioritize instead of fully disabling */$push_deprioritized_in[]='"'.date('Y-m-d',$newarr2[0]).'"';}elseif(!$icd&&!$iod){$push_disabled_out[]='"'.date('Y-m-d',$newarr2[0]).'"';}}
 			$newarr2=getdate(mktime(0,0,0,$newarr2['mon'],($newarr2['mday']+1),$newarr2['year']));
 		}
 	}
@@ -1409,6 +1415,7 @@ jQuery(function(){
 
 		var v3DisabledIn  = [<?php echo implode(',', $push_disabled_in); ?>];
 		var v3DisabledOut = [<?php echo implode(',', $push_disabled_out); ?>];
+		var v3DeprioritizedIn = [<?php echo implode(',', $push_deprioritized_in); ?>];
 
 		function v3Fmt(d){ if(!d)return''; return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
 		function v3FmtDisp(d){ if(!d)return''; var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return mo[d.getMonth()]+' '+d.getDate(); }
@@ -1421,6 +1428,11 @@ jQuery(function(){
 		function v3IsDisabledOut(d){
 		var s=v3YMD(d);
 		return v3DisabledOut.indexOf('"'+s+'"')>=0 || v3DisabledOut.indexOf(s)>=0;
+		}
+
+		function v3IsDeprioritizedIn(d){
+		var s=v3YMD(d);
+		return v3DeprioritizedIn.indexOf('"'+s+'"')>=0 || v3DeprioritizedIn.indexOf(s)>=0;
 		}
 
 		function v3RenderCal(){
@@ -1449,15 +1461,21 @@ jQuery(function(){
 			var isPast = date < minDate;
 			var isDisIn = v3IsDisabledIn(date);
 			var isDisOut = v3IsDisabledOut(date);
+			var isDeprioritized = v3IsDeprioritizedIn(date);
 			var selectingPickup = (!v3StartDate || v3Selecting === false);
 			var isBlocked = isPast || (selectingPickup ? isDisIn : (date <= v3StartDate || isDisOut));
 			if(isBlocked){ el.classList.add('v3-disabled'); }
+			else if(isDeprioritized && selectingPickup){ el.classList.add('v3-deprioritized'); }
 			else {
 			if(v3StartDate && date.getTime()===v3StartDate.getTime()) el.classList.add('v3-start');
 			if(v3EndDate   && date.getTime()===v3EndDate.getTime())   el.classList.add('v3-end');
 			if(v3StartDate && v3EndDate && date>v3StartDate && date<v3EndDate) el.classList.add('v3-in-range');
 			if(date.getTime()===v3Today.getTime()) el.classList.add('v3-today');
 			(function(dt){ el.addEventListener('click', function(){ v3PickDay(dt); }); })(new Date(date));
+			}
+			// Deprioritized dates are still clickable (not blocked)
+			if(isDeprioritized && selectingPickup){
+				(function(dt){ el.addEventListener('click', function(){ v3PickDay(dt); }); })(new Date(date));
 			}
 			grid.appendChild(el);
 		}
@@ -1724,7 +1742,7 @@ jQuery(function(){
             var minLos = <?php echo max(1, intval($def_min_los) > 0 ? intval($def_min_los) : 1); ?>;
             var cand = new Date(v3Today); cand.setDate(cand.getDate()+minAdv);
             for(var i=0;i<365;i++){
-                if(!v3IsDisabledIn(cand)){
+                if(!v3IsDisabledIn(cand) && !v3IsDeprioritizedIn(cand)){
                     var drop = new Date(cand); drop.setDate(drop.getDate()+minLos);
                     for(var j=0;j<30;j++){
                         if(!v3IsDisabledOut(drop)){ v3StartDate=new Date(cand); v3EndDate=new Date(drop); break; }

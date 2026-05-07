@@ -1543,6 +1543,8 @@ body.vrc-modal-open {
 .v3-cal-day { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; border-radius: 8px; color: #1a1a1a; transition: background .1s; user-select: none; }
 .v3-cal-day:hover:not(.v3-disabled):not(.v3-start):not(.v3-end) { background: #f7f7f5; }
 .v3-disabled { color: #d1d5db; cursor: default; pointer-events: none; }
+.v3-deprioritized { color: #9ca3af; cursor: pointer; opacity: 0.6; text-decoration: line-through; }
+.v3-deprioritized:hover { background: #f7f7f5; }
 .v3-in-range { background: rgba(254,80,1,.08); border-radius: 0; }
 .v3-start, .v3-end { background: #FE5001; color: #fff; font-weight: 600; z-index: 1; }
 .v3-start { border-radius: 8px 0 0 8px; }
@@ -1683,6 +1685,8 @@ body.vrc-modal-open {
   .cd-summary-desc strong { color: #f0f0f0; }
   /* Dark calendar: disabled dates must be visually distinct (strikethrough + low opacity) */
   .v3-cal-day.v3-disabled { color: rgba(255,255,255,0.2); text-decoration: line-through; cursor: not-allowed; }
+  .v3-cal-day.v3-deprioritized { color: rgba(255,255,255,0.35); text-decoration: line-through; cursor: pointer; opacity: 0.5; }
+  .v3-cal-day.v3-deprioritized:hover { background: rgba(255,255,255,.08); }
   .v3-cal-day:hover:not(.v3-disabled):not(.v3-start):not(.v3-end) { background: rgba(255,255,255,.08); }
   .v3-cal-nav { border-color: rgba(255,255,255,.1); color: #9ca3af; }
   .v3-cal-nav:hover { background: #242424; }
