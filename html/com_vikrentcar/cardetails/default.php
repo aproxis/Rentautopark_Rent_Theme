@@ -1498,6 +1498,7 @@ jQuery(function(){
 		var minAdv = <?php echo (int)VikRentCar::getMinDaysAdvance(); ?>;
 		var minDate = new Date(v3Today.getTime()); minDate.setDate(minDate.getDate()+minAdv);
 
+		var depWallHit = false;
 		for(var d=1;d<=dim;d++){
 			var date = new Date(v3ViewYear, v3ViewMonth, d);
 			var el = document.createElement('div');
@@ -1508,7 +1509,8 @@ jQuery(function(){
 			var isDisOut = v3IsDisabledOut(date);
 			var isDeprioritized = v3IsDeprioritizedIn(date);
 			var selectingPickup = (!v3StartDate || v3Selecting === false);
-			var isBlocked = isPast || (selectingPickup ? isDisIn : (date <= v3StartDate || isDisOut));
+			if(!selectingPickup && isDeprioritized) depWallHit = true;
+			var isBlocked = isPast || (selectingPickup ? isDisIn : (date <= v3StartDate || isDisOut || depWallHit));
 			if(isBlocked){ el.classList.add('v3-disabled'); }
 			else {
 			if(isDeprioritized && selectingPickup) el.classList.add('v3-deprioritized');
@@ -1523,14 +1525,15 @@ jQuery(function(){
 		}
 
 		// Cap the chosen end date to the last available day before any fully-booked gap
-		// Uses v3IsDisabledOut (dropoff-disabled) to detect gaps — a day that is blocked
-		// for dropoff cannot be the last day of a rental, so we cap to the day before it.
+		// Uses v3IsDisabledOut (dropoff-disabled) and v3IsDeprioritizedIn (checkout-only days)
+		// to detect gaps — a day that is blocked for dropoff cannot be the last day of a
+		// rental, so we cap to the day before it.
 		function v3CapEndDate(start, end) {
 			var cursor = new Date(start);
 			cursor.setDate(cursor.getDate() + 1); // begin scan day after pickup
 			while (cursor < end) {
-				if (v3IsDisabledOut(cursor)) {
-					// Found a fully-booked day inside the range — cap to day before it
+				if (v3IsDisabledOut(cursor) || v3IsDeprioritizedIn(cursor)) {
+					// Found a fully-booked or deprioritized day inside the range — cap to day before it
 					var capped = new Date(cursor);
 					capped.setDate(capped.getDate() - 1);
 					return capped > start ? capped : null; // null = no valid range possible
