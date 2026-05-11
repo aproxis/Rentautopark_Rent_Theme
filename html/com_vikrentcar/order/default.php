@@ -43,6 +43,42 @@ if ($nowdf == "%d/%m/%Y") {
 $dbo = JFactory::getDbo();
 $carinfo = VikRentCar::getCarInfo($ord['idcar'], $vrc_tn);
 
+// ── Security Deposit (Hybrid: per-car → global fallback) ──────────────
+$__depositAmount = 0;
+$__showDeposit = false;
+
+// Tier 1: Per-car deposit
+if (isset($carinfo['deposit']) && floatval($carinfo['deposit']) > 0) {
+	$__depositAmount = floatval($carinfo['deposit']);
+	$__showDeposit = true;
+}
+
+// Tier 2: Global fallback (maibpayment)
+if (!$__showDeposit) {
+	try {
+		$_dbo = JFactory::getDbo();
+		$_dbo->setQuery(
+			"SELECT `charge`, `val_pcent`, `ch_disc`
+			 FROM `#__vikrentcar_gpayments`
+			 WHERE `file` = 'maibpayment' AND `published` = '1'
+			 LIMIT 1"
+		);
+		$maibPayment = $_dbo->loadAssoc();
+		if (!empty($maibPayment) && (int)$maibPayment['ch_disc'] === 1 && floatval($maibPayment['charge']) > 0) {
+			$__depositAmount = floatval($maibPayment['charge']);
+			if ($maibPayment['val_pcent'] == 2 && !empty($carinfo['cost']) && $carinfo['cost'] > 0) {
+				$__depositAmount = ($carinfo['cost'] * $__depositAmount) / 100;
+			}
+			$__depositAmount = round($__depositAmount);
+			if ($__depositAmount > 0) {
+				$__showDeposit = true;
+			}
+		}
+	} catch (Exception $e) {
+		$__showDeposit = false;
+	}
+}
+
 $wdays_map = array(
 	JText::_('VRWEEKDAYZERO'),
 	JText::_('VRWEEKDAYONE'),
@@ -475,6 +511,22 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 									<div class="order-pricing-price">
 										<span class="order-currency"><?php echo $currencysymb; ?></span>
 										<span class="order-price">-<?php echo VikRentCar::numberFormat($expcoupon[1]); ?></span>
+									</div>
+								</div>
+								<?php
+							}
+							if ($__showDeposit) {
+								?>
+								<div class="order-pricing-item deposit">
+									<div class="order-pricing-name">
+										<?php 
+										$isPastRental = ($ord['status'] == 'confirmed' && $ord['consegna'] < time());
+										echo $isPastRental ? JText::_('VRCDEPOSITRETURNED') : JText::_('VRCDEPOSITLABEL'); 
+										?>
+									</div>
+									<div class="order-pricing-price">
+										<span class="order-currency"><?php echo $currencysymb; ?></span>
+										<span class="order-price"><?php echo VikRentCar::numberFormat($__depositAmount); ?></span>
 									</div>
 								</div>
 								<?php

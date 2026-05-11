@@ -466,6 +466,21 @@
 	font-weight: 600;
 }
 
+.order-pricing-item.deposit {
+	background: #e8f4fd;
+	padding: 12px;
+	border-radius: 8px;
+	border: 1px solid #b8daff;
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+.order-pricing-item.deposit .order-pricing-name {
+	color: #003d80;
+}
+.order-pricing-item.deposit .order-price {
+	color: #0056b3;
+}
+
 .order-pricing-name {
 	color: #495057;
 	font-size: 14px;
