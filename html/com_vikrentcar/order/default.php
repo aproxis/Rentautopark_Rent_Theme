@@ -525,8 +525,8 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										?>
 									</div>
 									<div class="order-pricing-price">
-										<span class="order-currency order_keepcost"><?php echo $currencysymb; ?></span>
-										<span class="order-price order_keepcost"><?php echo VikRentCar::numberFormat($__depositAmount); ?></span>
+										<span class="order-currency"><?php echo $currencysymb; ?></span>
+										<span class="order-price"><?php echo VikRentCar::numberFormat($__depositAmount); ?></span>
 									</div>
 								</div>
 								<?php
@@ -800,25 +800,7 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 					<?php
 				}
 
-				if ($ord['status'] == 'confirmed') {
-					// hide prices in case the tariffs have changed for these dates (only for confirmed orders)
-					if (number_format($isdue, 2) != number_format($ord['order_total'], 2)) {
-						?>
-						<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery(".order-currency, .order-price").not(".order_keepcost").text("");
-							jQuery(".order-currency, .order-price").not(".order_keepcost").each(function(){
-								var cur_txt = jQuery(this).prev("span").html();
-								if (cur_txt) {
-									jQuery(this).prev("span").html(cur_txt.replace(":", ""));
-								}
-							});
-						});
-						</script>
-						<?php
-					}
-
-					if (is_array($payment) && intval($payment['shownotealw']) == 1 && !empty($payment['note'])) {
+				if (is_array($payment) && intval($payment['shownotealw']) == 1 && !empty($payment['note'])) {
 						?>
 						<div class="order-card">
 							<div class="order-card-header">
@@ -895,7 +877,6 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 					if ($ord['seen'] < 1) {
 						VikRentCar::printConversionCode($ord['id']);
 					}
-				}
 
 				if ($ord['status'] != 'confirmed') {
 					// tracking code only for stand-by or cancelled orders
