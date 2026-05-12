@@ -361,6 +361,7 @@ $clientAltText    = $helper->get('client-alt-text')          ?: Text::_('HERO_CL
     transform: translateX(-10px) scale(.8);
     text-decoration: none;
 }
+
 #<?php echo $uid; ?> .hero-messengers.is-open .hero-messenger-link {
     opacity: 1;
     transform: translateX(0) scale(1);
