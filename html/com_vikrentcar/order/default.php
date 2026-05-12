@@ -525,8 +525,8 @@ $document->addStyleSheet(JURI::root() . 'templates/rent/css/order-details-styles
 										?>
 									</div>
 									<div class="order-pricing-price">
-										<span class="order-currency"><?php echo $currencysymb; ?></span>
-										<span class="order-price"><?php echo VikRentCar::numberFormat($__depositAmount); ?></span>
+										<span class="order-currency order_keepcost"><?php echo $currencysymb; ?></span>
+										<span class="order-price order_keepcost"><?php echo VikRentCar::numberFormat($__depositAmount); ?></span>
 									</div>
 								</div>
 								<?php
